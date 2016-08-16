@@ -1,4 +1,25 @@
-// Copyright (c) 2016 Paul Austin - SDG
+/*
+Copyright (c) 2016 Paul Austin - SDG
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 editor = {
   blocks: [],
   svg: document.getElementById('editorCanvas'),
@@ -41,6 +62,7 @@ function FunctionBlock (x, y, blockName) {
   this.prev = null;
   this.next = null;
   this.dragging = false;
+  this.coasting = false;
 
   // Drag state information
   this.snapTarget = null;   // Object to append, prepend, replace
@@ -124,7 +146,7 @@ FunctionBlock.prototype.hilitePossibleTarget = function() {
       }
     }
   });
-
+  // Update shadows as needed.
   if (this.snapTarget !== target) {
     this.snapTarget = target;
     this.removeTargetShadow();
@@ -132,6 +154,7 @@ FunctionBlock.prototype.hilitePossibleTarget = function() {
       this.insertTargetShadow(target);
     }
   }
+  return target;
 };
 
 // Show the socket this block will be put in when dragging stops.
@@ -217,7 +240,13 @@ interact('.function-block')
   //    editor.elementToBlock(event.target).hilite(true);
   })
   .on('up', function (event) {
-    //  editor.elementToBlock(event.target).hilite(false);
+  //nada
+  })
+  .on('hold', function ( event) {
+  //nada
+  })
+  .on('up', function (event) {
+      editor.elementToBlock(event.target).coasting = true;
   })
   .draggable({
   /*
@@ -233,27 +262,43 @@ interact('.function-block')
     onstart: function(event) {
       var block = editor.elementToBlock(event.target);
       block.setDraggingState(true);
+      block.coasting = false;
     },
     onend: function(event) {
+      console.log('on-end');
       var block = editor.elementToBlock(event.target);
-      block.moveToPossibleTarget();
-      block.setDraggingState(false);
+      if (block.coasting) {
+        block.moveToPossibleTarget();
+        block.setDraggingState(false);
+      }
+      block.coasting = false;
     },
     onmove: function (event) {
+      // Since there is inertia these callbacks continue to
+      // happen after the user lets go. If a target is found
+      // in the coasting state, start the animation to the target.
+      // dont wait to coas to a stop.
       var block =  editor.elementToBlock(event.target);
-      block.dmove(event.dx, event.dy);
-      block.hilitePossibleTarget();
-      // TODO: if in inertia state (touch is up) and there is a target
-      // redirect to it. dont wait for it to coast to 0. That just looks
-      // odd.
+      if (block.dragging) {
+        block.dmove(event.dx, event.dy);
+      }
+
+      var target = block.hilitePossibleTarget();
+      if (target !== null && block.coasting) {
+        // found a target while coasting.
+        block.moveToPossibleTarget();
+        block.setDraggingState(false);
+        block.coasting = false;
+      }
     }
   });
 
 (function() {
-interact.maxInteractions(Infinity);
+  interact.maxInteractions(Infinity);
 
-editor.blocks.push(new FunctionBlock(100,  20, 'cat'));
-editor.blocks.push(new FunctionBlock(100, 120, 'dog'));
-editor.blocks.push(new FunctionBlock(100, 220, 'fish'));
-editor.blocks.push(new FunctionBlock(100, 320, 'bird'));
+  // Add some blocks to play with.
+  editor.blocks.push(new FunctionBlock(100,  20, 'cat'));
+  editor.blocks.push(new FunctionBlock(100, 120, 'dog'));
+  editor.blocks.push(new FunctionBlock(100, 220, 'fish'));
+  editor.blocks.push(new FunctionBlock(100, 320, 'bird'));
 }());
