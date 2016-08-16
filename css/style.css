@@ -1,0 +1,43 @@
+.teak-code {
+  font-size:18px
+}
+.editor-canvas {
+  width: 100%;
+  height: 420px;
+  background-color: green;
+  -ms-touch-action: none;
+      touch-action: none;
+}
+.function-block {
+  x:0px;
+  y:0px;
+  fill: purple;
+  stroke: #0ff;
+  rx: 10px;
+  ry: 10px;
+  width: 80px;
+  height: 80px;
+  stroke-width:5;
+}
+.function-text {
+  width: 80px;
+  height: 80px; 
+  fill: #0ff;
+  font-family:"helvetica";
+}
+@keyframes shadowFadeIn {
+    from{opacity:0.0;}
+    to{opacity:0.7;}
+}
+.shadow-block {
+  x:0px;
+  y:0px;
+  rx:10px;
+  ry:10px;
+  width:80px;
+  height:80px;
+  opacity:0.7;
+  fill:darkgreen;
+  animation: shadowFadeIn 0.5s ease;
+}
+body { margin: 0; }
