@@ -63,6 +63,7 @@ function FunctionBlock (x, y, blockName) {
   this.next = null;
   this.dragging = false;
   this.coasting = false;
+  this.name = blockName;
 
   // Drag state information
   this.snapTarget = null;   // Object to append, prepend, replace
@@ -91,7 +92,7 @@ function FunctionBlock (x, y, blockName) {
   group.appendChild(text);
 
   this.el = group;
-  this.dmove(x, y);
+  this.dmove(x, y, true);
   editor.svg.appendChild(group);
 };
 
@@ -111,14 +112,18 @@ FunctionBlock.prototype.setDraggingState = function (state) {
   }
 }
 
-FunctionBlock.prototype.dmove = function (dx, dy) {
+FunctionBlock.prototype.dmove = function (dx, dy, snapToInt) {
   var block = this;
   while (block !== null) {
-   //hack(
-    dmoveRect(block.rect, dx, dy);
-    block.el.setAttribute ('transform', 'translate (' +  block.rect.left + ' ' + block.rect.top + ')');
-   // block.el.children(0).style.x = block.rect.left;
-   // block.el.children(0).style.y = block.rect.top;
+    var r = block.rect;
+    dmoveRect(r, dx, dy);
+    if (snapToInt) {
+      r.top = Math.round(r.top);
+      r.left = Math.round(r.left);
+      r.bottom = Math.round(r.bottom);
+      r.right = Math.round(r.right);
+    }
+    block.el.setAttribute ('transform', 'translate (' +  r.left + ' ' + r.top + ')');
     block = block.next;
   }
 }
@@ -217,7 +222,7 @@ FunctionBlock.prototype.moveToPossibleTarget = function() {
 
 function easeToTarget(timeStamp, block) {
   var frame = block.animateState.frame;
-  block.dmove(block.animateState.adx, block.animateState.ady);
+  block.dmove(block.animateState.adx, block.animateState.ady, (frame === 1));
   if (frame > 1) {
     block.animateState.frame = frame - 1;
     requestAnimationFrame(function(timestamp) { easeToTarget(timestamp, block); });
@@ -265,13 +270,14 @@ interact('.function-block')
       block.coasting = false;
     },
     onend: function(event) {
-      console.log('on-end');
       var block = editor.elementToBlock(event.target);
       if (block.coasting) {
+        block.coasting = false;
         block.moveToPossibleTarget();
         block.setDraggingState(false);
       }
-      block.coasting = false;
+      // Serialize after all moving has settled. TODO clean this up.
+      setTimeout(editor.blockToText(),500);
     },
     onmove: function (event) {
       // Since there is inertia these callbacks continue to
@@ -280,18 +286,39 @@ interact('.function-block')
       // dont wait to coas to a stop.
       var block =  editor.elementToBlock(event.target);
       if (block.dragging) {
-        block.dmove(event.dx, event.dy);
+        block.dmove(event.dx, event.dy, true);
       }
 
       var target = block.hilitePossibleTarget();
       if (target !== null && block.coasting) {
         // found a target while coasting.
+        block.coasting = false;
         block.moveToPossibleTarget();
         block.setDraggingState(false);
-        block.coasting = false;
       }
     }
   });
+
+editor.blockToText = function() {
+  var teakText = '(\n';
+  editor.blocks.forEach(function(entry) {
+    if (entry.prev === null) {
+       teakText += '  (chain\n';
+      var block = entry;
+      while (block !== null) {
+        teakText += '    (' + block.name;
+        if (block.prev === null) {
+          teakText += ' x:' + block.rect.left + ' y:' +  block.rect.top;
+        }
+        teakText += ')\n';
+        block = block.next;
+      }
+      teakText += '  )\n';
+    }
+  });
+  teakText += ')\n';
+  editor.teakCode.value = teakText;
+};
 
 (function() {
   interact.maxInteractions(Infinity);
@@ -301,4 +328,5 @@ interact('.function-block')
   editor.blocks.push(new FunctionBlock(100, 120, 'dog'));
   editor.blocks.push(new FunctionBlock(100, 220, 'fish'));
   editor.blocks.push(new FunctionBlock(100, 320, 'bird'));
+  editor.blockToText();
 }());
