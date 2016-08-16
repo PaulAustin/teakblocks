@@ -1,5 +1,6 @@
 .teak-code {
-  font-size:18px
+  font-size:12px;
+  font-family:"Monaco";
 }
 .editor-canvas {
   width: 100%;
@@ -21,12 +22,14 @@
 }
 .function-text {
   width: 80px;
-  height: 80px; 
+  height: 80px;
+  font-size:20px;
   fill: #0ff;
   font-family:"helvetica";
+  pointer-events: none;
 }
 @keyframes shadowFadeIn {
-    from{opacity:0.0;}
+    from{opacity:0.1;}
     to{opacity:0.7;}
 }
 .shadow-block {
@@ -38,6 +41,6 @@
   height:80px;
   opacity:0.7;
   fill:darkgreen;
-  animation: shadowFadeIn 0.5s ease;
+  animation: shadowFadeIn 0.25s ease;
 }
 body { margin: 0; }
