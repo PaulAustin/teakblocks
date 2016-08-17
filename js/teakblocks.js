@@ -22,13 +22,30 @@ SOFTWARE.
 
 editor = {
   blocks: [],
+  palette: [],
   svg: document.getElementById('editorCanvas'),
   teakCode: document.getElementById('teakCode'),
   lastSnapSocket: null,
   elementToBlock: function(el) {
-      var blockId = el.getAttribute('block-id');
-      // TODO If none found log error and substitute fake block
-      return this.blocks[blockId];
+      var text = el.getAttribute('block-id');
+      values = text.split(':');
+      if (values[0] === 'e') {
+        return this.blocks[values[1]];
+      } else if (values[0] === 'p') {
+        return this.palette[values[1]];
+      } else {
+        return null;
+      }
+  },
+  addBlock: function(x, y, name) {
+     var block = new FunctionBlock(x, y, name, 'e:' + editor.blocks.length);
+     block.paletteBlock = false;
+     editor.blocks.push(block);
+  },
+  addPaletteBlock: function(x, y, name) {
+     var block = new FunctionBlock(x, y, name, 'p:' + editor.palette.length);
+     block.paletteBlock = true;
+     editor.palette.push(block);
   },
 };
 
@@ -49,7 +66,7 @@ function intersectRect(dragRect, r2) {
            r2.bottom < dragRect.top);
  }
 
-function FunctionBlock (x, y, blockName) {
+function FunctionBlock (x, y, blockName, svg_id) {
   // Make an JS object that wraps an SVG object
   this.rect  = {
       left:   0,
@@ -80,7 +97,7 @@ function FunctionBlock (x, y, blockName) {
   // For safari 8/14/2016 rx or ry must be explicitly set other wise rx/ry
   // values in css will be ignored. Perhasp a more optimized rect is used.
   rect.setAttribute('rx', 1);
-  rect.setAttribute('block-id', editor.blocks.length);
+  rect.setAttribute('block-id', svg_id);
 
   var text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
   text.setAttribute('class', 'function-text');
@@ -272,6 +289,11 @@ interact('.function-block')
     max: Infinity,
     onstart: function(event) {
       var block = editor.elementToBlock(event.target);
+
+      if (block.onPalette) {
+        console.log('make a new one for the palette');
+      }
+
       block.setDraggingState(true);
     },
     onend: function(event) {
@@ -333,14 +355,20 @@ editor.blockToText = function() {
   editor.teakCode.value = teakText;
 };
 
+
 (function() {
   interact.maxInteractions(Infinity);
 
   // Add some blocks to play with.
-  editor.blocks.push(new FunctionBlock(100,  20, 'cat'));
-  editor.blocks.push(new FunctionBlock(100, 120, 'dog'));
-  editor.blocks.push(new FunctionBlock(100, 220, 'fish'));
-  editor.blocks.push(new FunctionBlock(100, 320, 'bird'));
-  editor.blocks.push(new FunctionBlock(100, 420, 'turtle'));
+  editor.palette = [];
+
+  editor.addBlock(100,  20, 'cat');
+  editor.addBlock(100, 120, 'dog');
+  editor.addBlock(100, 220, 'fish');
+  editor.addBlock(100, 320, 'bird');
+  editor.addBlock(100, 420, 'turtle');
+
+  editor.addPaletteBlock(200, 420, 'zebra');
+
   editor.blockToText();
 }());
