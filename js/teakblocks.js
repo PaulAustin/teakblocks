@@ -20,6 +20,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/*
+dragstate = {
+    activeDragging:1,
+    coasting:2;,
+    ignore:3,
+};
+*/
+
 editor = {
   blocks: [],
   svg: document.getElementById('editorCanvas'),
@@ -62,7 +70,7 @@ function FunctionBlock (x, y, blockName) {
   this.prev = null;
   this.next = null;
   this.dragging = false;
-  this.coasting = false;
+  this.coasting = 0;
   this.name = blockName;
 
   // Drag state information
@@ -92,12 +100,13 @@ function FunctionBlock (x, y, blockName) {
   group.appendChild(text);
 
   this.el = group;
+  this.rrect= rect;
+
   this.dmove(x, y, true);
   editor.svg.appendChild(group);
-};
+}
 
 FunctionBlock.prototype.setDraggingState = function (state) {
-
   // If this block is in a chain, disconnect it from blocks in front.
   if (state && (this.prev !== null)) {
     this.prev.next = null;
@@ -110,7 +119,7 @@ FunctionBlock.prototype.setDraggingState = function (state) {
     block.hilite(state);
     block = block.next;
   }
-}
+};
 
 FunctionBlock.prototype.dmove = function (dx, dy, snapToInt) {
   var block = this;
@@ -126,20 +135,20 @@ FunctionBlock.prototype.dmove = function (dx, dy, snapToInt) {
     block.el.setAttribute ('transform', 'translate (' +  r.left + ' ' + r.top + ')');
     block = block.next;
   }
-}
+};
 
 FunctionBlock.prototype.hilite = function(state) {
   if (state) {
     // bring hilite block to top. block dont normally overlap
     // but ones that are being dragged need to.
     editor.svg.appendChild(this.el);
-    this.el.style.fill = 'blue';
+    this.rrect.style.fill = 'blue';
 //    this.el.style.filter = 'url(#dropshadow)';
   } else {
-    this.el.style.fill = 'purple';
+    this.rrect.style.fill = 'purple';
 //    this.el.style.filter = null;
   }
-}
+};
 
 FunctionBlock.prototype.hilitePossibleTarget = function() {
   var thisBlock = this;
@@ -153,33 +162,36 @@ FunctionBlock.prototype.hilitePossibleTarget = function() {
   });
   // Update shadows as needed.
   if (this.snapTarget !== target) {
+    if (this.snapTarget !== null) {
+      this.removeTargetShadows();
+    }
     this.snapTarget = target;
-    this.removeTargetShadow();
     if (target !== null) {
-      this.insertTargetShadow(target);
+      this.insertTargetShadows(target);
     }
   }
   return target;
 };
 
 // Show the socket this block will be put in when dragging stops.
-FunctionBlock.prototype.insertTargetShadow = function(target) {
+FunctionBlock.prototype.insertTargetShadows = function(target) {
   var block = this;
   var x = target.rect.right;
+  var shadow = null;
   while (block !== null) {
-    var el = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    el.setAttribute('class', 'shadow-block');
-    el.setAttribute('rx', 1);
-    el.style.x = x;
-    el.style.y = target.rect.top;
-    editor.svg.insertBefore(el, editor.svg.firstChild);
-    block.targetShadow = el;
+    shadow = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    shadow.setAttribute('class', 'shadow-block');
+    shadow.setAttribute('rx', 1);
+    shadow.style.x = x;
+    shadow.style.y = target.rect.top;
+    editor.svg.insertBefore(shadow, editor.svg.firstChild);
+    block.targetShadow = shadow;
     x += 80;
     block = block.next;
   }
-}
+};
 
-FunctionBlock.prototype.removeTargetShadow = function() {
+FunctionBlock.prototype.removeTargetShadows = function() {
   var block = this;
   while (block !== null) {
     if (block.targetShadow !== null) {
@@ -188,7 +200,7 @@ FunctionBlock.prototype.removeTargetShadow = function() {
     }
     block = block.next;
   }
-}
+};
 
 FunctionBlock.prototype.moveToPossibleTarget = function() {
   if (this.snapTarget !==  null && this.targetShadow !== null) {
@@ -214,11 +226,11 @@ FunctionBlock.prototype.moveToPossibleTarget = function() {
       frame: frameCount,
     };
     easeToTarget(0, this);
+//    this.removeTargetShadows();
   }
   this.hilite(false);
-  this.removeTargetShadow();
   this.snapTarget = null;
-}
+};
 
 function easeToTarget(timeStamp, block) {
   var frame = block.animateState.frame;
@@ -226,6 +238,9 @@ function easeToTarget(timeStamp, block) {
   if (frame > 1) {
     block.animateState.frame = frame - 1;
     requestAnimationFrame(function(timestamp) { easeToTarget(timestamp, block); });
+  } else {
+    // Once animation is over shadows are covered, remove them.
+    block.removeTargetShadows();
   }
 }
 
@@ -241,17 +256,16 @@ interact('.function-block')
       bottom: block.y + block.h
     };
   })
-  .on('hold', function (event) {
+  .on('down', function (event) {
+    var block = editor.elementToBlock(event.target);
+    block.coasting = 0;
   //    editor.elementToBlock(event.target).hilite(true);
   })
   .on('up', function (event) {
-  //nada
-  })
-  .on('hold', function ( event) {
-  //nada
-  })
-  .on('up', function (event) {
-      editor.elementToBlock(event.target).coasting = true;
+      // Mark the chain as coastin. if it finds a target
+      // it will snap to it.
+      var block = editor.elementToBlock(event.target);
+      block.coasting = 1;
   })
   .draggable({
   /*
@@ -267,12 +281,12 @@ interact('.function-block')
     onstart: function(event) {
       var block = editor.elementToBlock(event.target);
       block.setDraggingState(true);
-      block.coasting = false;
     },
     onend: function(event) {
       var block = editor.elementToBlock(event.target);
-      if (block.coasting) {
-        block.coasting = false;
+
+      if (block.coasting > 0) {
+        block.coasting = -1;
         block.moveToPossibleTarget();
         block.setDraggingState(false);
       }
@@ -285,16 +299,20 @@ interact('.function-block')
       // in the coasting state, start the animation to the target.
       // dont wait to coas to a stop.
       var block =  editor.elementToBlock(event.target);
+
       if (block.dragging) {
         block.dmove(event.dx, event.dy, true);
       }
 
-      var target = block.hilitePossibleTarget();
-      if (target !== null && block.coasting) {
-        // found a target while coasting.
-        block.coasting = false;
-        block.moveToPossibleTarget();
-        block.setDraggingState(false);
+      if (block.coasting >= 0) {
+        var target = block.hilitePossibleTarget();
+        // If target found while coasting, then snap to it.
+        // other wise just show the shadows.
+        if ((target !== null) && (block.coasting > 0)) {
+          block.coasting = -1; // ignore further coasting.
+          block.moveToPossibleTarget();
+          block.setDraggingState(false);
+        }
       }
     }
   });
@@ -309,6 +327,9 @@ editor.blockToText = function() {
         teakText += '    (' + block.name;
         if (block.prev === null) {
           teakText += ' x:' + block.rect.left + ' y:' +  block.rect.top;
+        }
+        if (block.targetShadow !== null) {
+          teakText += ' shadow:true';
         }
         teakText += ')\n';
         block = block.next;
@@ -328,5 +349,6 @@ editor.blockToText = function() {
   editor.blocks.push(new FunctionBlock(100, 120, 'dog'));
   editor.blocks.push(new FunctionBlock(100, 220, 'fish'));
   editor.blocks.push(new FunctionBlock(100, 320, 'bird'));
+  editor.blocks.push(new FunctionBlock(100, 420, 'turtle'));
   editor.blockToText();
 }());
