@@ -20,14 +20,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/*
-dragstate = {
-    activeDragging:1,
-    coasting:2;,
-    ignore:3,
-};
-*/
-
 editor = {
   blocks: [],
   svg: document.getElementById('editorCanvas'),
