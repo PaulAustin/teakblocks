@@ -37,8 +37,9 @@ editor = {
         return null;
       }
   },
-  addBlock: function(x, y, name) {
+  addBlock: function(x, y, name, params) {
      var block = new FunctionBlock(x, y, name, 'e:' + editor.blocks.length);
+     block.params = params;
      block.paletteBlock = false;
      editor.blocks.push(block);
   },
@@ -316,7 +317,7 @@ interact('.function-block')
         block.setDraggingState(false);
       }
       // Serialize after all moving has settled. TODO clean this up.
-      setTimeout(editor.blockToText(),500);
+      setTimeout(editor.blocksToText(),500);
     },
     onmove: function (event) {
       // Since there is inertia these callbacks continue to
@@ -344,7 +345,7 @@ interact('.function-block')
     }
   });
 
-editor.blockToText = function() {
+editor.blocksToText = function() {
   var teakText = '(\n';
   editor.blocks.forEach(function(entry) {
     if (entry.prev === null) {
@@ -355,7 +356,12 @@ editor.blockToText = function() {
         if (block.prev === null) {
           teakText += ' x:' + block.rect.left + ' y:' +  block.rect.top;
         }
+        if (block.params !== null) {
+          teakText += blockParamsToText(block.params);
+        }
         if (block.targetShadow !== null) {
+          // For debugging, this ocassionally happens since
+          // compile is asynchronous. TODO fixit.
           teakText += ' shadow:true';
         }
         teakText += ')\n';
@@ -368,18 +374,24 @@ editor.blockToText = function() {
   editor.teakCode.value = teakText;
 };
 
+function blockParamsToText(params) {
+  var text = '';
+  for(var propertyName in params) {
+    text += ' ' + propertyName + ':' + params[propertyName];
+  }
+  return text;
+}
 
 (function() {
   interact.maxInteractions(Infinity);
 
-  editor.addBlock(100,  20, 'cat');
-  editor.addBlock(100, 120, 'dog');
-  editor.addBlock(100, 220, 'fish');
-  editor.addBlock(100, 320, 'bird');
-  editor.addBlock(100, 420, 'turtle');
-
-  editor.addBlock(100, 420, 'quark');
+  editor.addBlock(400,  20, 'motor', {port:'a','power':50,'time':'2.5s'});
+  editor.addBlock(100, 120, 'wait',  {time:'2.5s'});
+  editor.addBlock(100, 220, 'light', {color:'blue'});
+  editor.addBlock(100, 320, 'sound', {note:'C5'});
+  editor.addBlock(100, 420, 'start', {when:'dio1-rising'});
+  editor.addBlock(100, 420, 'quark', {flavor:'charmed'});
   //editor.addPaletteBlock(200, 420, 'zebra');
 
-  editor.blockToText();
+  editor.blocksToText();
 }());
