@@ -372,16 +372,14 @@ editor.blockToText = function() {
 (function() {
   interact.maxInteractions(Infinity);
 
-  // Add some blocks to play with.
-  editor.palette = [];
-
   editor.addBlock(100,  20, 'cat');
   editor.addBlock(100, 120, 'dog');
   editor.addBlock(100, 220, 'fish');
   editor.addBlock(100, 320, 'bird');
   editor.addBlock(100, 420, 'turtle');
 
-  editor.addPaletteBlock(200, 420, 'zebra');
+  editor.addBlock(100, 420, 'quark');
+  //editor.addPaletteBlock(200, 420, 'zebra');
 
   editor.blockToText();
 }());
