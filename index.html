@@ -9,6 +9,13 @@
 
   <div id="container">
     <svg class=editor-canvas id='editorCanvas' xmlns="http://www.w3.org/2000/svg">
+      <filter id="dropshadow" height="120%">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+        <feMerge>
+          <feMergeNode/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
     </svg>
     <textarea class=teak-code id="teakCode" readonly=true rows=50>
     </textarea>

@@ -87,6 +87,7 @@ function FunctionBlock (x, y, blockName, svg_id) {
   this.targetShadow = null; // Svg element to hilite target location
 
   var group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  group.setAttribute('class', 'function-block');
 
   // Create the actual SVG object. Its a group of two pieces
   // a rounded rect and a text box. The group is moved by changing
@@ -151,11 +152,9 @@ FunctionBlock.prototype.hilite = function(state) {
     // bring hilite block to top. block dont normally overlap
     // but ones that are being dragged need to.
     editor.svg.appendChild(this.el);
-    this.rrect.style.fill = 'blue';
-//    this.el.style.filter = 'url(#dropshadow)';
+    this.rrect.setAttribute('class', 'function-block-dragging');
   } else {
-    this.rrect.style.fill = 'purple';
-//    this.el.style.filter = null;
+    this.rrect.setAttribute('class', 'function-block');
   }
 };
 
@@ -202,13 +201,24 @@ FunctionBlock.prototype.insertTargetShadows = function(target) {
 
 FunctionBlock.prototype.removeTargetShadows = function() {
   var block = this;
+  var shadowsToRemove = [];
   while (block !== null) {
-    if (block.targetShadow !== null) {
-      editor.svg.removeChild(block.targetShadow);
+    var shadow = block.targetShadow;
+    if (shadow !== null) {
+      shadowsToRemove.push(shadow);
+      shadow.setAttribute('class', 'shadow-block-leave');
+      // editor.svg.removeChild(block.targetShadow);
       block.targetShadow = null;
     }
     block = block.next;
   }
+  // Give some time for the animation to complete, then remove.
+  setTimeout(function() {
+    shadowsToRemove.forEach( function(elt) {
+      editor.svg.removeChild(elt);
+      });
+    },
+    1000);
 };
 
 FunctionBlock.prototype.moveToPossibleTarget = function() {
@@ -276,6 +286,10 @@ interact('.function-block')
       var block = editor.elementToBlock(event.target);
       block.coasting = 1;
   })
+  .on('hold', function(event) {
+    var block = editor.elementToBlock(event.target);
+    // TODO press and hold...
+  })
   .draggable({
   /*
   restrict: {
@@ -293,7 +307,6 @@ interact('.function-block')
       if (block.onPalette) {
         console.log('make a new one for the palette');
       }
-
       block.setDraggingState(true);
     },
     onend: function(event) {

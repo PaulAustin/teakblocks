@@ -11,7 +11,7 @@
   width:75%;
   height: 600px;
   float:left;
-  background-color: green;
+  background-color: white;
   -ms-touch-action: none;
       touch-action: none;
   /* prevent text from being selected browser style */
@@ -24,36 +24,62 @@
 .function-block {
   x:0px;
   y:0px;
-  fill: purple;
+  fill: blue;
   transition: fill 0.3s ease;
-  stroke: #0ff;
   rx: 10px;
   ry: 10px;
   width: 80px;
   height: 80px;
-  stroke-width:5;
+  stroke-width: 2;
+  stroke: Navy;
+}
+.function-block-dragging {
+  x:0px;
+  y:0px;
+  fill: blue;
+  transition: fill 0.3s ease;
+  rx: 10px;
+  ry: 10px;
+  width: 80px;
+  height: 80px;
+/*  filter: url(#dropshadow); */
+  stroke-width: 2;
+  stroke: Navy;
 }
 .function-text {
   width: 80px;
   height: 80px;
-  font-size:20px;
-  fill: #0ff;
+  font-size:22px;
+  font-weight: bold;
+  fill: white;
   font-family:"helvetica";
   pointer-events: none;
+  stroke-width: 0;
 }
 @keyframes shadowFadeIn {
-    from{opacity:0.1;}
-    to{opacity:0.7;}
+    from{opacity:0.0;}
+    to{opacity:0.3;}
 }
 .shadow-block {
-  x:0px;
-  y:0px;
   rx:10px;
   ry:10px;
   width:80px;
   height:80px;
-  opacity:0.7;
-  fill:darkgreen;
-  animation: shadowFadeIn 0.25s ease;
+  opacity:0.3;
+  fill:SkyBlue;
+  animation: shadowFadeIn 0.35s ease;
+}
+@keyframes shadowFadeOut {
+    from{opacity:0.3;}
+    to{opacity:0.0;}
+}
+.shadow-block-leave {
+  rx:10px;
+  ry:10px;
+  width:80px;
+  height:80px;
+  opacity:0.0;
+  fill:SkyBlue;
+  animation: shadowFadeOut 0.35s ease;
 }
 body { margin: 0; }
