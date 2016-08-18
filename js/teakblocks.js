@@ -293,7 +293,11 @@ interact('.function-block')
         // 'Coordinates' are percent of width and height.
         elementRect: { left: -0.2, top: -0.2, right: 1.2, bottom: 1.2 },
       },
-    inertia: true,
+    inertia: {
+      resistance: 20,
+      minSpeed: 50,
+      endSpeed: 1
+    },
     max: Infinity,
     onstart: function(event) {
       var block = editor.elementToBlock(event.target);
