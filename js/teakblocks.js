@@ -75,14 +75,16 @@ function FunctionBlock (x, y, blockName, svg_id) {
       bottom: 80,
   };
 
+  this.name = blockName;
+
   // Place holder for sequencing links.
   this.prev = null;
   this.next = null;
+  this.oldPrev = null; // To help avoid snap back.
+
+  // Dragging state information.
   this.dragging = false;
   this.coasting = 0;
-  this.name = blockName;
-
-  // Drag state information
   this.snapTarget = null;   // Object to append, prepend, replace
   this.targetShadow = null; // Svg element to hilite target location
 
@@ -120,6 +122,7 @@ FunctionBlock.prototype.setDraggingState = function (state) {
   // If this block is in a chain, disconnect it from blocks in front.
   if (state && (this.prev !== null)) {
     this.prev.next = null;
+    this.oldPrev = this.prev;
     this.prev = null;
   }
   // Set the state of all blocks down the chain.
@@ -226,6 +229,7 @@ FunctionBlock.prototype.moveToPossibleTarget = function() {
     // Insert the block in the list
     if(true /* after */) {
       this.prev = this.snapTarget;
+      this.oldPRev = null;
       this.snapTarget.next = this;
       // slide down post blocks if insert
       // logically here, in annimation bellow
@@ -325,7 +329,9 @@ interact('.function-block')
         var target = block.hilitePossibleTarget();
         // If target found while coasting, then snap to it.
         // other wise just show the shadows.
-        if ((target !== null) && (block.coasting > 0)) {
+        if ((target !== null) &&
+            (block.coasting > 0) &&
+            (target != block.oldPrev)) {
           block.coasting = -1; // ignore further coasting.
           block.moveToPossibleTarget();
           block.setDraggingState(false);
