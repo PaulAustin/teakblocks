@@ -61,9 +61,9 @@ function dmoveRect(rect, dx, dy) {
 //TODO change this to a left, right, over, nowhere-near reply
 function intersectRect(dragRect, r2) {
   return !(r2.left > dragRect.right ||
-           r2.right < dragRect.left-60 ||
-           r2.top > dragRect.bottom ||
-           r2.bottom < dragRect.top);
+           r2.right < dragRect.left - 50 ||
+           r2.top > (dragRect.bottom - 10) ||
+           r2.bottom < (dragRect.top + 10));
  }
 
 function FunctionBlock (x, y, blockName, svg_id) {
@@ -265,16 +265,6 @@ function easeToTarget(timeStamp, block) {
 
 // Attach these interactions properties based on the class property of the DOM elements
 interact('.function-block')
-  .rectChecker(function (element) {
-    // Find the rectangle based on the model, not the SVG element itself
-    var block = editor.elementToBlock(element);
-    return {
-      left  : block.x,
-      top   : block.y,
-      right : block.x + block.w,
-      bottom: block.y + block.h
-    };
-  })
   .on('down', function (event) {
     var block = editor.elementToBlock(event.target);
     block.coasting = 0;
@@ -291,14 +281,14 @@ interact('.function-block')
     // TODO press and hold...
   })
   .draggable({
-  /*
-  restrict: {
-      restriction: 'parent',
-      endOnly: true,
-      elementRect: { left: 0.25, right: 0.75, top: 0.25, bottom: 0.75 },
-    },
-
-    */
+    restrict: {
+        restriction: editor.svg,
+        endOnly: true,
+        // Restrictions, by default, are for the point not the whole object
+        // so R and B are 1.x to inlcude the width and height of the object.
+        // 'Coordinates' are percent of width and height.
+        elementRect: { left: -0.2, top: -0.2, right: 1.2, bottom: 1.2 },
+      },
     inertia: true,
     max: Infinity,
     onstart: function(event) {
