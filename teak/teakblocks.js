@@ -54,11 +54,24 @@ editor = {
      block.paletteBlock = false;
      editor.blocks.push(block);
   },
-  addPaletteBlock: function(x, y, name) {
+  addPaletteBlock: function(x, y, name, params) {
      var block = new FunctionBlock(x, y, name, 'p:' + editor.palette.length);
+     block.params = params;
      block.paletteBlock = true;
      editor.palette.push(block);
   },
+  popPaletteItem: function(block, y, x, name, id, newId){
+      var index = editor.palette.indexOf(block); 
+    if (index !== -1) {
+
+        editor.palette[index] = new FunctionBlock(x, y, name, id);
+        editor.palette[index].paletteBlock = true;
+    }
+    block.paletteBlock = false;
+    block.setBlockAttribute(block);
+    editor.blocks.push(block);
+  }
+
 };
 
 function dmoveRect(rect, dx, dy) {
@@ -97,6 +110,8 @@ function FunctionBlock (x, y, blockName, svg_id) {
   this.coasting = 0;
   this.snapTarget = null;   // Object to append, prepend, replace
   this.targetShadow = null; // Svg element to hilite target location
+
+  this.id = svg_id;
 
   var group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
   group.setAttribute('class', 'function-block');
@@ -143,6 +158,12 @@ FunctionBlock.prototype.setDraggingState = function (state) {
     block = block.next;
   }
 };
+
+FunctionBlock.prototype.setBlockAttribute = function(event){
+  event.id = 'e:' + editor.blocks.length;
+  event.rrect.setAttribute('block-id', 'e:' + editor.blocks.length);
+};
+
 
 FunctionBlock.prototype.dmove = function (dx, dy, snapToInt) {
   var block = this;
@@ -315,10 +336,13 @@ function initInteactJS() {
       onstart: function(event) {
         var block = editor.elementToBlock(event.target);
 
-        if (block.onPalette) {
-          console.log('make a new one for the palette');
-        }
-        block.setDraggingState(true);
+      if (block.paletteBlock) {
+        id = block.id;
+        id = id.split(':');
+
+        editor.popPaletteItem(block, block.rect.top, block.rect.left, block.name, block.id, 'e:' + editor.blocks.length);  
+      }
+      block.setDraggingState(true);
       },
       onend: function(event) {
         var block = editor.elementToBlock(event.target);
@@ -398,12 +422,12 @@ function blockParamsToText(params) {
 function initPalettes() {
   interact.maxInteractions(Infinity);
 
-  editor.addBlock(400,  20, 'motor', {port:'a','power':50,'time':'2.5s'});
-  editor.addBlock(100, 120, 'wait',  {time:'2.5s'});
-  editor.addBlock(100, 220, 'light', {color:'blue'});
-  editor.addBlock(100, 320, 'sound', {note:'C5'});
-  editor.addBlock(100, 420, 'start', {when:'dio1-rising'});
-  editor.addBlock(100, 420, 'quark', {flavor:'charmed'});
+  editor.addPaletteBlock(400,  20, 'motor', {port:'a','power':50,'time':'2.5s'});
+  editor.addPaletteBlock(100, 120, 'wait',  {time:'2.5s'});
+  editor.addPaletteBlock(100, 220, 'light', {color:'blue'});
+  editor.addPaletteBlock(100, 320, 'sound', {note:'C5'});
+  editor.addPaletteBlock(100, 420, 'start', {when:'dio1-rising'});
+  editor.addPaletteBlock(100, 420, 'quark', {flavor:'charmed'});
   //editor.addPaletteBlock(200, 420, 'zebra');
 
   editor.blocksToText();
