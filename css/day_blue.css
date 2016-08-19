@@ -1,0 +1,22 @@
+.editor-canvas {
+  background-color: white;
+}
+.function-block {
+  fill: #0066FF;
+  stroke-width: 4;
+  stroke: #00CCCC;
+}
+.function-block-dragging {
+  fill: #0066FF;
+  stroke-width: 4;
+  stroke: #00CCCC;
+}
+.function-text {
+  fill: #D6E2FE;
+}
+.shadow-block {
+  fill:SkyBlue;
+}
+.shadow-block-leave {
+  fill:SkyBlue;
+}
