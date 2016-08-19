@@ -20,12 +20,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+function initTeakBlockEditor(svg, text) {
+    // TODO: move editor from global to constructed object.
+    // TODO have caller add items to palette.
+    editor.init(svg, text);
+    return editor;
+}
+
 editor = {
-  blocks: [],
-  palette: [],
-  svg: document.getElementById('editorCanvas'),
-  teakCode: document.getElementById('teakCode'),
-  lastSnapSocket: null,
+  init: function (svg, text) {
+    this.blocks = [];
+    this.palette = [];
+    this.svg = svg;
+    this.teakCode = text;
+    initInteactJS();
+    initPalettes();
+  },
+
   elementToBlock: function(el) {
       var text = el.getAttribute('block-id');
       values = text.split(':');
@@ -49,8 +60,6 @@ editor = {
      editor.palette.push(block);
   },
 };
-
-editor.teakCode.value = "(comment 'still in early development')";
 
 function dmoveRect(rect, dx, dy) {
   rect.left += dx;
@@ -269,81 +278,85 @@ function easeToTarget(timeStamp, block) {
 }
 
 // Attach these interactions properties based on the class property of the DOM elements
-interact('.function-block')
-  .on('down', function (event) {
-    var block = editor.elementToBlock(event.target);
-    block.coasting = 0;
-  //    editor.elementToBlock(event.target).hilite(true);
-  })
-  .on('up', function (event) {
-      // Mark the chain as coastin. if it finds a target
-      // it will snap to it.
+function initInteactJS() {
+  interact('.function-block')
+    .on('down', function (event) {
       var block = editor.elementToBlock(event.target);
-      block.coasting = 1;
-  })
-  .on('hold', function(event) {
-    var block = editor.elementToBlock(event.target);
-    // TODO press and hold...
-  })
-  .draggable({
-    restrict: {
-        restriction: editor.svg,
-        endOnly: true,
-        // Restrictions, by default, are for the point not the whole object
-        // so R and B are 1.x to inlcude the width and height of the object.
-        // 'Coordinates' are percent of width and height.
-        elementRect: { left: -0.2, top: -0.2, right: 1.2, bottom: 1.2 },
+      console.log('on down', block.name);
+      block.coasting = 0;
+    //    editor.elementToBlock(event.target).hilite(true);
+    })
+    .on('up', function (event) {
+        // Mark the chain as coastin. if it finds a target
+        // it will snap to it.
+        var block = editor.elementToBlock(event.target);
+        console.log('on up', block.name);
+        block.coasting = 1;
+    })
+    .on('hold', function(event) {
+      var block = editor.elementToBlock(event.target);
+      // TODO press and hold...
+    })
+    .draggable({
+      restrict: {
+          restriction: editor.svg,
+          endOnly: true,
+          // Restrictions, by default, are for the point not the whole object
+          // so R and B are 1.x to inlcude the width and height of the object.
+          // 'Coordinates' are percent of width and height.
+          elementRect: { left: -0.2, top: -0.2, right: 1.2, bottom: 1.2 },
+        },
+      inertia: {
+        resistance: 20,
+        minSpeed: 50,
+        endSpeed: 1
       },
-    inertia: {
-      resistance: 20,
-      minSpeed: 50,
-      endSpeed: 1
-    },
-    max: Infinity,
-    onstart: function(event) {
-      var block = editor.elementToBlock(event.target);
+      max: Infinity,
+      onstart: function(event) {
+        var block = editor.elementToBlock(event.target);
 
-      if (block.onPalette) {
-        console.log('make a new one for the palette');
-      }
-      block.setDraggingState(true);
-    },
-    onend: function(event) {
-      var block = editor.elementToBlock(event.target);
+        if (block.onPalette) {
+          console.log('make a new one for the palette');
+        }
+        block.setDraggingState(true);
+      },
+      onend: function(event) {
+        var block = editor.elementToBlock(event.target);
 
-      if (block.coasting > 0) {
-        block.coasting = -1;
-        block.moveToPossibleTarget();
-        block.setDraggingState(false);
-      }
-      // Serialize after all moving has settled. TODO clean this up.
-      setTimeout(editor.blocksToText(),500);
-    },
-    onmove: function (event) {
-      // Since there is inertia these callbacks continue to
-      // happen after the user lets go. If a target is found
-      // in the coasting state, start the animation to the target.
-      // dont wait to coas to a stop.
-      var block =  editor.elementToBlock(event.target);
-
-      if (block.dragging) {
-        block.dmove(event.dx, event.dy, true);
-      }
-
-      if (block.coasting >= 0) {
-        var target = block.hilitePossibleTarget();
-        // If target found while coasting, then snap to it.
-        // other wise just show the shadows.
-        if ((target !== null) &&
-            (block.coasting > 0) &&
-            (target != block.oldPrev)) {
-          block.coasting = -1; // ignore further coasting.
+        if (block.coasting > 0) {
+          block.coasting = -1;
           block.moveToPossibleTarget();
           block.setDraggingState(false);
         }
+        // Serialize after all moving has settled. TODO clean this up.
+        setTimeout(editor.blocksToText(),500);
+      },
+      onmove: function (event) {
+        // Since there is inertia these callbacks continue to
+        // happen after the user lets go. If a target is found
+        // in the coasting state, start the animation to the target.
+        // dont wait to coas to a stop.
+        var block =  editor.elementToBlock(event.target);
+
+        if (block.dragging) {
+          block.dmove(event.dx, event.dy, true);
+        }
+
+        if (block.coasting >= 0) {
+          var target = block.hilitePossibleTarget();
+          // If target found while coasting, then snap to it.
+          // other wise just show the shadows.
+          if ((target !== null) &&
+              (block.coasting > 0) &&
+              (target != block.oldPrev)) {
+            block.coasting = -1; // ignore further coasting.
+            block.moveToPossibleTarget();
+            block.setDraggingState(false);
+          }
+        }
       }
-    }
-  });
+    });
+}
 
 editor.blocksToText = function() {
   var teakText = '(\n';
@@ -382,7 +395,7 @@ function blockParamsToText(params) {
   return text;
 }
 
-(function() {
+function initPalettes() {
   interact.maxInteractions(Infinity);
 
   editor.addBlock(400,  20, 'motor', {port:'a','power':50,'time':'2.5s'});
@@ -394,4 +407,4 @@ function blockParamsToText(params) {
   //editor.addPaletteBlock(200, 420, 'zebra');
 
   editor.blocksToText();
-}());
+}
