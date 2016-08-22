@@ -32,8 +32,8 @@ var tbe = module.tbe;
 
 tbe.svgns = 'http://www.w3.org/2000/svg';
 
-tbe.blocks = [];
-tbe.palette = [];
+tbe.diagramBlocks = [];
+tbe.paletteBlocks = [];
 
 tbe.init = function init(svg, text) {
   this.svg = svg;
@@ -49,38 +49,40 @@ tbe.elementToBlock = function(el) {
       return null;
     values = text.split(':');
     if (values[0] === 'e') {
-      return this.blocks[values[1]];
+      return this.diagramBlocks[values[1]];
     } else if (values[0] === 'p') {
-      return this.palette[values[1]];
+      return this.paletteBlocks[values[1]];
     } else {
       return null;
     }
 };
 
 tbe.addBlock = function(x, y, name, params) {
-   var block = new this.unctionBlock(x, y, name, 'e:' + this.blocks.length);
+   var id = 'e:' + this.diagramBlocks.length;
+   var block = new this.FunctionBlock(x, y, name, id);
    block.params = params;
-   block.paletteBlock = false;
-   this.blocks.push(block);
+   block.isPaletteBlock = false;
+   this.diagramBlocks.push(block);
 };
 
 tbe.addPaletteBlock = function(x, y, name, params) {
-   var block = new this.FunctionBlock(x, y, name, 'p:' + this.palette.length);
+   var id = 'p:' + this.paletteBlocks.length;
+   var block = new this.FunctionBlock(x, y, name, id);
    block.params = params;
-   block.paletteBlock = true;
-   this.palette.push(block);
+   block.isPaletteBlock = true;
+   this.paletteBlocks.push(block);
 };
 
 tbe.popPaletteItem = function(block, y, x, name, id, newId){
-  var index = this.palette.indexOf(block);
+  console.log('taking item from palette ', name, y, x);
+  var index = this.paletteBlocks.indexOf(block);
   if (index !== -1) {
-
-      this.palette[index] = new this.FunctionBlock(x, y, name, id);
-      this.palette[index].paletteBlock = true;
+      this.paletteBlocks[index] = new this.FunctionBlock(x, y, name, id);
+      this.paletteBlocks[index].isPaletteBlock = true;
   }
-  block.paletteBlock = false;
+  block.isPaletteBlock = false;
   block.setBlockAttribute(block);
-  this.blocks.push(block);
+  this.diagramBlocks.push(block);
 };
 
 //TODO change this to a left, right, over, nowhere-near reply
@@ -163,8 +165,9 @@ tbe.FunctionBlock.prototype.setDraggingState = function (state) {
 };
 
 tbe.FunctionBlock.prototype.setBlockAttribute = function(event){
-  event.id = 'e:' + tbe.blocks.length;
-  event.rrect.setAttribute('block-id', 'e:' + tbe.blocks.length);
+  //TODO what is gogin on here.
+  event.id = 'e:' + tbe.diagramBlocks.length;
+  event.rrect.setAttribute('block-id', 'e:' + tbe.diagramBlocks.length);
 };
 
 tbe.FunctionBlock.prototype.dmove = function (dx, dy, snapToInt) {
@@ -200,7 +203,7 @@ tbe.FunctionBlock.prototype.hilite = function(state) {
 tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
   var thisBlock = this;
   var target = null;
-  tbe.blocks.forEach(function(entry) {
+  tbe.diagramBlocks.forEach(function(entry) {
     if (entry !== thisBlock  && !entry.dragging && (entry.next === null)) {
       if (tbe.inSnapRegion(thisBlock.rect, entry.rect)) {
         target = entry;
@@ -344,11 +347,11 @@ tbe.initInteactJS = function initInteactJS() {
         if (block === null)
           return;
 
-      if (block.paletteBlock) {
+      if (block.isPaletteBlock) {
         id = block.id;
         id = id.split(':');
-
-        thisTbe.popPaletteItem(block, block.rect.top, block.rect.left, block.name, block.id, 'e:' + thisTbe.blocks.length);
+        var newId = 'e:' + thisTbe.diagramBlocks.length;
+        thisTbe.popPaletteItem(block, block.rect.top, block.rect.left, block.name, block.id);
       }
       block.setDraggingState(true);
       },
@@ -396,7 +399,7 @@ tbe.initInteactJS = function initInteactJS() {
 
 tbe.blocksToText = function() {
   var teakText = '(\n';
-  this.blocks.forEach(function(entry) {
+  this.diagramBlocks.forEach(function(entry) {
     if (entry.prev === null) {
        teakText += '  (chain\n';
       var block = entry;
