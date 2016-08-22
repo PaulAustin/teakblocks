@@ -120,7 +120,7 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   this.targetShadow = null; // Svg element to hilite target location
 
   var group = document.createElementNS(svgns, 'g');
-  group.setAttribute('class', 'function-block');
+  group.setAttribute('class', 'drag-group');
 
   // Create the actual SVG object. Its a group of two pieces
   // a rounded rect and a text box. The group is moved by changing
@@ -315,7 +315,7 @@ tbe.easeToTarget = function easeToTarget(timeStamp, block) {
 // Attach these interactions properties based on the class property of the DOM elements
 tbe.initInteactJS = function initInteactJS() {
   var thisTbe = tbe;
-  interact('.function-block')
+  interact('.drag-group')
     .on('down', function (event) {
       var block = thisTbe.elementToBlock(event.target);
       if (block === null)
