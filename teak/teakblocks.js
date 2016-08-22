@@ -142,8 +142,8 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   // group.appendChild(createBranchPath());
   group.appendChild(text);
 
-  this.el = group;
-  this.rrect= rect;
+  this.svgGroup = group;
+  this.svgRect= rect;
   this.dmove(x, y, true);
   tbe.svg.appendChild(group);
 };
@@ -151,11 +151,11 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
 // Example of an object property added with defineProperty with an accessor property descriptor
 Object.defineProperty(tbe.FunctionBlock.prototype, 'interactId', {
   get: function() {
-    return this.rrect.getAttribute('interact-id');
+    return this.svgRect.getAttribute('interact-id');
   },
   set: function(id) {
-    this.el.setAttribute('interact-id', id);
-    this.rrect.setAttribute('interact-id', id);
+    this.svgGroup.setAttribute('interact-id', id);
+    this.svgRect.setAttribute('interact-id', id);
   },
 });
 
@@ -189,19 +189,21 @@ tbe.FunctionBlock.prototype.dmove = function (dx, dy, snapToInt) {
       r.bottom = Math.round(r.bottom);
       r.right = Math.round(r.right);
     }
-    block.el.setAttribute ('transform', 'translate (' +  r.left + ' ' + r.top + ')');
+    block.svgGroup.setAttribute ('transform', 'translate (' +  r.left + ' ' + r.top + ')');
     block = block.next;
   }
 };
 
 tbe.FunctionBlock.prototype.hilite = function(state) {
   if (state) {
-    // bring hilite block to top. block dont normally overlap
-    // but ones that are being dragged need to.
-    tbe.svg.appendChild(this.el);
-    this.rrect.setAttribute('class', 'function-block-dragging');
+    // Bring hilited block to top. Blocks don't normally
+    // overlap, so z plane is not important. But blocks
+    // that are being dragged need to float above one on
+    // the diagram.
+    tbe.svg.appendChild(this.svgGroup);
+    this.svgRect.setAttribute('class', 'function-block-dragging');
   } else {
-    this.rrect.setAttribute('class', 'function-block');
+    this.svgRect.setAttribute('class', 'function-block');
   }
 };
 
