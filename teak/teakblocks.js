@@ -44,11 +44,12 @@ tbe.init = function init(svg, text) {
 };
 
 tbe.elementToBlock = function(el) {
-    var text = el.getAttribute('block-id');
+    var text = el.getAttribute('interact-id');
+
     if (text === null)
       return null;
     values = text.split(':');
-    if (values[0] === 'e') {
+    if (values[0] === 'd') {
       return this.diagramBlocks[values[1]];
     } else if (values[0] === 'p') {
       return this.paletteBlocks[values[1]];
@@ -58,30 +59,33 @@ tbe.elementToBlock = function(el) {
 };
 
 tbe.addBlock = function(x, y, name, params) {
-   var id = 'e:' + this.diagramBlocks.length;
-   var block = new this.FunctionBlock(x, y, name, id);
+   var block = new this.FunctionBlock(x, y, name);
    block.params = params;
    block.isPaletteBlock = false;
+   block.interactId = 'd:' + this.diagramBlocks.length;
    this.diagramBlocks.push(block);
 };
 
 tbe.addPaletteBlock = function(x, y, name, params) {
-   var id = 'p:' + this.paletteBlocks.length;
-   var block = new this.FunctionBlock(x, y, name, id);
+   var block = new this.FunctionBlock(x, y, name);
    block.params = params;
    block.isPaletteBlock = true;
+   block.interactId = 'p:' + this.paletteBlocks.length;
    this.paletteBlocks.push(block);
 };
 
-tbe.popPaletteItem = function(block, y, x, name, id, newId){
-  console.log('taking item from palette ', name, y, x);
+tbe.popPaletteItem = function(block){
   var index = this.paletteBlocks.indexOf(block);
   if (index !== -1) {
-      this.paletteBlocks[index] = new this.FunctionBlock(x, y, name, id);
-      this.paletteBlocks[index].isPaletteBlock = true;
+      // The new palette block has the same location, name, and id.
+      var npb = new this.FunctionBlock(block.rect.left, block.rect.top, block.name);
+      npb.isPaletteBlock = true;
+      npb.interactId = block.interactId;
+      this.paletteBlocks[index] = npb;
   }
+  // Now change the block to a diagramBlock.
   block.isPaletteBlock = false;
-  block.setBlockAttribute(block);
+  block.interactId = 'd:' + this.diagramBlocks.length;
   this.diagramBlocks.push(block);
 };
 
@@ -93,7 +97,7 @@ tbe.inSnapRegion = function inSnapRegion(dragRect, r2) {
            r2.bottom < (dragRect.top + 10));
  };
 
-tbe.FunctionBlock = function FunctionBlock (x, y, blockName, svg_id) {
+tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   // Make an JS object that wraps an SVG object
   this.rect  = {
       left:   0,
@@ -115,8 +119,6 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName, svg_id) {
   this.snapTarget = null;   // Object to append, prepend, replace
   this.targetShadow = null; // Svg element to hilite target location
 
-  this.id = svg_id;
-
   var group = document.createElementNS(svgns, 'g');
   group.setAttribute('class', 'function-block');
 
@@ -129,7 +131,6 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName, svg_id) {
   // For safari 8/14/2016 rx or ry must be explicitly set other wise rx/ry
   // values in css will be ignored. Perhasp a more optimized rect is used.
   rect.setAttribute('rx', 1);
-  rect.setAttribute('block-id', svg_id);
 
   var text = document.createElementNS(svgns, 'text');
   text.setAttribute('class', 'function-text');
@@ -143,10 +144,20 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName, svg_id) {
 
   this.el = group;
   this.rrect= rect;
-
   this.dmove(x, y, true);
   tbe.svg.appendChild(group);
 };
+
+// Example of an object property added with defineProperty with an accessor property descriptor
+Object.defineProperty(tbe.FunctionBlock.prototype, 'interactId', {
+  get: function() {
+    return this.rrect.getAttribute('interact-id');
+  },
+  set: function(id) {
+    this.el.setAttribute('interact-id', id);
+    this.rrect.setAttribute('interact-id', id);
+  },
+});
 
 tbe.FunctionBlock.prototype.setDraggingState = function (state) {
   // If this block is in a chain, disconnect it from blocks in front.
@@ -162,12 +173,6 @@ tbe.FunctionBlock.prototype.setDraggingState = function (state) {
     block.hilite(state);
     block = block.next;
   }
-};
-
-tbe.FunctionBlock.prototype.setBlockAttribute = function(event){
-  //TODO what is gogin on here.
-  event.id = 'e:' + tbe.diagramBlocks.length;
-  event.rrect.setAttribute('block-id', 'e:' + tbe.diagramBlocks.length);
 };
 
 tbe.FunctionBlock.prototype.dmove = function (dx, dy, snapToInt) {
@@ -348,10 +353,8 @@ tbe.initInteactJS = function initInteactJS() {
           return;
 
       if (block.isPaletteBlock) {
-        id = block.id;
-        id = id.split(':');
-        var newId = 'e:' + thisTbe.diagramBlocks.length;
-        thisTbe.popPaletteItem(block, block.rect.top, block.rect.left, block.name, block.id);
+        // Turn the palette block into a diagram block.
+        thisTbe.popPaletteItem(block);
       }
       block.setDraggingState(true);
       },
