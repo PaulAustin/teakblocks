@@ -27,11 +27,15 @@ dmoveRect = function dmoveRect(rect, dx, dy) {
   rect.bottom += dy;
 };
 */
-module.tbe = {};
-var tbe = module.tbe;
+
+module.exports = function (){
+
+interact = require('interact.js');
+teakText = require('./teaktext.js');
+
+tbe = {};
 
 tbe.svgns = 'http://www.w3.org/2000/svg';
-
 tbe.diagramBlocks = [];
 tbe.paletteBlocks = [];
 
@@ -79,6 +83,7 @@ tbe.popPaletteItem = function(block){
   if (index !== -1) {
       // The new palette block has the same location, name, and id.
       var npb = new this.FunctionBlock(block.rect.left, block.rect.top, block.name);
+      npb.params = JSON.parse(JSON.stringify(block.params));
       npb.isPaletteBlock = true;
       npb.interactId = block.interactId;
       this.paletteBlocks[index] = npb;
@@ -119,20 +124,20 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   this.snapTarget = null;   // Object to append, prepend, replace
   this.targetShadow = null; // Svg element to hilite target location
 
-  var group = document.createElementNS(svgns, 'g');
+  var group = document.createElementNS(tbe.svgns, 'g');
   group.setAttribute('class', 'drag-group');
 
   // Create the actual SVG object. Its a group of two pieces
   // a rounded rect and a text box. The group is moved by changing
   // it's transform (see dmove)
 
-  var rect = document.createElementNS(svgns, 'rect');
+  var rect = document.createElementNS(tbe.svgns, 'rect');
   rect.setAttribute('class', 'function-block');
   // For safari 8/14/2016 rx or ry must be explicitly set other wise rx/ry
   // values in css will be ignored. Perhasp a more optimized rect is used.
   rect.setAttribute('rx', 1);
 
-  var text = document.createElementNS(svgns, 'text');
+  var text = document.createElementNS(tbe.svgns, 'text');
   text.setAttribute('class', 'function-text');
   text.setAttribute('x', '10');
   text.setAttribute('y', '45');
@@ -236,7 +241,7 @@ tbe.FunctionBlock.prototype.insertTargetShadows = function(target) {
   var x = target.rect.right;
   var shadow = null;
   while (block !== null) {
-    shadow = document.createElementNS(svgns, 'rect');
+    shadow = document.createElementNS(tbe.svgns, 'rect');
     shadow.setAttribute('class', 'shadow-block');
     shadow.setAttribute('rx', 1);
     shadow.style.x = x;
@@ -371,7 +376,7 @@ tbe.initInteactJS = function initInteactJS() {
           block.setDraggingState(false);
         }
         // Serialize after all moving has settled. TODO clean this up.
-        setTimeout(thisTbe.blocksToText(),500);
+        setTimeout(thisTbe.diagramChanged(), 500);
       },
       onmove: function (event) {
         // Since there is inertia these callbacks continue to
@@ -402,39 +407,9 @@ tbe.initInteactJS = function initInteactJS() {
     });
 };
 
-tbe.blocksToText = function() {
-  var teakText = '(\n';
-  this.diagramBlocks.forEach(function(entry) {
-    if (entry.prev === null) {
-       teakText += '  (chain\n';
-      var block = entry;
-      while (block !== null) {
-        teakText += '    (' + block.name;
-        if (block.prev === null) {
-          teakText += ' x:' + block.rect.left + ' y:' +  block.rect.top;
-        }
-        if (block.params !== null) {
-          teakText += tbe.blockParamsToText(block.params);
-        }
-        if (block.targetShadow !== null) {
-          // For debugging, this ocassionally happens since
-          // compile is asynchronous. TODO fixit.
-          teakText += ' shadow:true';
-        }
-        teakText += ')\n';
-        block = block.next;
-      }
-      teakText += '  )\n';
-    }
-  });
-  teakText += ')\n';
-  this.teakCode.value = teakText;
+tbe.diagramChanged = function diagramChanged() {
+  this.teakCode.value = teakText.blocksToText(tbe.diagramBlocks);
 };
 
-tbe.blockParamsToText = function blockParamsToText(params) {
-  var text = '';
-  for(var propertyName in params) {
-    text += ' ' + propertyName + ':' + params[propertyName];
-  }
-  return text;
-};
+return tbe;
+}();

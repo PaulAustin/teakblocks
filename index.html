@@ -22,24 +22,6 @@
     <textarea class=teak-code id="teakCode" readonly=true rows=50>
     </textarea>
   </div>
-
-  <script>
-  // staging for browserify
-  module = {};
-  </script>
-  <script src='libs/interact/interact.min.js'></script>
-  <script src='teak/teakblocks.js'></script>
-  <script>
-    module.tbe.init(
-      document.getElementById('editorCanvas'),
-      document.getElementById('teakCode'));
-
-      module.tbe.addPaletteBlock(400,  20, 'motor', {port:'a','power':50,'time':'2.5s'});
-      module.tbe.addPaletteBlock(100, 120, 'wait',  {time:'2.5s'});
-      module.tbe.addPaletteBlock(100, 220, 'light', {color:'blue'});
-      module.tbe.addPaletteBlock(100, 320, 'sound', {note:'C5'});
-      module.tbe.addPaletteBlock(100, 420, 'start', {when:'dio1-rising'});
-      module.tbe.addPaletteBlock(100, 420, 'quark', {flavor:'charmed'});
-  </script>
+  <script src='bundled_tbe.js'></script>
 </body>
 </html>
