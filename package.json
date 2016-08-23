@@ -1,0 +1,27 @@
+{
+  "name": "teakblocks",
+  "version": "0.0.1",
+  "description": "A diagram editor for teak blocks",
+  "main": "teakblocks.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "bify": "browserify source/index.js > html_app/www/bundled_tbe.js",
+    "abuild" : "cd html_app; cordova build android",
+    "adeploy" : "adb install -r html_app/platforms/android/build/outputs/apk/android-debug.apk"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PaulAustin/teakblocks.git"
+  },
+  "keywords": [
+    "graphical",
+    "editor",
+    "teak"
+  ],
+  "author": "Paul Austin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PaulAustin/teakblocks/issues"
+  },
+  "homepage": "https://github.com/PaulAustin/teakblocks#readme"
+}
