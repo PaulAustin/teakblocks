@@ -94,14 +94,6 @@ tbe.popPaletteItem = function(block){
   this.diagramBlocks.push(block);
 };
 
-//TODO change this to a left, right, over, nowhere-near reply
-tbe.inSnapRegion = function inSnapRegion(dragRect, r2) {
-  return !(r2.left > dragRect.right ||
-           r2.right < dragRect.left - 50 ||
-           r2.top > (dragRect.bottom - 10) ||
-           r2.bottom < (dragRect.top + 10));
- };
-
 tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   // Make an JS object that wraps an SVG object
   this.rect  = {
@@ -116,12 +108,12 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   // Place holder for sequencing links.
   this.prev = null;
   this.next = null;
-  this.oldPrev = null; // To help avoid snap back.
 
   // Dragging state information.
   this.dragging = false;
   this.coasting = 0;
   this.snapTarget = null;   // Object to append, prepend, replace
+  this.snapAction = null;   // append, prepend, replace, ...
   this.targetShadow = null; // Svg element to hilite target location
 
   var group = document.createElementNS(tbe.svgns, 'g');
@@ -153,6 +145,35 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   tbe.svg.appendChild(group);
 };
 
+Object.defineProperty(tbe.FunctionBlock.prototype, 'first', {
+  get: function() {
+    var block = this;
+    while (block.prev !== null)  {
+      block = block.prev;
+    }
+    return block;
+  }});
+
+Object.defineProperty(tbe.FunctionBlock.prototype, 'last', {
+  get: function() {
+    var block = this;
+    while (block.next !== null)  {
+      block = block.next;
+    }
+    return block;
+  }});
+
+Object.defineProperty(tbe.FunctionBlock.prototype, 'chainWidth', {
+  get: function() {
+    var block = this;
+    var width = 0;
+    while (block !== null)  {
+      width  += block.rect.right - block.rect.left;
+      block = block.next;
+    }
+    return width;
+  }});
+
 // Example of an object property added with defineProperty with an accessor property descriptor
 Object.defineProperty(tbe.FunctionBlock.prototype, 'interactId', {
   get: function() {
@@ -164,11 +185,12 @@ Object.defineProperty(tbe.FunctionBlock.prototype, 'interactId', {
   },
 });
 
+// Mark all block in the chain starting with 'this' block as being dragged.
+// Disconnect from the previous part of the chain.
 tbe.FunctionBlock.prototype.setDraggingState = function (state) {
   // If this block is in a chain, disconnect it from blocks in front.
   if (state && (this.prev !== null)) {
     this.prev.next = null;
-    this.oldPrev = this.prev;
     this.prev = null;
   }
   // Set the state of all blocks down the chain.
@@ -180,25 +202,7 @@ tbe.FunctionBlock.prototype.setDraggingState = function (state) {
   }
 };
 
-tbe.FunctionBlock.prototype.dmove = function (dx, dy, snapToInt) {
-  var block = this;
-  while (block !== null) {
-    var r = block.rect;
-    r.left += dx;
-    r.top += dy;
-    r.right += dx;
-    r.bottom += dy;
-    if (snapToInt) {
-      r.top = Math.round(r.top);
-      r.left = Math.round(r.left);
-      r.bottom = Math.round(r.bottom);
-      r.right = Math.round(r.right);
-    }
-    block.svgGroup.setAttribute ('transform', 'translate (' +  r.left + ' ' + r.top + ')');
-    block = block.next;
-  }
-};
-
+// Change the element class to trigger CSS changes.
 tbe.FunctionBlock.prototype.hilite = function(state) {
   if (state) {
     // Bring hilited block to top. Blocks don't normally
@@ -212,33 +216,112 @@ tbe.FunctionBlock.prototype.hilite = function(state) {
   }
 };
 
+// Move a section of a chain a delta x, y (from this to endBlock)
+tbe.FunctionBlock.prototype.dmove = function (dx, dy, snapToInt, endBlock) {
+  var block = this;
+  if (endBlock === undefined) {
+   endBlock = null;
+  }
+
+  while (block !== null) {
+    var r = block.rect;
+    r.left += dx;
+    r.top += dy;
+    r.right += dx;
+    r.bottom += dy;
+    if (snapToInt) {
+      // Final locations are foreced to integers for clean serialization.
+      r.top = Math.round(r.top);
+      r.left = Math.round(r.left);
+      r.bottom = Math.round(r.bottom);
+      r.right = Math.round(r.right);
+    }
+    block.svgGroup.setAttribute ('transform', 'translate (' +  r.left + ' ' + r.top + ')');
+
+    if (block === endBlock) {
+      break;
+    }
+    block = block.next;
+  }
+};
+
+// Calculate the intersecting area of two rectangles.
+tbe.intersectingArea = function intersectingArea(r1, r2) {
+    var x = Math.min(r1.right, r2.right) - Math.max(r1.left, r2.left);
+    if (x < 0 )
+      return 0;
+    var y = Math.min(r1.bottom, r2.bottom) - Math.max(r1.top, r2.top);
+    if (y < 0) {
+      return 0;
+    }
+    return x * y;
+};
+
 tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
   var thisBlock = this;
   var target = null;
+  var overlap = 0;
+  var bestOverlap = 0;
+  var action = null;
+  var rect = null;
+  var chainWidth = this.chainWidth;
+  // look at every diagram block taking into consideration
+  // weather or not it is in  chain.
+
+  // For insert it could snap after the previous block or before the next block
+  // which make the most sense?
   tbe.diagramBlocks.forEach(function(entry) {
-    if (entry !== thisBlock  && !entry.dragging && (entry.next === null)) {
-      if (tbe.inSnapRegion(thisBlock.rect, entry.rect)) {
+    if (entry !== thisBlock  && !entry.dragging) {
+      rect = {
+        left:entry.rect.left,
+        top:entry.rect.top,
+        right:entry.rect.right,
+        bottom:entry.rect.bottom,
+      };
+      if (entry.next === null) {
+        rect.right += 50;
+      }
+      if (entry.prev === null) {
+        rect.left -= 80;
+      }
+      overlap = tbe.intersectingArea(thisBlock.rect, rect);
+      if (overlap > bestOverlap) {
+        bestOverlap = overlap;
         target = entry;
       }
     }
   });
+
+  // Refine the action based on geometery.
+  if (target !== null) {
+    if (thisBlock.rect.left < target.first.rect.left) {
+      action = 'prepend';
+      target = target.first;
+    } else {
+      action = 'append';
+      target = target.last;
+    }
+  }
+
   // Update shadows as needed.
-  if (this.snapTarget !== target) {
+  if (this.snapTarget !== target || this.snapAction !== action) {
     if (this.snapTarget !== null) {
       this.removeTargetShadows();
     }
     this.snapTarget = target;
+    this.snapAction = action;
     if (target !== null) {
-      this.insertTargetShadows(target);
+      this.insertTargetShadows(target, action);
     }
   }
   return target;
 };
 
-// Show the socket this block will be put in when dragging stops.
-tbe.FunctionBlock.prototype.insertTargetShadows = function(target) {
+// Show the socket where 'this' block will be put once dragging is complete.
+tbe.FunctionBlock.prototype.insertTargetShadows = function(target, action) {
   var block = this;
-  var x = target.rect.right;
+  var append = (action === 'append');
+  var x = append ? target.rect.right : (target.rect.left - this.chainWidth);
   var shadow = null;
   while (block !== null) {
     shadow = document.createElementNS(tbe.svgns, 'rect');
@@ -275,15 +358,22 @@ tbe.FunctionBlock.prototype.removeTargetShadows = function() {
 };
 
 tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
+  var endBlock = null;
   if (this.snapTarget !==  null && this.targetShadow !== null) {
-    // Insert the block in the list
-    if(true /* after */) {
+
+    // TODO:assert that chain we have has clean prev/next links
+    // Append/Prepend the block(chain) to the list
+    if(this.snapAction === 'append') {
       this.prev = this.snapTarget;
-      this.oldPRev = null;
       this.snapTarget.next = this;
       // slide down post blocks if insert
       // logically here, in annimation bellow
-    }
+    } else if (this.snapAction === 'prepend') {
+      thisLast = this.last;
+      thisLast.next = this.snapTarget;
+      this.snapTarget.prev = thisLast;
+      endBlock = thisLast;
+    } // TODO: insert
 
     // Set up an animation to move the block
     var dx = parseFloat(this.targetShadow.style.x) - this.rect.left;
@@ -298,19 +388,19 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
       ady: dy / frameCount,
       frame: frameCount,
     };
-    tbe.easeToTarget(0, this);
-//    this.removeTargetShadows();
+    tbe.easeToTarget(0, this, endBlock);
   }
   this.hilite(false);
   this.snapTarget = null;
+  this.snapAction = null;
 };
 
-tbe.easeToTarget = function easeToTarget(timeStamp, block) {
+tbe.easeToTarget = function easeToTarget(timeStamp, block, endBlock) {
   var frame = block.animateState.frame;
-  block.dmove(block.animateState.adx, block.animateState.ady, (frame === 1));
+  block.dmove(block.animateState.adx, block.animateState.ady, (frame === 1), endBlock);
   if (frame > 1) {
     block.animateState.frame = frame - 1;
-    requestAnimationFrame(function(timestamp) { easeToTarget(timestamp, block); });
+    requestAnimationFrame(function(timestamp) { easeToTarget(timestamp, block, endBlock); });
   } else {
     // Once animation is over shadows are covered, remove them.
     block.removeTargetShadows();
@@ -371,7 +461,7 @@ tbe.initInteactJS = function initInteactJS() {
           return;
 
         if (block.coasting > 0) {
-          block.coasting = -1;
+          block.coasting = 0;
           block.moveToPossibleTarget();
           block.setDraggingState(false);
         }
@@ -396,8 +486,7 @@ tbe.initInteactJS = function initInteactJS() {
           // If target found while coasting, then snap to it.
           // other wise just show the shadows.
           if ((target !== null) &&
-              (block.coasting > 0) &&
-              (target != block.oldPrev)) {
+              (block.coasting > 0)) {
             block.coasting = -1; // ignore further coasting.
             block.moveToPossibleTarget();
             block.setDraggingState(false);
