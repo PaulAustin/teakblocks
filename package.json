@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "bify": "browserify source/index.js > html_app/www/bundled_tbe.js",
     "abuild" : "cd html_app; cordova build android",
-    "adeploy" : "adb install -r html_app/platforms/android/build/outputs/apk/android-debug.apk"
+    "adeploy" : "adb install -r html_app/platforms/android/build/outputs/apk/android-debug.apk",
+    "http" : "http-server ./html_app/www"
   },
   "repository": {
     "type": "git",

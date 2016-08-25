@@ -86,15 +86,7 @@ tbe.popPaletteItem = function(block){
   this.diagramBlocks.push(block);
 };
 
-tbe.blockObject =  {
-  A:['A1', 'A2', 'A3', 'A4', 'A5'],
-  B:['B1', 'B2', 'B3', 'B4', 'B5'],
-  C:['C1', 'C2', 'C3', 'C4', 'C5'],
-  D:['D1', 'D2', 'D3', 'D4', 'D5'],
-  E:['E1', 'E2', 'E3', 'E4', 'E5'],
-  tabs:['A', 'B', 'C', 'D', 'E']
-};
-
+// Constructor for FunctionBlock object.
 tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   // Make an JS object that wraps an SVG object
   this.rect  = {
@@ -501,8 +493,13 @@ tbe.diagramChanged = function diagramChanged() {
   this.teakCode.value = teakText.blocksToText(tbe.diagramBlocks);
 };
 
+tbe.buildSvgTabs = function buildSvgTabs() {
 
-tbe.initPalettes =  function initPalettes() {
+};
+
+tbe.initPalettes =  function initPalettes(palettes) {
+
+  tbe.blockObject = palettes;
 
   // Add some blocks to play with.
   tbe.palette = [];
@@ -529,22 +526,22 @@ tbe.initPalettes =  function initPalettes() {
 
     var letpath = '';
     switch (a) {
-    case 0:
-      letpath = 'A';
-      break;
-    case 1:
-      letpath = 'B';
-      break;
-    case 2:
-      letpath = 'C';
-      break;
-    case 3:
-      letpath = 'D';
-      break;
-    case 4:
-      letpath = 'E';
-      break;
-  }
+      case 0:
+        letpath = 'A';
+        break;
+      case 1:
+        letpath = 'B';
+        break;
+      case 2:
+        letpath = 'C';
+        break;
+      case 3:
+        letpath = 'D';
+        break;
+      case 4:
+        letpath = 'E';
+        break;
+    }
 
     tab.setAttribute('transform', 'translate(10, ' + (20 + (100 * a)) + ')');
     tab.setAttribute('letter', letpath);

@@ -26,7 +26,15 @@ tbe.init(
   document.getElementById('editorCanvas'),
   document.getElementById('teakCode'));
 
-tbe.initPalettes();
+var palettes =  {
+  tabs:['A', 'B', 'C'],
+  A:['A1', 'A2', 'A3', 'A4', 'A5'],
+  B:['B1', 'B2', 'B3', 'B4', 'B5'],
+  C:['C1', 'C2', 'C3', 'C4', 'C5'],
+};
+
+tbe.initPalettes(palettes);
+
 /*
 re work into Sidharth's code.
 tbe.addPaletteBlock(400,  20, 'motor', {port:'a','power':50,'time':'2.5s'});

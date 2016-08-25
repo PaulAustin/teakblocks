@@ -2,3 +2,5 @@
 node_modules/*
 html_app/platforms/*
 html_app/plugins/*
+
+html_app/npm-debug.log
