@@ -6014,7 +6014,6 @@ var palettes =  {
 
 tbe.initPalettes(palettes);
 
-
 /*
 re work into Sidharth's code.
 tbe.addPaletteBlock(400,  20, 'motor', {port:'a','power':50,'time':'2.5s'});
@@ -6025,7 +6024,7 @@ tbe.addPaletteBlock(100, 420, 'start', {when:'dio1-rising'});
 tbe.addPaletteBlock(100, 420, 'quark', {flavor:'charmed'});
 */
 
-},{"./teakblocks.js":3}],3:[function(require,module,exports){
+},{"./teakblocks.js":4}],3:[function(require,module,exports){
 /*
 Copyright (c) 2016 Paul Austin - SDG
 
@@ -6050,19 +6049,79 @@ SOFTWARE.
 
 module.exports = function (){
 
-interact = require('interact.js');
-teakText = require('./teaktext.js');
+  svgBuilder = {};
+
+  svgBuilder.ns = 'http://www.w3.org/2000/svg';
+  svgBuilder.xlinkns = 'http://www.w3.org/1999/xlink';
+
+  svgBuilder.p = {
+  // Very simple svg tools for the teak block editor needs.
+  move: function (dx, dy) {
+    return 'm' + dx + ' ' + dy + ' ';
+  },
+  hline: function(length) {
+    return 'h' + length + ' ';
+  },
+  vline: function(length) {
+    return 'v' + length + ' ';
+  },
+  arc: function(radius, degrees, large, sweep, dx, dy) {
+    var text = 'a' + radius + ' ' + radius + ' ' + degrees;
+    text += ' ' + large + ' ' + sweep + ' ' + dx + ' ' + dy + ' ';
+    return text;
+  },
+  close: function() {
+    return 'z ';
+  }
+};
+
+svgBuilder.createUse = function createUse(symbolName) {
+  var elt  = document.createElementNS(svgBuilder.ns, 'use');
+  elt.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', symbolName);
+};
+
+return svgBuilder;
+}();
+
+},{}],4:[function(require,module,exports){
+/*
+Copyright (c) 2016 Paul Austin - SDG
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+module.exports = function (){
+
+var interact = require('interact.js');
+var teakText = require('./teaktext.js');
+var svgb = require('./svgBuilder.js');
 
 tbe = {};
 
-tbe.svgns = 'http://www.w3.org/2000/svg';
 tbe.diagramBlocks = [];
 tbe.paletteBlocks = [];
 
 tbe.init = function init(svg, text) {
   this.svg = svg;
   this.teakCode = text;
-  this.initInteactJS();
+  this.configFBInteract();
+//  this.configTabInteract();
   interact.maxInteractions(Infinity);
   return this;
 };
@@ -6114,17 +6173,7 @@ tbe.popPaletteItem = function(block){
   this.diagramBlocks.push(block);
 };
 
-/*
-tbe.blockObject =  {
-  A:['A1', 'A2', 'A3', 'A4', 'A5'],
-  B:['B1', 'B2', 'B3', 'B4', 'B5'],
-  C:['C1', 'C2', 'C3', 'C4', 'C5'],
-  D:['D1', 'D2', 'D3', 'D4', 'D5'],
-  E:['E1', 'E2', 'E3', 'E4', 'E5'],
-  tabs:['A', 'B', 'C', 'D', 'E']
-};
-*/
-
+// Constructor for FunctionBlock object.
 tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   // Make an JS object that wraps an SVG object
   this.rect  = {
@@ -6147,20 +6196,20 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   this.snapAction = null;   // append, prepend, replace, ...
   this.targetShadow = null; // Svg element to hilite target location
 
-  var group = document.createElementNS(tbe.svgns, 'g');
+  var group = document.createElementNS(svgb.ns, 'g');
   group.setAttribute('class', 'drag-group');
 
   // Create the actual SVG object. Its a group of two pieces
   // a rounded rect and a text box. The group is moved by changing
   // it's transform (see dmove)
 
-  var rect = document.createElementNS(tbe.svgns, 'rect');
+  var rect = document.createElementNS(svgb.ns, 'rect');
   rect.setAttribute('class', 'function-block');
   // For safari 8/14/2016 rx or ry must be explicitly set other wise rx/ry
   // values in css will be ignored. Perhasp a more optimized rect is used.
   rect.setAttribute('rx', 1);
 
-  var text = document.createElementNS(tbe.svgns, 'text');
+  var text = document.createElementNS(svgb.ns, 'text');
   text.setAttribute('class', 'function-text');
   text.setAttribute('x', '10');
   text.setAttribute('y', '45');
@@ -6355,7 +6404,7 @@ tbe.FunctionBlock.prototype.insertTargetShadows = function(target, action) {
   var x = append ? target.rect.right : (target.rect.left - this.chainWidth);
   var shadow = null;
   while (block !== null) {
-    shadow = document.createElementNS(tbe.svgns, 'rect');
+    shadow = document.createElementNS(svgb.ns, 'rect');
     shadow.setAttribute('class', 'shadow-block');
     shadow.setAttribute('rx', 1);
     shadow.style.x = x;
@@ -6439,7 +6488,7 @@ tbe.easeToTarget = function easeToTarget(timeStamp, block, endBlock) {
 };
 
 // Attach these interactions properties based on the class property of the DOM elements
-tbe.initInteactJS = function initInteactJS() {
+tbe.configFBInteract = function configFBInteract() {
   var thisTbe = tbe;
   interact('.drag-group')
     .on('down', function (event) {
@@ -6531,6 +6580,16 @@ tbe.diagramChanged = function diagramChanged() {
   this.teakCode.value = teakText.blocksToText(tbe.diagramBlocks);
 };
 
+/*
+tbe.configTabInteract = function configTabInteract() {
+  var thisTbe = tbe;
+  interact('.tab-block')
+    .on('down', function (event) {
+      var tab = thisTbe.tabs[event.target];
+    });
+};
+*/
+
 tbe.buildSvgTabs = function buildSvgTabs() {
 
 };
@@ -6542,19 +6601,24 @@ tbe.initPalettes =  function initPalettes(palettes) {
   // Add some blocks to play with.
   tbe.palette = [];
 
-  var group = document.createElementNS(tbe.svgns, 'g');
-  var dA = document.createElementNS(tbe.svgns, 'rect');
+  var group = document.createElementNS(svgb.ns, 'g');
+  var dA = document.createElementNS(svgb.ns, 'rect');
   dA.setAttribute('class', 'dropArea');
 
   tbe.svg.appendChild(group);
 
   for (var a = 0; a < tbe.blockObject.tabs.length; a++){
-    var tab = document.createElementNS(tbe.svgns, 'g');
-    var tabblock = document.createElementNS(tbe.svgns, 'rect');
+  //  var newtab = svgb.createUse('#palette-tab');
+  //  newtab.x = 200; //('x', 200);
+  //  newtab.y = 20 + (100 * a); // ('y', 20 + (100 * a));
+  //  tbe.svg.appendChild(newtab);
+
+    var tab = document.createElementNS(svgb.ns, 'g');
+    var tabblock = document.createElementNS(svgb.ns, 'rect');
     var top = 20 + (100 * a);
-    tabblock.setAttribute('class', 'tabblock');
-    var text = document.createElementNS(tbe.svgns, 'text');
-    text.setAttribute('x', '30');
+    tabblock.setAttribute('class', 'tab-block');
+    var text = document.createElementNS(svgb.ns, 'text');
+    text.setAttribute('x', '10');
     text.setAttribute('y', '30');
     text.setAttribute('class', 'tab-text');
     var tabName = tbe.blockObject.tabs[a];
@@ -6606,7 +6670,7 @@ tbe.initPalettes =  function initPalettes(palettes) {
     for(var i = 0; i < tbe.blockObject.A.length; i++){
       //find letter inside tag
       // move the palettes to the front.
-      tbe.addPaletteBlock(200,  20 + (100 * i), path[i]);
+      tbe.addPaletteBlock(75,  20 + (100 * i), path[i],{ });
     }
   });
 
@@ -6616,14 +6680,14 @@ tbe.initPalettes =  function initPalettes(palettes) {
   group.appendChild(dA);
 
   for(var i = 0; i < tbe.blockObject.A.length; i++){
-    tbe.addPaletteBlock(200,  20 + (100 * i), tbe.blockObject.A[i], {port:'a','power':50,'time':'2.5s'});
+    tbe.addPaletteBlock(75,  20 + (100 * i), tbe.blockObject.A[i], {port:'a','power':50,'time':'2.5s'});
   }
 };
 
 return tbe;
 }();
 
-},{"./teaktext.js":4,"interact.js":1}],4:[function(require,module,exports){
+},{"./svgBuilder.js":3,"./teaktext.js":5,"interact.js":1}],5:[function(require,module,exports){
 /*
 Copyright (c) 2016 Paul Austin - SDG
 

@@ -21,7 +21,13 @@ SOFTWARE.
 */
 
 module.exports = function (){
-  svgPathBuilder = {
+
+  svgBuilder = {};
+
+  svgBuilder.ns = 'http://www.w3.org/2000/svg';
+  svgBuilder.xlinkns = 'http://www.w3.org/1999/xlink';
+
+  svgBuilder.p = {
   // Very simple svg tools for the teak block editor needs.
   move: function (dx, dy) {
     return 'm' + dx + ' ' + dy + ' ';
@@ -42,5 +48,10 @@ module.exports = function (){
   }
 };
 
-return svgPathBuilder;
+svgBuilder.createUse = function createUse(symbolName) {
+  var elt  = document.createElementNS(svgBuilder.ns, 'use');
+  elt.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', symbolName);
+};
+
+return svgBuilder;
 }();

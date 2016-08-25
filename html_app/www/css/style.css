@@ -61,28 +61,28 @@ html, body { margin:0; padding:0; overflow:hidden }
 .dropArea{
   x:0px;
   y:0px;
-  fill: #2b5e31;
+  fill: #F5B041;
   stroke: black;
   rx: 5px;
   ry: 5px;
-  width: 300px;
-  height: 600px;
-  stroke-width:2;
+  width: 180px;
+  height: 1024px;
+  stroke-width:0;
 }
-.tabblock{
+.tab-block{
   x:0px;
   y:0px;
-  fill: blue;
-  stroke: black;
+  fill: #F5B041 ;
+  stroke: #1B5E20;
   rx: 10px;
   ry: 10px;
-  width: 80px;
+  width: 40px;
   height: 40px;
   stroke-width:2;
   z-index: 500;
 }
 .tab-text{
-  width: 80px;
+  width: 40px;
   height: 40px;
   font-size:30px;
   fill: black;

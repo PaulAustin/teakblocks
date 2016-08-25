@@ -22,19 +22,20 @@ SOFTWARE.
 
 module.exports = function (){
 
-interact = require('interact.js');
-teakText = require('./teaktext.js');
+var interact = require('interact.js');
+var teakText = require('./teaktext.js');
+var svgb = require('./svgBuilder.js');
 
 tbe = {};
 
-tbe.svgns = 'http://www.w3.org/2000/svg';
 tbe.diagramBlocks = [];
 tbe.paletteBlocks = [];
 
 tbe.init = function init(svg, text) {
   this.svg = svg;
   this.teakCode = text;
-  this.initInteactJS();
+  this.configFBInteract();
+//  this.configTabInteract();
   interact.maxInteractions(Infinity);
   return this;
 };
@@ -109,20 +110,20 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   this.snapAction = null;   // append, prepend, replace, ...
   this.targetShadow = null; // Svg element to hilite target location
 
-  var group = document.createElementNS(tbe.svgns, 'g');
+  var group = document.createElementNS(svgb.ns, 'g');
   group.setAttribute('class', 'drag-group');
 
   // Create the actual SVG object. Its a group of two pieces
   // a rounded rect and a text box. The group is moved by changing
   // it's transform (see dmove)
 
-  var rect = document.createElementNS(tbe.svgns, 'rect');
+  var rect = document.createElementNS(svgb.ns, 'rect');
   rect.setAttribute('class', 'function-block');
   // For safari 8/14/2016 rx or ry must be explicitly set other wise rx/ry
   // values in css will be ignored. Perhasp a more optimized rect is used.
   rect.setAttribute('rx', 1);
 
-  var text = document.createElementNS(tbe.svgns, 'text');
+  var text = document.createElementNS(svgb.ns, 'text');
   text.setAttribute('class', 'function-text');
   text.setAttribute('x', '10');
   text.setAttribute('y', '45');
@@ -317,7 +318,7 @@ tbe.FunctionBlock.prototype.insertTargetShadows = function(target, action) {
   var x = append ? target.rect.right : (target.rect.left - this.chainWidth);
   var shadow = null;
   while (block !== null) {
-    shadow = document.createElementNS(tbe.svgns, 'rect');
+    shadow = document.createElementNS(svgb.ns, 'rect');
     shadow.setAttribute('class', 'shadow-block');
     shadow.setAttribute('rx', 1);
     shadow.style.x = x;
@@ -401,7 +402,7 @@ tbe.easeToTarget = function easeToTarget(timeStamp, block, endBlock) {
 };
 
 // Attach these interactions properties based on the class property of the DOM elements
-tbe.initInteactJS = function initInteactJS() {
+tbe.configFBInteract = function configFBInteract() {
   var thisTbe = tbe;
   interact('.drag-group')
     .on('down', function (event) {
@@ -493,6 +494,16 @@ tbe.diagramChanged = function diagramChanged() {
   this.teakCode.value = teakText.blocksToText(tbe.diagramBlocks);
 };
 
+/*
+tbe.configTabInteract = function configTabInteract() {
+  var thisTbe = tbe;
+  interact('.tab-block')
+    .on('down', function (event) {
+      var tab = thisTbe.tabs[event.target];
+    });
+};
+*/
+
 tbe.buildSvgTabs = function buildSvgTabs() {
 
 };
@@ -504,19 +515,24 @@ tbe.initPalettes =  function initPalettes(palettes) {
   // Add some blocks to play with.
   tbe.palette = [];
 
-  var group = document.createElementNS(tbe.svgns, 'g');
-  var dA = document.createElementNS(tbe.svgns, 'rect');
+  var group = document.createElementNS(svgb.ns, 'g');
+  var dA = document.createElementNS(svgb.ns, 'rect');
   dA.setAttribute('class', 'dropArea');
 
   tbe.svg.appendChild(group);
 
   for (var a = 0; a < tbe.blockObject.tabs.length; a++){
-    var tab = document.createElementNS(tbe.svgns, 'g');
-    var tabblock = document.createElementNS(tbe.svgns, 'rect');
+  //  var newtab = svgb.createUse('#palette-tab');
+  //  newtab.x = 200; //('x', 200);
+  //  newtab.y = 20 + (100 * a); // ('y', 20 + (100 * a));
+  //  tbe.svg.appendChild(newtab);
+
+    var tab = document.createElementNS(svgb.ns, 'g');
+    var tabblock = document.createElementNS(svgb.ns, 'rect');
     var top = 20 + (100 * a);
-    tabblock.setAttribute('class', 'tabblock');
-    var text = document.createElementNS(tbe.svgns, 'text');
-    text.setAttribute('x', '30');
+    tabblock.setAttribute('class', 'tab-block');
+    var text = document.createElementNS(svgb.ns, 'text');
+    text.setAttribute('x', '10');
     text.setAttribute('y', '30');
     text.setAttribute('class', 'tab-text');
     var tabName = tbe.blockObject.tabs[a];
@@ -568,7 +584,7 @@ tbe.initPalettes =  function initPalettes(palettes) {
     for(var i = 0; i < tbe.blockObject.A.length; i++){
       //find letter inside tag
       // move the palettes to the front.
-      tbe.addPaletteBlock(200,  20 + (100 * i), path[i]);
+      tbe.addPaletteBlock(75,  20 + (100 * i), path[i],{ });
     }
   });
 
@@ -578,7 +594,7 @@ tbe.initPalettes =  function initPalettes(palettes) {
   group.appendChild(dA);
 
   for(var i = 0; i < tbe.blockObject.A.length; i++){
-    tbe.addPaletteBlock(200,  20 + (100 * i), tbe.blockObject.A[i], {port:'a','power':50,'time':'2.5s'});
+    tbe.addPaletteBlock(75,  20 + (100 * i), tbe.blockObject.A[i], {port:'a','power':50,'time':'2.5s'});
   }
 };
 
