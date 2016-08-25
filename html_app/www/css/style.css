@@ -17,6 +17,21 @@ html, body { margin:0; padding:0; overflow:hidden }
   background-color: rgba(0,0,1,0.05);
   background-blend-mode: multiply;
 }
+.teak-log {
+  position: absolute;
+  top:0;
+  left:50%;
+  font-size:12px;
+  font-family:"Monaco";
+  width:25%;
+  height: 100%;
+  float:right;
+  border: none;
+  outline: none;
+/*  opacity: 0.6; */
+  background-color: rgba(0,0,1,0.05);
+  background-blend-mode: multiply;
+}
 .editor-canvas {
   position:fixed;
   top:0;

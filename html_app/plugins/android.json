@@ -9,6 +9,9 @@
     "installed_plugins": {
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "io.hld.teakblocks"
+        },
+        "cordova-plugin-ble": {
+            "PACKAGE_NAME": "io.hld.teakblocks"
         }
     },
     "dependent_plugins": {}
