@@ -70,6 +70,14 @@ editor = {
     block.paletteBlock = false;
     block.setBlockAttribute(block);
     editor.blocks.push(block);
+  },
+  blockObject: {
+    A:['A1', 'A2', 'A3', 'A4', 'A5'],
+    B:['B1', 'B2', 'B3', 'B4', 'B5'],
+    C:['C1', 'C2', 'C3', 'C4', 'C5'],
+    D:['D1', 'D2', 'D3', 'D4', 'D5'],
+    E:['E1', 'E2', 'E3', 'E4', 'E5'],
+    tabs:['A', 'B', 'C', 'D', 'E']
   }
 
 };
@@ -422,13 +430,94 @@ function blockParamsToText(params) {
 function initPalettes() {
   interact.maxInteractions(Infinity);
 
-  editor.addPaletteBlock(400,  20, 'motor', {port:'a','power':50,'time':'2.5s'});
-  editor.addPaletteBlock(100, 120, 'wait',  {time:'2.5s'});
-  editor.addPaletteBlock(100, 220, 'light', {color:'blue'});
-  editor.addPaletteBlock(100, 320, 'sound', {note:'C5'});
-  editor.addPaletteBlock(100, 420, 'start', {when:'dio1-rising'});
-  editor.addPaletteBlock(100, 420, 'quark', {flavor:'charmed'});
+  // Add some blocks to play with.
+  editor.palette = [];
+
+  var group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  var dA = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  dA.setAttribute('class', 'dropArea');
+
+  
+
+  editor.svg.appendChild(group);
+
+  for(var a = 0; a < editor.blockObject.tabs.length; a++){
+    var tab = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    var tabblock = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    var top = 20 + (100 * a);
+    tabblock.setAttribute('class', 'tabblock');
+    var text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', '30');
+    text.setAttribute('y', '30');
+    text.setAttribute('class', 'tab-text');
+    var tabName = editor.blockObject.tabs[a];
+    text.textContent = tabName;
+    
+
+
+    tab.appendChild(tabblock);
+    tab.appendChild(text);
+
+    switch(a){
+    case 0:
+      var letpath = 'A';
+      break;
+    case 1:
+      var letpath = 'B';
+      break;
+    case 2:
+      var letpath = 'C';
+      break;
+    case 3:
+      var letpath = 'D';
+      break;
+    case 4:
+      var letpath = 'E';
+      break;
+  }
+
+    tab.setAttribute('transform', 'translate(10, ' + (20 + (100 * a)) + ')');
+    tab.setAttribute('letter', letpath);
+
+    tab.addEventListener("click", function(){
+
+switch(this.getAttribute('letter')){
+    case 'A':
+      var path = editor.blockObject.A;
+      break;
+    case 'B':
+      var path = editor.blockObject.B;
+      break;
+    case 'C':
+      var path = editor.blockObject.C;
+      break;
+    case 'D':
+      var path = editor.blockObject.D;
+      break;
+    case 'E':
+      var path = editor.blockObject.E;
+      break;
+  }
+
+  for(var i = 0; i < editor.blockObject.A.length; i++){
+//find letter inside tag
+
+
+
+    editor.addPaletteBlock(200,  20 + (100 * i), path[i]);
+  }
+});
+
+   
+    editor.svg.appendChild(tab);
+  }
+  
+ group.appendChild(dA);
+
+  for(var i = 0; i < editor.blockObject.A.length; i++){
+    editor.addPaletteBlock(200,  20 + (100 * i), editor.blockObject.A[i], {port:'a','power':50,'time':'2.5s'});
+  }
   //editor.addPaletteBlock(200, 420, 'zebra');
 
-  editor.blocksToText();
+  editor.blockToText();
 }
