@@ -58,6 +58,38 @@ html, body { margin:0; padding:0; overflow:hidden }
   stroke-width: 2;
   stroke: lightgreen;
 }
+.dropArea{
+  x:0px;
+  y:0px;
+  fill: #2b5e31;
+  stroke: black;
+  rx: 5px;
+  ry: 5px;
+  width: 300px;
+  height: 600px;
+  stroke-width:2;
+}
+.tabblock{
+  x:0px;
+  y:0px;
+  fill: blue;
+  stroke: black;
+  rx: 10px;
+  ry: 10px;
+  width: 80px;
+  height: 40px;
+  stroke-width:2;
+  z-index: 500;
+}
+.tab-text{
+  width: 80px;
+  height: 40px;
+  font-size:30px;
+  fill: black;
+  font-family:"helvetica";
+  pointer-events: none;
+  z-index: 501;
+}
 .function-block {
   x:0px;
   y:0px;

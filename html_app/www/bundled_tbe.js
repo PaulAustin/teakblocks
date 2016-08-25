@@ -6005,12 +6005,16 @@ tbe.init(
   document.getElementById('editorCanvas'),
   document.getElementById('teakCode'));
 
+tbe.initPalettes();
+/*
+re work into Sidharth's code.
 tbe.addPaletteBlock(400,  20, 'motor', {port:'a','power':50,'time':'2.5s'});
 tbe.addPaletteBlock(100, 120, 'wait',  {time:'2.5s'});
 tbe.addPaletteBlock(100, 220, 'light', {color:'blue'});
 tbe.addPaletteBlock(100, 320, 'sound', {note:'C5'});
 tbe.addPaletteBlock(100, 420, 'start', {when:'dio1-rising'});
 tbe.addPaletteBlock(100, 420, 'quark', {flavor:'charmed'});
+*/
 
 },{"./teakblocks.js":3}],3:[function(require,module,exports){
 /*
@@ -6033,14 +6037,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
-/*
-dmoveRect = function dmoveRect(rect, dx, dy) {
-  rect.left += dx;
-  rect.top += dy;
-  rect.right += dx;
-  rect.bottom += dy;
-};
 */
 
 module.exports = function (){
@@ -6107,6 +6103,15 @@ tbe.popPaletteItem = function(block){
   block.isPaletteBlock = false;
   block.interactId = 'd:' + this.diagramBlocks.length;
   this.diagramBlocks.push(block);
+};
+
+tbe.blockObject =  {
+  A:['A1', 'A2', 'A3', 'A4', 'A5'],
+  B:['B1', 'B2', 'B3', 'B4', 'B5'],
+  C:['C1', 'C2', 'C3', 'C4', 'C5'],
+  D:['D1', 'D2', 'D3', 'D4', 'D5'],
+  E:['E1', 'E2', 'E3', 'E4', 'E5'],
+  tabs:['A', 'B', 'C', 'D', 'E']
 };
 
 tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
@@ -6513,6 +6518,90 @@ tbe.initInteactJS = function initInteactJS() {
 
 tbe.diagramChanged = function diagramChanged() {
   this.teakCode.value = teakText.blocksToText(tbe.diagramBlocks);
+};
+
+
+tbe.initPalettes =  function initPalettes() {
+
+  // Add some blocks to play with.
+  tbe.palette = [];
+
+  var group = document.createElementNS(tbe.svgns, 'g');
+  var dA = document.createElementNS(tbe.svgns, 'rect');
+  dA.setAttribute('class', 'dropArea');
+
+  tbe.svg.appendChild(group);
+
+  for (var a = 0; a < tbe.blockObject.tabs.length; a++){
+    var tab = document.createElementNS(tbe.svgns, 'g');
+    var tabblock = document.createElementNS(tbe.svgns, 'rect');
+    var top = 20 + (100 * a);
+    tabblock.setAttribute('class', 'tabblock');
+    var text = document.createElementNS(tbe.svgns, 'text');
+    text.setAttribute('x', '30');
+    text.setAttribute('y', '30');
+    text.setAttribute('class', 'tab-text');
+    var tabName = tbe.blockObject.tabs[a];
+    text.textContent = tabName;
+    tab.appendChild(tabblock);
+    tab.appendChild(text);
+
+    var letpath = '';
+    switch (a) {
+    case 0:
+      letpath = 'A';
+      break;
+    case 1:
+      letpath = 'B';
+      break;
+    case 2:
+      letpath = 'C';
+      break;
+    case 3:
+      letpath = 'D';
+      break;
+    case 4:
+      letpath = 'E';
+      break;
+  }
+
+    tab.setAttribute('transform', 'translate(10, ' + (20 + (100 * a)) + ')');
+    tab.setAttribute('letter', letpath);
+
+    tab.addEventListener("click", function(){
+      var path = null;
+      switch(this.getAttribute('letter')){
+          case 'A':
+            path = tbe.blockObject.A;
+            break;
+          case 'B':
+            path = tbe.blockObject.B;
+            break;
+          case 'C':
+            path = tbe.blockObject.C;
+            break;
+          case 'D':
+            path = tbe.blockObject.D;
+            break;
+          case 'E':
+            path = tbe.blockObject.E;
+            break;
+        }
+    for(var i = 0; i < tbe.blockObject.A.length; i++){
+      //find letter inside tag
+      // move the palettes to the front.
+      tbe.addPaletteBlock(200,  20 + (100 * i), path[i]);
+    }
+  });
+
+    tbe.svg.appendChild(tab);
+  }
+
+  group.appendChild(dA);
+
+  for(var i = 0; i < tbe.blockObject.A.length; i++){
+    tbe.addPaletteBlock(200,  20 + (100 * i), tbe.blockObject.A[i], {port:'a','power':50,'time':'2.5s'});
+  }
 };
 
 return tbe;
