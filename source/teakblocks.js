@@ -24,7 +24,8 @@ module.exports = function (){
 
 var interact = require('interact.js');
 var teakText = require('./teaktext.js');
-var svgb = require('./svgBuilder.js');
+var svgb = require('./svgbuilder.js');
+var svglog = require('./svglog.js');
 
 tbe = {};
 
@@ -116,7 +117,7 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   // a rounded rect and a text box. The group is moved by changing
   // it's transform (see dmove)
 
-  var rect = svgb.createRect('function-block');
+  var rect = svgb.createRect('function-block', 0, 0);
   // For safari 8/14/2016 rx or ry must be explicitly set other wise rx/ry
   // values in css will be ignored. Perhasp a more optimized rect is used.
   rect.setAttribute('rx', 1);
@@ -278,6 +279,7 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
       }
       overlap = tbe.intersectingArea(thisBlock.rect, rect);
       if (overlap > bestOverlap) {
+        svglog.logRect(tbe.svg, rect);
         bestOverlap = overlap;
         target = entry;
       }
@@ -287,7 +289,9 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
   // Refine the action based on geometery.
   if (target !== null) {
     if (thisBlock.rect.left < target.first.rect.left) {
+      // If it's in front of the whole chain, then it's a prepend operation.
       action = 'prepend';
+      // Insert in front of the chain.
       target = target.first;
     } else {
       action = 'append';
@@ -316,10 +320,8 @@ tbe.FunctionBlock.prototype.insertTargetShadows = function(target, action) {
   var x = append ? target.rect.right : (target.rect.left - this.chainWidth);
   var shadow = null;
   while (block !== null) {
-    shadow = svgb.createRect('shadow-block');
+    shadow = svgb.createRect('shadow-block', x, target.rect.top);
     shadow.setAttribute('rx', 1);
-    shadow.style.x = x;
-    shadow.style.y = target.rect.top;
     tbe.svg.insertBefore(shadow, tbe.svg.firstChild);
     block.targetShadow = shadow;
     x += 80;
@@ -456,6 +458,8 @@ tbe.configFBInteract = function configFBInteract() {
           block.moveToPossibleTarget();
           block.setDraggingState(false);
         }
+
+        svglog.clearLog();
         // Serialize after all moving has settled. TODO clean this up.
         setTimeout(thisTbe.diagramChanged(), 500);
       },

@@ -22,12 +22,11 @@ SOFTWARE.
 
 module.exports = function (){
 
-  svgBuilder = {};
+svgBuilder = {};
+svgBuilder.ns = 'http://www.w3.org/2000/svg';
+svgBuilder.xlinkns = 'http://www.w3.org/1999/xlink';
 
-  svgBuilder.ns = 'http://www.w3.org/2000/svg';
-  svgBuilder.xlinkns = 'http://www.w3.org/1999/xlink';
-
-  svgBuilder.p = {
+svgBuilder.p = {
   // Very simple svg tools for the teak block editor needs.
   move: function (dx, dy) {
     return 'm' + dx + ' ' + dy + ' ';
@@ -55,9 +54,11 @@ svgBuilder.createUse = function createSymbolUse(elementClass, symbolName) {
   return elt;
 };
 
-svgBuilder.createRect = function createRect(elementClass) {
+svgBuilder.createRect = function createRect(elementClass, x, y) {
   var elt  = document.createElementNS(svgBuilder.ns, 'rect');
   elt.setAttribute('class', elementClass);
+  elt.style.x = x;
+  elt.style.y = y;
   return elt;
 };
 

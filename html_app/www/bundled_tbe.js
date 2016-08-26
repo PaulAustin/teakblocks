@@ -6024,7 +6024,7 @@ tbe.addPaletteBlock(100, 420, 'start', {when:'dio1-rising'});
 tbe.addPaletteBlock(100, 420, 'quark', {flavor:'charmed'});
 */
 
-},{"./teakblocks.js":4}],3:[function(require,module,exports){
+},{"./teakblocks.js":5}],3:[function(require,module,exports){
 /*
 Copyright (c) 2016 Paul Austin - SDG
 
@@ -6049,12 +6049,11 @@ SOFTWARE.
 
 module.exports = function (){
 
-  svgBuilder = {};
+svgBuilder = {};
+svgBuilder.ns = 'http://www.w3.org/2000/svg';
+svgBuilder.xlinkns = 'http://www.w3.org/1999/xlink';
 
-  svgBuilder.ns = 'http://www.w3.org/2000/svg';
-  svgBuilder.xlinkns = 'http://www.w3.org/1999/xlink';
-
-  svgBuilder.p = {
+svgBuilder.p = {
   // Very simple svg tools for the teak block editor needs.
   move: function (dx, dy) {
     return 'm' + dx + ' ' + dy + ' ';
@@ -6082,9 +6081,11 @@ svgBuilder.createUse = function createSymbolUse(elementClass, symbolName) {
   return elt;
 };
 
-svgBuilder.createRect = function createRect(elementClass) {
+svgBuilder.createRect = function createRect(elementClass, x, y) {
   var elt  = document.createElementNS(svgBuilder.ns, 'rect');
   elt.setAttribute('class', elementClass);
+  elt.style.x = x;
+  elt.style.y = y;
   return elt;
 };
 
@@ -6128,9 +6129,80 @@ SOFTWARE.
 
 module.exports = function (){
 
+var svgb = require('./svgbuilder.js');
+
+svgLog = {};
+// A tool for adding cosmetic notes to an svg canvas that fade away
+// TODO add means for text, controlltimeing of fade, and other things.
+
+// Array of elements in the visual log
+svgLog.log  = [];
+
+// Add a rectangle 'comment' to the canvas
+svgLog.logRect = function logRect(svg, rect) {
+  var elt = svgb.createRect('svglog-rect', rect.left, rect.top);
+  elt.style.width = rect.right - rect.left;
+  elt.style.height = rect.bottom - rect.top;
+
+  elt.setAttribute('fill', 'DeepPink');
+  elt.setAttribute('opacity', '0.1');
+  elt.setAttribute('pointer-events', 'none');
+
+  svgLog.log.push({elt:elt, canvas:svg});
+  svg.appendChild(elt);
+  setTimeout(svgLog.cullLog, 150);
+};
+
+// Remove log elements over time so they don't clutter up the display too much.
+svgLog.cullLog = function() {
+  var l = svgLog.log.length;
+  if (l > 2) {
+    obj = svgLog.log.shift();
+    obj.canvas.removeChild(obj.elt);
+    setTimeout(svgLog.cullLog, 150);
+  }
+};
+
+// Clear any remaing elements from the log.
+svgLog.clearLog = function() {
+  while(svgLog.log.length > 0) {
+    obj = svgLog.log.pop();
+    obj.canvas.removeChild(obj.elt);
+  }
+};
+
+return svgLog;
+}();
+
+},{"./svgbuilder.js":3}],5:[function(require,module,exports){
+/*
+Copyright (c) 2016 Paul Austin - SDG
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+module.exports = function (){
+
 var interact = require('interact.js');
 var teakText = require('./teaktext.js');
-var svgb = require('./svgBuilder.js');
+var svgb = require('./svgbuilder.js');
+var svglog = require('./svglog.js');
 
 tbe = {};
 
@@ -6222,7 +6294,7 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   // a rounded rect and a text box. The group is moved by changing
   // it's transform (see dmove)
 
-  var rect = svgb.createRect('function-block');
+  var rect = svgb.createRect('function-block', 0, 0);
   // For safari 8/14/2016 rx or ry must be explicitly set other wise rx/ry
   // values in css will be ignored. Perhasp a more optimized rect is used.
   rect.setAttribute('rx', 1);
@@ -6384,6 +6456,7 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
       }
       overlap = tbe.intersectingArea(thisBlock.rect, rect);
       if (overlap > bestOverlap) {
+        svglog.logRect(tbe.svg, rect);
         bestOverlap = overlap;
         target = entry;
       }
@@ -6393,7 +6466,9 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
   // Refine the action based on geometery.
   if (target !== null) {
     if (thisBlock.rect.left < target.first.rect.left) {
+      // If it's in front of the whole chain, then it's a prepend operation.
       action = 'prepend';
+      // Insert in front of the chain.
       target = target.first;
     } else {
       action = 'append';
@@ -6422,10 +6497,8 @@ tbe.FunctionBlock.prototype.insertTargetShadows = function(target, action) {
   var x = append ? target.rect.right : (target.rect.left - this.chainWidth);
   var shadow = null;
   while (block !== null) {
-    shadow = svgb.createRect('shadow-block');
+    shadow = svgb.createRect('shadow-block', x, target.rect.top);
     shadow.setAttribute('rx', 1);
-    shadow.style.x = x;
-    shadow.style.y = target.rect.top;
     tbe.svg.insertBefore(shadow, tbe.svg.firstChild);
     block.targetShadow = shadow;
     x += 80;
@@ -6562,6 +6635,8 @@ tbe.configFBInteract = function configFBInteract() {
           block.moveToPossibleTarget();
           block.setDraggingState(false);
         }
+
+        svglog.clearLog();
         // Serialize after all moving has settled. TODO clean this up.
         setTimeout(thisTbe.diagramChanged(), 500);
       },
@@ -6704,7 +6779,7 @@ tbe.initPalettes =  function initPalettes(palettes) {
 return tbe;
 }();
 
-},{"./svgBuilder.js":3,"./teaktext.js":5,"interact.js":1}],5:[function(require,module,exports){
+},{"./svgbuilder.js":3,"./svglog.js":4,"./teaktext.js":6,"interact.js":1}],6:[function(require,module,exports){
 /*
 Copyright (c) 2016 Paul Austin - SDG
 
