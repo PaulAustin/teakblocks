@@ -11,6 +11,18 @@
 <body>
   <div id="container">
     <svg class=editor-canvas id='editorCanvas' xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <symbol id="palette-tab">
+            <g>
+              <rect class="tab-block" x="0" y="0" width="30" height="30"/>
+              <text class="tab-text" x="10" y="30">*<text/>
+            </g>
+        </symbol>
+      </defs>
+
+      <!--use xlink:href="#palette-tab" x="450" y="450"/-->
+      <!--use xlink:href="#palette-tab" x="350" y="350"/-->
+
       <filter id="dropshadow" height="120%">
         <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
         <feMerge>
@@ -18,6 +30,10 @@
           <feMergeNode in="SourceGraphic"/>
         </feMerge>
       </filter>
+
+
+
+
     </svg>
     <textarea class=teak-code id="teakCode" readonly=true rows=50>
     </textarea>
