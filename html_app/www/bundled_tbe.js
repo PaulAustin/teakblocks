@@ -6075,9 +6075,29 @@ module.exports = function (){
   }
 };
 
-svgBuilder.createUse = function createUse(symbolName) {
+svgBuilder.createUse = function createSymbolUse(elementClass, symbolName) {
   var elt  = document.createElementNS(svgBuilder.ns, 'use');
-  elt.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', symbolName);
+  elt.setAttribute('class', elementClass);
+  elt.setAttributeNS(svgBuilder.xlinkns, 'xlink:href', symbolName);
+  return elt;
+};
+
+svgBuilder.createRect = function createRect(elementClass) {
+  var elt  = document.createElementNS(svgBuilder.ns, 'rect');
+  elt.setAttribute('class', elementClass);
+  return elt;
+};
+
+svgBuilder.createGroup = function createGroup(elementClass) {
+  var elt  = document.createElementNS(svgBuilder.ns, 'g');
+  elt.setAttribute('class', elementClass);
+  return elt;
+};
+
+svgBuilder.createText = function createText(elementClass) {
+  var elt  = document.createElementNS(svgBuilder.ns, 'text');
+  elt.setAttribute('class', elementClass);
+  return elt;
 };
 
 return svgBuilder;
@@ -6175,7 +6195,7 @@ tbe.popPaletteItem = function(block){
 
 // Constructor for FunctionBlock object.
 tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
-  // Make an JS object that wraps an SVG object
+  // Make a JS object that wraps the SVG object
   this.rect  = {
       left:   0,
       top:    0,
@@ -6196,21 +6216,18 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   this.snapAction = null;   // append, prepend, replace, ...
   this.targetShadow = null; // Svg element to hilite target location
 
-  var group = document.createElementNS(svgb.ns, 'g');
-  group.setAttribute('class', 'drag-group');
+  var group = svgb.createGroup('drag-group');
 
   // Create the actual SVG object. Its a group of two pieces
   // a rounded rect and a text box. The group is moved by changing
   // it's transform (see dmove)
 
-  var rect = document.createElementNS(svgb.ns, 'rect');
-  rect.setAttribute('class', 'function-block');
+  var rect = svgb.createRect('function-block');
   // For safari 8/14/2016 rx or ry must be explicitly set other wise rx/ry
   // values in css will be ignored. Perhasp a more optimized rect is used.
   rect.setAttribute('rx', 1);
 
-  var text = document.createElementNS(svgb.ns, 'text');
-  text.setAttribute('class', 'function-text');
+  var text = svgb.createText('function-text');
   text.setAttribute('x', '10');
   text.setAttribute('y', '45');
   text.textContent = blockName;
@@ -6345,6 +6362,7 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
   var action = null;
   var rect = null;
   var chainWidth = this.chainWidth;
+
   // look at every diagram block taking into consideration
   // weather or not it is in  chain.
 
@@ -6404,8 +6422,7 @@ tbe.FunctionBlock.prototype.insertTargetShadows = function(target, action) {
   var x = append ? target.rect.right : (target.rect.left - this.chainWidth);
   var shadow = null;
   while (block !== null) {
-    shadow = document.createElementNS(svgb.ns, 'rect');
-    shadow.setAttribute('class', 'shadow-block');
+    shadow = svgb.createRect('shadow-block');
     shadow.setAttribute('rx', 1);
     shadow.style.x = x;
     shadow.style.y = target.rect.top;
@@ -6608,7 +6625,7 @@ tbe.initPalettes =  function initPalettes(palettes) {
   tbe.svg.appendChild(group);
 
   for (var a = 0; a < tbe.blockObject.tabs.length; a++){
-  //  var newtab = svgb.createUse('#palette-tab');
+  //  var newtab = svgb.createSymbolUse('tab-block', '#palette-tab');
   //  newtab.x = 200; //('x', 200);
   //  newtab.y = 20 + (100 * a); // ('y', 20 + (100 * a));
   //  tbe.svg.appendChild(newtab);

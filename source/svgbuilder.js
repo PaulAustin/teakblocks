@@ -48,9 +48,29 @@ module.exports = function (){
   }
 };
 
-svgBuilder.createUse = function createUse(symbolName) {
+svgBuilder.createUse = function createSymbolUse(elementClass, symbolName) {
   var elt  = document.createElementNS(svgBuilder.ns, 'use');
-  elt.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', symbolName);
+  elt.setAttribute('class', elementClass);
+  elt.setAttributeNS(svgBuilder.xlinkns, 'xlink:href', symbolName);
+  return elt;
+};
+
+svgBuilder.createRect = function createRect(elementClass) {
+  var elt  = document.createElementNS(svgBuilder.ns, 'rect');
+  elt.setAttribute('class', elementClass);
+  return elt;
+};
+
+svgBuilder.createGroup = function createGroup(elementClass) {
+  var elt  = document.createElementNS(svgBuilder.ns, 'g');
+  elt.setAttribute('class', elementClass);
+  return elt;
+};
+
+svgBuilder.createText = function createText(elementClass) {
+  var elt  = document.createElementNS(svgBuilder.ns, 'text');
+  elt.setAttribute('class', elementClass);
+  return elt;
 };
 
 return svgBuilder;
