@@ -22,6 +22,7 @@ SOFTWARE.
 
 module.exports = function (){
 
+var assert = require('assert');
 var interact = require('interact.js');
 var teakText = require('./teaktext.js');
 var svgb = require('./svgbuilder.js');
@@ -307,9 +308,8 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
       }
     } else {
       action = 'append';
-      target = target.last;
     }
-    svglog.logRect(tbe.svg, bestRect, action + ' ' + target.name);
+    // svglog.logRect(tbe.svg, bestRect, action + ' ' + target.name);
   }
 
   // Update shadows as needed.
@@ -380,29 +380,53 @@ tbe.FunctionBlock.prototype.removeTargetShadows = function() {
 
 tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
   var endBlock = null;
-  if (this.snapTarget !==  null && this.targetShadow !== null) {
+  var thisLast = this.last;
+  var frameCount = 10;
+  var shadowX = 0;
 
+  assert(this.prev === null);
+  assert(thisLast.next === null);
+
+  if (this.snapTarget !==  null && this.targetShadow !== null) {
     // TODO:assert that chain we have has clean prev/next links
     // Append/Prepend the block(chain) to the list
     if(this.snapAction === 'prepend') {
-      thisLast = this.last;
+      assert(this.snapTarget.prev === null);
+      targx =  this.snapTarget.rect.left - this.chainWidth;
       thisLast.next = this.snapTarget;
       this.snapTarget.prev = thisLast;
-      endBlock = thisLast;
     } else if (this.snapAction === 'append') {
+      assert(this.snapTarget.next === null);
+      targx =  this.snapTarget.rect.right;
       this.prev = this.snapTarget;
       this.snapTarget.next = this;
       // slide down post blocks if insert
       // logically here, in annimation bellow
     } else if (this.snapAction === 'insert') {
-      // work to do.
+      assert(this.snapTarget.prev !== null);
+      targx =  this.snapTarget.rect.left;
+      // Determin space needed for new segment
+      // before its spliced in.
+      var width = this.chainWidth;
+
+      thisLast.next = this.snapTarget;
+      this.prev = this.snapTarget.prev;
+      this.snapTarget.prev.next = this;
+      this.snapTarget.prev = thisLast;
+
+      // Set up animation to slide down old blocks.
+      this.snapTarget.animateState = {
+        adx: width / frameCount,
+        ady: 0,
+        frame: frameCount,
+      };
+      tbe.easeToTarget(0, this.snapTarget, this.snapTarget.last);
     } // TODO: replace???
 
-    // Set up an animation to move the block
-    var dx = parseFloat(this.targetShadow.style.x) - this.rect.left;
-    var dy = parseFloat(this.targetShadow.style.y) - this.rect.top;
+    // Set up an animation to move the dragging blocks to new location.
+    var dx = targx - this.rect.left;
+    var dy = this.snapTarget.rect.top - this.rect.top;
 
-    var frameCount  = 10;
       // TODO:base frame count on distance to final location.
       // The model snaps directly to the target location
       // but the view eases to it.
@@ -411,7 +435,7 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
       ady: dy / frameCount,
       frame: frameCount,
     };
-    tbe.easeToTarget(0, this, endBlock);
+    tbe.easeToTarget(0, this, thisLast);
   }
   this.hilite(false);
   this.snapTarget = null;
