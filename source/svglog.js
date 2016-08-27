@@ -32,27 +32,39 @@ svgLog = {};
 svgLog.log  = [];
 
 // Add a rectangle 'comment' to the canvas
-svgLog.logRect = function logRect(svg, rect) {
-  var elt = svgb.createRect('svglog-rect', rect.left, rect.top);
+svgLog.logRect = function logRect(canvas, rect, text) {
+
+  var group = svgb.createGroup('svglog', rect.left, rect.top);
+  group.setAttribute('pointer-events', 'none');
+
+  // Make a bright transparent rectangle
+  var elt = svgb.createRect('svglog-rect', 0, 0);
   elt.style.width = rect.right - rect.left;
   elt.style.height = rect.bottom - rect.top;
-
   elt.setAttribute('fill', 'DeepPink');
-  elt.setAttribute('opacity', '0.1');
+  elt.setAttribute('opacity', '0.2');
   elt.setAttribute('pointer-events', 'none');
+  group.appendChild(elt);
 
-  svgLog.log.push({elt:elt, canvas:svg});
-  svg.appendChild(elt);
-  setTimeout(svgLog.cullLog, 150);
+  // If there is some text add that to the group.
+  if (text !== undefined) {
+    var textElt =  svgb.createText('svglog-text', 10, 20, text);
+    textElt.setAttribute('pointer-events', 'none');
+    group.appendChild(textElt);
+  }
+
+  canvas.appendChild(group);
+  svgLog.log.push({elt: group, canvas: canvas});
+  setTimeout(svgLog.cullLog, 100);
 };
 
-// Remove log elements over time so they don't clutter up the display too much.
+// Remove old log elements over time so they don't clutter up the display.
 svgLog.cullLog = function() {
   var l = svgLog.log.length;
-  if (l > 2) {
+  if (l > 1) {
     obj = svgLog.log.shift();
     obj.canvas.removeChild(obj.elt);
-    setTimeout(svgLog.cullLog, 150);
+    setTimeout(svgLog.cullLog, 100);
   }
 };
 

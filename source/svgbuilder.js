@@ -62,15 +62,19 @@ svgBuilder.createRect = function createRect(elementClass, x, y) {
   return elt;
 };
 
-svgBuilder.createGroup = function createGroup(elementClass) {
+svgBuilder.createGroup = function createGroup(elementClass, x, y) {
   var elt  = document.createElementNS(svgBuilder.ns, 'g');
   elt.setAttribute('class', elementClass);
+  elt.setAttribute ('transform', 'translate (' + x + ' ' + y + ')');
   return elt;
 };
 
-svgBuilder.createText = function createText(elementClass) {
+svgBuilder.createText = function createText(elementClass, x, y, text) {
   var elt  = document.createElementNS(svgBuilder.ns, 'text');
   elt.setAttribute('class', elementClass);
+  elt.setAttribute('x', x);
+  elt.setAttribute('y', y);
+  elt.textContent = text;
   return elt;
 };
 

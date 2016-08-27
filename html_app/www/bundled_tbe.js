@@ -6089,15 +6089,19 @@ svgBuilder.createRect = function createRect(elementClass, x, y) {
   return elt;
 };
 
-svgBuilder.createGroup = function createGroup(elementClass) {
+svgBuilder.createGroup = function createGroup(elementClass, x, y) {
   var elt  = document.createElementNS(svgBuilder.ns, 'g');
   elt.setAttribute('class', elementClass);
+  elt.setAttribute ('transform', 'translate (' + x + ' ' + y + ')');
   return elt;
 };
 
-svgBuilder.createText = function createText(elementClass) {
+svgBuilder.createText = function createText(elementClass, x, y, text) {
   var elt  = document.createElementNS(svgBuilder.ns, 'text');
   elt.setAttribute('class', elementClass);
+  elt.setAttribute('x', x);
+  elt.setAttribute('y', y);
+  elt.textContent = text;
   return elt;
 };
 
@@ -6139,27 +6143,39 @@ svgLog = {};
 svgLog.log  = [];
 
 // Add a rectangle 'comment' to the canvas
-svgLog.logRect = function logRect(svg, rect) {
-  var elt = svgb.createRect('svglog-rect', rect.left, rect.top);
+svgLog.logRect = function logRect(canvas, rect, text) {
+
+  var group = svgb.createGroup('svglog', rect.left, rect.top);
+  group.setAttribute('pointer-events', 'none');
+
+  // Make a bright transparent rectangle
+  var elt = svgb.createRect('svglog-rect', 0, 0);
   elt.style.width = rect.right - rect.left;
   elt.style.height = rect.bottom - rect.top;
-
   elt.setAttribute('fill', 'DeepPink');
-  elt.setAttribute('opacity', '0.1');
+  elt.setAttribute('opacity', '0.2');
   elt.setAttribute('pointer-events', 'none');
+  group.appendChild(elt);
 
-  svgLog.log.push({elt:elt, canvas:svg});
-  svg.appendChild(elt);
-  setTimeout(svgLog.cullLog, 150);
+  // If there is some text add that to the group.
+  if (text !== undefined) {
+    var textElt =  svgb.createText('svglog-text', 10, 20, text);
+    textElt.setAttribute('pointer-events', 'none');
+    group.appendChild(textElt);
+  }
+
+  canvas.appendChild(group);
+  svgLog.log.push({elt: group, canvas: canvas});
+  setTimeout(svgLog.cullLog, 100);
 };
 
-// Remove log elements over time so they don't clutter up the display too much.
+// Remove old log elements over time so they don't clutter up the display.
 svgLog.cullLog = function() {
   var l = svgLog.log.length;
-  if (l > 2) {
+  if (l > 1) {
     obj = svgLog.log.shift();
     obj.canvas.removeChild(obj.elt);
-    setTimeout(svgLog.cullLog, 150);
+    setTimeout(svgLog.cullLog, 100);
   }
 };
 
@@ -6288,8 +6304,7 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   this.snapAction = null;   // append, prepend, replace, ...
   this.targetShadow = null; // Svg element to hilite target location
 
-  var group = svgb.createGroup('drag-group');
-
+  var group = svgb.createGroup('drag-group', 0, 0);
   // Create the actual SVG object. Its a group of two pieces
   // a rounded rect and a text box. The group is moved by changing
   // it's transform (see dmove)
@@ -6299,14 +6314,11 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   // values in css will be ignored. Perhasp a more optimized rect is used.
   rect.setAttribute('rx', 1);
 
-  var text = svgb.createText('function-text');
-  text.setAttribute('x', '10');
-  text.setAttribute('y', '45');
-  text.textContent = blockName;
+  var text = svgb.createText('function-text', 10, 45, blockName);
 
   group.appendChild(rect);
-  // group.appendChild(createBranchPath());
   group.appendChild(text);
+  // group.appendChild(createBranchPath());
 
   this.svgGroup = group;
   this.svgRect= rect;
@@ -6341,6 +6353,16 @@ Object.defineProperty(tbe.FunctionBlock.prototype, 'chainWidth', {
       block = block.next;
     }
     return width;
+  }});
+
+Object.defineProperty(tbe.FunctionBlock.prototype, 'blockWidth', {
+  get: function() {
+    return this.rect.right - this.rect.left;
+  }});
+
+Object.defineProperty(tbe.FunctionBlock.prototype, 'blockHeight', {
+  get: function() {
+    return this.rect.bottom - this.rect.top;
   }});
 
 // Example of an object property added with defineProperty with an accessor property descriptor
@@ -6431,9 +6453,11 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
   var target = null;
   var overlap = 0;
   var bestOverlap = 0;
+  var bestRect = null;
   var action = null;
   var rect = null;
   var chainWidth = this.chainWidth;
+  var thisWidth = this.blockWidth;
 
   // look at every diagram block taking into consideration
   // weather or not it is in  chain.
@@ -6443,21 +6467,24 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
   tbe.diagramBlocks.forEach(function(entry) {
     if (entry !== thisBlock  && !entry.dragging) {
       rect = {
-        left:entry.rect.left,
-        top:entry.rect.top,
-        right:entry.rect.right,
-        bottom:entry.rect.bottom,
+        top:    entry.rect.top,
+        bottom: entry.rect.bottom,
+        left:   entry.rect.left - (thisWidth * 0.5),
+        right:  entry.rect.right - (thisWidth * 0.5),
       };
-      if (entry.next === null) {
-        rect.right += 50;
-      }
       if (entry.prev === null) {
-        rect.left -= 80;
+        // For left edge, increase gravity field
+        rect.left -= thisWidth * 0.5;
       }
+      if (entry.next === null) {
+        // For right edge, increase gravity field
+        rect.right += thisWidth * 1.5;
+      }
+
       overlap = tbe.intersectingArea(thisBlock.rect, rect);
       if (overlap > bestOverlap) {
-        svglog.logRect(tbe.svg, rect);
         bestOverlap = overlap;
+        bestRect = rect;
         target = entry;
       }
     }
@@ -6465,15 +6492,17 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
 
   // Refine the action based on geometery.
   if (target !== null) {
-    if (thisBlock.rect.left < target.first.rect.left) {
-      // If it's in front of the whole chain, then it's a prepend operation.
-      action = 'prepend';
-      // Insert in front of the chain.
-      target = target.first;
+    if (thisBlock.rect.left < (target.rect.left)) {
+      if (target.prev !== null) {
+        action = 'insert';
+      } else {
+        action = 'prepend';
+      }
     } else {
       action = 'append';
       target = target.last;
     }
+    svglog.logRect(tbe.svg, bestRect, action + ' ' + target.name);
   }
 
   // Update shadows as needed.
@@ -6490,18 +6519,33 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
   return target;
 };
 
-// Show the socket where 'this' block will be put once dragging is complete.
+// Show the shadow blocks to indicate where the blocks will end up if placed
+// in the current location.
 tbe.FunctionBlock.prototype.insertTargetShadows = function(target, action) {
   var block = this;
-  var append = (action === 'append');
-  var x = append ? target.rect.right : (target.rect.left - this.chainWidth);
+  var x = 0;
+  var y = target.rect.top;
+  if (action === 'prepend') {
+    x = target.rect.left - this.chainWidth;
+  } else if (action === 'insert') {
+    // The shadows will be covered up, and not going to move the
+    // down stream blocks until the move is committed.
+    // so offset them a bit.
+    // TODO show abovw OR based on wherr draggin block are coming from.
+    x = target.rect.left - 15;
+    y -= 15;
+  } else if (action === 'append') {
+    x = target.rect.right;
+  } else {
+    return;
+  }
   var shadow = null;
   while (block !== null) {
-    shadow = svgb.createRect('shadow-block', x, target.rect.top);
+    shadow = svgb.createRect('shadow-block', x, y);
     shadow.setAttribute('rx', 1);
     tbe.svg.insertBefore(shadow, tbe.svg.firstChild);
     block.targetShadow = shadow;
-    x += 80;
+    x += block.blockWidth;
     block = block.next;
   }
 };
@@ -6533,17 +6577,19 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
 
     // TODO:assert that chain we have has clean prev/next links
     // Append/Prepend the block(chain) to the list
-    if(this.snapAction === 'append') {
-      this.prev = this.snapTarget;
-      this.snapTarget.next = this;
-      // slide down post blocks if insert
-      // logically here, in annimation bellow
-    } else if (this.snapAction === 'prepend') {
+    if(this.snapAction === 'prepend') {
       thisLast = this.last;
       thisLast.next = this.snapTarget;
       this.snapTarget.prev = thisLast;
       endBlock = thisLast;
-    } // TODO: insert
+    } else if (this.snapAction === 'append') {
+      this.prev = this.snapTarget;
+      this.snapTarget.next = this;
+      // slide down post blocks if insert
+      // logically here, in annimation bellow
+    } else if (this.snapAction === 'insert') {
+      // work to do.
+    } // TODO: replace???
 
     // Set up an animation to move the block
     var dx = parseFloat(this.targetShadow.style.x) - this.rect.left;
@@ -6637,7 +6683,8 @@ tbe.configFBInteract = function configFBInteract() {
         }
 
         svglog.clearLog();
-        // Serialize after all moving has settled. TODO clean this up.
+        // Serialize after all moving has settled.
+        // TODO clean this up, canoverlap next transaction
         setTimeout(thisTbe.diagramChanged(), 500);
       },
       onmove: function (event) {
