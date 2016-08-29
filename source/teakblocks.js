@@ -117,10 +117,9 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   // a rounded rect and a text box. The group is moved by changing
   // it's transform (see dmove)
 
-  var rect = svgb.createRect('function-block', 0, 0);
+  var rect = svgb.createRect('function-block', 0, 0, 1);
   // For safari 8/14/2016 rx or ry must be explicitly set other wise rx/ry
   // values in css will be ignored. Perhasp a more optimized rect is used.
-  rect.setAttribute('rx', 1);
 
   var text = svgb.createText('function-text', 10, 45, blockName);
 
@@ -348,8 +347,7 @@ tbe.FunctionBlock.prototype.insertTargetShadows = function(target, action) {
   }
   var shadow = null;
   while (block !== null) {
-    shadow = svgb.createRect('shadow-block', x, y);
-    shadow.setAttribute('rx', 1);
+    shadow = svgb.createRect('shadow-block', x, y, 1);
     tbe.svg.insertBefore(shadow, tbe.svg.firstChild);
     block.targetShadow = shadow;
     x += block.blockWidth;
