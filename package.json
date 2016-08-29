@@ -5,7 +5,8 @@
   "main": "teakblocks.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "bify": "browserify source/index.js > html_app/www/bundled_tbe.js",
+    "bify": "browserify source/index.js -o html_app/www/bundled_tbe.js",
+    "wify": "watchify source/index.js -o html_app/www/bundled_tbe.js -v",
     "abuild": "cd html_app; cordova build android",
     "adeploy": "adb install -r html_app/platforms/android/build/outputs/apk/android-debug.apk",
     "http": "http-server ./html_app/www"
@@ -27,7 +28,9 @@
   "homepage": "https://github.com/PaulAustin/teakblocks#readme",
   "dependencies": {
     "assert": "^1.4.1",
-    "interact.js": "^1.2.6"
+    "font-awesome": "^4.6.3",
+    "interact.js": "^1.2.6",
+    "webcomponents.js": "^0.7.22"
   },
   "devDependencies": {
     "browserify": "^13.1.0"
