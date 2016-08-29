@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html >
+<style>
+/* Used by web components */
+ @import 'font-awesome/css/font-awesome.min.css';
+</style>
 <head>
   <meta charset="UTF-8">
   <title>TeakBlocks</title>
@@ -10,6 +14,7 @@
 </head>
 <body>
   <div id="container">
+
     <svg class=editor-canvas id='editorCanvas' xmlns="http://www.w3.org/2000/svg">
       <defs>
         <symbol id="palette-tab">
@@ -30,17 +35,14 @@
           <feMergeNode in="SourceGraphic"/>
         </feMerge>
       </filter>
-
-
-
-
     </svg>
+
     <textarea class=teak-code id="teakCode" readonly=true rows=50>
     </textarea>
+    <teak-config-widget></teak-config-widget>
     <!--textarea class=teak-log id="teakLog" readonly=true rows=50>YO WHATS UP.
     </textarea-->
   </div>
-  <script src='bundled_tbe.js'></script>
   <!--script src='cordova.js'></script-->
   <!--script src="easyble.dist.js"></script-->
   <!--script>
@@ -109,4 +111,6 @@ function foundDevice(device, errorCode)
 
   </script-->
 </body>
+<script src='bundled_tbe.js'></script>
+
 </html>

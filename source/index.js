@@ -21,6 +21,8 @@ SOFTWARE.
 */
 
 tbe = require('./teakblocks.js');
+webcomponents = require('webcomponents.js');
+teak_config_widget = require('./teak-config-widget.js');
 
 tbe.init(
   document.getElementById('editorCanvas'),
