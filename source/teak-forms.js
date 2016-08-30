@@ -5,6 +5,7 @@ tf.css = `
     position: fixed;
     top: 1em;
     right: 1em;
+    width: 10em;
     background-color: #DCE775;
     border-radius: 10px;
     box-shadow: 4px 4px 5px #eaeaea;

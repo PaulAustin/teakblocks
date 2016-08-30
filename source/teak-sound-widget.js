@@ -23,9 +23,19 @@ SOFTWARE.
 (function () {
 
   var tf = require('./teak-forms.js');
-  var template = '<style>' + tf.css + '</style>' +
+  var template = '<style>' + tf.css +
+`
+.container {
+      top: 10em;
+}
+</style>
+`
+ +
   `  <div class="container">
       <form>
+        <label><input type="range" id="volume">
+          <span class="label-text">Volume</span>
+        </label>
       </form>
     </div>
     `;
@@ -38,7 +48,6 @@ SOFTWARE.
 
             //Grab the elements from the shadow root
             this.$container = this.shadowRoot.querySelector('.container');
-            this.updateTheme(this.getAttribute('theme'));
         }
         // Fires when an instance was inserted into the document.
         attachedCallback() {}
@@ -51,14 +60,6 @@ SOFTWARE.
                     break;
             }
             */
-        }
-        updateTheme(theme) {
-/*            var val = "green";
-            if (["green", "red", "blue", "gold"].indexOf(theme) > -1) {
-                val = theme;
-            }
-            */
-            this.$container.className = "container " + val;
         }
     }
 
