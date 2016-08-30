@@ -21,16 +21,8 @@ SOFTWARE.
 */
 
 (function () {
-
   var tf = require('./teak-forms.js');
-  var template = '<style>' + tf.css +
-`
-.container {
-      top: 10em;
-}
-</style>
-`
- +
+  var template = '<style>' + tf.css + '</style>' +
   `  <div class="container">
       <form>
         <label><input type="range" id="volume">
@@ -40,19 +32,20 @@ SOFTWARE.
     </div>
     `;
 
-    class TeakSoundWidget extends HTMLElement {
+  class TeakSoundWidget extends HTMLElement {
 
-        // Called when a tag instance is created.
-        createdCallback() {
-            this.createShadowRoot().innerHTML = template;
+    // Called when a tag instance is created.
+    createdCallback () {
+      this.createShadowRoot().innerHTML = template;
 
-            //Grab the elements from the shadow root
-            this.$container = this.shadowRoot.querySelector('.container');
-        }
+      //Grab the elements from the shadow root
+      this.$container = this.shadowRoot.querySelector('.container');
+      }
         // Fires when an instance was inserted into the document.
-        attachedCallback() {}
+      attachedCallback() {}
         // Fires when an attribute was added, removed, or updated.
-        attributeChangedCallback(attrName, oldVal, newVal) {
+      attributeChangedCallback(attrName, oldVal, newVal) {
+          console.log('AttrChanged' + attrName + oldVal + newVal);
           /*
             switch (attrName) {
                 case "theme":
@@ -60,10 +53,10 @@ SOFTWARE.
                     break;
             }
             */
-        }
+      }
     }
 
-    // Register this class with the DOM loader, tags already parsed will
-    // be connected to the it.
-    document.registerElement('teak-sound-widget', TeakSoundWidget);
+  // Register this class with the DOM loader, tags already parsed will
+  // be connected to the it.
+  document.registerElement('teak-sound-widget', TeakSoundWidget);
 })();

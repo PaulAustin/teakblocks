@@ -20,12 +20,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-webcomponents = require('webcomponents.js');
+require('webcomponents.js');
 
 // TODO make the teak block editor a web component as well.
-tbe = require('./teakblocks.js');
+var tbe = require('./teakblocks.js');
 
-webComponents = {};
+var webComponents = {};
 
 webComponents.config = require('./teak-config-widget.js');
 webComponents.sound = require('./teak-sound-widget.js');

@@ -28,7 +28,7 @@ var teakText = require('./teaktext.js');
 var svgb = require('./svgbuilder.js');
 var svglog = require('./svglog.js');
 
-tbe = {};
+var tbe = {};
 
 tbe.diagramBlocks = [];
 tbe.paletteBlocks = [];
@@ -47,7 +47,7 @@ tbe.elementToBlock = function(el) {
 
     if (text === null)
       return null;
-    values = text.split(':');
+    var values = text.split(':');
     if (values[0] === 'd') {
       return this.diagramBlocks[values[1]];
     } else if (values[0] === 'p') {
@@ -260,10 +260,9 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
   var target = null;
   var overlap = 0;
   var bestOverlap = 0;
-  var bestRect = null;
+//  var bestRect = null;
   var action = null;
   var rect = null;
-  var chainWidth = this.chainWidth;
   var thisWidth = this.blockWidth;
 
   // look at every diagram block taking into consideration
@@ -291,7 +290,7 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
       overlap = tbe.intersectingArea(thisBlock.rect, rect);
       if (overlap > bestOverlap) {
         bestOverlap = overlap;
-        bestRect = rect;
+        // bestRect = rect;
         target = entry;
       }
     }
@@ -377,10 +376,9 @@ tbe.FunctionBlock.prototype.removeTargetShadows = function() {
 };
 
 tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
-  var endBlock = null;
   var thisLast = this.last;
   var frameCount = 10;
-  var shadowX = 0;
+  var targx = 0;
 
   assert(this.prev === null);
   assert(thisLast.next === null);
@@ -470,10 +468,10 @@ tbe.configFBInteract = function configFBInteract() {
         return;
       block.coasting = 1;
     })
-    .on('hold', function(event) {
-      var block = thisTbe.elementToBlock(event.target);
-      // TODO press and hold...
-    })
+    // .on('hold', function(event) {
+    //   var block = thisTbe.elementToBlock(event.target);
+    // TODO press and hold...
+    // })
     .draggable({
       restrict: {
           restriction: thisTbe.svg,

@@ -24,7 +24,7 @@ module.exports = function (){
 
 var svgb = require('./svgbuilder.js');
 
-svgLog = {};
+var svgLog = {};
 // A tool for adding cosmetic notes to an svg canvas that fade away
 // TODO add means for text, controlltimeing of fade, and other things.
 
@@ -62,7 +62,7 @@ svgLog.logRect = function logRect(canvas, rect, text) {
 svgLog.cullLog = function() {
   var l = svgLog.log.length;
   if (l > 1) {
-    obj = svgLog.log.shift();
+    var obj = svgLog.log.shift();
     obj.canvas.removeChild(obj.elt);
     setTimeout(svgLog.cullLog, 100);
   }
@@ -71,7 +71,7 @@ svgLog.cullLog = function() {
 // Clear any remaing elements from the log.
 svgLog.clearLog = function() {
   while(svgLog.log.length > 0) {
-    obj = svgLog.log.pop();
+    var obj = svgLog.log.pop();
     obj.canvas.removeChild(obj.elt);
   }
 };

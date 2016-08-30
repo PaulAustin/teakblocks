@@ -1,5 +1,5 @@
 module.exports = function () {
-tf = {};
+var tf = {};
 tf.css = `
 .container {
     position: fixed;

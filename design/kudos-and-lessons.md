@@ -12,6 +12,13 @@ Each day is a chance to reflect on color sets. The paln is to have a few themes 
 ## The Rounded Rects Riddle
 TODO
 
+## Browserify
+The background, much of my JS experience has come from the node.js world.
+The require system works great and NPM has a very rich community and directory of packages. Bower looks a 'little' like that but every time I dig its a disappointment. As the yoda meme notes [Front End is the path to the dark side](http://i.imgur.com/mFMKEcB.jpg) ES6(ES2015) and Webpack stuff looks good but perhaps too green. Browserify proved to be pretty easy to switch to. Now all the JS is turning into modules and the global space is getting cleaned up.  (Note from the future, this helped with Web components as well)
+
+It does seem that npm + browserify are mostly replacing bower.
+
+
 ## Cordova
 Installed the npm package [Cordova](https://www.npmjs.com/package/cordova)
 
@@ -87,4 +94,10 @@ This is like customizing the checkbox but with it own set of quirks. started rea
 
 ## August 30
 
-Set up this Kudos and lessons log. Gogin to work on cleaning up the config dialogs. Need gesture to bring up config for block. At least a place holder. Perhaps double tap.
+### Kudos files (this log)
+Set up this Kudos and lessons log.
+
+Going to work on cleaning up the config dialogs. Need gesture to bring up config for block. At least a place holder. Perhaps double tap.
+
+### Moved from JSHint to [ESLint](https://www.npmjs.com/package/eslint)
+JSHint is not aware of ES6 features used by teak (template strings). Also, JSHint Atom.io plugin is in the deprecated state. The new plugin, [linter-ESLint](https://atom.io/packages/linter-eslint), works well. First set of fixes are submitted with this note. More rules may be turned on. As an example of tweaks, ```no-console``` was switched from 'error' to 'warn'

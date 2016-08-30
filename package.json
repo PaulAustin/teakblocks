@@ -33,6 +33,7 @@
     "webcomponents.js": "^0.7.22"
   },
   "devDependencies": {
-    "browserify": "^13.1.0"
+    "browserify": "^13.1.0",
+    "eslint": "^3.4.0"
   }
 }
