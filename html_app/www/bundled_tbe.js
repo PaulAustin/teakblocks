@@ -13206,9 +13206,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-tbe = require('./teakblocks.js');
 webcomponents = require('webcomponents.js');
-teak_config_widget = require('./teak-config-widget.js');
+
+// TODO make the teak block editor a web component as well.
+tbe = require('./teakblocks.js');
+
+webComponents = {};
+
+webComponents.config = require('./teak-config-widget.js');
+webComponents.sound = require('./teak-sound-widget.js');
+//webComponents.motor = require('./teak-motor-widget.js');
+//webComponents.LED5x5 = require('./teak-led5x5-widget.js');
 
 tbe.init(
   document.getElementById('editorCanvas'),
@@ -13233,7 +13241,7 @@ tbe.addPaletteBlock(100, 420, 'start', {when:'dio1-rising'});
 tbe.addPaletteBlock(100, 420, 'quark', {flavor:'charmed'});
 */
 
-},{"./teak-config-widget.js":6,"./teakblocks.js":7,"webcomponents.js":2}],4:[function(require,module,exports){
+},{"./teak-config-widget.js":6,"./teak-sound-widget.js":8,"./teakblocks.js":9,"webcomponents.js":2}],4:[function(require,module,exports){
 /*
 Copyright (c) 2016 Paul Austin - SDG
 
@@ -13405,92 +13413,9 @@ return svgLog;
 
 },{"./svgbuilder.js":4}],6:[function(require,module,exports){
 (function () {
-
-    let template = `
-    <style>
-
-    .container {
-        position: fixed;
-        top: 1em;
-        right: 1em;
-        background-color: #DCE775;
-        border-radius: 10px;
-        box-shadow: 4px 4px 5px #eaeaea;
-        font-family:"helvetica";
-        color:#33691E;
-        font-size:30px;
-        min-height: 100px;
-        padding:30px;
-        -webkit-user-select: none;
-    }
-label {
-  margin: 15
-  cursor: pointer;
-  color: #666;
-}
-label input[type="checkbox"] {
-  display: none;
-}
-label input[type="checkbox"] + .label-text:before {
-  content: "\uf096";
-  font-family: "FontAwesome";
-  speak: none;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-  width: 1em;
-  display: inline-block;
-  margin-right: 5px;
-}
-label input[type="checkbox"]:checked + .label-text:before {
-  content: "\uf046";
-  color: #06a3e9;
-/*  animation: tick 180ms ease-in; */
-}
-label input[type="checkbox"]:disabled + .label-text {
-  color: #aaa;
-}
-label input[type="checkbox"]:disabled + .label-text:before {
-  content: "";
-  color: #ccc;
-}
-@keyframes tick {
-  0% {
-    transform: scale(0);
-  }
-  90% {
-    transform: scale(1.4);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-    label {
-      cursor:pointer;
-    }
-    .container.green .left {
-        background-color: #37bc9b;
-    }
-    .container.green .day-long {
-        color: #278b70;
-    }
-    #show-code {
-      margin: 20px;
-    }
-    #show-targets {
-      margin: 20px;
-    }
-    #color-theme {
-      margin: 20px;
-    }
-    #color-theme-label {
-      margin: 20px;
-    }
-    </style>
-    <div class="container">
+  var tf = require('./teak-forms.js');
+  var template = '<style>' + tf.css + '</style>' +
+  `  <div class="container">
       <form>
         <label><input type="checkbox" id="show-code">
           <span class="label-text">Show code</span>
@@ -13515,7 +13440,6 @@ label input[type="checkbox"]:disabled + .label-text:before {
 
         // Fires when an instance of the element is created.
         createdCallback() {
-          console.log('created');
             this.createShadowRoot().innerHTML = template;
 
             //Grab the elements from the shadow root
@@ -13524,7 +13448,6 @@ label input[type="checkbox"]:disabled + .label-text:before {
 
         // Fires when an instance was inserted into the document.
         attachedCallback() {
-          console.log('attached');
         }
         // Fires when an attribute was added, removed, or updated.
         attributeChangedCallback(name, oldValue, newValue) {
@@ -13545,7 +13468,143 @@ label input[type="checkbox"]:disabled + .label-text:before {
     document.registerElement('teak-config-widget', TeakConfigWidget);
 })();
 
-},{}],7:[function(require,module,exports){
+},{"./teak-forms.js":7}],7:[function(require,module,exports){
+module.exports = function () {
+tf = {};
+tf.css = `
+.container {
+    position: fixed;
+    top: 1em;
+    right: 1em;
+    background-color: #DCE775;
+    border-radius: 10px;
+    box-shadow: 4px 4px 5px #eaeaea;
+    font-family:"helvetica";
+    color:#33691E;
+    font-size:30px;
+    padding:30px;
+    -webkit-user-select: none;
+}
+label {
+  margin: 15
+  cursor: pointer;
+  color: #666;
+}
+label input[type="checkbox"] {
+  display: none;
+}
+label input[type="checkbox"] + .label-text:before {
+  content: "\uf096";
+  font-family: "FontAwesome";
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  width: 1em;
+  display: inline-block;
+  margin-right: 5px;
+  animation: tick1 150ms ease-in;
+}
+label input[type="checkbox"]:checked + .label-text:before {
+  content: "\uf046";
+  color: #06a3e9;
+  animation: tick2 150ms ease-in;
+}
+label input[type="checkbox"]:disabled + .label-text {
+  color: #aaa;
+}
+label input[type="checkbox"]:disabled + .label-text:before {
+  content: "";
+  color: #ccc;
+}
+@keyframes tick1 {
+  0% {transform: scale(1);}
+  50% {transform: scale(1.3);}
+  100% {transform: scale(1);}
+}
+@keyframes tick2 {
+  0% {transform: scale(1);}
+  50% {transform: scale(1.3);}
+  100% {transform: scale(1);}
+}
+`;
+return tf;
+}();
+
+},{}],8:[function(require,module,exports){
+/*
+Copyright (c) 2016 Paul Austin - SDG
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+(function () {
+
+  var tf = require('./teak-forms.js');
+  var template = '<style>' + tf.css + '</style>' +
+  `  <div class="container">
+      <form>
+      </form>
+    </div>
+    `;
+
+    class TeakSoundWidget extends HTMLElement {
+
+        // Called when a tag instance is created.
+        createdCallback() {
+            this.createShadowRoot().innerHTML = template;
+
+            //Grab the elements from the shadow root
+            this.$container = this.shadowRoot.querySelector('.container');
+            this.updateTheme(this.getAttribute('theme'));
+        }
+        // Fires when an instance was inserted into the document.
+        attachedCallback() {}
+        // Fires when an attribute was added, removed, or updated.
+        attributeChangedCallback(attrName, oldVal, newVal) {
+          /*
+            switch (attrName) {
+                case "theme":
+                    this.updateTheme(newVal);
+                    break;
+            }
+            */
+        }
+        updateTheme(theme) {
+/*            var val = "green";
+            if (["green", "red", "blue", "gold"].indexOf(theme) > -1) {
+                val = theme;
+            }
+            */
+            this.$container.className = "container " + val;
+        }
+    }
+
+    // Register this class with the DOM loader, tags already parsed will
+    // be connected to the it.
+    document.registerElement('teak-sound-widget', TeakSoundWidget);
+})();
+
+},{"./teak-forms.js":7}],9:[function(require,module,exports){
 /*
 Copyright (c) 2016 Paul Austin - SDG
 
@@ -14203,7 +14262,7 @@ tbe.initPalettes =  function initPalettes(palettes) {
 return tbe;
 }();
 
-},{"./svgbuilder.js":4,"./svglog.js":5,"./teaktext.js":8,"assert":9,"interact.js":1}],8:[function(require,module,exports){
+},{"./svgbuilder.js":4,"./svglog.js":5,"./teaktext.js":10,"assert":11,"interact.js":1}],10:[function(require,module,exports){
 /*
 Copyright (c) 2016 Paul Austin - SDG
 
@@ -14269,7 +14328,7 @@ teakText.blockParamsToText = function blockParamsToText(params) {
 return teakText;
 }();
 
-},{}],9:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 // http://wiki.commonjs.org/wiki/Unit_Testing/1.0
 //
 // THIS IS NOT TESTED NOR LIKELY TO WORK OUTSIDE V8!
@@ -14630,7 +14689,7 @@ var objectKeys = Object.keys || function (obj) {
   return keys;
 };
 
-},{"util/":13}],10:[function(require,module,exports){
+},{"util/":15}],12:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -14655,7 +14714,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -14817,14 +14876,14 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],12:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],13:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -15414,4 +15473,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":12,"_process":11,"inherits":10}]},{},[3]);
+},{"./support/isBuffer":14,"_process":13,"inherits":12}]},{},[3]);

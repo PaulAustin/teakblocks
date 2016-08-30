@@ -20,9 +20,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-tbe = require('./teakblocks.js');
 webcomponents = require('webcomponents.js');
-teak_config_widget = require('./teak-config-widget.js');
+
+// TODO make the teak block editor a web component as well.
+tbe = require('./teakblocks.js');
+
+webComponents = {};
+
+webComponents.config = require('./teak-config-widget.js');
+webComponents.sound = require('./teak-sound-widget.js');
+//webComponents.motor = require('./teak-motor-widget.js');
+//webComponents.LED5x5 = require('./teak-led5x5-widget.js');
 
 tbe.init(
   document.getElementById('editorCanvas'),
