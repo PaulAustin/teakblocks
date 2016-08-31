@@ -1,14 +1,12 @@
 module.exports = function () {
-var tf = {};
-tf.css = `
+var teakForm = {};
+teakForm.styleTag = `
+<style>
 .container {
-    position: fixed;
-    top: 1em;
-    right: 1em;
-    width: 10em;
+    width:12em;
     background-color: #DCE775;
     border-radius: 10px;
-    box-shadow: 4px 4px 5px #eaeaea;
+    box-shadow: 1px 4px 5px 2px rgba(0, 0, 0, 0.2);
     font-family:"helvetica";
     color:#33691E;
     font-size:30px;
@@ -61,8 +59,7 @@ label input[type="checkbox"]:disabled + .label-text:before {
   100% {transform: scale(1);}
 }
 .teakform {
-    overflow-y: scroll;
-    transition: transform .3s ease;
+    transition: transform .4s ease;
 }
 .teakform.opened {
     transform: translate(0, 0%);
@@ -70,9 +67,13 @@ label input[type="checkbox"]:disabled + .label-text:before {
 .teakform.closed {
     transform: translate(0, -120%);
 }
+.teakform.closed-down {
+    transform: translate(0, 120%);
+}
 .teakform {
     box-sizing:border-box;
 }
+</style>
 `;
-return tf;
+return teakForm;
 }();

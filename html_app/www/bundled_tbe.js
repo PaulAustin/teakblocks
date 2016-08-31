@@ -13412,9 +13412,31 @@ return svgLog;
 }();
 
 },{"./svgbuilder.js":4}],6:[function(require,module,exports){
+/*
+Copyright (c) 2016 Paul Austin - SDG
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 (function () {
   var tf = require('./teak-forms.js');
-  var template = '<style>' + tf.css + '</style>' +
+  var template = tf.styleTag +
 `<div id="app-config" class="container teakform closed">
     <form>
       <label><input type="checkbox" id="show-code">
@@ -13464,16 +13486,14 @@ return svgLog;
 
 },{"./teak-forms.js":7}],7:[function(require,module,exports){
 module.exports = function () {
-var tf = {};
-tf.css = `
+var teakForm = {};
+teakForm.styleTag = `
+<style>
 .container {
-    position: fixed;
-    top: 1em;
-    right: 1em;
-    width: 10em;
+    width:12em;
     background-color: #DCE775;
     border-radius: 10px;
-    box-shadow: 4px 4px 5px #eaeaea;
+    box-shadow: 1px 4px 5px 2px rgba(0, 0, 0, 0.2);
     font-family:"helvetica";
     color:#33691E;
     font-size:30px;
@@ -13526,8 +13546,7 @@ label input[type="checkbox"]:disabled + .label-text:before {
   100% {transform: scale(1);}
 }
 .teakform {
-    overflow-y: scroll;
-    transition: transform .3s ease;
+    transition: transform .4s ease;
 }
 .teakform.opened {
     transform: translate(0, 0%);
@@ -13535,11 +13554,15 @@ label input[type="checkbox"]:disabled + .label-text:before {
 .teakform.closed {
     transform: translate(0, -120%);
 }
+.teakform.closed-down {
+    transform: translate(0, 120%);
+}
 .teakform {
     box-sizing:border-box;
 }
+</style>
 `;
-return tf;
+return teakForm;
 }();
 
 },{}],8:[function(require,module,exports){

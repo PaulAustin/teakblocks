@@ -116,3 +116,9 @@ This seems like a staple of Angular, and Bootstrap but beneath it all
 the mechanics are straight forward css transforms. The [David Walsh Blog](https://davidwalsh.name/css-slide)
 has a tutorial on what CSS properties to use. Hack: Double click on a block
 to bring in the fake config box.
+
+## August 31
+
+### Teak form cleanup
+Moved initial form position to tag so it can be place on the screen based on html.
+Touched up shading for forms. MDN has a nice [page explaining ```box-shadow```](https://developer.mozilla.org/en-US/docs/Web/CSS/box-shadow). The code was not using alpha before, looked odd when shadow was over color other than white.
