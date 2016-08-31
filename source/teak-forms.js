@@ -60,6 +60,19 @@ label input[type="checkbox"]:disabled + .label-text:before {
   50% {transform: scale(1.3);}
   100% {transform: scale(1);}
 }
+.teakform {
+    overflow-y: scroll;
+    transition: transform .3s ease;
+}
+.teakform.opened {
+    transform: translate(0, 0%);
+}
+.teakform.closed {
+    transform: translate(0, -120%);
+}
+.teakform {
+    box-sizing:border-box;
+}
 `;
 return tf;
 }();

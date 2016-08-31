@@ -468,6 +468,22 @@ tbe.configFBInteract = function configFBInteract() {
         return;
       block.coasting = 1;
     })
+    .on('doubletap', function (event) {
+      // Mark the chain as coastin. if it finds a target
+      // it will snap to it.
+      var block = thisTbe.elementToBlock(event.target);
+      if (block === null)
+        return;
+
+      var tform = document.getElementById('app-config');
+      var opened = tform.getAttribute('opened');
+      if (opened === 'false') {
+        opened = 'true';
+      } else {
+        opened = 'false';
+      }
+      tform.setAttribute('opened', opened);
+    })
     // .on('hold', function(event) {
     //   var block = thisTbe.elementToBlock(event.target);
     // TODO press and hold...
@@ -540,6 +556,16 @@ tbe.configFBInteract = function configFBInteract() {
         }
       }
     });
+    /*
+    .resizable({
+      autoScroll: {
+        container: tbe.svg,
+        margin: 50,
+        distance: 5,
+        interval: 10
+      }
+    });
+    */
 };
 
 tbe.diagramChanged = function diagramChanged() {

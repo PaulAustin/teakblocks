@@ -94,10 +94,25 @@ This is like customizing the checkbox but with it own set of quirks. started rea
 
 ## August 30
 
-### Kudos files (this log)
+### Kudos and Lessons file (this log)
 Set up this Kudos and lessons log.
 
 Going to work on cleaning up the config dialogs. Need gesture to bring up config for block. At least a place holder. Perhaps double tap.
 
 ### Moved from JSHint to [ESLint](https://www.npmjs.com/package/eslint)
-JSHint is not aware of ES6 features used by teak (template strings). Also, JSHint Atom.io plugin is in the deprecated state. The new plugin, [linter-ESLint](https://atom.io/packages/linter-eslint), works well. First set of fixes are submitted with this note. More rules may be turned on. As an example of tweaks, ```no-console``` was switched from 'error' to 'warn'
+JSHint is not aware of ES6 features used by teak (template literals). Also, JSHint, the Atom.io plugin, is in the deprecated state. The new plugin, [linter-ESLint](https://atom.io/packages/linter-eslint), works well. First set of fixes are submitted with this note. More rules may be turned on. As an example of tweaks, ```no-console``` was switched from 'error' to 'warn'
+
+### OSX screen resolution setting
+Little know fact, press the option key while selecting the 'scaled option' A larger list of resolutions is then listed, this helps when you adapter isn't working quite right. Not exactly a Teak thing, but getting the external monitor working makes a difference.
+
+### interact.js resizing
+Fist attempt to auto scroll, did not work.
+
+### interact.js double tap
+Event fires fine, now to attach it to the configuration. The double tap is easy on PC browser, not so much on tablet app. Not sure why.
+
+### Working at sliding divs in and out
+This seems like a staple of Angular, and Bootstrap but beneath it all
+the mechanics are straight forward css transforms. The [David Walsh Blog](https://davidwalsh.name/css-slide)
+has a tutorial on what CSS properties to use. Hack: Double click on a block
+to bring in the fake config box.

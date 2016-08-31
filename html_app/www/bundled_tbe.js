@@ -13206,12 +13206,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-webcomponents = require('webcomponents.js');
+require('webcomponents.js');
 
 // TODO make the teak block editor a web component as well.
-tbe = require('./teakblocks.js');
+var tbe = require('./teakblocks.js');
 
-webComponents = {};
+var webComponents = {};
 
 webComponents.config = require('./teak-config-widget.js');
 webComponents.sound = require('./teak-sound-widget.js');
@@ -13356,7 +13356,7 @@ module.exports = function (){
 
 var svgb = require('./svgbuilder.js');
 
-svgLog = {};
+var svgLog = {};
 // A tool for adding cosmetic notes to an svg canvas that fade away
 // TODO add means for text, controlltimeing of fade, and other things.
 
@@ -13394,7 +13394,7 @@ svgLog.logRect = function logRect(canvas, rect, text) {
 svgLog.cullLog = function() {
   var l = svgLog.log.length;
   if (l > 1) {
-    obj = svgLog.log.shift();
+    var obj = svgLog.log.shift();
     obj.canvas.removeChild(obj.elt);
     setTimeout(svgLog.cullLog, 100);
   }
@@ -13403,7 +13403,7 @@ svgLog.cullLog = function() {
 // Clear any remaing elements from the log.
 svgLog.clearLog = function() {
   while(svgLog.log.length > 0) {
-    obj = svgLog.log.pop();
+    var obj = svgLog.log.pop();
     obj.canvas.removeChild(obj.elt);
   }
 };
@@ -13415,62 +13415,56 @@ return svgLog;
 (function () {
   var tf = require('./teak-forms.js');
   var template = '<style>' + tf.css + '</style>' +
-  `  <div class="container">
-      <form>
-        <label><input type="checkbox" id="show-code">
-          <span class="label-text">Show code</span>
-        </label><br><br>
-        <label><input type="checkbox" id="show-targets">
-          <span class="label-text">Hilight drag target</span>
-        </label>
-        <!--
-        <label id="color-theme-label" for="color-theme">Color theme:</label>
-        <select id="color-theme" name="theme">
-          <option value="primary">Primary</option>
-          <option value="computer-green">Matrix</option>
-          <option value="beach">Beach side</option>
-          <option value="night">Night vision</option>
-        </select>
-        -->
-      </form>
-    </div>
-    `;
+`<div id="app-config" class="container teakform closed">
+    <form>
+      <label><input type="checkbox" id="show-code">
+        <span class="label-text">Show code</span>
+      </label><br><br>
+      <label><input type="checkbox" id="show-targets">
+        <span class="label-text">Hilight drag target</span>
+      </label>
+      <!--
+      <label id="color-theme-label" for="color-theme">Color theme:</label>
+      <select id="color-theme" name="theme">
+        <option value="primary">Primary</option>
+        <option value="computer-green">Matrix</option>
+        <option value="beach">Beach side</option>
+        <option value="night">Night vision</option>
+      </select>
+      -->
+    </form>
+</div>`;
 
-    class TeakConfigWidget extends HTMLElement {
-
-        // Fires when an instance of the element is created.
-        createdCallback() {
-            this.createShadowRoot().innerHTML = template;
-
-            //Grab the elements from the shadow root
-            this.$container = this.shadowRoot.querySelector('.container');
-        }
-
-        // Fires when an instance was inserted into the document.
-        attachedCallback() {
-        }
-        // Fires when an attribute was added, removed, or updated.
-        attributeChangedCallback(name, oldValue, newValue) {
-          console.log('attr:' + name + ' "' + oldValue + '" -> "' + newValue + '"');
-          if (name === 'visible') {
-            console.log('make it visible');
-          }
-        }
-        updateTheme(theme) {
-/*            var val = "green";
-            if (["green", "red", "blue", "gold"].indexOf(theme) > -1) {
-                val = theme;
-            }
-            */
-            this.$container.className = "container " + val;
-        }
+  class TeakConfigWidget extends HTMLElement {
+    // Fires when an instance of the element is created.
+    createdCallback() {
+      this.createShadowRoot().innerHTML = template;
+      this.$container = this.shadowRoot.querySelector('.container');
     }
-    document.registerElement('teak-config-widget', TeakConfigWidget);
+    // Fires when an instance was inserted into the document.
+    attachedCallback() {
+    }
+    // Fires when an attribute is added, removed, or updated.
+    attributeChangedCallback(name, oldValue, newValue) {
+      // TODO move this common code to teak-forms.js
+      if (name === 'opened') {
+        var form = this.shadowRoot.getElementById('app-config');
+        if (newValue === 'true') {
+          form.classList.remove('closed');
+          form.classList.add('opened');
+        } else if (newValue === 'false') {
+          form.classList.remove('opened');
+          form.classList.add('closed');
+        }
+      }
+    }
+  }
+  document.registerElement('teak-config-widget', TeakConfigWidget);
 })();
 
 },{"./teak-forms.js":7}],7:[function(require,module,exports){
 module.exports = function () {
-tf = {};
+var tf = {};
 tf.css = `
 .container {
     position: fixed;
@@ -13531,6 +13525,19 @@ label input[type="checkbox"]:disabled + .label-text:before {
   50% {transform: scale(1.3);}
   100% {transform: scale(1);}
 }
+.teakform {
+    overflow-y: scroll;
+    transition: transform .3s ease;
+}
+.teakform.opened {
+    transform: translate(0, 0%);
+}
+.teakform.closed {
+    transform: translate(0, -120%);
+}
+.teakform {
+    box-sizing:border-box;
+}
 `;
 return tf;
 }();
@@ -13559,16 +13566,8 @@ SOFTWARE.
 */
 
 (function () {
-
   var tf = require('./teak-forms.js');
-  var template = '<style>' + tf.css +
-`
-.container {
-      top: 10em;
-}
-</style>
-`
- +
+  var template = '<style>' + tf.css + '</style>' +
   `  <div class="container">
       <form>
         <label><input type="range" id="volume">
@@ -13578,19 +13577,20 @@ SOFTWARE.
     </div>
     `;
 
-    class TeakSoundWidget extends HTMLElement {
+  class TeakSoundWidget extends HTMLElement {
 
-        // Called when a tag instance is created.
-        createdCallback() {
-            this.createShadowRoot().innerHTML = template;
+    // Called when a tag instance is created.
+    createdCallback () {
+      this.createShadowRoot().innerHTML = template;
 
-            //Grab the elements from the shadow root
-            this.$container = this.shadowRoot.querySelector('.container');
-        }
+      //Grab the elements from the shadow root
+      this.$container = this.shadowRoot.querySelector('.container');
+      }
         // Fires when an instance was inserted into the document.
-        attachedCallback() {}
+      attachedCallback() {}
         // Fires when an attribute was added, removed, or updated.
-        attributeChangedCallback(attrName, oldVal, newVal) {
+      attributeChangedCallback(attrName, oldVal, newVal) {
+          console.log('AttrChanged' + attrName + oldVal + newVal);
           /*
             switch (attrName) {
                 case "theme":
@@ -13598,12 +13598,12 @@ SOFTWARE.
                     break;
             }
             */
-        }
+      }
     }
 
-    // Register this class with the DOM loader, tags already parsed will
-    // be connected to the it.
-    document.registerElement('teak-sound-widget', TeakSoundWidget);
+  // Register this class with the DOM loader, tags already parsed will
+  // be connected to the it.
+  document.registerElement('teak-sound-widget', TeakSoundWidget);
 })();
 
 },{"./teak-forms.js":7}],9:[function(require,module,exports){
@@ -13637,7 +13637,7 @@ var teakText = require('./teaktext.js');
 var svgb = require('./svgbuilder.js');
 var svglog = require('./svglog.js');
 
-tbe = {};
+var tbe = {};
 
 tbe.diagramBlocks = [];
 tbe.paletteBlocks = [];
@@ -13656,7 +13656,7 @@ tbe.elementToBlock = function(el) {
 
     if (text === null)
       return null;
-    values = text.split(':');
+    var values = text.split(':');
     if (values[0] === 'd') {
       return this.diagramBlocks[values[1]];
     } else if (values[0] === 'p') {
@@ -13869,10 +13869,9 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
   var target = null;
   var overlap = 0;
   var bestOverlap = 0;
-  var bestRect = null;
+//  var bestRect = null;
   var action = null;
   var rect = null;
-  var chainWidth = this.chainWidth;
   var thisWidth = this.blockWidth;
 
   // look at every diagram block taking into consideration
@@ -13900,7 +13899,7 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
       overlap = tbe.intersectingArea(thisBlock.rect, rect);
       if (overlap > bestOverlap) {
         bestOverlap = overlap;
-        bestRect = rect;
+        // bestRect = rect;
         target = entry;
       }
     }
@@ -13986,10 +13985,9 @@ tbe.FunctionBlock.prototype.removeTargetShadows = function() {
 };
 
 tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
-  var endBlock = null;
   var thisLast = this.last;
   var frameCount = 10;
-  var shadowX = 0;
+  var targx = 0;
 
   assert(this.prev === null);
   assert(thisLast.next === null);
@@ -14079,10 +14077,26 @@ tbe.configFBInteract = function configFBInteract() {
         return;
       block.coasting = 1;
     })
-    .on('hold', function(event) {
+    .on('doubletap', function (event) {
+      // Mark the chain as coastin. if it finds a target
+      // it will snap to it.
       var block = thisTbe.elementToBlock(event.target);
-      // TODO press and hold...
+      if (block === null)
+        return;
+
+      var tform = document.getElementById('app-config');
+      var opened = tform.getAttribute('opened');
+      if (opened === 'false') {
+        opened = 'true';
+      } else {
+        opened = 'false';
+      }
+      tform.setAttribute('opened', opened);
     })
+    // .on('hold', function(event) {
+    //   var block = thisTbe.elementToBlock(event.target);
+    // TODO press and hold...
+    // })
     .draggable({
       restrict: {
           restriction: thisTbe.svg,
@@ -14151,6 +14165,16 @@ tbe.configFBInteract = function configFBInteract() {
         }
       }
     });
+    /*
+    .resizable({
+      autoScroll: {
+        container: tbe.svg,
+        margin: 50,
+        distance: 5,
+        interval: 10
+      }
+    });
+    */
 };
 
 tbe.diagramChanged = function diagramChanged() {
