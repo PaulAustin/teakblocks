@@ -450,6 +450,17 @@ tbe.easeToTarget = function easeToTarget(timeStamp, block, endBlock) {
   }
 };
 
+tbe.showHideConfig = function showHideConfig() {
+  var tform = document.getElementById('app-config');
+  var opened = tform.getAttribute('opened');
+  if (opened === 'false') {
+    opened = 'true';
+  } else {
+    opened = 'false';
+  }
+  tform.setAttribute('opened', opened);
+};
+
 // Attach these interactions properties based on the class property of the DOM elements
 tbe.configFBInteract = function configFBInteract() {
   var thisTbe = tbe;
@@ -467,22 +478,6 @@ tbe.configFBInteract = function configFBInteract() {
       if (block === null)
         return;
       block.coasting = 1;
-    })
-    .on('doubletap', function (event) {
-      // Mark the chain as coastin. if it finds a target
-      // it will snap to it.
-      var block = thisTbe.elementToBlock(event.target);
-      if (block === null)
-        return;
-
-      var tform = document.getElementById('app-config');
-      var opened = tform.getAttribute('opened');
-      if (opened === 'false') {
-        opened = 'true';
-      } else {
-        opened = 'false';
-      }
-      tform.setAttribute('opened', opened);
     })
     // .on('hold', function(event) {
     //   var block = thisTbe.elementToBlock(event.target);

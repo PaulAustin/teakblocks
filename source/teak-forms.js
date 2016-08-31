@@ -16,7 +16,6 @@ teakForm.styleTag = `
 label {
   margin: 15
   cursor: pointer;
-  color: #666;
 }
 label input[type="checkbox"] {
   display: none;
@@ -34,28 +33,28 @@ label input[type="checkbox"] + .label-text:before {
   width: 1em;
   display: inline-block;
   margin-right: 5px;
-  animation: tick1 150ms ease-in;
+  animation: toUnchecked 200ms ease-in;
 }
 label input[type="checkbox"]:checked + .label-text:before {
-  content: "\uf046";
+  content: "\uf046"; /* check-square-o */
   color: #06a3e9;
-  animation: tick2 150ms ease-in;
+  animation: toChecked 200ms ease-in;
 }
 label input[type="checkbox"]:disabled + .label-text {
   color: #aaa;
 }
 label input[type="checkbox"]:disabled + .label-text:before {
-  content: "";
+  content: "f096";  /* square-o */
   color: #ccc;
 }
-@keyframes tick1 {
+@keyframes toUnchecked {
   0% {transform: scale(1);}
-  50% {transform: scale(1.3);}
+  60% {transform: scale(0.8);}
   100% {transform: scale(1);}
 }
-@keyframes tick2 {
+@keyframes toChecked {
   0% {transform: scale(1);}
-  50% {transform: scale(1.3);}
+  60% {transform: scale(1.2);}
   100% {transform: scale(1);}
 }
 .teakform {

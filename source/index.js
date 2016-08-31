@@ -36,6 +36,9 @@ tbe.init(
   document.getElementById('editorCanvas'),
   document.getElementById('teakCode'));
 
+var button = document.getElementById('config-button');
+button.onclick = tbe.showHideConfig;
+
 var palettes =  {
   tabs:['A', 'B', 'C'],
   A:['A1', 'A2', 'A3', 'A4', 'A5'],

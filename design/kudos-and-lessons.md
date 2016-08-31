@@ -122,3 +122,6 @@ to bring in the fake config box.
 ### Teak form cleanup
 Moved initial form position to tag so it can be place on the screen based on html.
 Touched up shading for forms. MDN has a nice [page explaining ```box-shadow```](https://developer.mozilla.org/en-US/docs/Web/CSS/box-shadow). The code was not using alpha before, looked odd when shadow was over color other than white.
+
+### Accessibility
+TODO: There is much to learn on how to make this app accessible. One part is the setting ```aria-hidden=true``` on components. Something to look at once the basic shell parts work.

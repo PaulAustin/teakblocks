@@ -1,12 +1,24 @@
 <!DOCTYPE html>
 <html >
 <style>
-/* Used by web components */
- @import 'font-awesome/css/font-awesome.min.css';
+ .button {
+   background-color: #4CAF50;
+   border: none;
+   color: white;
+   padding: 15px 15px;
+   text-align: center;
+   text-decoration: none;
+   display: inline-block;
+   border-radius: 10px;
+   margin: 4px 2px;
+   cursor: pointer;
+ }
 </style>
 <head>
-  <meta charset="UTF-8">
   <title>TeakBlocks</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+  <!--link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css"-->
   <link rel="stylesheet" href="css/style.css">
   <!-- <link rel="stylesheet" href="teak/css/night_blue.css"> -->
   <link rel="stylesheet" href="css/day_blue.css">
@@ -14,7 +26,6 @@
 </head>
 <body>
   <div id="container">
-
     <svg class=editor-canvas id='editorCanvas' xmlns="http://www.w3.org/2000/svg">
       <defs>
         <symbol id="palette-tab">
@@ -25,9 +36,6 @@
         </symbol>
       </defs>
 
-      <!--use xlink:href="#palette-tab" x="450" y="450"/-->
-      <!--use xlink:href="#palette-tab" x="350" y="350"/-->
-
       <filter id="dropshadow" height="120%">
         <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
         <feMerge>
@@ -36,80 +44,17 @@
         </feMerge>
       </filter>
     </svg>
-
     <textarea class=teak-code id="teakCode" readonly=true rows=50>
     </textarea>
-    <teak-config-widget id='app-config' opened='false' style="position:fixed;top:1em;right:1em;"></teak-config-widget>
-    <!--teak-sound-widget></teak-sound-widget-->
   </div>
-  <!--script src='cordova.js'></script-->
-  <!--script src="easyble.dist.js"></script-->
-  <!--script>
-    var blelog = document.getElementById('teakLog');
-    blelog.value = "hello\n";
+  <teak-config-widget id='app-config' opened='false'
+    style="position:fixed;top:1em;right:1em;">
+  </teak-config-widget>
 
-   function log(text) {
-     blelog.value = blelog.value + '\n' + text;
-   }
+  <button class="button" id="config-button" style="position:fixed;bottom:2em;left:1em;">
+    <i class="fa fa-cog" aria-hidden="true" style="font-size:36px"></i>
+  </button>
 
-   var zapp = {};
-   zapp.devices = [];
-
-   log('whats up?');
-
-   log('evothings');
-   log(evothings);
-
-   	document.addEventListener(
-   		'deviceready',
-   		function() { start() },
-   		false);
-
-   function start() {
-   evothings.ble.startScan(
- 		function(device)
- 		{
-      log('success');
-      log(device  );
- 			// Report success. Sometimes an RSSI of +127 is reported.
- 			// We filter out these values here.
- 			if (device.rssi <= 0)
- 			{
- 				foundDevice(device, null);
- 			}
- 		},
- 		function(errorCode)
- 		{
-      log('error');
-      log(errorCode);
- 			foundDevice(null, errorCode);
- 		}
- 	);
-}
-// Called when a device is found.
-function foundDevice(device, errorCode)
-{
-	if (device)
-	{
-		// Set timestamp for device (this is used to remove
-		// inactive devices).
-		device.timeStamp = Date.now();
-
-		// Insert the device into table of found devices.
-		//zapp.devices[device.address] = device;
-
-    log (device.name);
-    log (device.rssi);
-
-	}
-	else if (errorCode)
-	{
-    log(errorCode);
-	}
-};
-
-  </script-->
 </body>
 <script src='bundled_tbe.js'></script>
-
 </html>
