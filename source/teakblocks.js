@@ -461,6 +461,18 @@ tbe.showHideConfig = function showHideConfig() {
   tform.setAttribute('opened', opened);
 };
 
+tbe.clearDiagramBlocks = function clearDiagramBlocks() {
+  tbe.diagramBlocks.forEach(function(block) {
+    tbe.svg.removeChild(block.svgGroup);
+    block.svgGroup = null;
+    block.svgRect = null;
+    block.next = null;
+    block.prev = null;
+  });
+  tbe.diagramBlocks.length = 0;
+  tbe.diagramChanged();
+};
+
 // Attach these interactions properties based on the class property of the DOM elements
 tbe.configFBInteract = function configFBInteract() {
   var thisTbe = tbe;

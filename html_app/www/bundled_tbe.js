@@ -13225,6 +13225,9 @@ tbe.init(
 var button = document.getElementById('config-button');
 button.onclick = tbe.showHideConfig;
 
+button = document.getElementById('clear-button');
+button.onclick = tbe.clearDiagramBlocks;
+
 var palettes =  {
   tabs:['A', 'B', 'C'],
   A:['A1', 'A2', 'A3', 'A4', 'A5'],
@@ -14093,6 +14096,18 @@ tbe.showHideConfig = function showHideConfig() {
     opened = 'false';
   }
   tform.setAttribute('opened', opened);
+};
+
+tbe.clearDiagramBlocks = function clearDiagramBlocks() {
+  tbe.diagramBlocks.forEach(function(block) {
+    tbe.svg.removeChild(block.svgGroup);
+    block.svgGroup = null;
+    block.svgRect = null;
+    block.next = null;
+    block.prev = null;
+  });
+  tbe.diagramBlocks.length = 0;
+  tbe.diagramChanged();
 };
 
 // Attach these interactions properties based on the class property of the DOM elements

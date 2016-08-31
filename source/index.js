@@ -39,6 +39,9 @@ tbe.init(
 var button = document.getElementById('config-button');
 button.onclick = tbe.showHideConfig;
 
+button = document.getElementById('clear-button');
+button.onclick = tbe.clearDiagramBlocks;
+
 var palettes =  {
   tabs:['A', 'B', 'C'],
   A:['A1', 'A2', 'A3', 'A4', 'A5'],
