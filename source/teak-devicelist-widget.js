@@ -1,68 +1,70 @@
 /*
-<!--script src='cordova.js'></script-->
-<!--script src="easyble.dist.js"></script-->
-<!--script>
-  var blelog = document.getElementById('teakLog');
-  blelog.value = "hello\n";
+Copyright (c) 2016 Paul Austin - SDG
 
- function log(text) {
-   blelog.value = blelog.value + '\n' + text;
- }
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
- var zapp = {};
- zapp.devices = [];
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
- log('whats up?');
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION/*
+Copyright (c) 2016 Paul Austin - SDG
 
- log('evothings');
- log(evothings);
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-  document.addEventListener(
-    'deviceready',
-    function() { start() },
-    false);
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
- function start() {
- evothings.ble.startScan(
-  function(device)
-  {
-    log('success');
-    log(device  );
-    // Report success. Sometimes an RSSI of +127 is reported.
-    // We filter out these values here.
-    if (device.rssi <= 0)
-    {
-      foundDevice(device, null);
-    }
-  },
-  function(errorCode)
-  {
-    log('error');
-    log(errorCode);
-    foundDevice(null, errorCode);
-  }
-);
-}
-// Called when a device is found.
-function foundDevice(device, errorCode)
-{
-if (device)
-{
-  // Set timestamp for device (this is used to remove
-  // inactive devices).
-  device.timeStamp = Date.now();
-
-  // Insert the device into table of found devices.
-  //zapp.devices[device.address] = device;
-
-  log (device.name);
-  log (device.rssi);
-
-}
-else if (errorCode)
-{
-  log(errorCode);
-}
-};
-
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 */
+
+module.exports = function () {
+  var deviceList = {};
+  require('./evothings/easyble.dist.js');
+
+  var blelog = document.getElementById('teakCode');
+
+  function log(text) {
+    blelog.value = blelog.value + '\n' + text;
+  }
+
+  function foundDevice(device) {
+    //  device.timeStamp = Date.now();
+    log('FD:' + device.name + '[' + device.rssi +']');
+  }
+
+  deviceList.startScan = function startScan() {
+    log('starting scan');
+    var ble = window.evothings.ble;
+    ble.startScan(
+      function(device) {
+        if (device.name !== undefined) {
+          foundDevice(device);
+        }
+      },
+      function(errorCode) {
+        log('error:' + errorCode);
+      });
+  };
+
+  return deviceList;
+}();
