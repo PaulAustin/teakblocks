@@ -43,16 +43,32 @@ module.exports = function () {
 
   var tf = require('./teak-forms.js');
   var template = tf.styleTag +
-  `<div id="teak-scan" class="container teakform closed">
+  `
+  <style>
+  .tf-list {
+    list-style: none;
+    list-style-position:inside;
+    border: 2px solid #9CCC65;
+    background-color: #DCEDC8;
+    border-radius: 10px;
+  };
+  .tf-list-item {
+    list-style: none;
+    list-style-position:inside;
+  /*  border: 1px solid black;
+    background-color: #DCEDC8;
+    margin-left: -30px; */
+  };
+  </style>
+  <div id="teak-scan" class="container teakform closed">
     <form>
       <label id="device-list-title" for="device-list">Nearby micro:bits</label>
       <br>
-      <select id="device-list" name="theme" size=6>
-        <option value="primary">Primary</option>
-        <option value="computer-green">Matrix</option>
-        <option value="beach">Beach side</option>
-        <option value="night">Night vision</option>
-      </select>
+        <ul class='tf-list'>
+        <li class='tf-list-item'> volgart</li>
+        <li class='tf-list-item'> zarbit</li>
+        <li class='tf-list-item'> pokey</li>
+        </ul>
     </form>
   </div>`;
 
