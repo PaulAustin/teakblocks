@@ -22,7 +22,7 @@ SOFTWARE.
 
 module.exports = function (){
 
-svgBuilder = {};
+var svgBuilder = {};
 svgBuilder.ns = 'http://www.w3.org/2000/svg';
 svgBuilder.xlinkns = 'http://www.w3.org/1999/xlink';
 

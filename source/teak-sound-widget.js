@@ -20,7 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-(function () {
+module.exports = function () {
   var tf = require('./teak-forms.js');
   var template = '<style>' + tf.css + '</style>' +
   `  <div class="container">
@@ -59,4 +59,4 @@ SOFTWARE.
   // Register this class with the DOM loader, tags already parsed will
   // be connected to the it.
   document.registerElement('teak-sound-widget', TeakSoundWidget);
-})();
+}();

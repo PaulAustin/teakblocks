@@ -20,7 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-(function () {
+module.exports = function () {
   var tf = require('./teak-forms.js');
   var template = tf.styleTag +
 `<div id="app-config" class="container teakform closed">
@@ -68,4 +68,4 @@ SOFTWARE.
     }
   }
   document.registerElement('teak-config-widget', TeakConfigWidget);
-})();
+}();

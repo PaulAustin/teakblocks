@@ -125,3 +125,11 @@ Touched up shading for forms. MDN has a nice [page explaining ```box-shadow```](
 
 ### Accessibility
 TODO: There is much to learn on how to make this app accessible. One part is the setting ```aria-hidden=true``` on components. Something to look at once the basic shell parts work.
+
+### Buttons
+Testing out font awesome by adding a few buttons to the app ( BLE scan, clear, config) the icons look nice. Helpful for debugging now, but It would be too easy to clutter the top level app with these.
+
+## Sept 1
+
+### BLE day
+Going to try to get the scan working again under the browserify system, hopefully add chrome support as well.

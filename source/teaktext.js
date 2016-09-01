@@ -21,7 +21,7 @@ SOFTWARE.
 */
 
 module.exports = function (){
-teakText = {};
+var teakText = {};
 
 teakText.blocksToText = function(blocks) {
   var text = '(\n';
