@@ -38,11 +38,54 @@ SOFTWARE.
 */
 
 module.exports = function () {
-  var deviceList = {};
+  var teakScan = {};
   require('./evothings/easyble.dist.js');
 
-  var blelog = document.getElementById('teakCode');
+  var tf = require('./teak-forms.js');
+  var template = tf.styleTag +
+  `<div id="teak-scan" class="container teakform closed">
+    <form>
+      <label id="device-list-title" for="device-list">Nearby micro:bits</label>
+      <br>
+      <select id="device-list" name="theme" size=6>
+        <option value="primary">Primary</option>
+        <option value="computer-green">Matrix</option>
+        <option value="beach">Beach side</option>
+        <option value="night">Night vision</option>
+      </select>
+    </form>
+  </div>`;
 
+  class TeakScanWidget extends HTMLElement {
+    // Fires when an instance of the element is created.
+    createdCallback() {
+      this.createShadowRoot().innerHTML = template;
+      this.$container = this.shadowRoot.querySelector('.container');
+    }
+    // Fires when an instance was inserted into the document.
+    attachedCallback() {
+    }
+    // Fires when an attribute is added, removed, or updated.
+    attributeChangedCallback(name, oldValue, newValue) {
+      // TODO move this common code to teak-forms.js
+      if (name === 'opened') {
+        var form = this.shadowRoot.getElementById('teak-scan');
+        if (newValue === 'true') {
+          form.classList.remove('closed');
+          form.classList.add('opened');
+    //      deviceList.startScan();
+        } else if (newValue === 'false') {
+          form.classList.remove('opened');
+          form.classList.add('closed');
+    //      deviceList.stopScan();
+        }
+      }
+    }
+  }
+
+  document.registerElement('teak-scan-widget', TeakScanWidget);
+
+  var blelog = document.getElementById('teakCode');
   function log(text) {
     blelog.value = blelog.value + '\n' + text;
   }
@@ -52,7 +95,7 @@ module.exports = function () {
     log('FD:' + device.name + '[' + device.rssi +']');
   }
 
-  deviceList.startScan = function startScan() {
+  teakScan.startScan = function startScan() {
     log('starting scan');
     var ble = window.evothings.ble;
     ble.startScan(
@@ -66,5 +109,8 @@ module.exports = function () {
       });
   };
 
-  return deviceList;
+  teakScan.stopScan = function stopScan() {
+  };
+
+  return teakScan;
 }();

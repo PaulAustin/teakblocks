@@ -25,28 +25,28 @@ require('webcomponents.js');
 function deviceReady() {
   // TODO make the teak block editor a web component as well.
   var tbe = require('./teakblocks.js');
+  var tf = require('./teak-forms.js');
 
   var webComponents = {};
   webComponents.config = require('./teak-config-widget.js');
   webComponents.sound = require('./teak-sound-widget.js');
+  webComponents.scan = require('./teak-scan-widget.js');
   //webComponents.motor = require('./teak-motor-widget.js');
   //webComponents.LED5x5 = require('./teak-led5x5-widget.js');
-
-  var bleDeviceList = require('./teak-devicelist-widget.js');
 
   tbe.init(
     document.getElementById('editorCanvas'),
     document.getElementById('teakCode'));
 
-  // JQuery woudl make these shorter, but is that a good thing?
+  // jQuery woudl make these shorter, but is that a good thing?
   var configButton = document.getElementById('config-button');
-  configButton.onclick = tbe.showHideConfig;
+  configButton.onclick = function() { tf.showHide('app-config'); };
 
   var clearButton = document.getElementById('clear-button');
   clearButton.onclick = tbe.clearDiagramBlocks;
 
   var scanButton = document.getElementById('scan-button');
-  scanButton.onclick = bleDeviceList.startScan;
+  scanButton.onclick = function() { tf.showHide('teak-scan'); };
 
   var palettes =  {
     tabs:['A', 'B', 'C'],

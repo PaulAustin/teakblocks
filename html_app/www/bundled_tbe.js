@@ -15548,28 +15548,28 @@ require('webcomponents.js');
 function deviceReady() {
   // TODO make the teak block editor a web component as well.
   var tbe = require('./teakblocks.js');
+  var tf = require('./teak-forms.js');
 
   var webComponents = {};
   webComponents.config = require('./teak-config-widget.js');
   webComponents.sound = require('./teak-sound-widget.js');
+  webComponents.scan = require('./teak-scan-widget.js');
   //webComponents.motor = require('./teak-motor-widget.js');
   //webComponents.LED5x5 = require('./teak-led5x5-widget.js');
-
-  var bleDeviceList = require('./teak-devicelist-widget.js');
 
   tbe.init(
     document.getElementById('editorCanvas'),
     document.getElementById('teakCode'));
 
-  // JQuery woudl make these shorter, but is that a good thing?
+  // jQuery woudl make these shorter, but is that a good thing?
   var configButton = document.getElementById('config-button');
-  configButton.onclick = tbe.showHideConfig;
+  configButton.onclick = function() { tf.showHide('app-config'); };
 
   var clearButton = document.getElementById('clear-button');
   clearButton.onclick = tbe.clearDiagramBlocks;
 
   var scanButton = document.getElementById('scan-button');
-  scanButton.onclick = bleDeviceList.startScan;
+  scanButton.onclick = function() { tf.showHide('teak-scan'); };
 
   var palettes =  {
     tabs:['A', 'B', 'C'],
@@ -15596,7 +15596,7 @@ if (!isRegularBrowser) {
   deviceReady();
 }
 
-},{"./teak-config-widget.js":7,"./teak-devicelist-widget.js":8,"./teak-sound-widget.js":10,"./teakblocks.js":11,"webcomponents.js":2}],5:[function(require,module,exports){
+},{"./teak-config-widget.js":7,"./teak-forms.js":8,"./teak-scan-widget.js":9,"./teak-sound-widget.js":10,"./teakblocks.js":11,"webcomponents.js":2}],5:[function(require,module,exports){
 /*
 Copyright (c) 2016 Paul Austin - SDG
 
@@ -15792,25 +15792,25 @@ SOFTWARE.
 module.exports = function () {
   var tf = require('./teak-forms.js');
   var template = tf.styleTag +
-`<div id="app-config" class="container teakform closed">
-    <form>
-      <label><input type="checkbox" id="show-code">
-        <span class="label-text">Show code</span>
-      </label><br><br>
-      <label><input type="checkbox" id="show-targets">
-        <span class="label-text">Hilight drag target</span>
-      </label>
-      <!--
-      <label id="color-theme-label" for="color-theme">Color theme:</label>
-      <select id="color-theme" name="theme">
-        <option value="primary">Primary</option>
-        <option value="computer-green">Matrix</option>
-        <option value="beach">Beach side</option>
-        <option value="night">Night vision</option>
-      </select>
-      -->
-    </form>
-</div>`;
+  `<div id="app-config" class="container teakform closed">
+      <form>
+        <label><input type="checkbox" id="show-code">
+          <span class="label-text">Show code</span>
+        </label><br><br>
+        <label><input type="checkbox" id="show-targets">
+          <span class="label-text">Hilight drag target</span>
+        </label>
+        <!--
+        <label id="color-theme-label" for="color-theme">Color theme:</label>
+        <select id="color-theme" name="theme">
+          <option value="primary">Primary</option>
+          <option value="computer-green">Matrix</option>
+          <option value="beach">Beach side</option>
+          <option value="night">Night vision</option>
+        </select>
+        -->
+      </form>
+  </div>`;
 
   class TeakConfigWidget extends HTMLElement {
     // Fires when an instance of the element is created.
@@ -15839,7 +15839,101 @@ module.exports = function () {
   document.registerElement('teak-config-widget', TeakConfigWidget);
 }();
 
-},{"./teak-forms.js":9}],8:[function(require,module,exports){
+},{"./teak-forms.js":8}],8:[function(require,module,exports){
+module.exports = function () {
+  var teakForm = {};
+  teakForm.styleTag =
+`   <style>
+    .container {
+        width:12em;
+        background-color: #DCE775;
+        border-radius: 10px;
+        box-shadow: 1px 4px 5px 2px rgba(0, 0, 0, 0.2);
+        font-family:"helvetica";
+        color:#33691E;
+        font-size:30px;
+        padding:30px;
+        -webkit-user-select: none;
+    }
+    label {
+      margin: 15
+      cursor: pointer;
+    }
+    label input[type="checkbox"] {
+      display: none;
+    }
+    label input[type="checkbox"] + .label-text:before {
+      content: "\uf096";
+      font-family: "FontAwesome";
+      speak: none;
+      font-style: normal;
+      font-weight: normal;
+      font-variant: normal;
+      text-transform: none;
+      line-height: 1;
+      -webkit-font-smoothing: antialiased;
+      width: 1em;
+      display: inline-block;
+      margin-right: 5px;
+      animation: toUnchecked 200ms ease-in;
+    }
+    label input[type="checkbox"]:checked + .label-text:before {
+      content: "\uf046"; /* check-square-o */
+      color: #06a3e9;
+      animation: toChecked 200ms ease-in;
+    }
+    label input[type="checkbox"]:disabled + .label-text {
+      color: #aaa;
+    }
+    label input[type="checkbox"]:disabled + .label-text:before {
+      content: "f096";  /* square-o */
+      color: #ccc;
+    }
+    @keyframes toUnchecked {
+      0% {transform: scale(1);}
+      60% {transform: scale(0.8);}
+      100% {transform: scale(1);}
+    }
+    @keyframes toChecked {
+      0% {transform: scale(1);}
+      60% {transform: scale(1.2);}
+      100% {transform: scale(1);}
+    }
+    .teakform {
+        transition: transform .4s ease;
+    }
+    .teakform.opened {
+        transform: translate(0, 0%);
+    }
+    .teakform.closed {
+        transform: translate(0, -120%);
+    }
+    .teakform.closed-down {
+        transform: translate(0, 120%);
+    }
+    .teakform {
+        box-sizing:border-box;
+    }
+    </style>
+    `;
+
+  teakForm.showHide = function showHide(formId) {
+    var tform = document.getElementById(formId);
+    var opened = tform.getAttribute('opened');
+    if (opened === 'false') {
+      console.log('showhide(show):' + formId);
+      opened = 'true';
+    } else {
+      console.log('showhide(hide):' + formId);
+      opened = 'false';
+    }
+    tform.setAttribute('opened', opened);
+  };
+
+  return teakForm;
+}();
+
+},{}],9:[function(require,module,exports){
 /*
 Copyright (c) 2016 Paul Austin - SDG
 
@@ -15880,11 +15974,54 @@ SOFTWARE.
 */
 
 module.exports = function () {
-  var deviceList = {};
+  var teakScan = {};
   require('./evothings/easyble.dist.js');
 
-  var blelog = document.getElementById('teakCode');
+  var tf = require('./teak-forms.js');
+  var template = tf.styleTag +
+  `<div id="teak-scan" class="container teakform closed">
+    <form>
+      <label id="device-list-title" for="device-list">Nearby micro:bits</label>
+      <br>
+      <select id="device-list" name="theme" size=6>
+        <option value="primary">Primary</option>
+        <option value="computer-green">Matrix</option>
+        <option value="beach">Beach side</option>
+        <option value="night">Night vision</option>
+      </select>
+    </form>
+  </div>`;
 
+  class TeakScanWidget extends HTMLElement {
+    // Fires when an instance of the element is created.
+    createdCallback() {
+      this.createShadowRoot().innerHTML = template;
+      this.$container = this.shadowRoot.querySelector('.container');
+    }
+    // Fires when an instance was inserted into the document.
+    attachedCallback() {
+    }
+    // Fires when an attribute is added, removed, or updated.
+    attributeChangedCallback(name, oldValue, newValue) {
+      // TODO move this common code to teak-forms.js
+      if (name === 'opened') {
+        var form = this.shadowRoot.getElementById('teak-scan');
+        if (newValue === 'true') {
+          form.classList.remove('closed');
+          form.classList.add('opened');
+    //      deviceList.startScan();
+        } else if (newValue === 'false') {
+          form.classList.remove('opened');
+          form.classList.add('closed');
+    //      deviceList.stopScan();
+        }
+      }
+    }
+  }
+
+  document.registerElement('teak-scan-widget', TeakScanWidget);
+
+  var blelog = document.getElementById('teakCode');
   function log(text) {
     blelog.value = blelog.value + '\n' + text;
   }
@@ -15894,7 +16031,7 @@ module.exports = function () {
     log('FD:' + device.name + '[' + device.rssi +']');
   }
 
-  deviceList.startScan = function startScan() {
+  teakScan.startScan = function startScan() {
     log('starting scan');
     var ble = window.evothings.ble;
     ble.startScan(
@@ -15908,90 +16045,13 @@ module.exports = function () {
       });
   };
 
-  return deviceList;
+  teakScan.stopScan = function stopScan() {
+  };
+
+  return teakScan;
 }();
 
-},{"./evothings/easyble.dist.js":3}],9:[function(require,module,exports){
-module.exports = function () {
-var teakForm = {};
-teakForm.styleTag = `
-<style>
-.container {
-    width:12em;
-    background-color: #DCE775;
-    border-radius: 10px;
-    box-shadow: 1px 4px 5px 2px rgba(0, 0, 0, 0.2);
-    font-family:"helvetica";
-    color:#33691E;
-    font-size:30px;
-    padding:30px;
-    -webkit-user-select: none;
-}
-label {
-  margin: 15
-  cursor: pointer;
-}
-label input[type="checkbox"] {
-  display: none;
-}
-label input[type="checkbox"] + .label-text:before {
-  content: "\uf096";
-  font-family: "FontAwesome";
-  speak: none;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-  width: 1em;
-  display: inline-block;
-  margin-right: 5px;
-  animation: toUnchecked 200ms ease-in;
-}
-label input[type="checkbox"]:checked + .label-text:before {
-  content: "\uf046"; /* check-square-o */
-  color: #06a3e9;
-  animation: toChecked 200ms ease-in;
-}
-label input[type="checkbox"]:disabled + .label-text {
-  color: #aaa;
-}
-label input[type="checkbox"]:disabled + .label-text:before {
-  content: "f096";  /* square-o */
-  color: #ccc;
-}
-@keyframes toUnchecked {
-  0% {transform: scale(1);}
-  60% {transform: scale(0.8);}
-  100% {transform: scale(1);}
-}
-@keyframes toChecked {
-  0% {transform: scale(1);}
-  60% {transform: scale(1.2);}
-  100% {transform: scale(1);}
-}
-.teakform {
-    transition: transform .4s ease;
-}
-.teakform.opened {
-    transform: translate(0, 0%);
-}
-.teakform.closed {
-    transform: translate(0, -120%);
-}
-.teakform.closed-down {
-    transform: translate(0, 120%);
-}
-.teakform {
-    box-sizing:border-box;
-}
-</style>
-`;
-return teakForm;
-}();
-
-},{}],10:[function(require,module,exports){
+},{"./evothings/easyble.dist.js":3,"./teak-forms.js":8}],10:[function(require,module,exports){
 /*
 Copyright (c) 2016 Paul Austin - SDG
 
@@ -16055,7 +16115,7 @@ module.exports = function () {
   document.registerElement('teak-sound-widget', TeakSoundWidget);
 }();
 
-},{"./teak-forms.js":9}],11:[function(require,module,exports){
+},{"./teak-forms.js":8}],11:[function(require,module,exports){
 /*
 Copyright (c) 2016 Paul Austin - SDG
 
@@ -16506,17 +16566,6 @@ tbe.easeToTarget = function easeToTarget(timeStamp, block, endBlock) {
     // Once animation is over shadows are covered, remove them.
     block.removeTargetShadows();
   }
-};
-
-tbe.showHideConfig = function showHideConfig() {
-  var tform = document.getElementById('app-config');
-  var opened = tform.getAttribute('opened');
-  if (opened === 'false') {
-    opened = 'true';
-  } else {
-    opened = 'false';
-  }
-  tform.setAttribute('opened', opened);
 };
 
 tbe.clearDiagramBlocks = function clearDiagramBlocks() {

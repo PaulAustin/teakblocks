@@ -450,17 +450,6 @@ tbe.easeToTarget = function easeToTarget(timeStamp, block, endBlock) {
   }
 };
 
-tbe.showHideConfig = function showHideConfig() {
-  var tform = document.getElementById('app-config');
-  var opened = tform.getAttribute('opened');
-  if (opened === 'false') {
-    opened = 'true';
-  } else {
-    opened = 'false';
-  }
-  tform.setAttribute('opened', opened);
-};
-
 tbe.clearDiagramBlocks = function clearDiagramBlocks() {
   tbe.diagramBlocks.forEach(function(block) {
     tbe.svg.removeChild(block.svgGroup);
