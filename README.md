@@ -32,11 +32,15 @@ Automation is still minimal but there are a few tools packaged as npm scripts. O
 ```
 npm run bify    // Run browserify
 
+npm run wify    // Run browserify with watchify
+
+npm run http    // Run npm's http-server on the ./html_app/www directory
+
 npm run abuild   // Kick off Cordova/android build
 
 npm run adeploy  // Download to tablet/phone using adb
 
-npm run          // List the scripts.
+npm run          // List these scripts.
 ```
 
 When you edit JS files the bundle_tbe.js must be rebuilt before your changes will take affect. You can use `<npm run bify>` or set up the tool [watchify](https://www.npmjs.com/package/watchify) that triggers the builds automatically. The build typically takes about a second.
