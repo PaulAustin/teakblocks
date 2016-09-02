@@ -21,7 +21,7 @@ The html_app already has a few config files set up to work with Cordova however,
 
 ```
 cd html_app
-cordova add android
+cordova platform add android
 cordova build android
 cordova run android
 ```
