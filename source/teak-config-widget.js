@@ -31,15 +31,6 @@ module.exports = function () {
         <label><input type="checkbox" id="show-targets">
           <span class="label-text">Hilight drag target</span>
         </label>
-        <!--
-        <label id="color-theme-label" for="color-theme">Color theme:</label>
-        <select id="color-theme" name="theme">
-          <option value="primary">Primary</option>
-          <option value="computer-green">Matrix</option>
-          <option value="beach">Beach side</option>
-          <option value="night">Night vision</option>
-        </select>
-        -->
       </form>
   </div>`;
 

@@ -4,7 +4,8 @@ module.exports = function () {
 `   <style>
     .container {
         width:12em;
-        background-color: #DCE775;
+        background-color: #75DCE7;
+/*        background-color: #DCE775; */
         border-radius: 10px;
         box-shadow: 1px 4px 5px 2px rgba(0, 0, 0, 0.2);
         font-family:"helvetica";

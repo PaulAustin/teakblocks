@@ -48,9 +48,11 @@ module.exports = function () {
   .tf-list {
     list-style: none;
     list-style-position:inside;
-    border: 2px solid #9CCC65;
-    background-color: #DCEDC8;
-    border-radius: 10px;
+    /* border: 2px solid #9CCC65; */
+    /* background-color: #DCEDC8; */
+       background-color: #BAEDF3;
+    box-shadow: inset 0px 0px 5px 3px rgba(73, 137, 144, 0.2);
+    border-radius: 5px;
   };
   .tf-list-item {
     list-style: none;
