@@ -18,7 +18,7 @@ module.exports = function () {
     cursor: pointer;
   }
   label input[type="checkbox"] {
-  /*  display: none; */
+    display: none;
   }
   label input[type="checkbox"] + .label-text:before {
     content: "\uf096";
@@ -78,10 +78,13 @@ module.exports = function () {
   teakForm.showHide = function showHide(formId) {
     var tform = document.getElementById(formId);
     var opened = tform.getAttribute('opened');
+    console.log('pointer events' + tform.getAttribute('pointer-events'));
     if (opened === 'false') {
       opened = 'true';
+      tform.style.pointerEvents = 'all';
     } else {
       opened = 'false';
+      tform.style.pointerEvents = 'none';
     }
     tform.setAttribute('opened', opened);
   };

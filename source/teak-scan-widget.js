@@ -43,24 +43,20 @@ module.exports = function () {
 
   var tf = require('./teak-forms.js');
   var template = tf.styleTag +
-  `
-  <style>
+  `<style>
   .tf-list {
     list-style: none;
     list-style-position:inside;
     /* border: 2px solid #9CCC65; */
     /* background-color: #DCEDC8; */
-       background-color: #BAEDF3;
+    background-color: #BAEDF3;
     box-shadow: inset 0px 0px 5px 3px rgba(73, 137, 144, 0.2);
     border-radius: 5px;
-  };
+  }
   .tf-list-item {
     list-style: none;
     list-style-position:inside;
-  /*  border: 1px solid black;
-    background-color: #DCEDC8;
-    margin-left: -30px; */
-  };
+  }
   </style>
   <div id="teak-scan" class="container teakform closed">
     <form>
