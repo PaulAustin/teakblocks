@@ -87,11 +87,11 @@ module.exports = function () {
         if (newValue === 'true') {
           form.classList.remove('closed');
           form.classList.add('opened');
-    //      deviceList.startScan();
+          teakScan.startScan();
         } else if (newValue === 'false') {
           form.classList.remove('opened');
           form.classList.add('closed');
-    //      deviceList.stopScan();
+          teakScan.stopScan();
         }
       }
     }
@@ -109,12 +109,6 @@ module.exports = function () {
     log('FD:' + device.name + '[' + device.rssi +']');
   }
 
-  teakScan.stopScan = function stopScan() {
-    log('stopping scan');
-    var ble = window.evothings.ble;
-    ble.stopScan();
-  };
-
   teakScan.startScan = function startScan() {
     log('starting scan');
     var ble = window.evothings.ble;
@@ -131,6 +125,9 @@ module.exports = function () {
   };
 
   teakScan.stopScan = function stopScan() {
+    log('stopping scan');
+    var ble = window.evothings.ble;
+    ble.stopScan();
   };
 
   return teakScan;

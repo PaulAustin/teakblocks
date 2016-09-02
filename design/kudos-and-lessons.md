@@ -147,7 +147,7 @@ All of these have fairly active development and look non trivial. Now that Easyb
 ## Sept 2
 
 ### screen bounce on android
-Mostly fixed, mainly by turning of touch evetns to any thing that is not dragged. Looks like this does not prevent click events, (e.g. buttons and check boxes still work)
+Mostly fixed, mainly by turning of touch events to any thing that is not dragged. Looks like this does not prevent click events, (e.g. buttons and check boxes still work)
 
 ### more on BLE
 Starting and stopping Scan. Notes on EVOThings [Easyble](https://evothings.com/forum/viewtopic.php?t=1804)
