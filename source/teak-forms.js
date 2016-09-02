@@ -78,7 +78,6 @@ module.exports = function () {
   teakForm.showHide = function showHide(formId) {
     var tform = document.getElementById(formId);
     var opened = tform.getAttribute('opened');
-    console.log('pointer events' + tform.getAttribute('pointer-events'));
     if (opened === 'false') {
       opened = 'true';
       tform.style.pointerEvents = 'all';

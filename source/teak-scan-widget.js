@@ -110,8 +110,10 @@ module.exports = function () {
   }
 
   teakScan.startScan = function startScan() {
-    log('starting scan');
     var ble = window.evothings.ble;
+    if (ble === undefined)
+      return;
+    log('starting scan');
     ble.stopScan();
     ble.startScan(
       function(device) {
@@ -125,8 +127,10 @@ module.exports = function () {
   };
 
   teakScan.stopScan = function stopScan() {
-    log('stopping scan');
     var ble = window.evothings.ble;
+    if (ble === undefined)
+      return;
+    log('stopping scan');
     ble.stopScan();
   };
 
