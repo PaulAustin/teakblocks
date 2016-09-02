@@ -133,3 +133,21 @@ Testing out font awesome by adding a few buttons to the app ( BLE scan, clear, c
 
 ### BLE day
 Going to try to get the scan working again under the browserify system, hopefully add chrome support as well.
+Overwrote many notes today, bummer, due to accidental sync. Recreating a few note a day later.
+
+Got scan working (on android) , Using Evothing's [Easlyble.js](https://evothings.com/doc/lib-doc/evothings.easyble.html). There are a few others our there. Here is short list:
+
+* Evothings Easyble.hs (noted above)
+* [Cordova-plugin-ble (npm)](https://www.npmjs.com/package/cordova-plugin-ble) I think Easyble uses this.
+* [Cordova-blugin-ble-central(github)](https://github.com/don/cordova-plugin-ble-central)
+* [cordova-plugin-bluetoothle(npm)](https://www.npmjs.com/package/cordova-plugin-bluetoothle)
+
+All of these have fairly active development and look non trivial. Now that Easyble is working, my curiosity about the differences is lower. Though it is not uncommon to find abstractions of only modest value, so I will look into the workings of Easyble.js before too long.
+
+## Sept 2
+
+### screen bounce on android
+Mostly fixed, mainly by turning of touch evetns to any thing that is not dragged. Looks like this does not prevent click events, (e.g. buttons and check boxes still work)
+
+### more on BLE
+Starting and stopping Scan. Notes on EVOThings [Easyble](https://evothings.com/forum/viewtopic.php?t=1804)

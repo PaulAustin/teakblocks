@@ -109,9 +109,16 @@ module.exports = function () {
     log('FD:' + device.name + '[' + device.rssi +']');
   }
 
+  teakScan.stopScan = function stopScan() {
+    log('stopping scan');
+    var ble = window.evothings.ble;
+    ble.stopScan();
+  };
+
   teakScan.startScan = function startScan() {
     log('starting scan');
     var ble = window.evothings.ble;
+    ble.stopScan();
     ble.startScan(
       function(device) {
         if (device.name !== undefined) {
