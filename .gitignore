@@ -5,3 +5,5 @@ html_app/plugins/*
 html_app/www/font-awesome/*
 
 html_app/npm-debug.log
+
+npm-debug.log
