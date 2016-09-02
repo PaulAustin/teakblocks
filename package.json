@@ -8,6 +8,7 @@
     "bify": "browserify source/index.js -o html_app/www/bundled_tbe.js",
     "wify": "watchify source/index.js -o html_app/www/bundled_tbe.js -v",
     "abuild": "cd html_app; cordova build android --browserify",
+    "cpfonts": "cp -R node_modules/font-awesome/  html_app/www/font-awesome/",
     "adeploy": "adb install -r html_app/platforms/android/build/outputs/apk/android-debug.apk",
     "http": "http-server ./html_app/www"
   },
