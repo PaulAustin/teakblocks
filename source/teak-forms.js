@@ -11,7 +11,7 @@ module.exports = function () {
       color:#33691E;
       font-size:30px;
       padding:30px;
-      -webkit-user-select: none;
+      touch-action: none; /* prevents any screen bounce on android */
   }
   label {
     margin: 15
@@ -48,13 +48,13 @@ module.exports = function () {
     color: #ccc;
   }
   @keyframes toUnchecked {
-    0% {transform: scale(1);}
-    60% {transform: scale(0.8);}
+    0% {transform: scale(0.9);}
+    60% {transform: scale(1.1);}
     100% {transform: scale(1);}
   }
   @keyframes toChecked {
-    0% {transform: scale(1);}
-    60% {transform: scale(1.2);}
+    0% {transform: scale(0.9);}
+    60% {transform: scale(1.1);}
     100% {transform: scale(1);}
   }
   .teakform {

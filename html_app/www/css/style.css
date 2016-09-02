@@ -153,4 +153,10 @@ html, body { margin:0; padding:0; overflow:hidden }
   fill:SkyBlue;
   animation: shadowFadeOut 0.35s ease;
 }
+button {
+  touch-action: none; /* prevents any screen bounce on android */
+}
+textarea {
+  touch-action: none; /* prevents any screen bounce on android */
+}
 body { margin: 0; }
