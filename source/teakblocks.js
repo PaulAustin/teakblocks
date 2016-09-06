@@ -591,7 +591,7 @@ tbe.sizePaletteToWindow = function sizePaletteToWindow () {
   tbe.windowRect = {left:0, top:0, right:w, bottom:h };
   var top = h - 90;
 
-  this.paletteBlocks.forEach(function(block) {
+  tbe.paletteBlocks.forEach(function(block) {
     block.dmove(0, top - block.rect.top, true);
   });
 };
