@@ -61,15 +61,11 @@ html, body { margin:0; padding:0; overflow:hidden }
   stroke: lightgreen;
 }
 .dropArea{
-  x:0px;
-  y:0px;
+  /* drop area will be moved to bottom, match width of screen */
   fill: #F5B041;
-  stroke: black;
-  rx: 5px;
-  ry: 5px;
-  width: 180px;
-  height: 1024px;
   stroke-width:0;
+  stroke: none;
+  height: 100px;
 }
 .tab-block{
   x:0px;

@@ -151,3 +151,13 @@ Mostly fixed, mainly by turning of touch events to any thing that is not dragged
 
 ### more on BLE
 Starting and stopping Scan. Notes on EVOThings [Easyble](https://evothings.com/forum/viewtopic.php?t=1804)
+
+
+## Sept 5
+
+### Moving tab bar to bottom and integrate buttons
+Back after a few days break. Two core possibilities.
+* Catch on-resize events
+* can part of SVG layout relative to other parts
+
+REading some on [relative SVGs](https://sarasoueidan.com/blog/mimic-relative-positioning-in-svg/)

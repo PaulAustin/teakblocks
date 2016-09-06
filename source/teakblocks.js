@@ -582,18 +582,26 @@ tbe.buildSvgTabs = function buildSvgTabs() {
 
 };
 
+tbe.sizePaletteToWindow = function sizePaletteToWindow () {
+  var w = window.outerWidth;
+  var h = window.innerHeight;
+  tbe.dropArea.style.width = w;
+  tbe.dropArea.style.y = h - 100;
+
+  tbe.windowRect = {left:0, top:0, right:w, bottom:h };
+  var top = h - 90;
+
+  this.paletteBlocks.forEach(function(block) {
+    block.dmove(0, top - block.rect.top, true);
+  });
+};
+
 tbe.initPalettes =  function initPalettes(palettes) {
 
+  document.body.onresize = tbe.sizePaletteToWindow;
   tbe.blockObject = palettes;
 
-  // Add some blocks to play with.
-  tbe.palette = [];
-
-  var group = document.createElementNS(svgb.ns, 'g');
-  var dA = document.createElementNS(svgb.ns, 'rect');
-  dA.setAttribute('class', 'dropArea');
-
-  tbe.svg.appendChild(group);
+  tbe.dropArea = svgb.createRect('dropArea', 0, 0, 0);
 
   for (var a = 0; a < tbe.blockObject.tabs.length; a++){
   //  var newtab = svgb.createSymbolUse('tab-block', '#palette-tab');
@@ -603,7 +611,6 @@ tbe.initPalettes =  function initPalettes(palettes) {
 
     var tab = document.createElementNS(svgb.ns, 'g');
     var tabblock = document.createElementNS(svgb.ns, 'rect');
-    var top = 20 + (100 * a);
     tabblock.setAttribute('class', 'tab-block');
     var text = document.createElementNS(svgb.ns, 'text');
     text.setAttribute('x', '10');
@@ -658,18 +665,20 @@ tbe.initPalettes =  function initPalettes(palettes) {
     for(var i = 0; i < tbe.blockObject.A.length; i++){
       //find letter inside tag
       // move the palettes to the front.
-      tbe.addPaletteBlock(75,  20 + (100 * i), path[i],{ });
+      // TODO Just move palettes, no need to make new ones.
+      tbe.addPaletteBlock(10 + (90 * i), tbe.windowRect.bottom - 90,  path[i],{ });
     }
   });
 
     tbe.svg.appendChild(tab);
   }
-
-  group.appendChild(dA);
+  tbe.svg.appendChild(tbe.dropArea);
 
   for(var i = 0; i < tbe.blockObject.A.length; i++){
-    tbe.addPaletteBlock(75,  20 + (100 * i), tbe.blockObject.A[i], {port:'a','power':50,'time':'2.5s'});
+    tbe.addPaletteBlock(10 + (90 * i), 0, tbe.blockObject.A[i], {port:'a','power':50,'time':'2.5s'});
   }
+
+  tbe.sizePaletteToWindow();
 };
 
 return tbe;
