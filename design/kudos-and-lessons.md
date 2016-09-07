@@ -160,4 +160,18 @@ Back after a few days break. Two core possibilities.
 * Catch on-resize events
 * can part of SVG layout relative to other parts
 
-REading some on [relative SVGs](https://sarasoueidan.com/blog/mimic-relative-positioning-in-svg/)
+Reading some on [relative SVGs](https://sarasoueidan.com/blog/mimic-relative-positioning-in-svg/). Sara also includes a great write up on the box model used by HTML and CSS.
+
+### Adding some sounds
+It seems that the block should click in some cases. This was a bit of a bunny trail today but some key lessons were learned.
+
+* The 'Click' makes a lot of sense when blocks snap together. Though now placing blocks on the surface
+is missing feed back. Using click sounds wrong, nothing sounds wrong as well.
+
+* The poof/pop for delete works, but should only happen when there are actually blocks the psychology feels pretty strong.
+
+* The audio tag in chrome desktop works well, but safari is disappointing. Volume sounds good first time then it drops about 10dB after initial play.  But the works part is that sounds are about 500 ms delayed. its a known issue reported [here](disappointing), [here](http://stackoverflow.com/questions/9811429/html5-audio-tag-on-safari-has-a-delay), and [here](https://discussions.apple.com/thread/6886071?start=0&tstart=0)
+
+* On Android, the safari-like delay seems to be present as well. It feels like an old film with out-of-sync audio.
+
+The initial experiment has been checked in, And it is good to know the limitations. There are some [Cordova plugins](https://www.npmjs.com/package/cordova-plugin-nativeaudio) that might help. That will wait for another day.
