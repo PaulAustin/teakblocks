@@ -27,12 +27,22 @@ function deviceReady() {
   var tbe = require('./teakblocks.js');
   var tf = require('./teak-forms.js');
 
+
   var webComponents = {};
   webComponents.config = require('./teak-config-widget.js');
   webComponents.sound = require('./teak-sound-widget.js');
   webComponents.scan = require('./teak-scan-widget.js');
   //webComponents.motor = require('./teak-motor-widget.js');
   //webComponents.LED5x5 = require('./teak-led5x5-widget.js');
+
+  // Some early experiments. seems to work well for desktop Chrome
+  // Safar has noticable lag, wih volume fluxuations.
+  tbe.audio = {
+    shortClick: document.getElementById('short-click'),
+    poof: document.getElementById('poof'),
+  };
+  tbe.audio.shortClick.preload = 'true';
+  tbe.audio.poof.preload = 'true';
 
   tbe.init(
     document.getElementById('editorCanvas'),
@@ -43,7 +53,12 @@ function deviceReady() {
   configButton.onclick = function() { tf.showHide('app-config'); };
 
   var clearButton = document.getElementById('clear-button');
-  clearButton.onclick = tbe.clearDiagramBlocks;
+  clearButton.onclick = function() {
+    if (tbe.diagramBlocks.length >1 ) {
+      tbe.clearDiagramBlocks();
+      tbe.audio.poof.play();
+    }
+  };
 
   var scanButton = document.getElementById('scan-button');
   scanButton.onclick = function() { tf.showHide('teak-scan'); };

@@ -432,6 +432,10 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
       frame: frameCount,
     };
     tbe.easeToTarget(0, this, thisLast);
+  } else {
+    // Nothing to snap to so leave it where is ended up.
+    // still need sound though
+    // tbe.audio.drop.play();
   }
   this.hilite(false);
   this.snapTarget = null;
@@ -446,6 +450,7 @@ tbe.easeToTarget = function easeToTarget(timeStamp, block, endBlock) {
     requestAnimationFrame(function(timestamp) { easeToTarget(timestamp, block, endBlock); });
   } else {
     // Once animation is over shadows are covered, remove them.
+    tbe.audio.shortClick.play();
     block.removeTargetShadows();
   }
 };
@@ -669,7 +674,6 @@ tbe.initPalettes =  function initPalettes(palettes) {
       tbe.addPaletteBlock(10 + (90 * i), tbe.windowRect.bottom - 90,  path[i],{ });
     }
   });
-
     tbe.svg.appendChild(tab);
   }
   tbe.svg.appendChild(tbe.dropArea);
