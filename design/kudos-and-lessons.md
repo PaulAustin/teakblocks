@@ -92,7 +92,7 @@ No surprise here. compatibility issues.
 
 This is like customizing the checkbox but with it own set of quirks. started reading this [blog post](http://brennaobrien.com/blog/2014/05/style-input-type-range-in-every-browser.html) by Brenna Obrien.
 
-## August 30
+## August 30, 2016
 
 ### Kudos and Lessons file (this log)
 Set up this Kudos and lessons log.
@@ -117,7 +117,7 @@ the mechanics are straight forward css transforms. The [David Walsh Blog](https:
 has a tutorial on what CSS properties to use. Hack: Double click on a block
 to bring in the fake config box.
 
-## August 31
+## August 31, 2016
 
 ### Teak form cleanup
 Moved initial form position to tag so it can be place on the screen based on html.
@@ -129,7 +129,7 @@ TODO: There is much to learn on how to make this app accessible. One part is the
 ### Buttons
 Testing out font awesome by adding a few buttons to the app ( BLE scan, clear, config) the icons look nice. Helpful for debugging now, but It would be too easy to clutter the top level app with these.
 
-## Sept 1
+## Sept 1, 2016
 
 ### BLE day
 Going to try to get the scan working again under the browserify system, hopefully add chrome support as well.
@@ -144,7 +144,7 @@ Got scan working (on android) , Using Evothing's [Easlyble.js](https://evothings
 
 All of these have fairly active development and look non trivial. Now that Easyble is working, my curiosity about the differences is lower. Though it is not uncommon to find abstractions of only modest value, so I will look into the workings of Easyble.js before too long.
 
-## Sept 2
+## Sept 2, 2016
 
 ### screen bounce on android
 Mostly fixed, mainly by turning of touch events to any thing that is not dragged. Looks like this does not prevent click events, (e.g. buttons and check boxes still work)
@@ -153,7 +153,7 @@ Mostly fixed, mainly by turning of touch events to any thing that is not dragged
 Starting and stopping Scan. Notes on EVOThings [Easyble](https://evothings.com/forum/viewtopic.php?t=1804)
 
 
-## Sept 5
+## Sept 5, 2016
 
 ### Moving tab bar to bottom and integrate buttons
 Back after a few days break. Two core possibilities.
@@ -175,3 +175,21 @@ is missing feed back. Using click sounds wrong, nothing sounds wrong as well.
 * On Android, the safari-like delay seems to be present as well. It feels like an old film with out-of-sync audio.
 
 The initial experiment has been checked in, And it is good to know the limitations. There are some [Cordova plugins](https://www.npmjs.com/package/cordova-plugin-nativeaudio) that might help. That will wait for another day.
+
+## Sept 6, 2016
+
+### work on palette code.
+
+## Sept 7, 2016
+
+### Started Teak npm package
+Snippets of code will ideally be written in teak code, so it will help
+
+### Doc tools
+There are a few common JavaScript doc tools [this is a good write up]( http://www.fusioncharts.com/blog/2013/12/jsdoc-vs-yuidoc-vs-doxx-vs-docco-choosing-a-javascript-documentation-generator/)
+
+## Sept 8-9, 2016
+
+### teak npm package.
+Developing the teak parser, serializer and simulator as a separate package. Now
+published on [npmjs](https://www.npmjs.com/package/teak), and on [github](https://github.com/PaulAustin/teakjs)
