@@ -193,3 +193,14 @@ There are a few common JavaScript doc tools [this is a good write up]( http://ww
 ### teak npm package.
 Developing the teak parser, serializer and simulator as a separate package. Now
 published on [npmjs](https://www.npmjs.com/package/teak), and on [github](https://github.com/PaulAustin/teakjs)
+
+## Sept 12, 2016
+
+### Travis CI integration
+[TravisCI-teak](https://travis-ci.org/PaulAustin/teakjs) integration is working. Status badge
+added to the reamme.md file. Eventually this will be added to teak-blocks as well. 
+
+### Teak, NPM, and Tonic examples
+Got Teak to a bare minimum feature set now that it support (1)binding to symbols in
+a symbol table ( such as function names), (2)objects, and (3)comments. Also added
+a custom example for [teak's npmjs/tonic integration](https://tonicdev.com/npm/teak)
