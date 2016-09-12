@@ -72,17 +72,17 @@ html, body { margin:0; padding:0; overflow:hidden }
   y:0px;
   fill: #F5B041 ;
   stroke: #1B5E20;
-  rx: 10px;
-  ry: 10px;
+  rx: 5px;
+  ry: 5px;
   width: 40px;
-  height: 40px;
+  height: 25px;
   stroke-width:2;
   z-index: 500;
 }
 .tab-text{
   width: 40px;
-  height: 40px;
-  font-size:30px;
+  height: 25px;
+  font-size:24px;
   fill: black;
   font-family:"helvetica";
   pointer-events: none;

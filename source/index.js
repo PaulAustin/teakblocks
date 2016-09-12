@@ -54,7 +54,7 @@ function deviceReady() {
 
   var clearButton = document.getElementById('clear-button');
   clearButton.onclick = function() {
-    if (tbe.diagramBlocks.length >1 ) {
+    if (tbe.diagramBlocks.length > 0 ) {
       tbe.clearDiagramBlocks();
       tbe.audio.poof.play();
     }

@@ -591,8 +591,9 @@ tbe.buildSvgTabs = function buildSvgTabs() {
 tbe.sizePaletteToWindow = function sizePaletteToWindow () {
   var w = window.outerWidth;
   var h = window.innerHeight;
+
+  tbe.dropAreaGroup.setAttribute ('transform', 'translate (' +  0 + ' ' + (h - 100) + ')');
   tbe.dropArea.style.width = w;
-  tbe.dropArea.style.y = h - 100;
 
   tbe.windowRect = {left:0, top:0, right:w, bottom:h };
   var top = h - 90;
@@ -607,28 +608,27 @@ tbe.initPalettes =  function initPalettes(palettes) {
   document.body.onresize = tbe.sizePaletteToWindow;
   tbe.blockObject = palettes;
 
+  tbe.dropAreaGroup = svgb.createGroup(0, 0);
   tbe.dropArea = svgb.createRect('dropArea', 0, 0, 0);
+  tbe.dropAreaGroup.appendChild(tbe.dropArea);
 
-  for (var a = 0; a < tbe.blockObject.tabs.length; a++){
+  tbe.tabs = [];
+  for (var tabIndex = 0; tabIndex < tbe.blockObject.tabs.length; tabIndex++){
   //  var newtab = svgb.createSymbolUse('tab-block', '#palette-tab');
   //  newtab.x = 200; //('x', 200);
   //  newtab.y = 20 + (100 * a); // ('y', 20 + (100 * a));
   //  tbe.svg.appendChild(newtab);
 
-    var tab = document.createElementNS(svgb.ns, 'g');
-    var tabblock = document.createElementNS(svgb.ns, 'rect');
-    tabblock.setAttribute('class', 'tab-block');
-    var text = document.createElementNS(svgb.ns, 'text');
-    text.setAttribute('x', '10');
-    text.setAttribute('y', '30');
-    text.setAttribute('class', 'tab-text');
-    var tabName = tbe.blockObject.tabs[a];
-    text.textContent = tabName;
+    var tab = svgb.createGroup(0, 0);
+    var tabblock = svgb.createRect('tab-block', 0, 0, 0);
+    var tabName = tbe.blockObject.tabs[tabIndex];
+    var text = svgb.createText('tab-text', 10, 20, tabName);
+
     tab.appendChild(tabblock);
     tab.appendChild(text);
 
     var letpath = '';
-    switch (a) {
+    switch (tabIndex) {
       case 0:
         letpath = 'A';
         break;
@@ -646,12 +646,12 @@ tbe.initPalettes =  function initPalettes(palettes) {
         break;
     }
 
-    tab.setAttribute('transform', 'translate(10, ' + (20 + (100 * a)) + ')');
+    tab.setAttribute('transform', 'translate(20, ' + (5 + (30 * tabIndex)) + ')');
     tab.setAttribute('letter', letpath);
 
-    tab.addEventListener("click", function(){
+    tab.addEventListener('click', function() {
       var path = null;
-      switch(this.getAttribute('letter')){
+      switch(this.getAttribute('letter')) {
           case 'A':
             path = tbe.blockObject.A;
             break;
@@ -668,19 +668,20 @@ tbe.initPalettes =  function initPalettes(palettes) {
             path = tbe.blockObject.E;
             break;
         }
-    for(var i = 0; i < tbe.blockObject.A.length; i++){
-      //find letter inside tag
-      // move the palettes to the front.
-      // TODO Just move palettes, no need to make new ones.
-      tbe.addPaletteBlock(10 + (90 * i), tbe.windowRect.bottom - 90,  path[i],{ });
-    }
-  });
-    tbe.svg.appendChild(tab);
+
+      for(var i = 0; i < tbe.blockObject.A.length; i++){
+        //find letter inside tag
+        // move the palettes to the front.
+        // TODO Just move palettes, no need to make new ones.
+        tbe.addPaletteBlock(80 + (90 * i), tbe.windowRect.bottom - 90,  path[i],{ });
+      }
+    });
+    tbe.dropAreaGroup.appendChild(tab);
   }
-  tbe.svg.appendChild(tbe.dropArea);
+  tbe.svg.appendChild(tbe.dropAreaGroup);
 
   for(var i = 0; i < tbe.blockObject.A.length; i++){
-    tbe.addPaletteBlock(10 + (90 * i), 0, tbe.blockObject.A[i], {port:'a','power':50,'time':'2.5s'});
+    tbe.addPaletteBlock(80 + (90 * i), 0, tbe.blockObject.A[i], {port:'a','power':50,'time':'2.5s'});
   }
 
   tbe.sizePaletteToWindow();
