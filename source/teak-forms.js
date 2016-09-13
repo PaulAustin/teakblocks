@@ -75,15 +75,26 @@ module.exports = function () {
   </style>
   `;
 
+  // Only one form should be showing, and none to start with.
+  teakForm.openForm = null;
+
+  // Toggle the position of a form. Since they are actually all
+  // stacked but wiht different transform locations, it is necessary
+  // to toggle pointerEvents, other wise the top one east them all.
   teakForm.showHide = function showHide(formId) {
     var tform = document.getElementById(formId);
     var opened = tform.getAttribute('opened');
     if (opened === 'false') {
+      if (teakForm.openForm !== null) {
+        teakForm.showHide(teakForm.openForm);
+      }
       opened = 'true';
       tform.style.pointerEvents = 'all';
+      teakForm.openForm = formId;
     } else {
       opened = 'false';
       tform.style.pointerEvents = 'none';
+      teakForm.openForm = null;
     }
     tform.setAttribute('opened', opened);
   };
