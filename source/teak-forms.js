@@ -16,6 +16,9 @@ module.exports = function () {
   label {
     margin: 15
     cursor: pointer;
+    /* prevent selecting text in control captions */
+    -webkit-user-select: none;
+    user-select: none;
   }
   label input[type="checkbox"] {
     display: none;
@@ -80,14 +83,12 @@ module.exports = function () {
 
   // Toggle the position of a form. Since they are actually all
   // stacked but wiht different transform locations, it is necessary
-  // to toggle pointerEvents, other wise the top one east them all.
+  // to toggle pointerEvents, other wise the top one eats them all.
   teakForm.showHide = function showHide(formId) {
     var tform = document.getElementById(formId);
     var opened = tform.getAttribute('opened');
     if (opened === 'false') {
-      if (teakForm.openForm !== null) {
-        teakForm.showHide(teakForm.openForm);
-      }
+      this.hideOpenForm();
       opened = 'true';
       tform.style.pointerEvents = 'all';
       teakForm.openForm = formId;
@@ -97,6 +98,12 @@ module.exports = function () {
       teakForm.openForm = null;
     }
     tform.setAttribute('opened', opened);
+  };
+
+  teakForm.hideOpenForm = function hideOpenForm() {
+    if (teakForm.openForm !== null) {
+      teakForm.showHide(teakForm.openForm);
+    }
   };
 
   return teakForm;

@@ -25,6 +25,7 @@ module.exports = function (){
 var assert = require('assert');
 var interact = require('interact.js');
 var teak = require('teak');
+var teakForm = require('./teak-forms.js');
 var teakText = require('./teaktext.js');
 var svgb = require('./svgbuilder.js');
 var svglog = require('./svglog.js');
@@ -33,6 +34,12 @@ var tbe = {};
 
 tbe.diagramBlocks = [];
 tbe.paletteBlocks = [];
+
+tbe.clearStates = function clearStates() {
+  // clear any showing forms or multi step state.
+  // If the user has interacted with a general part of the editor.
+  teakForm.hideOpenForm();
+};
 
 tbe.init = function init(svg, text) {
   this.svg = svg;
@@ -473,6 +480,7 @@ tbe.configFBInteract = function configFBInteract() {
   var thisTbe = tbe;
   interact('.drag-group')
     .on('down', function (event) {
+      tbe.clearStates();
       var block = thisTbe.elementToBlock(event.target);
       if (block === null)
         return;
@@ -608,7 +616,7 @@ tbe.initPalettes =  function initPalettes(palettes) {
   document.body.onresize = tbe.sizePaletteToWindow;
   tbe.blockObject = palettes;
 
-  tbe.dropAreaGroup = svgb.createGroup(0, 0);
+  tbe.dropAreaGroup = svgb.createGroup("",0, 0);
   tbe.dropArea = svgb.createRect('dropArea', 0, 0, 0);
   tbe.dropAreaGroup.appendChild(tbe.dropArea);
 
@@ -619,7 +627,7 @@ tbe.initPalettes =  function initPalettes(palettes) {
   //  newtab.y = 20 + (100 * a); // ('y', 20 + (100 * a));
   //  tbe.svg.appendChild(newtab);
 
-    var tab = svgb.createGroup(0, 0);
+    var tab = svgb.createGroup("",0, 0);
     var tabblock = svgb.createRect('tab-block', 0, 0, 0);
     var tabName = tbe.blockObject.tabs[tabIndex];
     var text = svgb.createText('tab-text', 10, 20, tabName);
@@ -650,6 +658,7 @@ tbe.initPalettes =  function initPalettes(palettes) {
     tab.setAttribute('letter', letpath);
 
     tab.addEventListener('click', function() {
+      tbe.clearStates();
       var path = null;
       switch(this.getAttribute('letter')) {
           case 'A':
