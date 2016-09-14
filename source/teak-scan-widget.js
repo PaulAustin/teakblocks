@@ -27,7 +27,12 @@ module.exports = function () {
   var tf = require('./teak-forms.js');
   var template = tf.styleTag +
   `<style>
-  .tf-list {
+  .scroll-div {
+    width:100%;
+    height:200px;
+    overflow-y:scroll;
+  }
+  .tf-table {
     list-style: none;
     list-style-position:inside;
     /* border: 2px solid #9CCC65; */
@@ -36,20 +41,25 @@ module.exports = function () {
     box-shadow: inset 0px 0px 5px 3px rgba(73, 137, 144, 0.2);
     border-radius: 5px;
   }
-  .tf-list-item {
-    list-style: none;
-    list-style-position:inside;
-  }
   </style>
   <div id="teak-scan" class="container teakform closed">
     <form>
-      <label id="device-list-title" for="device-list">Nearby micro:bits</label>
+      <label id="device-table-title" for="device-table">Nearby micro:bits</label>
       <br>
-        <ul class='tf-list'>
-        <li class='tf-list-item'> volgart</li>
-        <li class='tf-list-item'> zarbit</li>
-        <li class='tf-list-item'> pokey</li>
-        </ul>
+      <br>
+      <div class="scroll-div">
+        <table id="device-table" class='tf-table' width='100%' height='200px'>
+        <tr><td> </td><tr>
+        <tr><td> </td><tr>
+        <tr><td> </td><tr>
+        <tr><td> </td><tr>
+        <tr><td> </td><tr>
+        <!--tr><td>Hello</td><tr>
+        <tr><td>Hello</td><tr>
+        <tr><td>Hello</td><tr>
+        <tr><td>Hello</td><tr-->
+        </table>
+      </div>
     </form>
   </div>`;
 
@@ -65,6 +75,11 @@ module.exports = function () {
     // Fires when an attribute is added, removed, or updated.
     attributeChangedCallback(name, oldValue, newValue) {
       if (name === 'opened') {
+        if (newValue === 'true') {
+          this.startScan();
+        } else {
+          this.stopScan();
+        }
         tf.setOpenAttribute(this.shadowRoot.getElementById('teak-scan'), newValue);
       }
     }
@@ -82,10 +97,25 @@ module.exports = function () {
     log('FD:' + device.name + '[' + device.rssi +']');
   }
 
-  teakScan.startScan = function startScan() {
+  TeakScanWidget.prototype.addRow = function addRow(name) {
+    var table = this.shadowRoot.getElementById('device-table');
+    var newRow = table.insertRow(0);
+    var cell = newRow.insertCell(0);
+    // cell.onclick = function (e) { console.log('clicked on ', e); };
+    var text = document.createTextNode(name);
+    cell.appendChild(text);
+  };
+
+  TeakScanWidget.prototype.startScan = function startScan() {
     var ble = window.evothings.ble;
-    if (ble === undefined)
+    if (ble === undefined) {
+      // Some place holders for test
+      this.addRow('Blinky');
+      this.addRow('Drummer');
+      this.addRow('BlueBot');
       return;
+    }
+
     log('starting scan');
     ble.stopScan();
     ble.startScan(
@@ -99,7 +129,7 @@ module.exports = function () {
       });
   };
 
-  teakScan.stopScan = function stopScan() {
+  TeakScanWidget.prototype.stopScan = function stopScan() {
     var ble = window.evothings.ble;
     if (ble === undefined)
       return;
