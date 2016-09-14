@@ -198,9 +198,35 @@ published on [npmjs](https://www.npmjs.com/package/teak), and on [github](https:
 
 ### Travis CI integration
 [TravisCI-teak](https://travis-ci.org/PaulAustin/teakjs) integration is working. Status badge
-added to the reamme.md file. Eventually this will be added to teak-blocks as well. 
+added to the reamme.md file. Eventually this will be added to teak-blocks as well.
 
 ### Teak, NPM, and Tonic examples
 Got Teak to a bare minimum feature set now that it support (1)binding to symbols in
 a symbol table ( such as function names), (2)objects, and (3)comments. Also added
 a custom example for [teak's npmjs/tonic integration](https://tonicdev.com/npm/teak)
+
+## Sept 13, 2016
+
+### Palette work
+Cleaned up palette layout (just a bit) buttons, and other cleanup. Palette as a whole is a group
+now so it can be moved with one translation, although buttons basically float on top.
+About time to evaluate options for internationalization.
+Also, I keep avoiding the list box on the scan page. Tomorrow
+
+## Sept 14, 2016
+
+### String translation notes.
+String use is to be a minimum. these are the ideal rules
+1. User blocks will have no strings other than messages or comments provided by student/child/User
+2. No stings in the top level UX. Mainly using Font Awesome icons.
+3. Strings will be in config forms. String swapping support should be in ```teak-forms.js```
+
+Some interesting notes on using CSS for language substitution [at the w3c](https://www.w3.org/International/questions/qa-css-lang) and  [here](https://www.smashingmagazine.com/2014/06/css-driven-internationalization-in-javascript/)
+One key part is the [ISO 631-9](http://www.w3schools.com/tags/ref_language_codes.asp) language codes.
+To be clear, they are different from [country codes](http://www.w3schools.com/tags/ref_country_codes.asp). Some countries have many languages (India). Some languages are used in many countries (Spanish)
+
+### github pages (gh-pages)
+This may be a good place to host preliminary versions of the tool. As a bonus, of June 8, 2016 [https support is official](https://github.com/blog/2186-https-for-github-pages). That will help with use of BLE APIs
+
+### Google analytics?, feed back.
+Need to set up something like this before posting on gh-pages. Also a feed back from system. Once we start sharing it, gathering feed back is important.
