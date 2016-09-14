@@ -31,6 +31,7 @@ module.exports = function () {
     width:100%;
     height:200px;
     overflow-y:scroll;
+    box-shadow:  0px 0px 5px 3px rgba(73, 137, 144, 0.2);
   }
   .tf-table {
     list-style: none;
@@ -38,8 +39,6 @@ module.exports = function () {
     /* border: 2px solid #9CCC65; */
     /* background-color: #DCEDC8; */
     background-color: #BAEDF3;
-    box-shadow: inset 0px 0px 5px 3px rgba(73, 137, 144, 0.2);
-    border-radius: 5px;
   }
   </style>
   <div id="teak-scan" class="container teakform closed">
@@ -62,6 +61,8 @@ module.exports = function () {
       </div>
     </form>
   </div>`;
+
+  var activeDevices = {};
 
   class TeakScanWidget extends HTMLElement {
     // Fires when an instance of the element is created.
@@ -92,36 +93,63 @@ module.exports = function () {
     blelog.value = blelog.value + '\n' + text;
   }
 
-  function foundDevice(device) {
-    //  device.timeStamp = Date.now();
-    log('FD:' + device.name + '[' + device.rssi +']');
-  }
+  TeakScanWidget.prototype.deviceOnClick = function deviceOnClick (cell) {
+    var name = cell.innerHTML;
+    for(var propName in activeDevices) {
+      if (propName === name) {
+        activeDevices[propName].cell.style.backgroundColor = '#03A9F4';
+      } else {
+        activeDevices[propName].cell.style.backgroundColor = '#BAEDF3';
+      }
+    }
+  };
 
-  TeakScanWidget.prototype.addRow = function addRow(name) {
+  TeakScanWidget.prototype.addDevice = function addDevice (device) {
+    var thisScanner = this;
     var table = this.shadowRoot.getElementById('device-table');
     var newRow = table.insertRow(0);
     var cell = newRow.insertCell(0);
-    // cell.onclick = function (e) { console.log('clicked on ', e); };
-    var text = document.createTextNode(name);
+
+    cell.onclick = function () { thisScanner.deviceOnClick(this);  };
+    var text = document.createTextNode(device.name);
     cell.appendChild(text);
+
+    activeDevices[device.name] = {
+      name:device.name,
+      device:device,
+      cell:cell,
+      selected: false,
+      timeStamp: Date.now()
+    };
+  };
+
+  TeakScanWidget.prototype.foundDevice = function foundDevice (device) {
+    if (activeDevices[device.name] === undefined) {
+      this.addDevice(device);
+    }
+    //  setTimeout(checkList)
+    // device.timeStamp = Date.now();
+    // log('FD:' + device.name + '[' + device.rssi +']');
   };
 
   TeakScanWidget.prototype.startScan = function startScan() {
+
     var ble = window.evothings.ble;
     if (ble === undefined) {
+      this.addDevice({name:'Blinky'});
+      this.addDevice({name:'BlueBot'});
+      this.addDevice({name:'PurplePoka'});
       // Some place holders for test
-      this.addRow('Blinky');
-      this.addRow('Drummer');
-      this.addRow('BlueBot');
       return;
     }
 
+    var thisScanner = this;
     log('starting scan');
     ble.stopScan();
     ble.startScan(
       function(device) {
         if (device.name !== undefined) {
-          foundDevice(device);
+          thisScanner.foundDevice(device);
         }
       },
       function(errorCode) {
