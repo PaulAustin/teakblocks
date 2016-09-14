@@ -45,16 +45,8 @@ module.exports = function () {
     }
     // Fires when an attribute is added, removed, or updated.
     attributeChangedCallback(name, oldValue, newValue) {
-      // TODO move this common code to teak-forms.js
       if (name === 'opened') {
-        var form = this.shadowRoot.getElementById('app-config');
-        if (newValue === 'true') {
-          form.classList.remove('closed');
-          form.classList.add('opened');
-        } else if (newValue === 'false') {
-          form.classList.remove('opened');
-          form.classList.add('closed');
-        }
+        tf.setOpenAttribute(this.shadowRoot.getElementById('app-config'), newValue);
       }
     }
   }
