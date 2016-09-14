@@ -230,3 +230,7 @@ This may be a good place to host preliminary versions of the tool. As a bonus, o
 
 ### Google analytics?, feed back.
 Need to set up something like this before posting on gh-pages. Also a feed back from system. Once we start sharing it, gathering feed back is important.
+
+### Device list working
+On android it shows devices that are advertising. On desktop some dummy names are added its just a start
+now its time to get the pairing working. Some notes here: [here](https://evothings.com/evothings-and-the-bbc-microbit/)
