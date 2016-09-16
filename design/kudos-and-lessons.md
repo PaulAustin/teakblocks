@@ -234,3 +234,17 @@ Need to set up something like this before posting on gh-pages. Also a feed back 
 ### Device list working
 On android it shows devices that are advertising. On desktop some dummy names are added its just a start
 now its time to get the pairing working. Some notes here: [here](https://evothings.com/evothings-and-the-bbc-microbit/)
+
+### digging in to BLE pairing.
+
+https://github.com/lancaster-university
+The [DAL](https://github.com/lancaster-university/microbit) AKA Device abstraction layer was done by lancaster university.
+
+The have [many micro:bit projects](https://github.com/lancaster-university) on github
+
+[DapLink](https://www.mbed.com/en/development/hardware/prototyping-production/daplink/daplink-on-kl26z/#Updating_your_DAPLink_firmware)
+
+
+Code for the pairing is [here](https://github.com/lancaster-university/microbit-dal/blob/ee2af2c489a2501ca7d9559f42292964864c08d5/source/bluetooth/MicroBitBLEManager.cpp) particularly around line 470.
+
+https://developer.mbed.org/platforms/Microbit/#firmware

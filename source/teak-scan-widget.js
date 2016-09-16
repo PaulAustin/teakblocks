@@ -64,6 +64,17 @@ module.exports = function () {
 
   var activeDevices = {};
 
+/*
+  When the panel is opened, BLE scanning is enabled. devices in pairing mode
+  will boadcast a beacon every few seconds. those added to a list of devices
+  found. A second settimeout() background task culls the list of devices that
+  have not been seen for some period of time.
+
+  When a device is selected then it needs to be paired with. That still has
+  to beimpliemnted.
+
+*/
+
   class TeakScanWidget extends HTMLElement {
     // Fires when an instance of the element is created.
     createdCallback() {

@@ -21,6 +21,19 @@ SOFTWARE.
 */
 
 module.exports = function () {
+
+  // At this point no fancy data binding. This component returns an object
+  // with the application configuration settings. When the form is shown, the
+  // user may change the settings. The application refers to this object where
+  // needed
+
+  var config = {
+    useSounds: true,
+    showEditorPhysics: false,
+    showCode: true,
+    colorScheme: 'tbd'
+  };
+
   var tf = require('./teak-forms.js');
   var template = tf.styleTag +
   `<div id="app-config" class="container teakform closed">
@@ -35,14 +48,17 @@ module.exports = function () {
   </div>`;
 
   class TeakConfigWidget extends HTMLElement {
+
     // Fires when an instance of the element is created.
     createdCallback() {
       this.createShadowRoot().innerHTML = template;
       this.$container = this.shadowRoot.querySelector('.container');
     }
-    // Fires when an instance was inserted into the document.
+
+    // Fires when an instance is inserted into the document.
     attachedCallback() {
     }
+
     // Fires when an attribute is added, removed, or updated.
     attributeChangedCallback(name, oldValue, newValue) {
       if (name === 'opened') {
@@ -50,5 +66,8 @@ module.exports = function () {
       }
     }
   }
+
   document.registerElement('teak-config-widget', TeakConfigWidget);
+
+  return config;
 }();

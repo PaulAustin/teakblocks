@@ -27,11 +27,11 @@ function deviceReady() {
   var tbe = require('./teakblocks.js');
   var tf = require('./teak-forms.js');
 
-
-  var webComponents = {};
-  webComponents.config = require('./teak-config-widget.js');
-  webComponents.sound = require('./teak-sound-widget.js');
-  webComponents.scan = require('./teak-scan-widget.js');
+  // Configuation components.
+  tbe.components = {};
+  tbe.components.config = require('./teak-config-widget.js');
+  tbe.components.sound = require('./teak-sound-widget.js');
+  tbe.components.scan = require('./teak-scan-widget.js');
   //webComponents.motor = require('./teak-motor-widget.js');
   //webComponents.LED5x5 = require('./teak-led5x5-widget.js');
 
