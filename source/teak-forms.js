@@ -31,8 +31,8 @@ module.exports = function () {
       box-shadow: 1px 4px 5px 2px rgba(0, 0, 0, 0.2);
       font-family:"helvetica";
       color:#33691E;
-      font-size:30px;
-      padding:30px;
+      font-size:20px;
+      padding:20px;
       touch-action: none; /* prevents any screen bounce on android */
   }
   label {

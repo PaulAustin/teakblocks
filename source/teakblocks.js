@@ -264,11 +264,11 @@ tbe.intersectingArea = function intersectingArea(r1, r2) {
 };
 
 tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
-  var thisBlock = this;
+  var self = this;
   var target = null;
   var overlap = 0;
   var bestOverlap = 0;
-//  var bestRect = null;
+  var bestRect = null;
   var action = null;
   var rect = null;
   var thisWidth = this.blockWidth;
@@ -279,7 +279,7 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
   // For insert it could snap after the previous block or before the next block
   // which make the most sense?
   tbe.diagramBlocks.forEach(function(entry) {
-    if (entry !== thisBlock  && !entry.dragging) {
+    if (entry !== self  && !entry.dragging) {
       rect = {
         top:    entry.rect.top,
         bottom: entry.rect.bottom,
@@ -295,10 +295,10 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
         rect.right += thisWidth * 1.5;
       }
 
-      overlap = tbe.intersectingArea(thisBlock.rect, rect);
+      overlap = tbe.intersectingArea(self.rect, rect);
       if (overlap > bestOverlap) {
         bestOverlap = overlap;
-        // bestRect = rect;
+        bestRect = rect;
         target = entry;
       }
     }
@@ -306,7 +306,7 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
 
   // Refine the action based on geometery.
   if (target !== null) {
-    if (thisBlock.rect.left < (target.rect.left)) {
+    if (self.rect.left < (target.rect.left)) {
       if (target.prev !== null) {
         action = 'insert';
       } else {
@@ -315,7 +315,9 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
     } else {
       action = 'append';
     }
-    // svglog.logRect(tbe.svg, bestRect, action + ' ' + target.name);
+    if (tbe.components.configSettings.editorXRay()) {
+      svglog.logRect(tbe.svg, bestRect, action + ' ' + target.name);
+    }
   }
 
   // Update shadows as needed.
@@ -458,7 +460,7 @@ tbe.easeToTarget = function easeToTarget(timeStamp, block, endBlock) {
     requestAnimationFrame(function(timestamp) { easeToTarget(timestamp, block, endBlock); });
   } else {
     // Once animation is over shadows are covered, remove them.
-    tbe.audio.shortClick.play();
+    tbe.audio.playSound(tbe.audio.shortClick);
     block.removeTargetShadows();
   }
 };

@@ -26,10 +26,11 @@ function deviceReady() {
   // TODO make the teak block editor a web component as well.
   var tbe = require('./teakblocks.js');
   var tf = require('./teak-forms.js');
+  var ko = require('knockout');
 
-  // Configuation components.
+  // Configuation components for the app and blocks
   tbe.components = {};
-  tbe.components.config = require('./teak-config-widget.js');
+  tbe.components.configSettings = require('./teak-config-widget.js');
   tbe.components.sound = require('./teak-sound-widget.js');
   tbe.components.scan = require('./teak-scan-widget.js');
   //webComponents.motor = require('./teak-motor-widget.js');
@@ -40,9 +41,17 @@ function deviceReady() {
   tbe.audio = {
     shortClick: document.getElementById('short-click'),
     poof: document.getElementById('poof'),
+    playSound: function (element) {
+      if (tbe.components.configSettings.editorSounds()) {
+        element.play();
+      }
+    }
   };
   tbe.audio.shortClick.preload = 'true';
   tbe.audio.poof.preload = 'true';
+
+  // Initialize knockout databinding for documnets DOM
+  ko.applyBindings(tbe.components);
 
   tbe.init(
     document.getElementById('editorCanvas'),
@@ -56,12 +65,13 @@ function deviceReady() {
   clearButton.onclick = function() {
     if (tbe.diagramBlocks.length > 0 ) {
       tbe.clearDiagramBlocks();
-      tbe.audio.poof.play();
+      tbe.audio.playSound(tbe.audio.poof);
     }
   };
 
   var scanButton = document.getElementById('scan-button');
   scanButton.onclick = function() { tf.showHide('teak-scan'); };
+
 /*
   {name:'a1', tcode:{power:50}, tabs:[1]},
 */

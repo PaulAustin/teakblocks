@@ -26,23 +26,27 @@ module.exports = function () {
   // with the application configuration settings. When the form is shown, the
   // user may change the settings. The application refers to this object where
   // needed
+  var ko = require('knockout');
 
-  var config = {
-    useSounds: true,
-    showEditorPhysics: false,
-    showCode: true,
-    colorScheme: 'tbd'
+  var configProperties = {
+    showCode: ko.observable(false),
+    editorSounds: ko.observable(true),
+    editorXRay: ko.observable(false),
+    editorTheme: ko.observable('primary1'),
   };
 
   var tf = require('./teak-forms.js');
   var template = tf.styleTag +
   `<div id="app-config" class="container teakform closed">
       <form>
-        <label><input type="checkbox" id="show-code">
+        <label><input type="checkbox" id="show-code" data-bind="checked:showCode">
           <span class="label-text">Show code</span>
         </label><br><br>
-        <label><input type="checkbox" id="show-targets">
-          <span class="label-text">Hilight drag target</span>
+        <label><input type="checkbox" id="editor-sounds" data-bind="checked:editorSounds">
+          <span class="label-text">Sound effects</span>
+        </label><br><br>
+        <label><input type="checkbox" id="editor-xray" data-bind="checked:editorXRay">
+          <span class="label-text">X-Ray</span>
         </label>
       </form>
   </div>`;
@@ -53,6 +57,9 @@ module.exports = function () {
     createdCallback() {
       this.createShadowRoot().innerHTML = template;
       this.$container = this.shadowRoot.querySelector('.container');
+
+      // Initialize knockout databinding for elements in shadow DOM
+      ko.applyBindings(configProperties, this.$container);
     }
 
     // Fires when an instance is inserted into the document.
@@ -69,5 +76,5 @@ module.exports = function () {
 
   document.registerElement('teak-config-widget', TeakConfigWidget);
 
-  return config;
+  return configProperties;
 }();
