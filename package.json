@@ -5,8 +5,8 @@
   "main": "teakblocks.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "bifyu": "browserify source/index.js -t [ babelify --presets es2015 ] | uglifyjs >html_app/www/bundled_tbe.js",
-    "bify": "browserify source/index.js -o html_app/www/bundled_tbe.js",
+    "bifyu": "browserify source/index.js -t [ babelify --presets es2015 ] | uglifyjs >html_app/www/bundled_tbe.js; ls -l html_app/www/bundled_tbe.js",
+    "bify": "browserify source/index.js -o html_app/www/bundled_tbe.js; ls -l html_app/www/bundled_tbe.js",
     "wify": "watchify source/index.js -o html_app/www/bundled_tbe.js -v",
     "abuild": "cd html_app; cordova build android --browserify",
     "cpfonts": "cp -R node_modules/font-awesome/  html_app/www/font-awesome/",
