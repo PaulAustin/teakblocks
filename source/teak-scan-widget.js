@@ -23,6 +23,13 @@ SOFTWARE.
 module.exports = function () {
   var teakScan = {};
   require('./evothings/easyble.dist.js');
+  var ko = require('knockout');
+
+  var scanProperties = {
+    deviceName: "bingo",
+    connected: true,
+    connectionType: "BLE",// USB, BT or WiFi, migth include st
+  };
 
   var tf = require('./teak-forms.js');
   var template = tf.styleTag +
@@ -116,12 +123,12 @@ module.exports = function () {
   };
 
   TeakScanWidget.prototype.addDevice = function addDevice (device) {
-    var thisScanner = this;
+    var self = this;
     var table = this.shadowRoot.getElementById('device-table');
     var newRow = table.insertRow(0);
     var cell = newRow.insertCell(0);
 
-    cell.onclick = function () { thisScanner.deviceOnClick(this);  };
+    cell.onclick = function () { self.deviceOnClick(this);  };
     var text = document.createTextNode(device.name);
     cell.appendChild(text);
 
@@ -154,13 +161,13 @@ module.exports = function () {
       return;
     }
 
-    var thisScanner = this;
+    var self = this;
     log('starting scan');
     ble.stopScan();
     ble.startScan(
       function(device) {
         if (device.name !== undefined) {
-          thisScanner.foundDevice(device);
+          self.foundDevice(device);
         }
       },
       function(errorCode) {
