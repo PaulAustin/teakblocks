@@ -248,3 +248,38 @@ The have [many micro:bit projects](https://github.com/lancaster-university) on g
 Code for the pairing is [here](https://github.com/lancaster-university/microbit-dal/blob/ee2af2c489a2501ca7d9559f42292964864c08d5/source/bluetooth/MicroBitBLEManager.cpp) particularly around line 470.
 
 https://developer.mbed.org/platforms/Microbit/#firmware
+
+### Foot ball team dinner Thursday
+Not much work today :) ( they had a good game, learned lessons from last week)
+
+### brainstoring on control hardware
+Friday was a HW day, no SW
+
+### Two way binding for html
+The html panels been ignored for a week now, time to make some forms work. This [blog post by Luca Ongaro](http://www.lucaongaro.eu/blog/2012/12/02/easy-two-way-data-binding-in-javascript/)covers several options [AngularJS](https://angularjs.org/) [Ember.js](http://emberjs.com/) [KonckoutJS](http://knockoutjs.com/) [ReactJS](https://facebook.github.io/react/) It also details how to do your own. I'll allow on day to select a solution. The goal: avoid bloat, make it easy for others to add forms.
+
+### Some comparisons
+* [From smashingBoxes](http://smashingboxes.com/blog/choosing-a-front-end-framework-angular-ember-react)
+* [From sitepoint](https://www.sitepoint.com/react-has-won-the-client-side-war/)
+* [TodoMVC](http://todomvc.com/)
+* [ycombinator thread](https://news.ycombinator.com/item?id=7738194)
+
+### Some notes
+These packages pull many 'web aplication' tools some thath are not needed right now, especially for a cordova style app.
+don't need URL routing, or server side tie in to php, or .net
+
+## Sept 19
+
+### initial conclusion, knockout
+The goal was to get two way data binding, and that is exactly what knockout does. Install from [npmjs/knockout](https://www.npmjs.com/package/knockout).
+
+## Sept 20-22
+Subbing at Murchison - students were learning HTML :)
+
+## Sept 23
+
+### Safari woes.
+Turns out safari and the web components polyfill is not working, block are not draggable. Components them selves actually work. ( e.g. the dialogs and data binding. Phone was working fine on ShadowCat build until applying safari 10.2 update. now only green buttons show. from searched, might be webcomponent problem :(
+
+### Working on simulator.
+This will be key for testers that do not have hardware.

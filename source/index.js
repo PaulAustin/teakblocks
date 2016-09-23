@@ -20,9 +20,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-require('webcomponents.js');
-
 function deviceReady() {
+  require('webcomponents.js');
+
   // TODO make the teak block editor a web component as well.
   var tbe = require('./teakblocks.js');
   var tf = require('./teak-forms.js');

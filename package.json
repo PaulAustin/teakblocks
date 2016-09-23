@@ -32,6 +32,7 @@
     "assert": "^1.4.1",
     "font-awesome": "^4.6.3",
     "interact.js": "^1.2.6",
+    "knockout": "^3.4.0",
     "teak": "^0.0.7",
     "webcomponents.js": "^0.7.22"
   },
