@@ -517,14 +517,14 @@ tbe.configFBInteract = function configFBInteract() {
       max: Infinity,
       onstart: function(event) {
         var block = thisTbe.elementToBlock(event.target);
-        if (block === null)
+        if (block === null) {
           return;
-
-      if (block.isPaletteBlock) {
-        // Turn the palette block into a diagram block.
-        thisTbe.popPaletteItem(block);
-      }
-      block.setDraggingState(true);
+        }
+        if (block.isPaletteBlock) {
+          // Turn the palette block into a diagram block.
+          thisTbe.popPaletteItem(block);
+        }
+        block.setDraggingState(true);
       },
       onend: function(event) {
         var block = thisTbe.elementToBlock(event.target);
@@ -595,11 +595,10 @@ tbe.configTabInteract = function configTabInteract() {
 */
 
 tbe.buildSvgTabs = function buildSvgTabs() {
-
 };
 
 tbe.sizePaletteToWindow = function sizePaletteToWindow () {
-  var w = window.outerWidth;
+  var w = window.innerWidth;
   var h = window.innerHeight;
 
   tbe.dropAreaGroup.setAttribute ('transform', 'translate (' +  0 + ' ' + (h - 100) + ')');
@@ -620,6 +619,8 @@ tbe.initPalettes =  function initPalettes(palettes) {
 
   tbe.dropAreaGroup = svgb.createGroup("",0, 0);
   tbe.dropArea = svgb.createRect('dropArea', 0, 0, 0);
+  tbe.dropArea.style.width = window.innerWidth;
+
   tbe.dropAreaGroup.appendChild(tbe.dropArea);
 
   tbe.tabs = [];
