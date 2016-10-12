@@ -35,6 +35,7 @@ function deviceReady() {
   tbe.components.configSettings = require('./teak-config-widget.js');
   tbe.components.sound = require('./teak-sound-widget.js');
   tbe.components.scan = require('./teak-scan-widget.js');
+  tbe.components.blockConfig = require('./teak-block-config-widget.js');
   //webComponents.motor = require('./teak-motor-widget.js');
   //webComponents.LED5x5 = require('./teak-led5x5-widget.js');
 
@@ -65,11 +66,7 @@ function deviceReady() {
 
 
   var clearButton = document.getElementById('clear-button');
-  clearButton.onclick = function() {
-    trash();
-  };
-  
-
+  clearButton.onclick = function() { trash(); };
 
   var scanButton = document.getElementById('scan-button');
   scanButton.onclick = function() { tf.showHide('teak-scan'); };

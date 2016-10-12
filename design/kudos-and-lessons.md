@@ -283,3 +283,8 @@ Turns out safari and the web components polyfill is not working, block are not d
 
 ### Working on simulator.
 This will be key for testers that do not have hardware.
+
+## Sept 24-29
+
+## mainly working on teakjs (teak on npm)
+Writing the engine in javascript, then C. Its easier to experiment in JS.
