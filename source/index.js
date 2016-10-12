@@ -27,7 +27,7 @@ function deviceReady() {
   var tbe = require('./teakblocks.js');
   var tf = require('./teak-forms.js');
   var ko = require('knockout');
-  var bp = require('./physics.js');
+  var trashBlocks = require('./physics.js');
 
 
   // Configuation components for the app and blocks
@@ -64,9 +64,8 @@ function deviceReady() {
   var configButton = document.getElementById('config-button');
   configButton.onclick = function() { tf.showHide('app-config'); };
 
-
   var clearButton = document.getElementById('clear-button');
-  clearButton.onclick = function() { trash(); };
+  clearButton.onclick = function() { trashBlocks(tbe); };
 
   var scanButton = document.getElementById('scan-button');
   scanButton.onclick = function() { tf.showHide('teak-scan'); };
