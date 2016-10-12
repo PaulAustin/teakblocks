@@ -44,7 +44,10 @@ tbe.clearStates = function clearStates() {
 tbe.init = function init(svg, text) {
   this.svg = svg;
   this.teakCode = text;
-  this.configFBInteract();
+
+  this.background = svgb.createRect('editor-background', 0, 0, 0);
+  tbe.svg.appendChild(this.background);
+  this.configInteractions();
 //  this.configTabInteract();
   interact.maxInteractions(Infinity);
   return this;
@@ -114,6 +117,7 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   this.next = null;
 
   // Dragging state information.
+  this.checkForHold = null; // timer to filter out small movements on tablets
   this.dragging = false;
   this.coasting = 0;
   this.snapTarget = null;   // Object to append, prepend, replace
@@ -478,8 +482,15 @@ tbe.clearDiagramBlocks = function clearDiagramBlocks() {
 };
 
 // Attach these interactions properties based on the class property of the DOM elements
-tbe.configFBInteract = function configFBInteract() {
+tbe.configInteractions = function configInteractions() {
   var thisTbe = tbe;
+
+  interact('.editor-background')
+    . on('down', function () {
+      var bc = document.getElementById('block-config');
+      bc.hide();
+    });
+
   interact('.drag-group')
     .on('down', function (event) {
       tbe.clearStates();
@@ -489,17 +500,26 @@ tbe.configFBInteract = function configFBInteract() {
       block.coasting = 0;
     })
     .on('up', function (event) {
-      // Mark the chain as coastin. if it finds a target
+      // Mark the chain as coasting. if it finds a target
       // it will snap to it.
       var block = thisTbe.elementToBlock(event.target);
       if (block === null)
         return;
       block.coasting = 1;
     })
-    // .on('hold', function(event) {
-    //   var block = thisTbe.elementToBlock(event.target);
-    // TODO press and hold...
-    // })
+    .on('tap', function(event) {
+      var block = thisTbe.elementToBlock(event.target);
+      var bc = document.getElementById('block-config');
+      bc.tap(block);
+    })
+    .on('hold', function(event) {
+       var block = thisTbe.elementToBlock(event.target);
+
+       // bring up config, dont let drag start
+       event.interaction.stop();
+       var bc = document.getElementById('block-config');
+       bc.tap(block);
+    })
     .draggable({
       restrict: {
           restriction: thisTbe.svg,
@@ -525,6 +545,16 @@ tbe.configFBInteract = function configFBInteract() {
           thisTbe.popPaletteItem(block);
         }
         block.setDraggingState(true);
+
+        block.checkForHoldID = setTimeout(tbe.checkForHold, 500, block, event.interaction);
+
+//        block.onStartLocation = {x:event.pageX, y:event.pageY, time };
+// how to fake  on hold and tap.
+// on down set timer attch to block, delete old on as well.
+
+        // Hide any config window.
+        var bc = document.getElementById('block-config');
+        bc.hide();
       },
       onend: function(event) {
         var block = thisTbe.elementToBlock(event.target);
@@ -547,9 +577,22 @@ tbe.configFBInteract = function configFBInteract() {
         // happen after the user lets go. If a target is found
         // in the coasting state, start the animation to the target.
         // dont wait to coas to a stop.
+
         var block =  thisTbe.elementToBlock(event.target);
         if (block === null)
           return;
+
+        // if a significant move is detected then forget checking for hold event
+        // mainly a problem on touch devices where the finger rolls a bit when
+        // it is pressed on the screen.
+        if (block.checkForHoldID !== null) {
+            if ((Math.abs(event.x0 - event.pageX) > 4) ||
+                (Math.abs(event.y0 - event.pageY) > 4)) {
+              console.log('ignore possible hold', event);
+              clearTimeout(block.checkForHoldID);
+              block.checkForHoldID = null;
+            }
+        }
 
         if (block.dragging) {
           block.dmove(event.dx, event.dy, true);
@@ -568,16 +611,15 @@ tbe.configFBInteract = function configFBInteract() {
         }
       }
     });
-    /*
-    .resizable({
-      autoScroll: {
-        container: tbe.svg,
-        margin: 50,
-        distance: 5,
-        interval: 10
-      }
-    });
-    */
+};
+
+tbe.checkForHold = function checkForHold(block, interaction) {
+  // has block moved enough?
+  console.log('is it holding?', block);
+  block.checkForHold = null;
+  interaction.stop();
+  var bc = document.getElementById('block-config');
+  bc.tap(block);
 };
 
 tbe.diagramChanged = function diagramChanged() {
@@ -604,7 +646,10 @@ tbe.sizePaletteToWindow = function sizePaletteToWindow () {
   tbe.dropAreaGroup.setAttribute ('transform', 'translate (' +  0 + ' ' + (h - 100) + ')');
   tbe.dropArea.style.width = w;
 
-  tbe.windowRect = {left:0, top:0, right:w, bottom:h };
+  tbe.background.style.width = w;
+  tbe.background.style.height = h;
+
+  tbe.windowRect = { left:0, top:0, right:w, bottom:h };
   var top = h - 90;
 
   tbe.paletteBlocks.forEach(function(block) {

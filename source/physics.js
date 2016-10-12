@@ -3,8 +3,7 @@
   var ko = require('knockout');
   var d, n, d2, n2, rand, pick;
 
-
-trash = function trash(){
+trash = function trash() {
     if (tbe.diagramBlocks.length > 0 ) {
 
       tbe.diagramBlocks.forEach(function(block) {
@@ -32,20 +31,20 @@ trash = function trash(){
             if(block.rect.top){
               block.delete = true;
             }
-            
+
           });*/
-          
-          
-          
+
+
+
           //
 
           //block.dmove(0, 5, false, block);
         //}
-        
+
 //https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation
 
-      
-    
+
+
 }
 
 dump = function dump(block){
@@ -62,18 +61,18 @@ dump = function dump(block){
         frame = block.animateState.frame;
         block.dmove(block.animateState.adx, block.animateState.ady, (frame === 1), block);
         block.animateState.count += 1;
-    
+
     //23087
     //console.log(block.animateState.count);
-    
+
     //console.log(block);
     if (frame > 1 && block.rect.top < window.innerHeight) {
       block.animateState.frame = frame - 1;
 
       //console.log(frame);
-      requestAnimationFrame(function(timestamp) { 
+      requestAnimationFrame(function(timestamp) {
 
-        block.animateState.ady = block.animateState.ady + .3; 
+        block.animateState.ady = block.animateState.ady + .3;
         dump(block);
       });
       //console.log('hi');
@@ -90,5 +89,4 @@ dump = function dump(block){
     }
   //}
   //});
-  
 }

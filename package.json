@@ -33,7 +33,7 @@
     "font-awesome": "^4.6.3",
     "interact.js": "^1.2.6",
     "knockout": "^3.4.0",
-    "teak": "^0.0.7",
+    "teak": "0.0.11",
     "webcomponents.js": "^0.7.22"
   },
   "devDependencies": {

@@ -25,7 +25,6 @@ module.exports = function () {
   teakForm.styleTag = `
   <style>
   .container {
-      width:12em;
       background-color: #75DCE7;
       border-radius: 10px;
       box-shadow: 1px 4px 5px 2px rgba(0, 0, 0, 0.2);
@@ -82,7 +81,9 @@ module.exports = function () {
     60% {transform: scale(1.1);}
     100% {transform: scale(1);}
   }
+  /* teak form is for system wide dialogs that slide in from the top */
   .teakform {
+      width:14em;
       transition: transform .4s ease;
   }
   .teakform.opened {
@@ -115,7 +116,7 @@ module.exports = function () {
   };
 
   // Toggle the position of a form. Since they are actually all
-  // stacked but wiht different transform locations, it is necessary
+  // stacked but with different transform locations, it is necessary
   // to toggle pointerEvents, other wise the top one eats them all.
   teakForm.showHide = function showHide(formId) {
     var tform = document.getElementById(formId);
