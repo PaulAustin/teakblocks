@@ -74,7 +74,6 @@ module.exports = function () {
     }
   }
 
-  document.registerElement('teak-config-widget', TeakConfigWidget);
-
+  tf.registerComponent('teak-config-widget', TeakConfigWidget);
   return configProperties;
 }();

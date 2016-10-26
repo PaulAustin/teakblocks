@@ -104,6 +104,12 @@ module.exports = function () {
   // Only one form should be showing, and none to start with.
   teakForm.openForm = null;
 
+  teakForm.registerComponent = function  registerComponent(tagName, tagObject) {
+    if (document.registerElement !== undefined) {
+      document.registerElement(tagName, tagObject);
+    }
+  };
+
   // Update a DOM elements class list based on the open attribute.
   teakForm.setOpenAttribute = function setOpenAttribute(form, value) {
       if (value === 'true') {

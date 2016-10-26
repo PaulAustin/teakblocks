@@ -1,7 +1,6 @@
 
 module.exports = function (){
 
-  var a = false;
 function trashBlocks(editor) {
     if (editor.diagramBlocks.length > 0 ) {
 

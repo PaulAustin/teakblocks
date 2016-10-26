@@ -104,7 +104,7 @@ module.exports = function () {
     }
   }
 
-  document.registerElement('teak-scan-widget', TeakScanWidget);
+  tf.registerComponent('teak-scan-widget', TeakScanWidget);
 
   var blelog = document.getElementById('teakCode');
   function log(text) {

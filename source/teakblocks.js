@@ -24,11 +24,12 @@ module.exports = function (){
 
 var assert = require('assert');
 var interact = require('interact.js');
-var teak = require('teak');
-var teakForm = require('./teak-forms.js');
+//zzz6 var teak = require('teak');
+var tf = require('./teak-forms.js');
 var teakText = require('./teaktext.js');
 var svgb = require('./svgbuilder.js');
 var svglog = require('./svglog.js');
+var trashBlocks = require('./physics.js');
 
 var tbe = {};
 
@@ -38,17 +39,21 @@ tbe.paletteBlocks = [];
 tbe.clearStates = function clearStates() {
   // clear any showing forms or multi step state.
   // If the user has interacted with a general part of the editor.
-  teakForm.hideOpenForm();
+  tf.hideOpenForm();
+  if (this.blockConfigurator.hide !== undefined) {
+    this.blockConfigurator.hide();
+  }
 };
 
 tbe.init = function init(svg, text) {
   this.svg = svg;
   this.teakCode = text;
 
-  this.background = svgb.createRect('editor-background', 0, 0, 0);
+  this.blockConfigurator = document.getElementById('block-config');
+
+  this.background = svgb.createRect('editor-background', 0, 0, 20, 20, 0);
   tbe.svg.appendChild(this.background);
   this.configInteractions();
-//  this.configTabInteract();
   interact.maxInteractions(Infinity);
   return this;
 };
@@ -66,6 +71,12 @@ tbe.elementToBlock = function(el) {
     } else {
       return null;
     }
+};
+
+tbe.clearAllBlocks = function() {
+  console.log('clearing blocks');
+  tbe.clearStates();
+  trashBlocks(tbe);
 };
 
 tbe.addBlock = function(x, y, name, params) {
@@ -129,7 +140,7 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   // a rounded rect and a text box. The group is moved by changing
   // it's transform (see dmove)
 
-  var rect = svgb.createRect('function-block', 0, 0, 1);
+  var rect = svgb.createRect('function-block', 0, 0, 80, 80, 10);
   // For safari 8/14/2016 rx or ry must be explicitly set other wise rx/ry
   // values in css will be ignored. Perhasp a more optimized rect is used.
 
@@ -246,7 +257,10 @@ tbe.FunctionBlock.prototype.dmove = function (dx, dy, snapToInt, endBlock) {
       r.bottom = Math.round(r.bottom);
       r.right = Math.round(r.right);
     }
-    block.svgGroup.setAttribute ('transform', 'translate (' +  r.left + ' ' + r.top + ')');
+
+    if (block.svgGroup) {
+      block.svgGroup.setAttribute ('transform', 'translate (' +  r.left + ' ' + r.top + ')');
+    }
 
     if (block === endBlock) {
       break;
@@ -360,7 +374,7 @@ tbe.FunctionBlock.prototype.insertTargetShadows = function(target, action) {
   }
   var shadow = null;
   while (block !== null) {
-    shadow = svgb.createRect('shadow-block', x, y, 1);
+    shadow = svgb.createRect('shadow-block', x, y, 80, 80, 1);
     tbe.svg.insertBefore(shadow, tbe.svg.firstChild);
     block.targetShadow = shadow;
     x += block.blockWidth;
@@ -487,8 +501,7 @@ tbe.configInteractions = function configInteractions() {
 
   interact('.editor-background')
     . on('down', function () {
-      var bc = document.getElementById('block-config');
-      bc.hide();
+      thisTbe.clearStates();
     });
 
   interact('.drag-group')
@@ -509,16 +522,14 @@ tbe.configInteractions = function configInteractions() {
     })
     .on('tap', function(event) {
       var block = thisTbe.elementToBlock(event.target);
-      var bc = document.getElementById('block-config');
-      bc.tap(block);
+      thisTbe.blockConfigurator.tap(block);
     })
     .on('hold', function(event) {
        var block = thisTbe.elementToBlock(event.target);
 
        // bring up config, dont let drag start
        event.interaction.stop();
-       var bc = document.getElementById('block-config');
-       bc.tap(block);
+       thisTbe.blockConfigurator.tap(block);
     })
     .draggable({
       restrict: {
@@ -547,14 +558,6 @@ tbe.configInteractions = function configInteractions() {
         block.setDraggingState(true);
 
         block.checkForHoldID = setTimeout(tbe.checkForHold, 500, block, event.interaction);
-
-//        block.onStartLocation = {x:event.pageX, y:event.pageY, time };
-// how to fake  on hold and tap.
-// on down set timer attch to block, delete old on as well.
-
-        // Hide any config window.
-        var bc = document.getElementById('block-config');
-        bc.hide();
       },
       onend: function(event) {
         var block = thisTbe.elementToBlock(event.target);
@@ -618,12 +621,13 @@ tbe.checkForHold = function checkForHold(block, interaction) {
   console.log('is it holding?', block);
   block.checkForHold = null;
   interaction.stop();
-  var bc = document.getElementById('block-config');
-  bc.tap(block);
+  tbe.blockConfigurator.tap(block);
 };
 
 tbe.diagramChanged = function diagramChanged() {
-  this.teakCode.value = teakText.blocksToText(tbe.diagramBlocks);
+  if (teakText) {
+    this.teakCode.value = teakText.blocksToText(tbe.diagramBlocks);
+  }
 };
 
 /*
@@ -644,10 +648,8 @@ tbe.sizePaletteToWindow = function sizePaletteToWindow () {
   var h = window.innerHeight;
 
   tbe.dropAreaGroup.setAttribute ('transform', 'translate (' +  0 + ' ' + (h - 100) + ')');
-  tbe.dropArea.style.width = w;
-
-  tbe.background.style.width = w;
-  tbe.background.style.height = h;
+  svgb.resizeRect(tbe.dropArea, w, 100);
+  svgb.resizeRect(tbe.background, w, h);
 
   tbe.windowRect = { left:0, top:0, right:w, bottom:h };
   var top = h - 90;
@@ -663,20 +665,16 @@ tbe.initPalettes =  function initPalettes(palettes) {
   tbe.blockObject = palettes;
 
   tbe.dropAreaGroup = svgb.createGroup("",0, 0);
-  tbe.dropArea = svgb.createRect('dropArea', 0, 0, 0);
+  tbe.dropArea = svgb.createRect('dropArea', 0, 0, 20, 20, 0);
   tbe.dropArea.style.width = window.innerWidth;
 
   tbe.dropAreaGroup.appendChild(tbe.dropArea);
 
   tbe.tabs = [];
   for (var tabIndex = 0; tabIndex < tbe.blockObject.tabs.length; tabIndex++){
-  //  var newtab = svgb.createSymbolUse('tab-block', '#palette-tab');
-  //  newtab.x = 200; //('x', 200);
-  //  newtab.y = 20 + (100 * a); // ('y', 20 + (100 * a));
-  //  tbe.svg.appendChild(newtab);
 
     var tab = svgb.createGroup("",0, 0);
-    var tabblock = svgb.createRect('tab-block', 0, 0, 0);
+    var tabblock = svgb.createRect('tab-block', 0, 0, 40, 25, 5);
     var tabName = tbe.blockObject.tabs[tabIndex];
     var text = svgb.createText('tab-text', 10, 20, tabName);
 

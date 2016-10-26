@@ -36,22 +36,6 @@
 <body>
   <div id="container">
     <svg class=editor-canvas id='editorCanvas' xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <symbol id="palette-tab">
-            <g>
-              <rect class="tab-block" x="0" y="0" width="30" height="30"/>
-              <text class="tab-text" x="10" y="30">*<text/>
-            </g>
-        </symbol>
-      </defs>
-
-      <filter id="dropshadow" height="120%">
-        <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
-        <feMerge>
-          <feMergeNode/>
-          <feMergeNode in="SourceGraphic"/>
-        </feMerge>
-      </filter>
     </svg>
     <textarea class=teak-code id="teakCode" readonly=true rows=50 data-bind="visible: configSettings.showCode">
     </textarea>
@@ -84,7 +68,9 @@
   <button class="button" id="config-button" style="position:fixed;right:1em;bottom:1em;">
     <i class="fa fa-cog" aria-hidden="true" style="font-size:36px"></i>
   </button>
+
 </body>
+<!--
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -94,5 +80,6 @@
   ga('create', 'UA-84211264-1', 'auto');
   ga('send', 'pageview');
 </script>
+-->
 <script src='bundled_tbe.js'></script>
 </html>

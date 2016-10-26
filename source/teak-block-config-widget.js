@@ -112,6 +112,6 @@ module.exports = function () {
     }
   }
 
-  document.registerElement('teak-block-config-widget', TeakBlockConfigWidget);
+  tf.registerComponent('teak-block-config-widget', TeakBlockConfigWidget);
   return configProperties;
 }();

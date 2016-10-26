@@ -54,11 +54,17 @@ svgBuilder.createUse = function createSymbolUse(elementClass, symbolName) {
   return elt;
 };
 
-svgBuilder.createRect = function createRect(elementClass, x, y, rxy) {
+svgBuilder.resizeRect = function resizeRect(elt, w, h) {
+    elt.setAttribute('width', String(w) + 'px');
+    elt.setAttribute('height', String(h) + 'px');
+};
+
+svgBuilder.createRect = function createRect(elementClass, x, y, w, h, rxy) {
   var elt  = document.createElementNS(svgBuilder.ns, 'rect');
   elt.setAttribute('class', elementClass);
   elt.style.x = x;
   elt.style.y = y;
+  this.resizeRect(elt, w, h);
   if (rxy !== undefined) {
     elt.setAttribute('rx', rxy);
     elt.setAttribute('ry', rxy);

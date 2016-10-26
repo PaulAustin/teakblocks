@@ -1,7 +1,4 @@
 html, body { margin:0; padding:0; overflow:hidden }
-/* http://htmlcolorcodes.com/color-picker/ */
-/* this is a helpful site */
-
 .teak-code {
   position: absolute;
   top:0;
@@ -14,7 +11,6 @@ html, body { margin:0; padding:0; overflow:hidden }
   border: none;
   outline: none;
   overflow-y: scroll;
-/*  opacity: 0.6; */
   background-color: rgba(0,0,1,0.05);
   background-blend-mode: multiply;
 }
@@ -45,7 +41,7 @@ html, body { margin:0; padding:0; overflow:hidden }
   height:100%;
   background-color: white;
   -ms-touch-action: none;
-      touch-action: none;
+  touch-action: none;
   /* prevent text from being selected browser style */
   user-select: none;
   -moz-user-select: -moz-none;
@@ -68,17 +64,10 @@ html, body { margin:0; padding:0; overflow:hidden }
   fill: #F5B041;
   stroke-width:0;
   stroke: none;
-  height: 100px;
 }
 .tab-block{
-  x:0px;
-  y:0px;
   fill: #F5B041 ;
   stroke: #1B5E20;
-  rx: 5px;
-  ry: 5px;
-  width: 40px;
-  height: 25px;
   stroke-width:2;
   z-index: 500;
 }
@@ -92,26 +81,14 @@ html, body { margin:0; padding:0; overflow:hidden }
   z-index: 501;
 }
 .function-block {
-  x:0px;
-  y:0px;
   fill: #3372FF;
-  transition: fill 0.3s ease;
-  rx: 10px;
-  ry: 10px;
-  width: 80px;
-  height: 80px;
+/*  transition: fill 0.3s ease; */
   stroke-width: 4;
   stroke: #5A33FF;
 }
 .function-block-dragging {
-  x:0px;
-  y:0px;
   fill: green;
-  transition: fill 0.3s ease;
-  rx: 10px;
-  ry: 10px;
-  width: 80px;
-  height: 80px;
+/*  transition: fill 0.3s ease;     */
 /*  filter: url(#dropshadow); */
   stroke-width: 4;
   stroke: #5A33FF;

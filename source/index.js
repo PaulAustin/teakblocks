@@ -21,23 +21,19 @@ SOFTWARE.
 */
 
 function deviceReady() {
-  require('webcomponents.js');
+  //require('webcomponents.js');
 
   // TODO make the teak block editor a web component as well.
   var tbe = require('./teakblocks.js');
   var tf = require('./teak-forms.js');
   var ko = require('knockout');
-  var trashBlocks = require('./physics.js');
 
 
   // Configuation components for the app and blocks
   tbe.components = {};
   tbe.components.configSettings = require('./teak-config-widget.js');
-  tbe.components.sound = require('./teak-sound-widget.js');
   tbe.components.scan = require('./teak-scan-widget.js');
   tbe.components.blockConfig = require('./teak-block-config-widget.js');
-  //webComponents.motor = require('./teak-motor-widget.js');
-  //webComponents.LED5x5 = require('./teak-led5x5-widget.js');
 
   // Some early experiments. seems to work well for desktop Chrome
   // Safar has noticable lag, wih volume fluxuations.
@@ -60,12 +56,13 @@ function deviceReady() {
     document.getElementById('editorCanvas'),
     document.getElementById('teakCode'));
 
-  // jQuery woudl make these shorter, but is that a good thing?
   var configButton = document.getElementById('config-button');
-  configButton.onclick = function() { tf.showHide('app-config'); };
+  configButton.onclick = function() {
+    tf.showHide('app-config');
+  };
 
   var clearButton = document.getElementById('clear-button');
-  clearButton.onclick = function() { trashBlocks(tbe); };
+  clearButton.onclick = tbe.clearAllBlocks;
 
   var scanButton = document.getElementById('scan-button');
   scanButton.onclick = function() { tf.showHide('teak-scan'); };
