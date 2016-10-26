@@ -38,9 +38,9 @@ svgLog.logRect = function logRect(canvas, rect, text) {
   group.setAttribute('pointer-events', 'none');
 
   // Make a bright transparent rectangle
-  var elt = svgb.createRect('svglog-rect', 0, 0);
-  elt.style.width = rect.right - rect.left;
-  elt.style.height = rect.bottom - rect.top;
+  var elt = svgb.createRect('svglog-rect', 0, 0,
+    rect.right - rect.left,
+    rect.bottom - rect.top);
   elt.setAttribute('fill', 'DeepPink');
   elt.setAttribute('opacity', '0.2');
   elt.setAttribute('pointer-events', 'none');

@@ -288,3 +288,17 @@ This will be key for testers that do not have hardware.
 
 ## mainly working on teakjs (teak on npm)
 Writing the engine in javascript, then C. Its easier to experiment in JS.
+
+## break, work on 3d stuff, electronics.
+
+## Oct 24
+### Chrome 54 will list microbits, and can connect to them
+Goal get a serial connection tothe microbit.
+### Cordova OSX native desktop app.
+not to hard to add. but app is not working too well.
+Debug time. :(
+https://cordova.apache.org/docs/en/latest/guide/platforms/osx/
+
+HTML compatibility is a funny thing. Consumed a day learning hte following
+gotcha.
+http://stackoverflow.com/questions/14383014/svg-rect-ignores-height
