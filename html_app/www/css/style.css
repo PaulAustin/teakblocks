@@ -50,12 +50,8 @@ html, body { margin:0; padding:0; overflow:hidden }
   -ms-user-select: none;
 }
 .branch-path {
-  x:0px;
-  y:0px;
   fill: green;
   transition: fill 0.3s ease;
-  rx: 10px;
-  ry: 10px;
   stroke-width: 2;
   stroke: lightgreen;
 }
@@ -108,10 +104,6 @@ html, body { margin:0; padding:0; overflow:hidden }
     to{opacity:0.3;}
 }
 .shadow-block {
-  rx:10px;
-  ry:10px;
-  width:80px;
-  height:80px;
   opacity:0.3;
   fill:SkyBlue;
   animation: shadowFadeIn 0.35s ease;
@@ -121,10 +113,6 @@ html, body { margin:0; padding:0; overflow:hidden }
     to{opacity:0.0;}
 }
 .shadow-block-leave {
-  rx:10px;
-  ry:10px;
-  width:80px;
-  height:80px;
   opacity:0.0;
   fill:SkyBlue;
   animation: shadowFadeOut 0.35s ease;
