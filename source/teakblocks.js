@@ -661,14 +661,12 @@ tbe.sizePaletteToWindow = function sizePaletteToWindow () {
 
 tbe.initPalettes =  function initPalettes(palettes) {
 
-  document.body.onresize = tbe.sizePaletteToWindow;
-  tbe.blockObject = palettes;
+  document.body.onresize = this.sizePaletteToWindow;
+  this.blockObject = palettes;
 
-  tbe.dropAreaGroup = svgb.createGroup("",0, 0);
-  tbe.dropArea = svgb.createRect('dropArea', 0, 0, 20, 20, 0);
-  tbe.dropArea.style.width = window.innerWidth;
-
-  tbe.dropAreaGroup.appendChild(tbe.dropArea);
+  this.dropAreaGroup = svgb.createGroup("", 0, 0);
+  this.dropArea = svgb.createRect('dropArea', 0, 0, window.innerWidth, 100, 0);
+  this.dropAreaGroup.appendChild(this.dropArea);
 
   tbe.tabs = [];
   for (var tabIndex = 0; tabIndex < tbe.blockObject.tabs.length; tabIndex++){
