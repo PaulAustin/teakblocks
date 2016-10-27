@@ -52,7 +52,7 @@ tbe.init = function init(svg, text) {
   this.blockConfigurator = document.getElementById('block-config');
 
   this.background = svgb.createRect('editor-background', 0, 0, 20, 20, 0);
-  tbe.svg.appendChild(this.background);
+  this.svg.appendChild(this.background);
   this.configInteractions();
   interact.maxInteractions(Infinity);
   return this;
@@ -75,7 +75,7 @@ tbe.elementToBlock = function(el) {
 
 tbe.clearAllBlocks = function() {
   console.log('clearing blocks');
-  this.clearStates();
+  tbe.clearStates();
   trashBlocks(tbe);
 };
 
@@ -374,8 +374,8 @@ tbe.FunctionBlock.prototype.insertTargetShadows = function(target, action) {
   }
   var shadow = null;
   while (block !== null) {
-    shadow = svgb.createRect('shadow-block', x, y, 80, 80, 1);
-    tbe.svg.insertBefore(shadow, tbe.svg.firstChild);
+    shadow = svgb.createRect('shadow-block', x, y, 80, 80, 10);
+    tbe.svg.insertBefore(shadow, tbe.background.nextSibling);
     block.targetShadow = shadow;
     x += block.blockWidth;
     block = block.next;
@@ -647,14 +647,14 @@ tbe.sizePaletteToWindow = function sizePaletteToWindow () {
   var w = window.innerWidth;
   var h = window.innerHeight;
 
-  this.dropAreaGroup.setAttribute ('transform', 'translate (' +  0 + ' ' + (h - 100) + ')');
-  svgb.resizeRect(this.dropArea, w, 100);
-  svgb.resizeRect(this.background, w, h);
+  tbe.dropAreaGroup.setAttribute ('transform', 'translate (' +  0 + ' ' + (h - 100) + ')');
+  svgb.resizeRect(tbe.dropArea, w, 100);
+  svgb.resizeRect(tbe.background, w, h);
 
-  this.windowRect = { left:0, top:0, right:w, bottom:h };
+  tbe.windowRect = { left:0, top:0, right:w, bottom:h };
   var top = h - 90;
 
-  this.paletteBlocks.forEach(function(block) {
+  tbe.paletteBlocks.forEach(function(block) {
     block.dmove(0, top - block.rect.top, true);
   });
 };

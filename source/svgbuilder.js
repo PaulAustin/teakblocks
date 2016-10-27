@@ -62,8 +62,8 @@ svgBuilder.resizeRect = function resizeRect(elt, w, h) {
 svgBuilder.createRect = function createRect(elementClass, x, y, w, h, rxy) {
   var elt  = document.createElementNS(svgBuilder.ns, 'rect');
   elt.setAttribute('class', elementClass);
-  elt.style.x = x;
-  elt.style.y = y;
+  elt.setAttribute('x', x);
+  elt.setAttribute('y', y);
   this.resizeRect(elt, w, h);
   if (rxy !== undefined) {
     elt.setAttribute('rx', rxy);
