@@ -75,7 +75,7 @@ tbe.elementToBlock = function(el) {
 
 tbe.clearAllBlocks = function() {
   console.log('clearing blocks');
-  tbe.clearStates();
+  this.clearStates();
   trashBlocks(tbe);
 };
 
@@ -626,7 +626,7 @@ tbe.checkForHold = function checkForHold(block, interaction) {
 
 tbe.diagramChanged = function diagramChanged() {
   if (teakText) {
-    this.teakCode.value = teakText.blocksToText(tbe.diagramBlocks);
+    this.teakCode.value = teakText.blocksToText(this.diagramBlocks);
   }
 };
 
@@ -647,14 +647,14 @@ tbe.sizePaletteToWindow = function sizePaletteToWindow () {
   var w = window.innerWidth;
   var h = window.innerHeight;
 
-  tbe.dropAreaGroup.setAttribute ('transform', 'translate (' +  0 + ' ' + (h - 100) + ')');
-  svgb.resizeRect(tbe.dropArea, w, 100);
-  svgb.resizeRect(tbe.background, w, h);
+  this.dropAreaGroup.setAttribute ('transform', 'translate (' +  0 + ' ' + (h - 100) + ')');
+  svgb.resizeRect(this.dropArea, w, 100);
+  svgb.resizeRect(this.background, w, h);
 
-  tbe.windowRect = { left:0, top:0, right:w, bottom:h };
+  this.windowRect = { left:0, top:0, right:w, bottom:h };
   var top = h - 90;
 
-  tbe.paletteBlocks.forEach(function(block) {
+  this.paletteBlocks.forEach(function(block) {
     block.dmove(0, top - block.rect.top, true);
   });
 };
@@ -668,12 +668,12 @@ tbe.initPalettes =  function initPalettes(palettes) {
   this.dropArea = svgb.createRect('dropArea', 0, 0, window.innerWidth, 100, 0);
   this.dropAreaGroup.appendChild(this.dropArea);
 
-  tbe.tabs = [];
-  for (var tabIndex = 0; tabIndex < tbe.blockObject.tabs.length; tabIndex++){
+  this.tabs = [];
+  for (var tabIndex = 0; tabIndex < this.blockObject.tabs.length; tabIndex++){
 
     var tab = svgb.createGroup("",0, 0);
     var tabblock = svgb.createRect('tab-block', 0, 0, 40, 25, 5);
-    var tabName = tbe.blockObject.tabs[tabIndex];
+    var tabName = this.blockObject.tabs[tabIndex];
     var text = svgb.createText('tab-text', 10, 20, tabName);
 
     tab.appendChild(tabblock);
@@ -722,7 +722,7 @@ tbe.initPalettes =  function initPalettes(palettes) {
             break;
         }
 
-      for(var i = 0; i < tbe.blockObject.A.length; i++){
+      for(var i = 0; i < tbe.blockObject.A.length; i++) {
         //find letter inside tag
         // move the palettes to the front.
         // TODO Just move palettes, no need to make new ones.
@@ -731,13 +731,13 @@ tbe.initPalettes =  function initPalettes(palettes) {
     });
     tbe.dropAreaGroup.appendChild(tab);
   }
-  tbe.svg.appendChild(tbe.dropAreaGroup);
+  this.svg.appendChild(this.dropAreaGroup);
 
-  for(var i = 0; i < tbe.blockObject.A.length; i++){
-    tbe.addPaletteBlock(80 + (90 * i), 0, tbe.blockObject.A[i], {port:'a','power':50,'time':'2.5s'});
+  for(var i = 0; i < this.blockObject.A.length; i++) {
+    this.addPaletteBlock(80 + (90 * i), 0, this.blockObject.A[i], {port:'a','power':50,'time':'2.5s'});
   }
 
-  tbe.sizePaletteToWindow();
+  this.sizePaletteToWindow();
 };
 
 return tbe;
