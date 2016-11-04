@@ -20,44 +20,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-module.exports = function (){
-var teakText = {};
-
-teakText.blocksToText = function(blockChainIterator) {
-  var text = '(\n';
-  blockChainIterator(function(chainStart) {
-    var block = chainStart;
-    text += '  (chain\n';
-    while (block !== null) {
-      text += '    (' + block.name;
-      if (block.prev === null) {
-        text += ' x:' + block.rect.left + ' y:' +  block.rect.top;
-      }
-      if (block.params !== null) {
-        text += teakText.blockParamsToText(block.params);
-      }
-      if (block.targetShadow !== null) {
-        // For debugging, this ocassionally happens since
-        // compile is asynchronous. TODO fixit.
-        text += ' shadow:true';
-      }
-      text += ')\n';
-      block = block.next;
-    }
-    text += '  )\n';
-  });
-
-  text += ')\n';
-  return text;
-};
-
-teakText.blockParamsToText = function blockParamsToText(params) {
-  var text = '';
-  for(var propertyName in params) {
-    text += ' ' + propertyName + ':' + params[propertyName];
-  }
-  return text;
-};
-
-return teakText;
+module.exports = function () {
+  var teakClear = {};
+    // TODO might make from with stage clear button
+    // right now experipemting with two stage button.
+  return teakClear;
 }();

@@ -21,7 +21,8 @@ SOFTWARE.
 */
 
 function deviceReady() {
-  //require('webcomponents.js');
+  // Not needed for chrome.
+  require('webcomponents.js');
 
   // TODO make the teak block editor a web component as well.
   var tbe = require('./teakblocks.js');
@@ -68,10 +69,6 @@ function deviceReady() {
   scanButton.onclick = function() { tf.showHide('teak-scan'); };
 
 /*
-  {name:'a1', tcode:{power:50}, tabs:[1]},
-*/
-
-/*
   name - root name used for internationalization look up
   tcode - properties for the function blocks, includes the name
   tabs - where to place it on the tabs ( might include position as well)
@@ -94,7 +91,7 @@ function deviceReady() {
 // what does the source look like?
 // branches? Is this the last big question?
 
-
+/*
 var pBlocks = [
 {palette:'a', name:'motor', tcode:{power:50, port:'a'}},
 {palette:'a', name:'servo', tcode:{position:90, port:'b'}},
@@ -113,11 +110,11 @@ var pBlocks = [
 {palette:'d', name:'serial-read', tcode:{pin:4}},
 {palette:'d', name:'serial-write', tcode:{pin:4}},
 ];
-
+*/
 // the function block names will map to widgers which will synthesize
 // an image based on the settings. For Dev Block will simply use tab
 // position
-
+/*
 var pBockConfigMap = {
   // output based
   'motor':{color:'blue'},
@@ -143,20 +140,21 @@ var pBockConfigMap = {
   'serial-read':{color:'blue'},
   'serial-write':{color:'blue'},
 };
-
-  var pBlocks2 = [
-    { tab:'a', blocks:['A1', 'A2', 'A3']},
-    { tab:'b', blocks:['B1', 'B2', 'b3']}
-  ];
-
-  var palettes =  {
-    tabs:['A', 'B', 'C'],
-    A:['A1', 'A2', 'A3', 'A4', 'A5'],
-    B:['B1', 'B2', 'B3', 'B4', 'B5'],
-    C:['C1', 'C2', 'C3', 'C4', 'C5'],
+*/
+// these could be loaded from JSON files/strings
+  var package1 = {
+  name:'A',
+  blocks:{
+      'color':{},
+      'motor':{},
+      'sound':{},
+      'wait':{},
+      'send':{},
+      'picture':{}
+    }
   };
 
-  tbe.initPalettes(palettes);
+ tbe.addPalette(package1);
 }
 
 // Load cordova.js if not in regular browser, set up initialization.
