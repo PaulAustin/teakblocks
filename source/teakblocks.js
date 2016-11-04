@@ -33,8 +33,28 @@ var trashBlocks = require('./physics.js');
 
 var tbe = {};
 
-tbe.diagramBlocks = [];
+tbe.diagramBlocks = {};
 tbe.paletteBlocks = [];
+tbe.blockIdSequence = 100;
+
+tbe.forEachDiagramBlock = function (callBack) {
+  for (var key in tbe.diagramBlocks) {
+    if (tbe.diagramBlocks.hasOwnProperty(key)) {
+      var block = tbe.diagramBlocks[key];
+      if (typeof block === 'object') {
+        callBack(block);
+      }
+    }
+  }
+};
+
+tbe.forEachDiagramChain = function (callBack) {
+  tbe.forEachDiagramBlock(function(block) {
+    if (block.prev === null) {
+      callBack(block);
+    }
+  });
+};
 
 tbe.clearStates = function clearStates() {
   // clear any showing forms or multi step state.
@@ -48,29 +68,27 @@ tbe.clearStates = function clearStates() {
 tbe.init = function init(svg, text) {
   this.svg = svg;
   this.teakCode = text;
-
   this.blockConfigurator = document.getElementById('block-config');
-
   this.background = svgb.createRect('editor-background', 0, 0, 20, 20, 0);
   this.svg.appendChild(this.background);
   this.configInteractions();
   interact.maxInteractions(Infinity);
+  this.initPaletteBox();
   return this;
 };
 
 tbe.elementToBlock = function(el) {
     var text = el.getAttribute('interact-id');
-
     if (text === null)
       return null;
     var values = text.split(':');
+    var obj = null;
     if (values[0] === 'd') {
-      return this.diagramBlocks[values[1]];
+      obj = this.diagramBlocks[text];
     } else if (values[0] === 'p') {
-      return this.paletteBlocks[values[1]];
-    } else {
-      return null;
+      obj = this.paletteBlocks[text];
     }
+    return obj;
 };
 
 tbe.clearAllBlocks = function() {
@@ -79,41 +97,47 @@ tbe.clearAllBlocks = function() {
   trashBlocks(tbe);
 };
 
+tbe.nextBlockId = function(prefix) {
+  var blockId = prefix + String(tbe.blockIdSequence);
+  tbe.blockIdSequence += 1;
+  return blockId;
+};
+
 tbe.addBlock = function(x, y, name, params) {
    var block = new this.FunctionBlock(x, y, name);
    block.params = params;
    block.isPaletteBlock = false;
-   block.interactId = 'd:' + this.diagramBlocks.length;
-   this.diagramBlocks.push(block);
+   block.interactId = tbe.nextBlockId('d:');
+   this.diagramBlocks[block.interactId] = block.interactId;
 };
 
 tbe.addPaletteBlock = function(x, y, name, params) {
    var block = new this.FunctionBlock(x, y, name);
    block.params = params;
    block.isPaletteBlock = true;
-   block.interactId = 'p:' + this.paletteBlocks.length;
-   this.paletteBlocks.push(block);
+   block.interactId = tbe.nextBlockId('p:');
+   this.paletteBlocks[block.interactId] = block;
 };
 
-tbe.popPaletteItem = function(block){
-  var index = this.paletteBlocks.indexOf(block);
-  if (index !== -1) {
-      // The new palette block has the same location, name, and id.
-      var npb = new this.FunctionBlock(block.rect.left, block.rect.top, block.name);
-      npb.params = JSON.parse(JSON.stringify(block.params));
-      npb.isPaletteBlock = true;
-      npb.interactId = block.interactId;
-      this.paletteBlocks[index] = npb;
-  }
+tbe.popPaletteItem = function(block) {
+
+  // The new palette block has the same location, name, and id.
+  var npb = new this.FunctionBlock(block.rect.left, block.rect.top, block.name);
+  // Make a copy so changes do not leak from one to another.
+  npb.params = JSON.parse(JSON.stringify(block.params));
+  npb.isPaletteBlock = true;
+  npb.interactId = block.interactId;
+  this.paletteBlocks[block.interactId] = npb;
+
   // Now change the block to a diagramBlock.
   block.isPaletteBlock = false;
-  block.interactId = 'd:' + this.diagramBlocks.length;
-  this.diagramBlocks.push(block);
+  block.interactId = tbe.nextBlockId('d:');
+  this.diagramBlocks[block.interactId] = block;
 };
 
 // Constructor for FunctionBlock object.
 tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
-  // Make a JS object that wraps the SVG object
+  // Make a editor modle object that holds onto JS object that wraps the SVG object
   this.rect  = {
       left:   0,
       top:    0,
@@ -291,12 +315,9 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
   var rect = null;
   var thisWidth = this.blockWidth;
 
-  // look at every diagram block taking into consideration
-  // weather or not it is in  chain.
-
-  // For insert it could snap after the previous block or before the next block
-  // which make the most sense?
-  tbe.diagramBlocks.forEach(function(entry) {
+  // Look at every diagram block taking into consideration
+  // weather or not it is in the chain.
+  tbe.forEachDiagramBlock(function (entry) {
     if (entry !== self  && !entry.dragging) {
       rect = {
         top:    entry.rect.top,
@@ -484,14 +505,14 @@ tbe.easeToTarget = function easeToTarget(timeStamp, block, endBlock) {
 };
 
 tbe.clearDiagramBlocks = function clearDiagramBlocks() {
-  tbe.diagramBlocks.forEach(function(block) {
+  tbe.forEachDiagramBlock(function (block) {
     tbe.svg.removeChild(block.svgGroup);
     block.svgGroup = null;
     block.svgRect = null;
     block.next = null;
     block.prev = null;
   });
-  tbe.diagramBlocks.length = 0;
+  tbe.diagramBlocks = {};
   tbe.diagramChanged();
 };
 
@@ -522,11 +543,17 @@ tbe.configInteractions = function configInteractions() {
     })
     .on('tap', function(event) {
       var block = thisTbe.elementToBlock(event.target);
+      if (block.isPaletteBlock) {
+        return;
+      }
       thisTbe.blockConfigurator.tap(block);
     })
     .on('hold', function(event) {
        var block = thisTbe.elementToBlock(event.target);
 
+       if (block.isPaletteBlock) {
+         return;
+       }
        // bring up config, dont let drag start
        event.interaction.stop();
        thisTbe.blockConfigurator.tap(block);
@@ -581,7 +608,7 @@ tbe.configInteractions = function configInteractions() {
         // in the coasting state, start the animation to the target.
         // dont wait to coas to a stop.
 
-        var block =  thisTbe.elementToBlock(event.target);
+        var block = thisTbe.elementToBlock(event.target);
         if (block === null)
           return;
 
@@ -591,7 +618,7 @@ tbe.configInteractions = function configInteractions() {
         if (block.checkForHoldID !== null) {
             if ((Math.abs(event.x0 - event.pageX) > 4) ||
                 (Math.abs(event.y0 - event.pageY) > 4)) {
-              console.log('ignore possible hold', event);
+            //  console.log('ignore possible hold', event);
               clearTimeout(block.checkForHoldID);
               block.checkForHoldID = null;
             }
@@ -626,7 +653,7 @@ tbe.checkForHold = function checkForHold(block, interaction) {
 
 tbe.diagramChanged = function diagramChanged() {
   if (teakText) {
-    this.teakCode.value = teakText.blocksToText(this.diagramBlocks);
+    this.teakCode.value = teakText.blocksToText(tbe.forEachDiagramChain);
   }
 };
 
@@ -657,6 +684,42 @@ tbe.sizePaletteToWindow = function sizePaletteToWindow () {
   tbe.paletteBlocks.forEach(function(block) {
     block.dmove(0, top - block.rect.top, true);
   });
+};
+
+tbe.initPaletteBox =  function initPalettes() {
+  document.body.onresize = this.sizePaletteToWindow;
+  this.dropAreaGroup = svgb.createGroup("", 0, 0);
+  this.dropArea = svgb.createRect('dropArea', 0, 0, window.innerWidth, 100, 0);
+  this.dropAreaGroup.appendChild(this.dropArea);
+  this.svg.appendChild(this.dropAreaGroup);
+
+  this.tabs = [];
+  this.sizePaletteToWindow();
+};
+
+tbe.addPalette =  function initPalettes(palette) {
+
+  var tab = svgb.createGroup("",0, 0);
+  var tabblock = svgb.createRect('tab-block', 0, 0, 40, 25, 5);
+  var text = svgb.createText('tab-text', 10, 20, palette.name);
+
+  var tabIndex = this.tabs.length;
+  this.tabs.push(palette);
+  tab.appendChild(tabblock);
+  tab.appendChild(text);
+  tab.setAttribute('transform', 'translate(20, ' + (5 + (30 * tabIndex)) + ')');
+  tab.setAttribute('letter', palette.name);
+  tbe.dropAreaGroup.appendChild(tab);
+
+  var blocks = palette.blocks;
+  var i = 0;
+  var blockTop = window.innerHeight - 90;
+  for (var key in blocks) {
+    if (blocks.hasOwnProperty(key)) {
+      this.addPaletteBlock(80 + (90 * i), blockTop, key, {});
+      i += 1;
+    }
+  }
 };
 
 tbe.initPalettes =  function initPalettes(palettes) {

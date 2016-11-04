@@ -299,6 +299,34 @@ not to hard to add. but app is not working too well.
 Debug time. :(
 https://cordova.apache.org/docs/en/latest/guide/platforms/osx/
 
-HTML compatibility is a funny thing. Consumed a day learning hte following
-gotcha.
-http://stackoverflow.com/questions/14383014/svg-rect-ignores-height
+### Styles vs Attributes, core of the incompatibility bugs.
+HTML compatibility is a funny thing. Consumed a day learning the following important [SVG detail](http://stackoverflow.com/questions/14383014/svg-rect-ignores-height). The core lesson was that DOM elements have attribute and style properties. Sometimes
+they seem the same, especially in some browser (e.g. chrome), but not always. If a property such as
+width is treated as a style then it can be set via css. If its just a plain attribute
+then it cannot be set via CSS.
+
+```
+elt.style.width = w;                            // works in chrome, not ff.
+elt.setAttribute('width', String(w) + 'px');    // works 'everywhere'
+```
+In some cases the oddest wist was that if the style is set, then the style value masked the attribute. which could also be set and could have its own value. Lesson, for now, NEVER set the width or height style property.
+
+## Nov 2
+A special day, a day to remember to be grateful for the joys we have in life.
+
+## Nov 3
+### DiagramBlocks collection refactoring
+The problem: The collection grew out of the first demo program, it was a simple array. SVG elements have an id property that is basically the index number in the array. That system made it problematic to remove elements from the array.
+
+The solution: Every block is given a unique id. The SVG elements use that id instead. The function block model objects are stored in a JS object as if it is a dictionary or hashmap. one caveat with that approach is that since it is a simple JS object it is missing methods such as for-each. Two choices make it a full fledges object, or keep the object simple and add the methods to the editor object. The latter approach was selected. The result was pretty clean:
+
+```
+editor.forEachDiagramBlock(function(block) {
+ // visit every block on the digram
+}
+editor.forEachDiagramChain(function(block) {
+ // visit the first block in each chain on the digram
+}
+```
+
+This design has the upside that the digramBlocks object is a bit more private to the editor. Just a bit though. More methods on the editor.
