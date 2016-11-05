@@ -40,7 +40,6 @@ function trashBlocks(editor) {
       });
     } else {
         editor.clearDiagramBlocks();
-        console.log("done");
     }
   }
 }

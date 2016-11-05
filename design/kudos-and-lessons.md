@@ -330,3 +330,9 @@ editor.forEachDiagramChain(function(block) {
 ```
 
 This design has the upside that the digramBlocks object is a bit more private to the editor. Just a bit though. More methods on the editor.
+
+## Nov 4
+### Revisiting Shadow DOM and web components
+The concept is nice, I hope it comes together,... but two observations as of now
+(1) It is causing some problems, on some browsers the styles leak and then on others the boundary is stronger. It causes problems in both directions.
+(2) This app does not have a great need for it. 
