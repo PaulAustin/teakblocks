@@ -34,13 +34,24 @@ var trashBlocks = require('./physics.js');
 var tbe = {};
 
 tbe.diagramBlocks = {};
-tbe.paletteBlocks = [];
+tbe.paletteBlocks = {};
 tbe.blockIdSequence = 100;
 
 tbe.forEachDiagramBlock = function (callBack) {
   for (var key in tbe.diagramBlocks) {
     if (tbe.diagramBlocks.hasOwnProperty(key)) {
       var block = tbe.diagramBlocks[key];
+      if (typeof block === 'object') {
+        callBack(block);
+      }
+    }
+  }
+};
+
+tbe.forEachPalette = function (callBack) {
+  for (var key in tbe.paletteBlocks) {
+    if (tbe.paletteBlocks.hasOwnProperty(key)) {
+      var block = tbe.paletteBlocks[key];
       if (typeof block === 'object') {
         callBack(block);
       }
@@ -681,12 +692,12 @@ tbe.sizePaletteToWindow = function sizePaletteToWindow () {
   tbe.windowRect = { left:0, top:0, right:w, bottom:h };
   var top = h - 90;
 
-  tbe.paletteBlocks.forEach(function(block) {
+  tbe.forEachPalette(function(block) {
     block.dmove(0, top - block.rect.top, true);
   });
 };
 
-tbe.initPaletteBox =  function initPalettes() {
+tbe.initPaletteBox = function initPaletteBox() {
   document.body.onresize = this.sizePaletteToWindow;
   this.dropAreaGroup = svgb.createGroup("", 0, 0);
   this.dropArea = svgb.createRect('dropArea', 0, 0, window.innerWidth, 100, 0);
@@ -697,7 +708,7 @@ tbe.initPaletteBox =  function initPalettes() {
   this.sizePaletteToWindow();
 };
 
-tbe.addPalette =  function initPalettes(palette) {
+tbe.addPalette = function addPalette(palette) {
 
   var tab = svgb.createGroup("",0, 0);
   var tabblock = svgb.createRect('tab-block', 0, 0, 40, 25, 5);
