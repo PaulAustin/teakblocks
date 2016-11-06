@@ -146,6 +146,40 @@ tbe.popPaletteItem = function(block) {
   this.diagramBlocks[block.interactId] = block;
 };
 
+tbe.replicate = function(block){
+    var newBlock;
+    var prevBlock = null;
+    //var index = 0;
+    //var oldBLock = block;
+    while(block !== null){
+      //addBlock(10, 10, "aa", "hi");
+      newBlock = new this.FunctionBlock(block.rect.left, block.rect.top, block.name);
+      newBlock.params = JSON.parse(JSON.stringify(block.params));
+      newBlock.isPaletteBlock = false;
+      newBlock.interactId = 'd:' + this.diagramBlocks.length;
+      this.diagramBlocks.push(newBlock);
+      //newBlock.params = JSON.parse(JSON.stringify(block.params));
+      //block.interactId = 'd:' + this.diagramBlocks.length;
+      //if(prevBlock !== null){
+        //newBlock.prev = prevBlock;
+      console.log("Items:");
+      console.log(prevBlock);
+      console.log(newBlock);
+      console.log(this);
+      //}
+      if(prevBlock !== null){
+        newBlock.prev = prevBlock;
+        prevBlock.next = newBlock;
+      }
+      
+      
+
+      prevBlock = newBlock;
+      //index++;
+      block = block.next;
+    }
+}
+
 // Constructor for FunctionBlock object.
 tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   // Make a editor modle object that holds onto JS object that wraps the SVG object
@@ -596,6 +630,11 @@ tbe.configInteractions = function configInteractions() {
         block.setDraggingState(true);
 
         block.checkForHoldID = setTimeout(tbe.checkForHold, 500, block, event.interaction);
+
+        if(event.shiftKey){
+          thisTbe.replicate(block);
+          console.log("hi");
+        }
       },
       onend: function(event) {
         var block = thisTbe.elementToBlock(event.target);
