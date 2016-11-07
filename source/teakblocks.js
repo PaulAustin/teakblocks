@@ -147,7 +147,7 @@ tbe.popPaletteItem = function(block) {
 };
 
 tbe.replicate = function(block){
-    var newBlock;
+    var newBlock = null;
     var prevBlock = null;
     //var index = 0;
     //var oldBLock = block;
@@ -156,8 +156,8 @@ tbe.replicate = function(block){
       newBlock = new this.FunctionBlock(block.rect.left, block.rect.top, block.name);
       newBlock.params = JSON.parse(JSON.stringify(block.params));
       newBlock.isPaletteBlock = false;
-      newBlock.interactId = 'd:' + this.diagramBlocks.length;
-      this.diagramBlocks.push(newBlock);
+      newBlock.interactId = tbe.nextBlockId('d:');
+      this.diagramBlocks[newBlock.interactId] = newBlock;
       //newBlock.params = JSON.parse(JSON.stringify(block.params));
       //block.interactId = 'd:' + this.diagramBlocks.length;
       //if(prevBlock !== null){
@@ -171,14 +171,12 @@ tbe.replicate = function(block){
         newBlock.prev = prevBlock;
         prevBlock.next = newBlock;
       }
-      
-      
 
       prevBlock = newBlock;
       //index++;
       block = block.next;
     }
-}
+};
 
 // Constructor for FunctionBlock object.
 tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
