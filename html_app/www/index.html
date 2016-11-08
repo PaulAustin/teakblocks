@@ -37,21 +37,12 @@
   <div id="container">
     <svg class=editor-canvas id='editorCanvas' xmlns="http://www.w3.org/2000/svg">
     </svg>
-    <textarea class=teak-code id="teakCode" readonly=true rows=50 data-bind="visible: configSettings.showCode">
+    <textarea class=teak-code id="teakCode" readonly=true rows=50 data-bind="visible: appSettings.showCode">
     </textarea>
   </div>
 
-  <teak-config-widget id='app-config' opened='false'
-    style="position:fixed;top:1em;right:1em;pointer-events:none">
-  </teak-config-widget>
-
-  <teak-scan-widget id='teak-scan' opened='false'
-    style="position:fixed;top:1em;right:1em;pointer-events:none">
-  </teak-scan-widget>
-
-  <teak-block-config-widget id='block-config' opened='false'
-    style="position:absoulte;pointer-events:none">
-  </teak-block-config-widget>
+  <!-- forms dynamically inserted into this div -->
+  <div id='tbe-forms'></div>
 
   <button class="button" id="run-button" style="position:fixed;right:22em;bottom:1em;">
     <i class="fa fa-play" aria-hidden="true" style="font-size:36px"></i>

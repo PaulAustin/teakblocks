@@ -21,53 +21,51 @@ SOFTWARE.
 */
 
 module.exports = function () {
-  var teakScan = {};
   require('./evothings/easyble.dist.js');
   var ko = require('knockout');
 
-  var scanProperties = {
+  // Set of propoerties that can be bound to.
+  var deviceScanner = {
     deviceName: "bingo",
     connected: true,
-    connectionType: "BLE",// USB, BT or WiFi, migth include st
+    connectionType: "BLE", // Migth add USB, BT or WiFi
   };
 
-  var tf = require('./teak-forms.js');
-  var template = tf.styleTag +
-  `<style>
-  .scroll-div {
-    width:100%;
-    height:200px;
-    overflow-y:scroll;
-    box-shadow:  0px 0px 5px 3px rgba(73, 137, 144, 0.2);
-  }
-  .tf-table {
-    list-style: none;
-    list-style-position:inside;
-    /* border: 2px solid #9CCC65; */
-    /* background-color: #DCEDC8; */
-    background-color: #BAEDF3;
-  }
-  </style>
-  <div id="teak-scan" class="container teakform closed">
-    <form>
-      <label id="device-table-title" for="device-table">Nearby micro:bits</label>
-      <br>
-      <br>
-      <div class="scroll-div">
-        <table id="device-table" class='tf-table' width='100%' height='200px'>
-        <tr><td> </td><tr>
-        <tr><td> </td><tr>
-        <tr><td> </td><tr>
-        <tr><td> </td><tr>
-        <tr><td> </td><tr>
-        <!--tr><td>Hello</td><tr>
-        <tr><td>Hello</td><tr>
-        <tr><td>Hello</td><tr>
-        <tr><td>Hello</td><tr-->
-        </table>
-      </div>
-    </form>
-  </div>`;
+  deviceScanner.insert = function(domRoot) {
+    var div = document.createElement("div");
+    div.innerHTML = `
+    <div id='device-scanner'
+      class='container teakform closed'
+      opened=false
+      style='position:fixed;top:1em;right:1em;pointer-events:none'>
+      <form>
+        <label id="device-table-title" for="device-table">Nearby micro:bits</label>
+        <br>
+        <br>
+        <div class="scroll-div">
+          <table id="device-table" class='tf-table' width='100%' height='200px'>
+          <tr><td> </td><tr>
+          <tr><td> </td><tr>
+          <tr><td> </td><tr>
+          <tr><td> </td><tr>
+          <tr><td> </td><tr>
+          <!--tr><td>Hello</td><tr>
+          <tr><td>Hello</td><tr>
+          <tr><td>Hello</td><tr>
+          <tr><td>Hello</td><tr-->
+          </table>
+        </div>
+      </form>
+    </div>`;
+
+    deviceScanner.domId = 'device-scanner';
+    domRoot.appendChild(div);
+    ko.applyBindings(deviceScanner, div);
+  };
+
+  deviceScanner.showHide = function(state) {
+    console.log('scanner sate', state);
+  };
 
   var activeDevices = {};
 
@@ -82,36 +80,12 @@ module.exports = function () {
 
 */
 
-  class TeakScanWidget extends HTMLElement {
-    // Fires when an instance of the element is created.
-    createdCallback() {
-      this.createShadowRoot().innerHTML = template;
-      this.$container = this.shadowRoot.querySelector('.container');
-    }
-    // Fires when an instance was inserted into the document.
-    attachedCallback() {
-    }
-    // Fires when an attribute is added, removed, or updated.
-    attributeChangedCallback(name, oldValue, newValue) {
-      if (name === 'opened') {
-        if (newValue === 'true') {
-          this.startScan();
-        } else {
-          this.stopScan();
-        }
-        tf.setOpenAttribute(this.shadowRoot.getElementById('teak-scan'), newValue);
-      }
-    }
-  }
-
-  tf.registerComponent('teak-scan-widget', TeakScanWidget);
-
   var blelog = document.getElementById('teakCode');
   function log(text) {
     blelog.value = blelog.value + '\n' + text;
   }
 
-  TeakScanWidget.prototype.deviceOnClick = function deviceOnClick (cell) {
+  deviceScanner.deviceOnClick = function deviceOnClick (cell) {
     var name = cell.innerHTML;
     for(var propName in activeDevices) {
       if (propName === name) {
@@ -122,7 +96,7 @@ module.exports = function () {
     }
   };
 
-  TeakScanWidget.prototype.addDevice = function addDevice (device) {
+  deviceScanner.addDevice = function addDevice (device) {
     var self = this;
     var table = this.shadowRoot.getElementById('device-table');
     var newRow = table.insertRow(0);
@@ -141,7 +115,7 @@ module.exports = function () {
     };
   };
 
-  TeakScanWidget.prototype.foundDevice = function foundDevice (device) {
+  deviceScanner.foundDevice = function foundDevice (device) {
     if (activeDevices[device.name] === undefined) {
       this.addDevice(device);
     }
@@ -150,8 +124,7 @@ module.exports = function () {
     // log('FD:' + device.name + '[' + device.rssi +']');
   };
 
-  TeakScanWidget.prototype.startScan = function startScan() {
-
+  deviceScanner.startScan = function startScan() {
     var ble = window.evothings.ble;
     if (ble === undefined) {
       this.addDevice({name:'Blinky'});
@@ -175,7 +148,7 @@ module.exports = function () {
       });
   };
 
-  TeakScanWidget.prototype.stopScan = function stopScan() {
+  deviceScanner.stopScan = function stopScan() {
     var ble = window.evothings.ble;
     if (ble === undefined)
       return;
@@ -183,5 +156,5 @@ module.exports = function () {
     ble.stopScan();
   };
 
-  return teakScan;
+  return deviceScanner;
 }();
