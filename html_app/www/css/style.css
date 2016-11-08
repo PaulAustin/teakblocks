@@ -161,6 +161,7 @@ label input[type="checkbox"] + .label-text:before {
   font-style: normal;
   font-weight: normal;
   font-variant: normal;
+  font-size:25px;
   text-transform: none;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
@@ -214,6 +215,15 @@ label input[type="checkbox"]:disabled + .label-text:before {
   font-size:20px;
   padding:20px;
   touch-action: none; /* prevents any screen bounce on android */
+}
+.teakform button {
+  border: 2px solid #06a3e9;
+  border-radius: 4px;
+  background-color: #75DCE7;
+    user-select: none;
+}
+.teakform button:active {
+outline: none;
 }
 .scroll-div {
   width:100%;
