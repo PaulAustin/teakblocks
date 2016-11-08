@@ -23,14 +23,14 @@ SOFTWARE.
 module.exports = function () {
   var ko = require('knockout');
 
-  // Set of propoerties taht can be bound to.
-  var configProperties = {
+  // Set of propoerties that can be bound to.
+  var appSettings = {
     showCode: ko.observable(false),
     editorSounds: ko.observable(true),
     editorXRay: ko.observable(false),
   };
 
-  configProperties.insert = function(domRoot) {
+  appSettings.insert = function(domRoot) {
     var div = document.createElement("div");
     div.innerHTML = `
     <div id='app-settings' class='container teakform closed' opened=false style='position:fixed;top:1em;right:1em;pointer-events:none'>
@@ -46,10 +46,10 @@ module.exports = function () {
       </label>
     </form>
     </div>`;
-    configProperties.domId = 'app-settings';
+    appSettings.domId = 'app-settings';
     domRoot.appendChild(div);
-    ko.applyBindings(configProperties, div);
+    ko.applyBindings(appSettings, div);
   };
 
-  return configProperties;
+  return appSettings;
 }();

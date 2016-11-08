@@ -21,9 +21,9 @@ SOFTWARE.
 */
 
 module.exports = function () {
-
   var ko = require('knockout');
 
+  // Set of propoerties that can be bound to.
   var blockSettings = {
     visible: ko.observable(true),
     activeBlock:null
