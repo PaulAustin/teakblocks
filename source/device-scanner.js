@@ -35,8 +35,7 @@ module.exports = function () {
     var div = document.createElement("div");
     div.innerHTML = `
     <div id='device-scanner'
-      class='container teakform closed'
-      opened=false
+      class='teakform pulldown closed' opened=false
       style='position:fixed;top:1em;right:1em;pointer-events:none'>
       <form>
         <label id="device-table-title" for="device-table">Nearby micro:bits</label>

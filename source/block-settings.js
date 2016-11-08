@@ -32,11 +32,17 @@ module.exports = function () {
   blockSettings.insert = function(domRoot) {
     var div = document.createElement("div");
     div.innerHTML =
-    `<div id="block-settings" class="container blockform">
+    `<div id="block-settings" class="teakform blockform">
         <label><input type="checkbox" id="show-code" data-bind="checked:visible">
           <span class="label-text">Power</span>
-        </label><br><br>
+        </label>
+        <br>
+        <button class="button" id="clear-button">
+          <i class="fa fa-trash-o" aria-hidden="true" style="font-size:12px"></i>
+        </button>
+        <br>
     </div>`;
+    //style="position:fixed;right:8em;bottom:1em;"
     blockSettings.domId = 'block-settings';
     domRoot.appendChild(div);
     ko.applyBindings(blockSettings, div);

@@ -123,17 +123,26 @@ button {
 textarea {
   touch-action: none; /* prevents any screen bounce on android */
 }
-body { margin: 0; }
-
-.container {
-    background-color: #75DCE7;
-    border-radius: 10px;
-    box-shadow: 1px 4px 5px 2px rgba(0, 0, 0, 0.2);
-    font-family:"helvetica";
-    color:#33691E;
-    font-size:20px;
-    padding:20px;
-    touch-action: none; /* prevents any screen bounce on android */
+body {
+  margin: 0;
+}
+.palette-button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 15px 15px;
+  width: 70px;
+  height: 70px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 10px;
+  margin: 4px 2px;
+  cursor: pointer;
+  outline: none;
+}
+.palette-button:active {
+  background-color: #1E8449;
 }
 label {
   margin: 15
@@ -183,21 +192,28 @@ label input[type="checkbox"]:disabled + .label-text:before {
   100% {transform: scale(1);}
 }
 /* teak form is for system wide dialogs that slide in from the top */
-.teakform {
-    width:14em;
-    transition: transform .4s ease;
+.pulldown {
+  width:14em;
+  transition: transform .4s ease;
 }
-.teakform.opened {
-    transform: translate(0, 0%);
+.pulldown.opened {
+  width:14em;
+  transform: translate(0, 0%);
 }
-.teakform.closed {
-    transform: translate(0, -120%);
-}
-.teakform.closed-down {
-    transform: translate(0, 120%);
+.pulldown.closed {
+  transform: translate(0, -120%);
 }
 .teakform {
-    box-sizing:border-box;
+  /* setting dialogs */
+  background-color: #75DCE7;
+  border-radius: 10px;
+  box-sizing:border-box;
+  box-shadow: 1px 4px 5px 2px rgba(0, 0, 0, 0.2);
+  font-family:"helvetica";
+  color:#33691E;
+  font-size:20px;
+  padding:20px;
+  touch-action: none; /* prevents any screen bounce on android */
 }
 .scroll-div {
   width:100%;
