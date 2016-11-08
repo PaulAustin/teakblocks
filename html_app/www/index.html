@@ -1,25 +1,5 @@
 <!DOCTYPE html>
 <html >
-<style>
- .button {
-   background-color: #4CAF50;
-   border: none;
-   color: white;
-   padding: 15px 15px;
-   width: 70px;
-   height: 70px;
-   text-align: center;
-   text-decoration: none;
-   display: inline-block;
-   border-radius: 10px;
-   margin: 4px 2px;
-   cursor: pointer;
-   outline: none;
- }
- .button:active {
-   background-color: #1E8449;
- }
-</style>
 <head>
   <audio id='short-click' src='short-click.m4a'></audio>
   <audio id='poof' src='poof.m4a'></audio>
@@ -44,19 +24,19 @@
   <!-- forms dynamically inserted into this div -->
   <div id='tbe-forms'></div>
 
-  <button class="button" id="run-button" style="position:fixed;right:22em;bottom:1em;">
+  <button class="palette-button" id="run-button" style="position:fixed;right:22em;bottom:1em;">
     <i class="fa fa-play" aria-hidden="true" style="font-size:36px"></i>
   </button>
 
-  <button class="button" id="scan-button" style="position:fixed;right:15em;bottom:1em;">
+  <button class="palette-button" id="scan-button" style="position:fixed;right:15em;bottom:1em;">
     <i class="fa fa-bluetooth-b" aria-hidden="true" style="font-size:36px"></i>
   </button>
 
-  <button class="button" id="clear-button" style="position:fixed;right:8em;bottom:1em;">
+  <button class="palette-button" id="clear-button" style="position:fixed;right:8em;bottom:1em;">
     <i class="fa fa-trash-o" aria-hidden="true" style="font-size:36px"></i>
   </button>
 
-  <button class="button" id="config-button" style="position:fixed;right:1em;bottom:1em;">
+  <button class="palette-button" id="app-settings-button" style="position:fixed;right:1em;bottom:1em;">
     <i class="fa fa-cog" aria-hidden="true" style="font-size:36px"></i>
   </button>
 

@@ -33,7 +33,9 @@ module.exports = function () {
   appSettings.insert = function(domRoot) {
     var div = document.createElement("div");
     div.innerHTML = `
-    <div id='app-settings' class='container teakform closed' opened=false style='position:fixed;top:1em;right:1em;pointer-events:none'>
+    <div id='app-settings'
+      class='teakform pulldown closed' opened=false
+      style='position:fixed;top:1em;right:1em;pointer-events:none'>
     <form>
       <label><input type="checkbox" id="show-code" data-bind="checked:showCode">
         <span class="label-text">Show code</span>

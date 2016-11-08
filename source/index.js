@@ -29,9 +29,9 @@ function deviceReady() {
   // Configuation components for the app and blocks
   // Initialize knockout databinding for documnets DOM
   tbe.components = {};
-  tbe.components.appSettings = require('./teak-config-widget.js');
-  tbe.components.scan = require('./teak-scan-widget.js');
-  tbe.components.blockSettings = require('./teak-block-config-widget.js');
+  tbe.components.appSettings = require('./app-settings.js');
+  tbe.components.scan = require('./device-scanner.js');
+  tbe.components.blockSettings = require('./block-settings.js');
   ko.applyBindings(tbe.components);
 
   var formsDiv = document.getElementById('tbe-forms');
@@ -57,7 +57,7 @@ function deviceReady() {
     document.getElementById('editorCanvas'),
     document.getElementById('teakCode'));
 
-  var configButton = document.getElementById('config-button');
+  var configButton = document.getElementById('app-settings-button');
   configButton.onclick = function() { tf.showHide(tbe.components.appSettings); };
 
   var clearButton = document.getElementById('clear-button');
