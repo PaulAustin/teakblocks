@@ -37,8 +37,8 @@ module.exports = function () {
           <span class="label-text">Power</span>
         </label>
         <br>
-        <button class="button" id="clear-button">
-          <i class="fa fa-trash-o" aria-hidden="true" style="font-size:12px"></i>
+        <button id="block-clear">
+          <i class="fa fa-trash-o" aria-hidden="true" style="font-size:16px"></i>
         </button>
         <br>
     </div>`;
@@ -46,6 +46,10 @@ module.exports = function () {
     blockSettings.domId = 'block-settings';
     domRoot.appendChild(div);
     ko.applyBindings(blockSettings, div);
+
+    document.getElementById('block-clear').onclick = function() {
+      console.log('clear this block');
+    };
   };
 
   blockSettings.hide = function(exceptBlock) {
