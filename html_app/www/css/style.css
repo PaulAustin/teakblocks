@@ -124,3 +124,89 @@ textarea {
   touch-action: none; /* prevents any screen bounce on android */
 }
 body { margin: 0; }
+
+.container {
+    background-color: #75DCE7;
+    border-radius: 10px;
+    box-shadow: 1px 4px 5px 2px rgba(0, 0, 0, 0.2);
+    font-family:"helvetica";
+    color:#33691E;
+    font-size:20px;
+    padding:20px;
+    touch-action: none; /* prevents any screen bounce on android */
+}
+label {
+  margin: 15
+  cursor: pointer;
+  /* prevent selecting text in control captions */
+  -webkit-user-select: none;
+  user-select: none;
+}
+label input[type="checkbox"] {
+  display: none;
+}
+label input[type="checkbox"] + .label-text:before {
+  content: "\f096";
+  font-family: "FontAwesome";
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  width: 1em;
+  display: inline-block;
+  margin-right: 5px;
+  animation: toUnchecked 200ms ease-in;
+}
+label input[type="checkbox"]:checked + .label-text:before {
+  content: "\f046";
+  color: #06a3e9;
+  animation: toChecked 200ms ease-in;
+}
+label input[type="checkbox"]:disabled + .label-text {
+  color: #aaa;
+}
+label input[type="checkbox"]:disabled + .label-text:before {
+  content: "f096";  /* square-o */
+  color: #ccc;
+}
+@keyframes toUnchecked {
+  0% {transform: scale(0.9);}
+  60% {transform: scale(1.1);}
+  100% {transform: scale(1);}
+}
+@keyframes toChecked {
+  0% {transform: scale(0.9);}
+  60% {transform: scale(1.1);}
+  100% {transform: scale(1);}
+}
+/* teak form is for system wide dialogs that slide in from the top */
+.teakform {
+    width:14em;
+    transition: transform .4s ease;
+}
+.teakform.opened {
+    transform: translate(0, 0%);
+}
+.teakform.closed {
+    transform: translate(0, -120%);
+}
+.teakform.closed-down {
+    transform: translate(0, 120%);
+}
+.teakform {
+    box-sizing:border-box;
+}
+.scroll-div {
+  width:100%;
+  height:200px;
+  overflow-y:scroll;
+  box-shadow:  0px 0px 5px 3px rgba(73, 137, 144, 0.2);
+}
+.tf-table {
+  list-style: none;
+  list-style-position:inside;
+  background-color: #BAEDF3;
+}

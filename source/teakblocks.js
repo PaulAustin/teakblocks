@@ -67,19 +67,16 @@ tbe.forEachDiagramChain = function (callBack) {
   });
 };
 
-tbe.clearStates = function clearStates() {
+tbe.clearStates = function clearStates(block) {
   // clear any showing forms or multi step state.
   // If the user has interacted with a general part of the editor.
   tf.hideOpenForm();
-  if (this.blockConfigurator.hide !== undefined) {
-    this.blockConfigurator.hide();
-  }
+  this.components.blockSettings.hide(block);
 };
 
 tbe.init = function init(svg, text) {
   this.svg = svg;
   this.teakCode = text;
-  this.blockConfigurator = document.getElementById('block-config');
   this.background = svgb.createRect('editor-background', 0, 0, 20, 20, 0);
   this.svg.appendChild(this.background);
   this.configInteractions();
@@ -103,7 +100,6 @@ tbe.elementToBlock = function(el) {
 };
 
 tbe.clearAllBlocks = function() {
-  console.log('clearing blocks');
   tbe.clearStates();
   trashBlocks(tbe);
 };
@@ -157,11 +153,10 @@ tbe.replicate = function(block){
       newBlock.params = JSON.parse(JSON.stringify(block.params));
       newBlock.isPaletteBlock = false;
       newBlock.interactId = tbe.nextBlockId('d:');
-      this.diagramBlocks[newBlock.interactId] = newBlock;
       //newBlock.params = JSON.parse(JSON.stringify(block.params));
-      //block.interactId = 'd:' + this.diagramBlocks.length;
+      this.diagramBlocks[newBlock.interactId] = newBlock;
       //if(prevBlock !== null){
-        //newBlock.prev = prevBlock;
+      //newBlock.prev = prevBlock;
       console.log("Items:");
       console.log(prevBlock);
       console.log(newBlock);
@@ -397,7 +392,7 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
     } else {
       action = 'append';
     }
-    if (tbe.components.configSettings.editorXRay()) {
+    if (tbe.components.appSettings.editorXRay()) {
       svglog.logRect(tbe.svg, bestRect, action + ' ' + target.name);
     }
   }
@@ -570,10 +565,10 @@ tbe.configInteractions = function configInteractions() {
 
   interact('.drag-group')
     .on('down', function (event) {
-      tbe.clearStates();
       var block = thisTbe.elementToBlock(event.target);
       if (block === null)
         return;
+      tbe.clearStates(block);
       block.coasting = 0;
     })
     .on('up', function (event) {
@@ -589,7 +584,7 @@ tbe.configInteractions = function configInteractions() {
       if (block.isPaletteBlock) {
         return;
       }
-      thisTbe.blockConfigurator.tap(block);
+      thisTbe.components.blockSettings.tap(block);
     })
     .on('hold', function(event) {
        var block = thisTbe.elementToBlock(event.target);
@@ -599,7 +594,7 @@ tbe.configInteractions = function configInteractions() {
        }
        // bring up config, dont let drag start
        event.interaction.stop();
-       thisTbe.blockConfigurator.tap(block);
+       thisTbe.components.blockSettings.tap(block);
     })
     .draggable({
       restrict: {
@@ -696,7 +691,7 @@ tbe.checkForHold = function checkForHold(block, interaction) {
   console.log('is it holding?', block);
   block.checkForHold = null;
   interaction.stop();
-  tbe.blockConfigurator.tap(block);
+  tbe.components.blockSettings.tap(block);
 };
 
 tbe.diagramChanged = function diagramChanged() {

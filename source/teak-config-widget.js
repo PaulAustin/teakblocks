@@ -21,59 +21,35 @@ SOFTWARE.
 */
 
 module.exports = function () {
-
-  // At this point no fancy data binding. This component returns an object
-  // with the application configuration settings. When the form is shown, the
-  // user may change the settings. The application refers to this object where
-  // needed
   var ko = require('knockout');
 
+  // Set of propoerties taht can be bound to.
   var configProperties = {
     showCode: ko.observable(false),
     editorSounds: ko.observable(true),
     editorXRay: ko.observable(false),
-    editorTheme: ko.observable('primary1'),
   };
 
-  var tf = require('./teak-forms.js');
-  var template = tf.styleTag +
-  `<div id="app-config" class="container teakform closed">
-      <form>
-        <label><input type="checkbox" id="show-code" data-bind="checked:showCode">
-          <span class="label-text">Show code</span>
-        </label><br><br>
-        <label><input type="checkbox" id="editor-sounds" data-bind="checked:editorSounds">
-          <span class="label-text">Sound effects</span>
-        </label><br><br>
-        <label><input type="checkbox" id="editor-xray" data-bind="checked:editorXRay">
-          <span class="label-text">X-Ray</span>
-        </label>
-      </form>
-  </div>`;
+  configProperties.insert = function(domRoot) {
+    var div = document.createElement("div");
+    div.innerHTML = `
+    <div id='app-settings' class='container teakform closed' opened=false style='position:fixed;top:1em;right:1em;pointer-events:none'>
+    <form>
+      <label><input type="checkbox" id="show-code" data-bind="checked:showCode">
+        <span class="label-text">Show code</span>
+      </label><br><br>
+      <label><input type="checkbox" id="editor-sounds" data-bind="checked:editorSounds">
+        <span class="label-text">Sound effects</span>
+      </label><br><br>
+      <label><input type="checkbox" id="editor-xray" data-bind="checked:editorXRay">
+        <span class="label-text">X-Ray</span>
+      </label>
+    </form>
+    </div>`;
+    configProperties.domId = 'app-settings';
+    domRoot.appendChild(div);
+    ko.applyBindings(configProperties, div);
+  };
 
-  class TeakConfigWidget extends HTMLElement {
-
-    // Fires when an instance of the element is created.
-    createdCallback() {
-      this.createShadowRoot().innerHTML = template;
-      this.$container = this.shadowRoot.querySelector('.container');
-
-      // Initialize knockout databinding for elements in shadow DOM
-      ko.applyBindings(configProperties, this.$container);
-    }
-
-    // Fires when an instance is inserted into the document.
-    attachedCallback() {
-    }
-
-    // Fires when an attribute is added, removed, or updated.
-    attributeChangedCallback(name, oldValue, newValue) {
-      if (name === 'opened') {
-        tf.setOpenAttribute(this.shadowRoot.getElementById('app-config'), newValue);
-      }
-    }
-  }
-
-  tf.registerComponent('teak-config-widget', TeakConfigWidget);
   return configProperties;
 }();

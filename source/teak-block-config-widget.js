@@ -22,96 +22,79 @@ SOFTWARE.
 
 module.exports = function () {
 
-  // At this point no fancy data binding. This component returns an object
-  // with the application configuration settings. When the form is shown, the
-  // user may change the settings. The application refers to this object where
-  // needed
   var ko = require('knockout');
 
-  var configProperties = {
+  var blockSettings = {
     visible: ko.observable(true),
+    activeBlock:null
   };
 
-  var tf = require('./teak-forms.js');
-  // Inner HTML will be set by the specific block.
-  var template = tf.styleTag +
-  `<div id="app-config" class="container blockform">
-      <label><input type="checkbox" id="show-code" data-bind="checked:visible">
-        <span class="label-text">Power</span>
-      </label><br><br>
-  </div>`;
+  blockSettings.insert = function(domRoot) {
+    var div = document.createElement("div");
+    div.innerHTML =
+    `<div id="block-settings" class="container blockform">
+        <label><input type="checkbox" id="show-code" data-bind="checked:visible">
+          <span class="label-text">Power</span>
+        </label><br><br>
+    </div>`;
+    blockSettings.domId = 'block-settings';
+    domRoot.appendChild(div);
+    ko.applyBindings(blockSettings, div);
+  };
 
-  class TeakBlockConfigWidget extends HTMLElement {
-
-    // Fires when an instance of the element is created.
-    createdCallback() {
-      // activeBlock is the Block the config page is opened for.
-      // at this point one one can be opend at a time.
+  blockSettings.hide = function(exceptBlock) {
+    if (this.activeBlock !== null && this.activeBlock !== exceptBlock) {
       this.activeBlock = null;
-      this.createShadowRoot().innerHTML = template;
-      this.$container = this.shadowRoot.querySelector('.container');
-
-      // Initialize knockout databinding for elements in shadow DOM
-      ko.applyBindings(configProperties, this.$container);
+      var dom = document.getElementById(this.domId);
+      dom.style.transition = 'all 0.2s ease';
+      dom.style.position = 'absolute';
+      dom.style.transform = 'scale(0.33, 0.0)';
+      dom.style.pointerEvents = 'all';
     }
+  };
 
-    // Fires when an instance is inserted into the document.
-    attachedCallback() {
+  // A block has been  tapped on, the gesture for the config page.
+  // bring it up toggle or move as apppropriate.
+  blockSettings.tap = function(block) {
+    if (this.activeBlock === block) {
+      // Clicked on the same block make it go away.
+      this.hide();
+    } else if (this.activeBlock !== null) {
+      // Clicked on another block, but one is showing, make it go away.
+      // Then show the new one once the hide transition is done.
+      this.hide();
+      this.activeBlock = block;
+      this.addEventListener('transitionend', this.showActive);
+    } else {
+      // Nothing showing, make it popop up.
+      this.activeBlock = block;
+      this.showActive(null);
     }
+  };
 
-    hide() {
-      if (this.activeBlock !== null) {
-        this.activeBlock = null;
-        this.style.transition = 'all 0.2s ease';
-        this.style.position = 'absolute';
-        this.style.transform = 'scale(0.33, 0.0)';
-        this.style.pointerEvents = 'all';
-      }
+  // Internal method to show the form.
+  blockSettings.showActive = function (event) {
+    if (event !== null) {
+      this.removeEventListener('transitionend', this.showActive);
     }
+    var x = this.activeBlock.rect.left;
+    var y = this.activeBlock.rect.bottom;
 
-    // A block has been  tapped on, the gesture for the config page.
-    // bring it up toggle or move as apppropriate.
-    tap(block) {
-      if (this.activeBlock === block) {
-        // Clicked on the same block make it go away.
-        this.hide();
-      } else if (this.activeBlock !== null) {
-        // Clicked on another block, but one is showing, make it go away.
-        // Then show the new one once the hide transition is done.
-        this.hide();
-        this.activeBlock = block;
-        this.addEventListener('transitionend', this.showActive);
-      } else {
-        // Nothing showing, make it popop up.
-        this.activeBlock = block;
-        this.showActive(null);
-      }
-    }
+    var dom = document.getElementById(this.domId);
+    dom.style.transition = 'all 0.0s ease';
+    dom.style.left = (x-80) + 'px';
+    dom.style.right = (x+80) + 'px';
+    dom.style.top = (y+5) + 'px';
+    // Second step has to be done in callback in order to allow
+    // animation to work.
+    setTimeout(function() {
+      dom.style.transition = 'all 0.2s ease';
+      dom.style.position = 'absolute';
+      dom.style.width= '240px';
+      dom.style.transform = 'scale(1.0, 1.0)';
+      dom.style.pointerEvents = 'all';
+    }, 10);
+  };
 
-    // internal method to show the form.
-    showActive(event) {
-      if ( event !== null) {
-        this.removeEventListener('transitionend', this.showActive);
-      }
-      var x = this.activeBlock.rect.left;
-      var y = this.activeBlock.rect.bottom;
-      this.style.transition = 'all 0.0s ease';
-      this.style.left = (x-80) + 'px';
-      this.style.right = (x+80) + 'px';
-      this.style.top = (y+5) + 'px';
-      // Second step has to be done in callback in order to allow
-      // animation to work.
-      var self = this;
-      setTimeout(function() {
-        self.style.transition = 'all 0.2s ease';
-        self.style.position = 'absolute';
-        self.style.width= '240px';
-        self.style.transform = 'scale(1.0, 1.0)';
-        self.style.pointerEvents = 'all';
-      }, 10);
-    }
-  }
-
-  tf.registerComponent('teak-block-config-widget', TeakBlockConfigWidget);
-  return configProperties;
+  return blockSettings;
 }();
