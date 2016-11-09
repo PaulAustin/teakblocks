@@ -30,6 +30,7 @@ var teakText = require('./teaktext.js');
 var svgb = require('./svgbuilder.js');
 var svglog = require('./svglog.js');
 var trashBlocks = require('./physics.js');
+var fblocks = require('./fblock-settings.js');
 
 var tbe = {};
 
@@ -184,6 +185,8 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   };
 
   this.name = blockName;
+  var funcs = fblocks.bind(blockName);
+  console.log('funcs', blockName, funcs);
 
   // Place holder for sequencing links.
   this.prev = null;
@@ -198,22 +201,18 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   this.targetShadow = null; // Svg element to hilite target location
 
   var group = svgb.createGroup('drag-group', 0, 0);
+  this.svgGroup = group;
+
   // Create the actual SVG object. Its a group of two pieces
   // a rounded rect and a text box. The group is moved by changing
   // it's transform (see dmove)
 
   var rect = svgb.createRect('function-block', 0, 0, 80, 80, 10);
-  // For safari 8/14/2016 rx or ry must be explicitly set other wise rx/ry
-  // values in css will be ignored. Perhasp a more optimized rect is used.
-
-  var text = svgb.createText('function-text', 10, 45, blockName);
+  this.svgRect= rect;
 
   group.appendChild(rect);
-  group.appendChild(text);
-  // group.appendChild(createBranchPath());
+  funcs.svg(group, this);
 
-  this.svgGroup = group;
-  this.svgRect= rect;
   this.dmove(x, y, true);
   tbe.svg.appendChild(group);
 };

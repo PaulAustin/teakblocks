@@ -62,7 +62,7 @@ html, body { margin:0; padding:0; overflow:hidden }
   stroke: none;
 }
 .tab-block{
-  fill: #F5B041 ;
+  fill: #F5B041;
   stroke: #1B5E20;
   stroke-width:2;
   z-index: 500;
@@ -88,6 +88,9 @@ html, body { margin:0; padding:0; overflow:hidden }
 /*  filter: url(#dropshadow); */
   stroke-width: 4;
   stroke: #5A33FF;
+}
+.svg-clear {
+  pointer-events: none;
 }
 .function-text {
   width: 80px;
