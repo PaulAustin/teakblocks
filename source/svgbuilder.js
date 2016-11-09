@@ -72,6 +72,15 @@ svgBuilder.createRect = function createRect(elementClass, x, y, w, h, rxy) {
   return elt;
 };
 
+svgBuilder.createCircle = function creatCircle(elementClass, cx, cy, r) {
+  var elt  = document.createElementNS(svgBuilder.ns, 'circle');
+  elt.setAttribute('class', elementClass);
+  elt.setAttribute('cx', cx);
+  elt.setAttribute('cy', cy);
+  elt.setAttribute('r', r);
+  return elt;
+};
+
 svgBuilder.createGroup = function createGroup(elementClass, x, y) {
   var elt  = document.createElementNS(svgBuilder.ns, 'g');
   elt.setAttribute('class', elementClass);

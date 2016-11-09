@@ -48,7 +48,7 @@ module.exports = function () {
     ko.applyBindings(blockSettings, div);
 
     document.getElementById('block-clear').onclick = function() {
-      console.log('clear this block', blockSettings.activeBlock);
+      console.log('clear this block', this, blockSettings.activeBlock);
     };
   };
 
