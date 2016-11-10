@@ -90,8 +90,34 @@ b.motorBlock = {
   }
 };
 
+//infoGroup.append("text").attr("class", "svg-icon").text("\uf005");
+
+// sound
+b.soundBlock = {
+  svg: function(root) {
+    var pb = svgb.pathBuilder;
+
+    var pathd = '';
+    pathd =  pb.move(30, 15);
+    pathd += pb.hline(20);
+    pathd += pb.vline(20);
+    pathd += pb.hline(-20);
+    pathd += pb.vline(-20);
+    pathd += pb.close();
+
+    //var text = svgb.createText('svg-icon', 10, 45, "\uf026");
+    var path = svgb.createPath('branch-path', pathd);
+    path.setAttribute('stroke-width', '4');
+    path.setAttribute('stroke', '#454545');
+    path.setAttribute('stroke-linejoin', 'round');
+    path.setAttribute('stroke-endcap', 'round');
+    root.appendChild(path);
+    return root;
+  }
+};
+
 // calculator
-b.calculator = {
+b.calculatorBlock = {
   svg: function(root) {
     return root;
   }
