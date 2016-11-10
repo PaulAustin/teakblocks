@@ -81,6 +81,7 @@ b.motorBlock = {
     motor.setAttribute('fill', '#777777');
     motor.setAttribute('stroke', '#454545');
     motor.setAttribute('stroke-width', '2');
+    motor.setAttribute('stroke-dasharray', '4, 5');
     root.appendChild(motor);
 
     var shaft = svgb.createCircle('svg-clear', 40, 30, 4);
@@ -98,20 +99,38 @@ b.soundBlock = {
     var pb = svgb.pathBuilder;
 
     var pathd = '';
-    pathd =  pb.move(30, 15);
-    pathd += pb.hline(20);
-    pathd += pb.vline(20);
-    pathd += pb.hline(-20);
-    pathd += pb.vline(-20);
+    pathd =  pb.move(20, 25);
+    pathd += pb.hline(9);
+    pathd += pb.line(10, -10);
+    pathd += pb.vline(30);
+    pathd += pb.line(-10, -10);
+    pathd += pb.hline(-9);
+    pathd += pb.vline(-10);
     pathd += pb.close();
 
     //var text = svgb.createText('svg-icon', 10, 45, "\uf026");
-    var path = svgb.createPath('branch-path', pathd);
-    path.setAttribute('stroke-width', '4');
-    path.setAttribute('stroke', '#454545');
+    var path = svgb.createPath('svg-clear', pathd);
+    path.setAttribute('fill', '#FFB74D');
+    path.setAttribute('stroke-width', '2');
+    path.setAttribute('stroke', '#FFB74D');
     path.setAttribute('stroke-linejoin', 'round');
     path.setAttribute('stroke-endcap', 'round');
     root.appendChild(path);
+
+    pathd = '';
+    pathd =  pb.move(45, 25);
+    pathd += pb.arc(12, 90, 0, 1, 0, 10);
+    pathd += pb.move(5, -15);
+    pathd += pb.arc(22, 90, 0, 1, 0, 20);
+    pathd += pb.move(5, -25);
+    pathd += pb.arc(32, 90, 0, 1, 0, 30);
+    var soundPath = svgb.createPath('svg-clear', pathd);
+    soundPath.setAttribute('fill', 'none');
+    soundPath.setAttribute('stroke', '#FFB74D');
+    soundPath.setAttribute('stroke-width', '2');
+    soundPath.setAttribute('stroke-linecap', 'round');
+    root.appendChild(soundPath);
+
     return root;
   }
 };
