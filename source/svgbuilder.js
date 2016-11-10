@@ -37,6 +37,9 @@ svgBuilder.pathBuilder = {
   vline: function(length) {
     return 'v' + length + ' ';
   },
+  line: function(dx, dy) {
+    return 'l' + dx + ' ' + dy + ' ';
+  },
   arc: function(radius, degrees, large, sweep, dx, dy) {
     var text = 'a' + radius + ' ' + radius + ' ' + degrees;
     text += ' ' + large + ' ' + sweep + ' ' + dx + ' ' + dy + ' ';
