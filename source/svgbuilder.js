@@ -26,7 +26,7 @@ var svgBuilder = {};
 svgBuilder.ns = 'http://www.w3.org/2000/svg';
 svgBuilder.xlinkns = 'http://www.w3.org/1999/xlink';
 
-svgBuilder.p = {
+svgBuilder.pathBuilder = {
   // Very simple svg tools for the teak block editor needs.
   move: function (dx, dy) {
     return 'm' + dx + ' ' + dy + ' ';
@@ -94,6 +94,13 @@ svgBuilder.createText = function createText(elementClass, x, y, text) {
   elt.setAttribute('x', x);
   elt.setAttribute('y', y);
   elt.textContent = text;
+  return elt;
+};
+
+svgBuilder.createPath = function createText(elementClass, pathData) {
+  var elt = document.createElementNS(svgBuilder.ns, 'path');
+  elt.setAttribute('class', 'elementClass');
+  elt.setAttribute('d', pathData);
   return elt;
 };
 

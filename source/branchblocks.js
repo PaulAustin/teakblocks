@@ -68,9 +68,9 @@ function createBranchPath1(block, branchBlock) {
 
   var bw = 80;   // block width
   var pw = 16;    // path width
-  var pr = 4;
 
   var pb = pathBuilder;
+  var pathd = '';
   pathd = pb.move((bw/2)-(pw/2), 4);
   pathd += pb.arc(pw/2, 180, 1, 0, 16, 0);
   pathd += pb.vline(-24);
@@ -96,9 +96,9 @@ function createBranchPath(block, branchBlock) {
 
   var bw = 80;   // block width
   var pw = 10;    // path width
-  var pr = 4;
 
   var pb = pathBuilder;
+  var pathd = '';
   pathd = pb.move((bw/2)-(pw/2), 0);
   pathd += pb.arc(pw, 360, 1, 0, 16, 0);
   pathd += pb.vline(-24);
