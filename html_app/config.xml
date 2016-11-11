@@ -13,6 +13,7 @@
     <access origin="*" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="WebViewBounce" value="false" />
+    <preference name="Orientation" value="landscape" />
     <platform name="android">
         <preference name="Fullscreen" value="true" />
     </platform>
