@@ -21,8 +21,9 @@ SOFTWARE.
 */
 
 module.exports = function () {
-  var svgb = require('./svgbuilder.js');
-//  var ko = require('knockout');
+  
+var svgb = require('./svgbuilder.js');
+var pb = svgb.pathBuilder;
 var b = {};
 
 b.bind = function(style){
@@ -31,7 +32,6 @@ b.bind = function(style){
   if (def === undefined) {
     def = this.unknownBlock;
   }
-  console.log('block bound to ', key,  def);
   return def;
 };
 
@@ -79,7 +79,7 @@ b.motorBlock = {
   svg: function(root, block) {
     var motor = svgb.createCircle('svg-clear', 40, 30, 20);
     motor.setAttribute('fill', '#777777');
-    motor.setAttribute('stroke', '#454545');
+    motor.setAttribute('stroke', '#FFB74D'); //'#454545')
     motor.setAttribute('stroke-width', '2');
     motor.setAttribute('stroke-dasharray', '4, 5');
     root.appendChild(motor);
@@ -96,8 +96,6 @@ b.motorBlock = {
 // sound
 b.soundBlock = {
   svg: function(root) {
-    var pb = svgb.pathBuilder;
-
     var pathd = '';
     pathd =  pb.move(20, 25);
     pathd += pb.hline(9);
@@ -114,23 +112,45 @@ b.soundBlock = {
     path.setAttribute('stroke-width', '2');
     path.setAttribute('stroke', '#FFB74D');
     path.setAttribute('stroke-linejoin', 'round');
-    path.setAttribute('stroke-endcap', 'round');
+    path.setAttribute('stroke-linecap', 'round');
     root.appendChild(path);
 
     pathd = '';
     pathd =  pb.move(45, 25);
     pathd += pb.arc(12, 90, 0, 1, 0, 10);
     pathd += pb.move(5, -15);
-    pathd += pb.arc(22, 90, 0, 1, 0, 20);
+    pathd += pb.arc(20, 90, 0, 1, 0, 20);
     pathd += pb.move(5, -25);
-    pathd += pb.arc(32, 90, 0, 1, 0, 30);
+    pathd += pb.arc(28, 90, 0, 1, 0, 30);
     var soundPath = svgb.createPath('svg-clear', pathd);
     soundPath.setAttribute('fill', 'none');
     soundPath.setAttribute('stroke', '#FFB74D');
     soundPath.setAttribute('stroke-width', '2');
     soundPath.setAttribute('stroke-linecap', 'round');
     root.appendChild(soundPath);
+    return root;
+  }
+};
 
+// calculator
+b.waitBlock = {
+  svg: function(root) {
+    var pathd = '';
+    pathd =  pb.move(40, 19);
+    pathd += pb.vline(-7);
+    pathd += pb.arc(19, 340, 1, 1, -12, 4);
+    pathd +=  pb.move(10.6, 16.5);
+    pathd +=  pb.arc(1.3, 300, 0, 0, 2.2, -0.8);
+    pathd +=  pb.line(-7.8, -10.5);
+    pathd +=  pb.close();
+
+    var path = svgb.createPath('svg-clear', pathd);
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke-width', '2.5');
+    path.setAttribute('stroke', '#FFB74D');
+    path.setAttribute('stroke-linejoin', 'round');
+    path.setAttribute('stroke-linecap', 'round');
+    root.appendChild(path);
     return root;
   }
 };
