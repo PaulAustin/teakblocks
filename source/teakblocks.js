@@ -127,41 +127,27 @@ tbe.addPaletteBlock = function(x, y, name, params) {
    this.paletteBlocks[block.interactId] = block;
 };
 
-tbe.popPaletteItem = function(block) {
-
-  // The new palette block has the same location, name, and id.
-  var npb = new this.FunctionBlock(block.rect.left, block.rect.top, block.name);
-  // Make a copy so changes do not leak from one to another.
-  npb.params = JSON.parse(JSON.stringify(block.params));
-  npb.isPaletteBlock = true;
-  npb.interactId = block.interactId;
-  this.paletteBlocks[block.interactId] = npb;
-
-  // Now change the block to a diagramBlock.
-  block.isPaletteBlock = false;
-  block.interactId = tbe.nextBlockId('d:');
-  this.diagramBlocks[block.interactId] = block;
-};
-
 tbe.replicate = function(block){
     var newBlock = null;
     var prevBlock = null;
+    var newHead = null;
     //var index = 0;
     //var oldBLock = block;
     while(block !== null){
-      //addBlock(10, 10, "aa", "hi");
       newBlock = new this.FunctionBlock(block.rect.left, block.rect.top, block.name);
+      if (newHead === null) {
+        newHead = newBlock;
+      }
       newBlock.params = JSON.parse(JSON.stringify(block.params));
       newBlock.isPaletteBlock = false;
       newBlock.interactId = tbe.nextBlockId('d:');
-      //newBlock.params = JSON.parse(JSON.stringify(block.params));
       this.diagramBlocks[newBlock.interactId] = newBlock;
       //if(prevBlock !== null){
       //newBlock.prev = prevBlock;
-      console.log("Items:");
-      console.log(prevBlock);
-      console.log(newBlock);
-      console.log(this);
+    //  console.log("Items:");
+    //  console.log(prevBlock);
+    //  console.log(newBlock);
+    //  console.log(this);
       //}
       if(prevBlock !== null){
         newBlock.prev = prevBlock;
@@ -169,9 +155,9 @@ tbe.replicate = function(block){
       }
 
       prevBlock = newBlock;
-      //index++;
       block = block.next;
     }
+    return newHead;
 };
 
 // Constructor for FunctionBlock object.
@@ -186,7 +172,6 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
 
   this.name = blockName;
   var funcs = fblocks.bind(blockName);
-  console.log('funcs', blockName, funcs);
 
   // Place holder for sequencing links.
   this.prev = null;
@@ -215,6 +200,9 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
 
   this.dmove(x, y, true);
   tbe.svg.appendChild(group);
+
+  // if the block is loop ( or blockopen) then make a block end to go with it.
+  // This could be turned insode out so that fblock code does this.
 };
 
 Object.defineProperty(tbe.FunctionBlock.prototype, 'first', {
@@ -595,7 +583,26 @@ tbe.configInteractions = function configInteractions() {
        event.interaction.stop();
        thisTbe.components.blockSettings.tap(block);
     })
+    .on('move', function(event) {
+      var interaction = event.interaction;
+      var targetToDrag = event.currentTarget;
+      var block = thisTbe.elementToBlock(targetToDrag);
+      // if the pointer was moved while being held down
+      // and an interaction hasn't started yet
+      if (interaction.pointerIsDown && !interaction.interacting()) {
+        // if coming from pallette, or if coming from shift drag
+        if (block.isPaletteBlock || event.shiftKey) {
+          block = thisTbe.replicate(block);
+          targetToDrag = block.svgGroup;
+        }
+        // start a drag interaction targeting the clone
+        interaction.start({ name: 'drag' },
+                          event.interactable,
+                          targetToDrag);
+      }
+    })
     .draggable({
+      manualStart: true, // Drag wont start until initiated by code.
       restrict: {
           restriction: thisTbe.svg,
           endOnly: true,
@@ -615,18 +622,8 @@ tbe.configInteractions = function configInteractions() {
         if (block === null) {
           return;
         }
-        if (block.isPaletteBlock) {
-          // Turn the palette block into a diagram block.
-          thisTbe.popPaletteItem(block);
-        }
         block.setDraggingState(true);
-
         block.checkForHoldID = setTimeout(tbe.checkForHold, 500, block, event.interaction);
-
-        if(event.shiftKey){
-          thisTbe.replicate(block);
-          console.log("hi");
-        }
       },
       onend: function(event) {
         var block = thisTbe.elementToBlock(event.target);

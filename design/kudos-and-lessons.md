@@ -335,4 +335,14 @@ This design has the upside that the digramBlocks object is a bit more private to
 ### Revisiting Shadow DOM and web components
 The concept is nice, I hope it comes together,... but two observations as of now
 (1) It is causing some problems, on some browsers the styles leak and then on others the boundary is stronger. It causes problems in both directions.
-(2) This app does not have a great need for it. 
+(2) This app does not have a great need for it.
+
+## Nov 7-11
+### Started work on custom icons based on SVGs. 
+This included tests on the low end Amazon fire tablet. Performance seem decent.
+
+### Using Manual Start with interact.js
+ManualStart Mode means the code watches for a move with mouse down, and if conditions are right
+it starts the drag. The upside is that now dragging from the palette or making a copy
+can make the copy and they start dragging the copy, not the original. Code is much better
+This should help on hold and tap gestures for tablets as well.
