@@ -21,7 +21,7 @@ SOFTWARE.
 */
 
 module.exports = function () {
-  
+
 var svgb = require('./svgbuilder.js');
 var pb = svgb.pathBuilder;
 var b = {};
@@ -91,7 +91,21 @@ b.motorBlock = {
   }
 };
 
-//infoGroup.append("text").attr("class", "svg-icon").text("\uf005");
+b.digitalWriteBlock = {
+  // TODO
+};
+
+b.analogWriteBlock = {
+  // TODO
+};
+
+b.serialWriteBlock = {
+  // TODO
+};
+
+b.I2CWriteBlock = {
+  // TODO
+};
 
 // sound
 b.soundBlock = {
@@ -167,6 +181,43 @@ b.loop = {
   svg: function(root) {
     return root;
   }
+};
+
+
+b.musicNoteValue = {
+
+};
+
+b.constantValue = {
+
+};
+
+b.rangeValue = {
+
+};
+
+b.acceleromoterValue = {
+
+};
+
+b.timeValue = {
+
+};
+
+b.compassValue = {
+
+};
+
+b.temperatureValue = {
+
+};
+
+b.funcionValue = {
+
+};
+
+b.messageValue = {
+// May be globals on the device, or across a mesh.
 };
 
 return b;

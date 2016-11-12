@@ -75,14 +75,15 @@ function deviceReady() {
       'sound':{},
       'wait':{},
       'send':{},
-      'picture':{}
+      'picture':{},
+      'loop':{}
     }
   };
 
  tbe.addPalette(package1);
 }
 
-// Load cordova.js if not in regular browser, set up initialization.
+// Load cordova.js if not in regular browser, and then set up initialization.
 var isRegularBrowser =
   document.URL.indexOf('http://') >= 0 ||
   document.URL.indexOf('https://') >= -0;
