@@ -46,14 +46,21 @@ b.unknownBlock = {
 };
 
 b.pictureBlock = {
+  pictSmile: [0,0,0,0,0, 0,1,0,1,0, 0,0,0,0,0, 1,0,0,0,1, 0,1,1,1,0],
   svg: function(root) {
-    var group = svgb.createGroup('svg-clear', 10, 10);
-    for (var i = 0; i < 5; i++) {
-      for (var j = 0; j < 5; j++) {
-        var led = svgb.createCircle('svg-clear', 5 + (i*12), 5 + (j*12), 4);
-        led.setAttribute('fill', '#F44336');
-        //led.setAttribute('pointer-events', 'none');
-        // test props to see what color to make the LED
+    var data = b.pictureBlock.pictSmile;
+    var group = svgb.createGroup('svg-clear', 24, 15);
+    var box = svgb.createRect('svg-clear', -8, -8, 48, 48, 4);
+    box.setAttribute('fill', '#332222');
+    group.appendChild(box);
+    for (var iy = 0; iy < 5; iy++) {
+      for (var ix = 0; ix < 5; ix++) {
+        var led = svgb.createCircle('svg-clear', (ix*8), (iy*8), 3);
+        if (data[ix + (iy*5)] === 0) {
+          led.setAttribute('fill', '#641E16');
+        } else {
+          led.setAttribute('fill', '#FF0033');
+        }
         group.appendChild(led);
       }
     }
