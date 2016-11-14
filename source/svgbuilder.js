@@ -102,7 +102,7 @@ svgBuilder.createText = function createText(elementClass, x, y, text) {
 
 svgBuilder.createPath = function createText(elementClass, pathData) {
   var elt = document.createElementNS(svgBuilder.ns, 'path');
-  elt.setAttribute('class', 'elementClass');
+  elt.setAttribute('class', elementClass);
   elt.setAttribute('d', pathData);
   return elt;
 };
