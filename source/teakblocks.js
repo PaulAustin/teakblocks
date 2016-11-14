@@ -88,14 +88,19 @@ tbe.init = function init(svg, text) {
 
 tbe.elementToBlock = function(el) {
     var text = el.getAttribute('interact-id');
-    if (text === null)
+    if (text === null) {
+      console.log('svg elt had no id:', el);
       return null;
+    }
     var values = text.split(':');
     var obj = null;
     if (values[0] === 'd') {
       obj = this.diagramBlocks[text];
     } else if (values[0] === 'p') {
       obj = this.paletteBlocks[text];
+    }
+    if (obj === null)  {
+      console.log('block not found, id was <', text, '>');
     }
     return obj;
 };
@@ -552,6 +557,7 @@ tbe.configInteractions = function configInteractions() {
 
   interact('.drag-group')
     .on('down', function (event) {
+      tbe.pointerDownObject = event.target;
       var block = thisTbe.elementToBlock(event.target);
       if (block === null)
         return;
@@ -585,20 +591,24 @@ tbe.configInteractions = function configInteractions() {
     })
     .on('move', function(event) {
       var interaction = event.interaction;
-      var targetToDrag = event.currentTarget;
-      var block = thisTbe.elementToBlock(targetToDrag);
       // if the pointer was moved while being held down
       // and an interaction hasn't started yet
       if (interaction.pointerIsDown && !interaction.interacting()) {
-        // if coming from pallette, or if coming from shift drag
-        if (block.isPaletteBlock || event.shiftKey) {
-          block = thisTbe.replicate(block);
-          targetToDrag = block.svgGroup;
+        if (tbe.pointerDownObject === event.target) {
+          var targetToDrag = event.currentTarget;
+          var block = thisTbe.elementToBlock(targetToDrag);
+          // if coming from pallette, or if coming from shift drag
+          if (block.isPaletteBlock || event.shiftKey) {
+            block = thisTbe.replicate(block);
+            targetToDrag = block.svgGroup;
+          }
+          // start a drag interaction targeting the clone
+          interaction.start({ name: 'drag' },
+                            event.interactable,
+                            targetToDrag);
         }
-        // start a drag interaction targeting the clone
-        interaction.start({ name: 'drag' },
-                          event.interactable,
-                          targetToDrag);
+      } else {
+        tbe.pointerDownObject = null;
       }
     })
     .draggable({
