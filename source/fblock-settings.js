@@ -39,7 +39,7 @@ b.unknownBlock = {
   svg: function(root, block) {
     //var group = svgb.createGroup('', 10, 10);
     //root.appendChild(group);
-    var text = svgb.createText('function-text svg-clear', 10, 45, block.name);
+    var text = svgb.createText('function-text svg-clear', 10, 40, block.name);
     root.appendChild(text);
     return root;
   }

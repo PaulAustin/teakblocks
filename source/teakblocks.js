@@ -154,43 +154,49 @@ tbe.delete = function(block, endBlock){
     }
     block = block.next;
   }
+};
 
-// for each block 
-  // delete tbe.diageBlocks[block.inteactio.id]
-  // remove from SVG tree.
-}
-
-tbe.replicate = function(block){
+tbe.replicate = function(chain){
+    var newChain = null;
     var newBlock = null;
-    var prevBlock = null;
-    var newHead = null;
-    //var index = 0;
-    //var oldBLock = block;
-    while(block !== null){
-      newBlock = new this.FunctionBlock(block.rect.left, block.rect.top, block.name);
-      if (newHead === null) {
-        newHead = newBlock;
+    var b = null;
+
+    // Copy the chain of blocks and set the newBlock field.
+    b = chain;
+    while (b !== null) {
+      newBlock = new this.FunctionBlock(b.rect.left, b.rect.top, b.name);
+      b.newBlock = newBlock;
+      if (newChain === null) {
+        newChain = newBlock;
       }
-      newBlock.params = JSON.parse(JSON.stringify(block.params));
+
+      newBlock.params = JSON.parse(JSON.stringify(b.params));
       newBlock.isPaletteBlock = false;
       newBlock.interactId = tbe.nextBlockId('d:');
       this.diagramBlocks[newBlock.interactId] = newBlock;
-      //if(prevBlock !== null){
-      //newBlock.prev = prevBlock;
-    //  console.log("Items:");
-    //  console.log(prevBlock);
-    //  console.log(newBlock);
-    //  console.log(this);
-      //}
-      if(prevBlock !== null){
-        newBlock.prev = prevBlock;
-        prevBlock.next = newBlock;
-      }
-
-      prevBlock = newBlock;
-      block = block.next;
+      b = b.next;
     }
-    return newHead;
+
+    // Fix up pointers in the new chain.
+    b = chain;
+    while (b !== null) {
+      newBlock = b.newBlock;
+      newBlock.next = b.mapToNewBlock(b.next);
+      newBlock.prev = b.mapToNewBlock(b.prev);
+      newBlock.loopHead = b.mapToNewBlock(b.loopHead);
+      newBlock.loopTail = b.mapToNewBlock(b.loopTail);
+      b = b.next;
+    }
+
+    // Clear out the newBlock field.
+    b = chain;
+    while (b !== null) {
+      b.newBlock = null;
+      b = b.next;
+    }
+
+    // Return pointer to head of new chain.
+    return newChain;
 };
 
 // Constructor for FunctionBlock object.
@@ -287,6 +293,16 @@ Object.defineProperty(tbe.FunctionBlock.prototype, 'interactId', {
     this.svgRect.setAttribute('interact-id', id);
   },
 });
+
+// mapToNewBlock -- used by replicate to fix up pointers in a
+// copied chain.
+tbe.FunctionBlock.prototype.mapToNewBlock = function (object) {
+  if (object === undefined || object === null) {
+    return null;
+  } else {
+    return object.newBlock;
+  }
+};
 
 // Mark all block in the chain starting with 'this' block as being dragged.
 // Disconnect from the previous part of the chain.
@@ -574,6 +590,21 @@ tbe.clearDiagramBlocks = function clearDiagramBlocks() {
   tbe.diagramChanged();
 };
 
+// Starting at a block that was clicked on find the logical range that
+// should be selected, typically that is the selected block to the end.
+// But for loops it more subtle.
+tbe.findChunkStart = function findChunkStart(clickedBlock) {
+  // If the tail of the loop is selected
+  // Scan to end see if a loop tail is found.
+  if (clickedBlock.loopHead !== undefined && clickedBlock.loopHead !== null) {
+    console.log('switching to loop head');
+    // If the loop tail was clicked on then reach back and grab
+    // the loop from the beginning.
+    return clickedBlock.loopHead;
+  }
+  return clickedBlock;
+};
+
 // Attach these interactions properties based on the class property of the DOM elements
 tbe.configInteractions = function configInteractions() {
   var thisTbe = tbe;
@@ -635,13 +666,16 @@ tbe.configInteractions = function configInteractions() {
       // and an interaction hasn't started yet
       if (interaction.pointerIsDown && !interaction.interacting()) {
         if (tbe.pointerDownObject === event.target) {
-          var targetToDrag = event.currentTarget;
-          var block = thisTbe.elementToBlock(targetToDrag);
+          var block = thisTbe.elementToBlock(event.target);
+          block = tbe.findChunkStart(block);
+          var targetToDrag = block.svgGroup;
+
           // if coming from pallette, or if coming from shift drag
           if (block.isPaletteBlock || event.shiftKey) {
             block = thisTbe.replicate(block);
             targetToDrag = block.svgGroup;
           }
+
           // start a drag interaction targeting the clone
           interaction.start({ name: 'drag' },
                             event.interactable,
@@ -746,7 +780,6 @@ tbe.diagramChanged = function diagramChanged() {
   }
 };
 
-
 tbe.buildSvgTabs = function buildSvgTabs() {
 };
 
@@ -802,6 +835,9 @@ tbe.addPalette = function addPalette(palette) {
         var block2 = this.addPaletteBlock(block.rect.right, blockTop, 'tail', {});
         block.next = block2;
         block2.prev = block;
+        // A loop set has direct pointers between the two end points.
+        block.loopTail = block2;
+        block2.loopHead = block;
       }
       i += 1;
     }
