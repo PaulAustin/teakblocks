@@ -98,8 +98,55 @@ b.motorBlock = {
   }
 };
 
+b.twoMotorBlock = {
+  svg: function(root) {
+    // Motor 1
+    var motor = svgb.createCircle('svg-clear', 27, 30, 20);
+    motor.setAttribute('fill', '#777777');
+    motor.setAttribute('stroke', '#FFB74D'); //'#454545')
+    motor.setAttribute('stroke-width', '2');
+    motor.setAttribute('stroke-dasharray', '4, 5');
+    root.appendChild(motor);
+
+    var shaft = svgb.createCircle('svg-clear', 27, 30, 4);
+    shaft.setAttribute('fill', '#202020');
+    root.appendChild(shaft);
+
+    // Motor 2
+    motor = svgb.createCircle('svg-clear', 53, 30, 20);
+    motor.setAttribute('fill', '#777777');
+    motor.setAttribute('stroke', '#FFB74D'); //'#454545')
+    motor.setAttribute('stroke-width', '2');
+    motor.setAttribute('stroke-dasharray', '4, 5');
+    root.appendChild(motor);
+
+    shaft = svgb.createCircle('svg-clear', 53, 30, 4);
+    shaft.setAttribute('fill', '#202020');
+    root.appendChild(shaft);
+    return root;
+  }
+};
+
 b.digitalWriteBlock = {
-  // TODO
+  svg: function(root) {
+    var pathd = '';
+    pathd =  pb.move(40, 19);
+    pathd += pb.vline(-7);
+    pathd += pb.arc(19, 340, 1, 1, -12, 4);
+    pathd +=  pb.move(10.6, 16.5);
+    pathd +=  pb.arc(1.3, 300, 0, 0, 2.2, -0.8);
+    pathd +=  pb.line(-7.8, -10.5);
+    pathd +=  pb.close();
+
+    var path = svgb.createPath('svg-clear', pathd);
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke-width', '2.5');
+    path.setAttribute('stroke', '#FFB74D');
+    path.setAttribute('stroke-linejoin', 'round');
+    path.setAttribute('stroke-linecap', 'round');
+    root.appendChild(path);
+    return root;
+  }
 };
 
 b.analogWriteBlock = {
