@@ -32,6 +32,7 @@ var svglog = require('./svglog.js');
 var trashBlocks = require('./physics.js');
 var fblocks = require('./fblock-settings.js');
 
+
 var tbe = {};
 
 tbe.diagramBlocks = {};
@@ -131,6 +132,31 @@ tbe.addPaletteBlock = function(x, y, name, params) {
    block.interactId = tbe.nextBlockId('p:');
    this.paletteBlocks[block.interactId] = block;
 };
+
+tbe.delete = function(block, endBlock){
+  // if this.prev, unlink this.prev.next
+  // unlink prev
+
+  while(block !== null){
+    //settings.hide();
+    //console.log(settings);
+    delete tbe.diagramBlocks[block.interactId];
+    tbe.svg.removeChild(block.svgGroup);
+    block.svgGroup = null;
+    block.svgRect = null;
+    block.next = null;
+    block.prev = null;
+
+    if(block === endBlock){
+        break;
+    }
+    block = block.next;
+  }
+
+// for each block 
+  // delete tbe.diageBlocks[block.inteactio.id]
+  // remove from SVG tree.
+}
 
 tbe.replicate = function(block){
     var newBlock = null;
@@ -549,6 +575,18 @@ tbe.clearDiagramBlocks = function clearDiagramBlocks() {
 // Attach these interactions properties based on the class property of the DOM elements
 tbe.configInteractions = function configInteractions() {
   var thisTbe = tbe;
+
+  interact('.drag-delete')
+    . on('down', function () {
+      var block = thisTbe.elementToBlock(event.target);
+      thisTbe.clearStates();
+      thisTbe.delete(block);
+    });
+
+  interact('.drag-delete').dropzone({
+
+  });
+
 
   interact('.editor-background')
     . on('down', function () {

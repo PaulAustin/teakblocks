@@ -22,6 +22,8 @@ SOFTWARE.
 
 module.exports = function () {
   var ko = require('knockout');
+  var tbe = require('./teakblocks.js');
+
 
   // Set of propoerties that can be bound to.
   var blockSettings = {
@@ -48,7 +50,8 @@ module.exports = function () {
     ko.applyBindings(blockSettings, div);
 
     document.getElementById('block-clear').onclick = function() {
-      console.log('clear this block', this, blockSettings.activeBlock);
+      console.log('clear this block', blockSettings.activeBlock);
+      tbe.delete(blockSettings.activeBlock, blockSettings.activeBlock);
     };
   };
 
@@ -69,6 +72,7 @@ module.exports = function () {
     if (this.activeBlock === block) {
       // Clicked on the same block make it go away.
       this.hide();
+      console.log(this);
     } else if (this.activeBlock !== null) {
       // Clicked on another block, but one is showing, make it go away.
       // Then show the new one once the hide transition is done.
