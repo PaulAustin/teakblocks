@@ -123,6 +123,7 @@ tbe.addBlock = function(x, y, name, params) {
    block.isPaletteBlock = false;
    block.interactId = tbe.nextBlockId('d:');
    this.diagramBlocks[block.interactId] = block.interactId;
+   return block;
 };
 
 tbe.addPaletteBlock = function(x, y, name, params) {
@@ -131,6 +132,7 @@ tbe.addPaletteBlock = function(x, y, name, params) {
    block.isPaletteBlock = true;
    block.interactId = tbe.nextBlockId('p:');
    this.paletteBlocks[block.interactId] = block;
+   return block;
 };
 
 tbe.delete = function(block, endBlock){
@@ -744,15 +746,6 @@ tbe.diagramChanged = function diagramChanged() {
   }
 };
 
-/*
-tbe.configTabInteract = function configTabInteract() {
-  var thisTbe = tbe;
-  interact('.tab-block')
-    .on('down', function (event) {
-      var tab = thisTbe.tabs[event.target];
-    });
-};
-*/
 
 tbe.buildSvgTabs = function buildSvgTabs() {
 };
@@ -803,7 +796,13 @@ tbe.addPalette = function addPalette(palette) {
   var blockTop = window.innerHeight - 90;
   for (var key in blocks) {
     if (blocks.hasOwnProperty(key)) {
-      this.addPaletteBlock(80 + (90 * i), blockTop, key, {});
+      var block = this.addPaletteBlock(80 + (90 * i), blockTop, key, {});
+      if (key === 'loop') {
+        console.log('loop', block);
+        var block2 = this.addPaletteBlock(block.rect.right, blockTop, 'tail', {});
+        block.next = block2;
+        block2.prev = block;
+      }
       i += 1;
     }
   }
