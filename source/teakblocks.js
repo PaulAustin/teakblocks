@@ -188,9 +188,10 @@ tbe.replicate = function(chain){
       b = b.next;
     }
 
-    // Clear out the newBlock field.
+    // Clear out the newBlock field, and fix up svg as needed.
     b = chain;
     while (b !== null) {
+      b.newBlock.fixupCrossBlockSvg();
       b.newBlock = null;
       b = b.next;
     }
@@ -199,9 +200,21 @@ tbe.replicate = function(chain){
     return newChain;
 };
 
-// Constructor for FunctionBlock object.
+//------------------------------------------------------------------------------
+// FunctionBlock -- Constructor for FunctionBlock object.
+//
+//
+//      *-- svgGroup
+//        |
+//        *--- custom graphics for bloc (clear to pointer)
+//        |
+//        *--- svgRect framing rec common to all blocks
+//        |
+//        *--- [svgCrossBlock] option behind block region graphics
+//
 tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
-  // Make a editor modle object that holds onto JS object that wraps the SVG object
+  // Make a editor modle object that holds onto JS object and wraps
+  // the SVG object
   this.rect  = {
       left:   0,
       top:    0,
@@ -215,6 +228,7 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   // Place holder for sequencing links.
   this.prev = null;
   this.next = null;
+  this.loopHead = null;
 
   // Dragging state information.
   this.checkForHold = null; // timer to filter out small movements on tablets
@@ -233,8 +247,9 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
 
   var rect = svgb.createRect('function-block', 0, 0, 80, 80, 10);
   this.svgRect= rect;
-
   group.appendChild(rect);
+
+  // build custom svg elements for this block.
   funcs.svg(group, this);
 
   this.dmove(x, y, true);
@@ -242,6 +257,43 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
 
   // if the block is loop ( or blockopen) then make a block end to go with it.
   // This could be turned insode out so that fblock code does this.
+};
+
+tbe.FunctionBlock.prototype.fixupChainSvg = function() {
+  var b = this;
+  while (b !== null) {
+    b.fixupCrossBlockSvg();
+    b = b.next;
+  }
+};
+
+// fixupCrossBlockSvg
+// initialize cross block graphics
+// cross block graphics are regions or arrows that CONNECTION
+// a range of blocks
+tbe.FunctionBlock.prototype.fixupCrossBlockSvg = function() {
+  if (this.loopHead === null) {
+    return;     // A bit of a hack for now.
+  }
+
+  var left = 40 - (this.rect.left - this.loopHead.rect.left);
+  var width = this.rect.right - this.loopHead.rect.left - 80;
+  var radius = 10;
+
+  var scb = this.svgCrossBlock;
+  if (scb !== undefined) {
+    this.svgGroup.removeChild(scb);
+  }
+
+  var pb = svgb.pathBuilder;
+  var pathd = '';
+  pathd =  pb.move(left, 0);
+  pathd += pb.arc(radius, 90, 0, 1, radius, -radius);
+  pathd += pb.hline(width - (2 * radius));
+  pathd += pb.arc(radius, 90, 0, 1, radius, radius);
+  scb = svgb.createPath('loop-region svg-clear', pathd);
+  this.svgGroup.insertBefore(scb, this.svgRect);
+  this.svgCrossBlock = scb;
 };
 
 Object.defineProperty(tbe.FunctionBlock.prototype, 'first', {
@@ -367,6 +419,7 @@ tbe.FunctionBlock.prototype.dmove = function (dx, dy, snapToInt, endBlock) {
   }
 };
 
+//------------------------------------------------------------------------------
 // Calculate the intersecting area of two rectangles.
 tbe.intersectingArea = function intersectingArea(r1, r2) {
     var x = Math.min(r1.right, r2.right) - Math.max(r1.left, r2.left);
@@ -568,6 +621,7 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
 tbe.easeToTarget = function easeToTarget(timeStamp, block, endBlock) {
   var frame = block.animateState.frame;
   block.dmove(block.animateState.adx, block.animateState.ady, (frame === 1), endBlock);
+  block.fixupChainSvg();
   if (frame > 1) {
     block.animateState.frame = frame - 1;
     requestAnimationFrame(function(timestamp) { easeToTarget(timestamp, block, endBlock); });
@@ -832,12 +886,14 @@ tbe.addPalette = function addPalette(palette) {
       var block = this.addPaletteBlock(80 + (90 * i), blockTop, key, {});
       if (key === 'loop') {
         console.log('loop', block);
-        var block2 = this.addPaletteBlock(block.rect.right, blockTop, 'tail', {});
-        block.next = block2;
-        block2.prev = block;
+        var blockTail = this.addPaletteBlock(block.rect.right, blockTop, 'tail', {});
+        block.next = blockTail;
+        blockTail.prev = block;
         // A loop set has direct pointers between the two end points.
-        block.loopTail = block2;
-        block2.loopHead = block;
+        block.blockTail = blockTail;
+        blockTail.loopHead = block;
+        blockTail.fixupCrossBlockSvg();
+        i += 1; // Not quite right, base insertion point on chain length sum.
       }
       i += 1;
     }
