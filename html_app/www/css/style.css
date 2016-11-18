@@ -94,6 +94,18 @@ html, body { margin:0; padding:0; overflow:hidden }
   stroke-width: 4;
   stroke: #5A33FF;
 }
+.block-stencil {
+  fill: none;
+  stroke-width: 2.5;
+  stroke: #FFB74D;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.block-stencil-fill {
+  stroke-width: 2;
+  stroke: #FFB74D;
+  fill: #FFB74D;
+}
 .svg-clear {
   pointer-events: none;
 }
