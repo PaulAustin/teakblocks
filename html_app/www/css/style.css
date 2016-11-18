@@ -105,6 +105,13 @@ html, body { margin:0; padding:0; overflow:hidden }
   stroke-width: 2;
   stroke: #FFB74D;
   fill: #FFB74D;
+  stroke-linejoin: round;
+}
+.block-led-off {
+  fill: #641E16;
+}
+.block-led-on {
+  fill: #FF0033;
 }
 .svg-clear {
   pointer-events: none;
