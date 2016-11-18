@@ -55,12 +55,13 @@ b.pictureBlock = {
     group.appendChild(box);
     for (var iy = 0; iy < 5; iy++) {
       for (var ix = 0; ix < 5; ix++) {
-        var led = svgb.createCircle('svg-clear', (ix*8), (iy*8), 3);
+        var style = '';
         if (data[ix + (iy*5)] === 0) {
-          led.setAttribute('fill', '#641E16');
+          style = 'svg-clear block-led-off';
         } else {
-          led.setAttribute('fill', '#FF0033');
+          style = 'svg-clear block-led-on';
         }
+        var led = svgb.createCircle(style, (ix*8), (iy*8), 3);
         group.appendChild(led);
       }
     }
@@ -84,15 +85,15 @@ b.ledColorStripBlock = {
 b.startBlock = {
   svg: function(root) {
     var pathd = '';
-    pathd =  pb.move(30,20);
-    pathd += pb.hline(20);
-    pathd += pb.arc(10, 180, 0, 1, 0, 20);
-    pathd += pb.hline(-20);
-    pathd += pb.arc(10, 180, 0, 1, 0, -20);
+    pathd =  pb.move(31, 21);
+    pathd += pb.hline(18);
+    pathd += pb.arc(9, 180, 0, 1, 0, 18);
+    pathd += pb.hline(-18);
+    pathd += pb.arc(9, 180, 0, 1, 0, -18);
     var path = svgb.createPath('svg-clear block-stencil', pathd);
     root.appendChild(path);
-    root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 30, 30, 2));
-    root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 50, 30, 2));
+    root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 31, 30, 2));
+    root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 49, 30, 2));
   }
 };
 

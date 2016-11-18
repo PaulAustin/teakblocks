@@ -514,7 +514,7 @@ tbe.FunctionBlock.prototype.insertTargetShadows = function(target, action) {
     // so offset them a bit.
     // TODO show abovw OR based on wherr draggin block are coming from.
     x = target.rect.left - 15;
-    y -= 15;
+    y += 25;
   } else if (action === 'append') {
     x = target.rect.right;
   } else {
