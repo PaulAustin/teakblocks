@@ -81,9 +81,24 @@ b.ledColorStripBlock = {
   }
 };
 
+b.startBlock = {
+  svg: function(root) {
+    var pathd = '';
+    pathd =  pb.move(30,20);
+    pathd += pb.hline(20);
+    pathd += pb.arc(10, 180, 0, 1, 0, 20);
+    pathd += pb.hline(-20);
+    pathd += pb.arc(10, 180, 0, 1, 0, -20);
+    var path = svgb.createPath('svg-clear block-stencil', pathd);
+    root.appendChild(path);
+    root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 30, 30, 2));
+    root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 50, 30, 2));
+  }
+};
+
 // motor
 b.motorBlock = {
-  svg: function(root, block) {
+  svg: function(root) {
     var motor = svgb.createCircle('svg-clear', 40, 30, 20);
     motor.setAttribute('fill', '#777777');
     motor.setAttribute('stroke', '#FFB74D'); //'#454545')
@@ -173,14 +188,7 @@ b.soundBlock = {
     pathd += pb.hline(-9);
     pathd += pb.vline(-10);
     pathd += pb.close();
-
-    //var text = svgb.createText('svg-icon', 10, 45, "\uf026");
-    var path = svgb.createPath('svg-clear', pathd);
-    path.setAttribute('fill', '#FFB74D');
-    path.setAttribute('stroke-width', '2');
-    path.setAttribute('stroke', '#FFB74D');
-    path.setAttribute('stroke-linejoin', 'round');
-    path.setAttribute('stroke-linecap', 'round');
+    var path = svgb.createPath('svg-clear block-stencil-fill', pathd);
     root.appendChild(path);
 
     pathd = '';
@@ -190,17 +198,14 @@ b.soundBlock = {
     pathd += pb.arc(20, 90, 0, 1, 0, 20);
     pathd += pb.move(5, -25);
     pathd += pb.arc(28, 90, 0, 1, 0, 30);
-    var soundPath = svgb.createPath('svg-clear', pathd);
-    soundPath.setAttribute('fill', 'none');
-    soundPath.setAttribute('stroke', '#FFB74D');
-    soundPath.setAttribute('stroke-width', '2');
+    var soundPath = svgb.createPath('svg-clear block-stencil', pathd);
     soundPath.setAttribute('stroke-linecap', 'round');
     root.appendChild(soundPath);
     return root;
   }
 };
 
-// calculator
+// waitBlock - wait until something happens, such as time passing.
 b.waitBlock = {
   svg: function(root) {
     var pathd = '';
@@ -211,13 +216,7 @@ b.waitBlock = {
     pathd +=  pb.arc(1.3, 300, 0, 0, 2.2, -0.8);
     pathd +=  pb.line(-7.8, -10.5);
     pathd +=  pb.close();
-
-    var path = svgb.createPath('svg-clear', pathd);
-    path.setAttribute('fill', 'none');
-    path.setAttribute('stroke-width', '2.5');
-    path.setAttribute('stroke', '#FFB74D');
-    path.setAttribute('stroke-linejoin', 'round');
-    path.setAttribute('stroke-linecap', 'round');
+    var path = svgb.createPath('svg-clear block-stencil', pathd);
     root.appendChild(path);
     return root;
   }
