@@ -107,16 +107,28 @@ html, body { margin:0; padding:0; overflow:hidden }
   fill: #FFB74D;
   stroke-linejoin: round;
 }
-.block-led-off {
+.block-picture-board {
+  fill: #332222;
+}
+.block-picture-led-off {
   fill: #641E16;
 }
-.block-led-on {
+.block-picture-led-on {
   fill: #FF0033;
 }
 .block-micro-servo-body {
-  stroke: #303F9F; 
+  stroke: #303F9F;
   fill: #0033FF;
   stroke-width: 2;
+}
+.block-motor-body {
+  fill: #777777;
+  stroke: #FFB74D;
+  stroke-width: 2;
+  stroke-dasharray: 4, 5;
+}
+.block-motor-shaft {
+  fill: #202020;
 }
 .svg-clear {
   pointer-events: none;
