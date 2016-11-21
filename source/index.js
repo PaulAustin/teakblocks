@@ -74,6 +74,7 @@ function deviceReady() {
       'picture':{},
       'motor':{},
       'twoMotor':{},
+      'microServo':{},
       'sound':{},
       'wait':{},
       'loop':{}

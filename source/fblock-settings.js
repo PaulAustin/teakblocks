@@ -143,6 +143,27 @@ b.twoMotorBlock = {
   }
 };
 
+// Micro servo block
+b.microServoBlock = {
+  svg: function(root) {
+    // servo body
+    var box = svgb.createRect('svg-clear block-micro-servo-body', 18, 20, 44, 24, 2.5);
+    root.appendChild(box);
+
+    // simple servo arm
+    var pathd = '';
+    pathd =  pb.move(45, 32);
+    pathd +=  pb.line(2.5, -19);
+    pathd +=  pb.hline(1);
+    pathd +=  pb.line(2.5, 19);
+    pathd += pb.arc(3.0, 180, 1, 1, -6, 0);
+    pathd +=  pb.close();
+    var path = svgb.createPath('svg-clear block-stencil-fill', pathd);
+    root.appendChild(path);
+    return root;
+  }
+};
+
 b.digitalWriteBlock = {
   svg: function(root) {
     var pathd = '';
