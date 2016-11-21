@@ -220,7 +220,7 @@ b.calculatorBlock = {
   }
 };
 
-// loop
+// Loop
 b.loop = {
   svg: function(root) {
     return root;
