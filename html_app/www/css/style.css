@@ -113,6 +113,11 @@ html, body { margin:0; padding:0; overflow:hidden }
 .block-led-on {
   fill: #FF0033;
 }
+.block-micro-servo-body {
+  stroke: #303F9F; 
+  fill: #0033FF;
+  stroke-width: 2;
+}
 .svg-clear {
   pointer-events: none;
 }
