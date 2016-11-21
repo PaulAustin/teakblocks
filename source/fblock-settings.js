@@ -50,16 +50,15 @@ b.pictureBlock = {
   svg: function(root) {
     var data = b.pictureBlock.pictSmile;
     var group = svgb.createGroup('svg-clear', 24, 15);
-    var box = svgb.createRect('svg-clear', -8, -8, 48, 48, 4);
-    box.setAttribute('fill', '#332222');
+    var box = svgb.createRect('svg-clear block-picture-board', -8, -8, 48, 48, 4);
     group.appendChild(box);
     for (var iy = 0; iy < 5; iy++) {
       for (var ix = 0; ix < 5; ix++) {
         var style = '';
         if (data[ix + (iy*5)] === 0) {
-          style = 'svg-clear block-led-off';
+          style = 'svg-clear block-picture-led-off';
         } else {
-          style = 'svg-clear block-led-on';
+          style = 'svg-clear block-picture-led-on';
         }
         var led = svgb.createCircle(style, (ix*8), (iy*8), 3);
         group.appendChild(led);
@@ -82,6 +81,8 @@ b.ledColorStripBlock = {
   }
 };
 
+// Start block is a work in progress, might not be needed. Might be
+// for naming seperate targets.
 b.startBlock = {
   svg: function(root) {
     var pathd = '';
@@ -97,47 +98,30 @@ b.startBlock = {
   }
 };
 
-// motor
+// Single motor
 b.motorBlock = {
   svg: function(root) {
-    var motor = svgb.createCircle('svg-clear', 40, 30, 20);
-    motor.setAttribute('fill', '#777777');
-    motor.setAttribute('stroke', '#FFB74D'); //'#454545')
-    motor.setAttribute('stroke-width', '2');
-    motor.setAttribute('stroke-dasharray', '4, 5');
+    // The graphic is a composite concept of a motor/wheel. In many cases
+    // students might only see the wheel.
+    var motor = svgb.createCircle('svg-clear block-motor-body', 40, 30, 20);
     root.appendChild(motor);
-
-    var shaft = svgb.createCircle('svg-clear', 40, 30, 4);
-    shaft.setAttribute('fill', '#202020');
+    var shaft = svgb.createCircle('svg-clear block-motor-shaft', 40, 30, 4);
     root.appendChild(shaft);
     return root;
   }
 };
 
+// Two motors. Sometimes its just better to control two at once.
 b.twoMotorBlock = {
   svg: function(root) {
     // Motor 1
-    var motor = svgb.createCircle('svg-clear', 27, 30, 20);
-    motor.setAttribute('fill', '#777777');
-    motor.setAttribute('stroke', '#FFB74D'); //'#454545')
-    motor.setAttribute('stroke-width', '2');
-    motor.setAttribute('stroke-dasharray', '4, 5');
+    var motor = svgb.createCircle('svg-clear block-motor-body', 27, 30, 20);
     root.appendChild(motor);
-
-    var shaft = svgb.createCircle('svg-clear', 27, 30, 4);
-    shaft.setAttribute('fill', '#202020');
+    var shaft = svgb.createCircle('svg-clear block-motor-shaft', 27, 30, 4);
     root.appendChild(shaft);
-
-    // Motor 2
-    motor = svgb.createCircle('svg-clear', 53, 30, 20);
-    motor.setAttribute('fill', '#777777');
-    motor.setAttribute('stroke', '#FFB74D'); //'#454545')
-    motor.setAttribute('stroke-width', '2');
-    motor.setAttribute('stroke-dasharray', '4, 5');
+    motor = svgb.createCircle('svg-clear block-motor-body', 53, 30, 20);
     root.appendChild(motor);
-
-    shaft = svgb.createCircle('svg-clear', 53, 30, 4);
-    shaft.setAttribute('fill', '#202020');
+    shaft = svgb.createCircle('svg-clear block-motor-shaft', 53, 30, 4);
     root.appendChild(shaft);
     return root;
   }
@@ -166,22 +150,7 @@ b.microServoBlock = {
 
 b.digitalWriteBlock = {
   svg: function(root) {
-    var pathd = '';
-    pathd =  pb.move(40, 19);
-    pathd += pb.vline(-7);
-    pathd += pb.arc(19, 340, 1, 1, -12, 4);
-    pathd +=  pb.move(10.6, 16.5);
-    pathd +=  pb.arc(1.3, 300, 0, 0, 2.2, -0.8);
-    pathd +=  pb.line(-7.8, -10.5);
-    pathd +=  pb.close();
-
-    var path = svgb.createPath('svg-clear', pathd);
-    path.setAttribute('fill', 'none');
-    path.setAttribute('stroke-width', '2.5');
-    path.setAttribute('stroke', '#FFB74D');
-    path.setAttribute('stroke-linejoin', 'round');
-    path.setAttribute('stroke-linecap', 'round');
-    root.appendChild(path);
+    // TODO
     return root;
   }
 };
@@ -198,7 +167,7 @@ b.I2CWriteBlock = {
   // TODO
 };
 
-// sound
+// Sound block to make a joyful noise.
 b.soundBlock = {
   svg: function(root) {
     var pathd = '';
@@ -227,7 +196,7 @@ b.soundBlock = {
   }
 };
 
-// waitBlock - wait until something happens, such as time passing.
+// Wait block - wait until something happens, such as time passing.
 b.waitBlock = {
   svg: function(root) {
     var pathd = '';
@@ -244,54 +213,56 @@ b.waitBlock = {
   }
 };
 
-// calculator
+// Calculator
 b.calculatorBlock = {
   svg: function(root) {
     return root;
   }
 };
 
-// loop - do math
+// loop
 b.loop = {
   svg: function(root) {
     return root;
   }
 };
 
-
+// Binding sources are things that provide values that can be connected to
+// actors. Much still TODO :)
 b.musicNoteValue = {
-
+  // TODO
 };
 
 b.constantValue = {
-
+  // TODO
 };
 
 b.rangeValue = {
-
+  // TODO
 };
 
 b.acceleromoterValue = {
-
+  // TODO
 };
 
 b.timeValue = {
-
+   // TODO
 };
 
 b.compassValue = {
-
+  // TODO
 };
 
 b.temperatureValue = {
-
+  // TODO
 };
 
 b.funcionValue = {
-
+  // TODO
 };
 
 b.messageValue = {
+  // TODO
 // May be globals on the device, or across a mesh.
 };
 
