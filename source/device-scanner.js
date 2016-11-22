@@ -32,6 +32,9 @@ module.exports = function () {
   };
 
   deviceScanner.devices = ko.observableArray([]);
+  deviceScanner.onDeviceClick = function() {
+    console.log('got a  click', this);
+  };
 
   deviceScanner.insert = function(domRoot) {
     var div = document.createElement("div");
@@ -46,7 +49,7 @@ module.exports = function () {
         <div class="scroll-div">
           <table id="device-table" class='tf-table' width='100%' height='200px'>
           <tbody data-bind="foreach: devices">
-              <tr>
+              <tr data-bind="click: $parent.onDeviceClick;">
                 <td data-bind="text: name"></td>
               </tr>
           </tbody>
@@ -91,6 +94,11 @@ module.exports = function () {
     }
   };
 
+  // UUIDs for nordic nrf51 used in micro:bit
+  deviceScanner.UartServiceUUID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
+  deviceScanner.writeCharacteristicUUID = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
+  deviceScanner.readCharacteristicUUID = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
+
   deviceScanner.addDevice = function addDevice (device) {
     var self = this;
     var table = document.getElementById('device-table');
@@ -125,6 +133,7 @@ module.exports = function () {
       deviceScanner.devices.push({ name: 'zorgav' });
       deviceScanner.devices.push({ name: 'vargon' });
       deviceScanner.devices.push({ name: 'rimbor' });
+      // Add extra rows so the cell don stretch to fill the table.
       deviceScanner.devices.push({ name: '' });
       deviceScanner.devices.push({ name: '' });
       deviceScanner.devices.push({ name: '' });
