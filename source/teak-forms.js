@@ -50,6 +50,9 @@ module.exports = function () {
     if (tform.showHide !== undefined) {
       tform.showHide(opened === 'true');
     }
+    if (typeof component.onShowHide === 'function') {
+      component.onShowHide(opened === 'true');
+    }
     tform.setAttribute('opened', opened);
   };
 

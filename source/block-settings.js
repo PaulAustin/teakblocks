@@ -72,7 +72,6 @@ module.exports = function () {
     if (this.activeBlock === block) {
       // Clicked on the same block make it go away.
       this.hide();
-      console.log(this);
     } else if (this.activeBlock !== null) {
       // Clicked on another block, but one is showing, make it go away.
       // Then show the new one once the hide transition is done.

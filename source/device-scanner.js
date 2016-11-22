@@ -31,6 +31,8 @@ module.exports = function () {
     connectionType: "BLE", // Migth add USB, BT or WiFi
   };
 
+  deviceScanner.devices = ko.observableArray([]);
+
   deviceScanner.insert = function(domRoot) {
     var div = document.createElement("div");
     div.innerHTML = `
@@ -43,15 +45,11 @@ module.exports = function () {
         <br>
         <div class="scroll-div">
           <table id="device-table" class='tf-table' width='100%' height='200px'>
-          <tr><td> </td><tr>
-          <tr><td> </td><tr>
-          <tr><td> </td><tr>
-          <tr><td> </td><tr>
-          <tr><td> </td><tr>
-          <!--tr><td>Hello</td><tr>
-          <tr><td>Hello</td><tr>
-          <tr><td>Hello</td><tr>
-          <tr><td>Hello</td><tr-->
+          <tbody data-bind="foreach: devices">
+              <tr>
+                <td data-bind="text: name"></td>
+              </tr>
+          </tbody>
           </table>
         </div>
       </form>
@@ -62,8 +60,12 @@ module.exports = function () {
     ko.applyBindings(deviceScanner, div);
   };
 
-  deviceScanner.showHide = function(state) {
-    console.log('scanner sate', state);
+  deviceScanner.onShowHide = function(state) {
+    if (state === true) {
+      this.startScan();
+    } else {
+      this.stopScan();
+    }
   };
 
   var activeDevices = {};
@@ -76,13 +78,7 @@ module.exports = function () {
 
   When a device is selected then it needs to be paired with. That still has
   to beimpliemnted.
-
 */
-
-  var blelog = document.getElementById('teakCode');
-  function log(text) {
-    blelog.value = blelog.value + '\n' + text;
-  }
 
   deviceScanner.deviceOnClick = function deviceOnClick (cell) {
     var name = cell.innerHTML;
@@ -97,7 +93,7 @@ module.exports = function () {
 
   deviceScanner.addDevice = function addDevice (device) {
     var self = this;
-    var table = this.shadowRoot.getElementById('device-table');
+    var table = document.getElementById('device-table');
     var newRow = table.insertRow(0);
     var cell = newRow.insertCell(0);
 
@@ -118,23 +114,24 @@ module.exports = function () {
     if (activeDevices[device.name] === undefined) {
       this.addDevice(device);
     }
-    //  setTimeout(checkList)
-    // device.timeStamp = Date.now();
-    // log('FD:' + device.name + '[' + device.rssi +']');
   };
 
   deviceScanner.startScan = function startScan() {
+
     var ble = window.evothings.ble;
     if (ble === undefined) {
-      this.addDevice({name:'Blinky'});
-      this.addDevice({name:'BlueBot'});
-      this.addDevice({name:'PurplePoka'});
-      // Some place holders for test
+      deviceScanner.devices.removeAll();
+      deviceScanner.devices.push({ name: 'rowbin' });
+      deviceScanner.devices.push({ name: 'zorgav' });
+      deviceScanner.devices.push({ name: 'vargon' });
+      deviceScanner.devices.push({ name: 'rimbor' });
+      deviceScanner.devices.push({ name: '' });
+      deviceScanner.devices.push({ name: '' });
+      deviceScanner.devices.push({ name: '' });
       return;
     }
 
     var self = this;
-    log('starting scan');
     ble.stopScan();
     ble.startScan(
       function(device) {
@@ -143,7 +140,7 @@ module.exports = function () {
         }
       },
       function(errorCode) {
-        log('error:' + errorCode);
+        console.log('error:' + errorCode);
       });
   };
 
@@ -151,7 +148,7 @@ module.exports = function () {
     var ble = window.evothings.ble;
     if (ble === undefined)
       return;
-    log('stopping scan');
+    console.log('stopping scan');
     ble.stopScan();
   };
 
