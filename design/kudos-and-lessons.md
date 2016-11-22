@@ -346,6 +346,28 @@ ManualStart Mode means the code watches for a move with mouse down, and if condi
 it starts the drag. The upside is that now dragging from the palette or making a copy
 can make the copy and they start dragging the copy, not the original. Code is much better
 This should help on hold and tap gestures for tablets as well.
-
+ ( list gotcha)
 ## Nov 14
-### Trying to build cordova 
+### Trying to build cordova for iOS
+
+### Loops
+The basic loop chunk is now working. This brings teak block core terms to three
+1. Block individual block, might have a sub diagram, but cannot be pulled apart.
+2. Chain an entire chain of blocks. grabbing the left most one gras all of the.
+3. Chunk a sub section of a chain. If a user grabs the middle the chin will break into two chunks
+4. Loop-Chunk a tighter sub section. If a user grabs any block in a loop chunk they willget the entire loop.
+
+If-Chunks, and case or map-chunks will come in time. I expect some fine tuning on the
+editing gestures.
+
+## Nov 21-22
+### BLE work
+Using knockout.js [foreach construct](http://knockoutjs.com/documentation/foreach-binding.html) to manage the list of BLE devices.
+
+UART over BLE is a bit of an odd thing. Each vendor has their own UUID.
+for their version of the service. One list I found was in [Noble package](https://github.com/tigoe/BluetoothLE-Examples/blob/master/noble/readSerial/ble-uart.js) for node.
+At this point teak-blocks just needs the one for the nordic chips, but its good to see the others.
+
+I found several examples of accessing BLE-UART from JS related to Adafruit's
+(Bluefruit)[https://www.adafruit.com/product/2479] board which is based on the
+same nordic chip used by the micro:bit.
