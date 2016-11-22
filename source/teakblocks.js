@@ -140,6 +140,9 @@ tbe.delete = function(block, endBlock){
   // unlink prev
 
   while(block !== null){
+    //settings.hide();
+    //console.log(settings);
+    this.clearStates();
     delete tbe.diagramBlocks[block.interactId];
     tbe.svg.removeChild(block.svgGroup);
     block.svgGroup = null;
