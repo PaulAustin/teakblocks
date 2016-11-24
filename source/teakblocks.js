@@ -244,7 +244,6 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   // Create the actual SVG object. Its a group of two pieces
   // a rounded rect and a text box. The group is moved by changing
   // it's transform (see dmove)
-
   var rect = svgb.createRect('function-block', 0, 0, 80, 80, 10);
   this.svgRect= rect;
   group.appendChild(rect);
@@ -650,12 +649,15 @@ tbe.clearDiagramBlocks = function clearDiagramBlocks() {
 tbe.findChunkStart = function findChunkStart(clickedBlock) {
   // If the tail of the loop is selected
   // Scan to end see if a loop tail is found.
-  if (clickedBlock.loopHead !== undefined && clickedBlock.loopHead !== null) {
-    // If the loop tail was clicked on then reach back and grab
-    // the loop from the beginning.
-    return clickedBlock.loopHead;
+  var chunkStart = clickedBlock;
+  var b = clickedBlock;
+  while (b !== null) {
+    if (b.loopTail !== null) {
+      chunkStart = b;
+    }
+    b = b.prev;
   }
-  return clickedBlock;
+  return chunkStart;
 };
 
 // Attach these interactions properties based on the class property of the DOM elements
@@ -663,7 +665,7 @@ tbe.configInteractions = function configInteractions() {
   var thisTbe = tbe;
 
   interact('.drag-delete')
-    . on('down', function () {
+    .on('down', function () {
       var block = thisTbe.elementToBlock(event.target);
       thisTbe.clearStates();
       thisTbe.delete(block);
@@ -673,7 +675,7 @@ tbe.configInteractions = function configInteractions() {
   });
 
   interact('.editor-background')
-    . on('down', function () {
+    .on('down', function () {
       thisTbe.clearStates();
     });
 
@@ -865,7 +867,7 @@ tbe.addPalette = function addPalette(palette) {
         block.next = blockTail;
         blockTail.prev = block;
         // A loop set has direct pointers between the two end points.
-        block.blockTail = blockTail;
+        block.loopTail = blockTail;
         blockTail.loopHead = block;
         blockTail.fixupCrossBlockSvg();
         i += 1; // Not quite right, base insertion point on chain length sum.

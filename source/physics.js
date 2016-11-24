@@ -2,16 +2,19 @@
 module.exports = function (){
 
 function trashBlocks(editor) {
+
+    // Determine center of block chain, then have all blocks scatter
+    // from that point. (righ now it does it from the center of the screen)
     if (true || editor.diagramBlocks.length > 0 ) {
 
       editor.forEachDiagramBlock(function(block) {
-        var frameCount = 80;
+        var frameCount = 100;
         var xPos = block.rect.left - (window.innerWidth/2);
         var yPos = block.rect.top - (window.innerHeight/2);
         //need to find the hyp then divide the xPos and yPos by it
         var hyp = Math.sqrt((xPos * xPos) + (yPos * yPos));
-        var getX = (xPos/hyp) * 10;
-        var getY = (yPos/hyp) * 10;
+        var getX = (xPos/hyp) * 8;
+        var getY = (yPos/hyp) * 8;
         block.animateState = {
           adx: getX,
           ady: getY,
