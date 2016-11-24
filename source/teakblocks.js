@@ -230,6 +230,7 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   this.next = null;
   this.loopHead = null;
   this.loopTail = null;
+  this.nesting = 0;
 
   // Dragging state information.
   this.dragging = false;
@@ -259,7 +260,27 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
 };
 
 tbe.FunctionBlock.prototype.fixupChainSvg = function() {
-  var b = this;
+
+  var nesting = 0;
+  var maxNesting = 0;
+
+  var b = this.first;
+  while (b !== null) {
+    if (b.loopTail !== null) {
+      nesting += 1;
+      if (nesting > maxNesting) {
+        maxNesting = nesting;
+      }
+    } else if (b.loopHead !== null) {
+      nesting -= 1;
+      b.nesting = nesting;
+    }
+    b = b.next;
+  }
+
+  // Fixing blocks down stream will catch all tails.
+  // loop graphics are don by the tail, so this should work fine.
+  b = this;
   while (b !== null) {
     b.fixupCrossBlockSvg();
     b = b.next;
@@ -287,9 +308,9 @@ tbe.FunctionBlock.prototype.fixupCrossBlockSvg = function() {
   var pb = svgb.pathBuilder;
   var pathd = '';
   pathd =  pb.move(left, 0);
-  pathd += pb.arc(radius, 90, 0, 1, radius, -radius);
+  pathd += pb.arc(radius, 90, 0, 1, radius, (-radius * (this.nesting + 1)));
   pathd += pb.hline(width - (2 * radius));
-  pathd += pb.arc(radius, 90, 0, 1, radius, radius);
+  pathd += pb.arc(radius, 90, 0, 1, radius, (radius  * (this.nesting + 1)));
   scb = svgb.createPath('loop-region svg-clear', pathd);
   this.svgGroup.insertBefore(scb, this.svgRect);
   this.svgCrossBlock = scb;
