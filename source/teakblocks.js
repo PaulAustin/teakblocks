@@ -607,13 +607,15 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
       this.snapTarget.prev = thisLast;
 
       // Set up animation to slide down old blocks.
-      this.snapTarget.animateState = {
+      var animateInsert = {
         adx: width / frameCount,
         ady: 0,
         frame: frameCount,
+        chunkStart: this.snapTarget,
+        chunkEnd: this.snapTarget.last
       };
-      tbe.easeToTarget(0, this.snapTarget, this.snapTarget.last);
-    } // TODO: replace???
+      tbe.animateMove(animateInsert);
+    }
 
     // Set up an animation to move the dragging blocks to new location.
     var dx = targx - this.rect.left;
@@ -622,12 +624,14 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
       // TODO:base frame count on distance to final location.
       // The model snaps directly to the target location
       // but the view eases to it.
-    this.animateState = {
+    var animateSlideDown = {
       adx: dx / frameCount,
       ady: dy / frameCount,
       frame: frameCount,
+      chunkStart: this,
+      chunkEnd: thisLast
     };
-    tbe.easeToTarget(0, this, thisLast);
+    tbe.animateMove(animateSlideDown);
   } else {
     // Nothing to snap to so leave it where is ended up.
     // still need sound though
@@ -638,17 +642,19 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
   this.snapAction = null;
 };
 
-tbe.easeToTarget = function easeToTarget(timeStamp, block, endBlock) {
-  var frame = block.animateState.frame;
-  block.dmove(block.animateState.adx, block.animateState.ady, (frame === 1), endBlock);
-  block.fixupChainSvg();
+// animateMove -- move a chunk of block to its new location. The prev and next
+// links should already be set up for the final location.
+tbe.animateMove = function animateMove(state) {
+  var frame = state.frame;
+  state.chunkStart.dmove(state.adx, state.ady, (frame === 1), state.chunkEnd);
+  state.chunkStart.fixupChainSvg();
   if (frame > 1) {
-    block.animateState.frame = frame - 1;
-    requestAnimationFrame(function(timestamp) { easeToTarget(timestamp, block, endBlock); });
+    state.frame = frame - 1;
+    requestAnimationFrame(function() { animateMove(state); });
   } else {
     // Once animation is over shadows are covered, remove them.
     tbe.audio.playSound(tbe.audio.shortClick);
-    block.removeTargetShadows();
+    state.chunkStart.removeTargetShadows();
   }
 };
 
