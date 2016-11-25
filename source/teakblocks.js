@@ -134,46 +134,56 @@ tbe.addPaletteBlock = function(x, y, name, params) {
    this.paletteBlocks[block.interactId] = block;
    return block;
 };
-tbe.deleteEase = function(timestamp, animatestate, moveStart){
-  console.log("inside", animatestate, moveStart);
 
-}
+// delete -- delete a chunk of blocs (typically one)
+tbe.deleteChunk = function(block, endBlock){
 
-tbe.delete = function(block, endBlock){
-  // if this.prev, unlink this.prev.next
-  // unlink prev
-  var staticBlock = block;
-  var staticEndBlock = endBlock;
+  this.clearStates();
 
+  //Remember any tail so it can be slid over.
+  var tail = endBlock.next;
+
+  // Disconnect the chunk from its surroundings.
+  if (block.prev !== null) {
+    block.prev.next = endBlock.next;
+  }
+  if (endBlock.next !== null) {
+    endBlock.next.prev = block.prev;
+  }
+  block.prev = null;
+  endBlock.next = null;
+
+  // Now that the chunk has been disconnected, measure it.
+  var deleteWidth = block.chainWidth;
+
+  // Delete the chunk.
   while(block !== null){
-    //settings.hide();
-    console.log("first", staticEndBlock);
-    var blockNext = block.next;
-    var blockPrev = block.prev;
-    //console.log(settings);
-    this.clearStates();
+
+    // remove map entry for the block.
     delete tbe.diagramBlocks[block.interactId];
+
     tbe.svg.removeChild(block.svgGroup);
     block.svgGroup = null;
     block.svgRect = null;
     block.next = null;
     block.prev = null;
-    
-    var frameCount = 80;
 
-    if(block === endBlock){
-        break;
-    }
     block = block.next;
   }
-  var animationState = {
-      adx: 80 / frameCount,
-      ady: 0 / frameCount,
-      frame: frameCount,
-      chunkStart: this,
-      chunkEnd: this.last,
-    };
-  tbe.deleteEase(0, animationState, staticEndBlock.next);
+
+  // Slide any remaining blocks over to the left
+  // the links have already been fixed.
+  if (tail !== null) {
+    var frameCount = 10;
+    var animationState = {
+        adx: -deleteWidth / frameCount,
+        ady: 0,
+        frame: frameCount,
+        chunkStart: tail,
+        chunkEnd: tail.last,
+      };
+    tbe.animateMove(animationState);
+  }
 };
 
 tbe.replicate = function(chain){
@@ -714,7 +724,7 @@ tbe.configInteractions = function configInteractions() {
     .on('down', function () {
       var block = thisTbe.elementToBlock(event.target);
       thisTbe.clearStates();
-      thisTbe.delete(block);
+      thisTbe.deleteChunk(block, block.last);
     });
 
   interact('.drag-delete').dropzone({
