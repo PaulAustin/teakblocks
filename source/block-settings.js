@@ -51,7 +51,7 @@ module.exports = function () {
 
     document.getElementById('block-clear').onclick = function() {
       console.log('clear this block', blockSettings.activeBlock);
-      tbe.delete(blockSettings.activeBlock, blockSettings.activeBlock);
+      tbe.deleteChunk(blockSettings.activeBlock, blockSettings.activeBlock);
     };
   };
 
