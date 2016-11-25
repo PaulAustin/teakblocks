@@ -134,13 +134,22 @@ tbe.addPaletteBlock = function(x, y, name, params) {
    this.paletteBlocks[block.interactId] = block;
    return block;
 };
+tbe.deleteEase = function(timestamp, animatestate, moveStart){
+  console.log("inside", animatestate, moveStart);
+
+}
 
 tbe.delete = function(block, endBlock){
   // if this.prev, unlink this.prev.next
   // unlink prev
+  var staticBlock = block;
+  var staticEndBlock = endBlock;
 
   while(block !== null){
     //settings.hide();
+    console.log("first", staticEndBlock);
+    var blockNext = block.next;
+    var blockPrev = block.prev;
     //console.log(settings);
     this.clearStates();
     delete tbe.diagramBlocks[block.interactId];
@@ -149,12 +158,22 @@ tbe.delete = function(block, endBlock){
     block.svgRect = null;
     block.next = null;
     block.prev = null;
+    
+    var frameCount = 80;
 
     if(block === endBlock){
         break;
     }
     block = block.next;
   }
+  var animationState = {
+      adx: 80 / frameCount,
+      ady: 0 / frameCount,
+      frame: frameCount,
+      chunkStart: this,
+      chunkEnd: this.last,
+    };
+  tbe.deleteEase(0, animationState, staticEndBlock.next);
 };
 
 tbe.replicate = function(chain){

@@ -29,8 +29,8 @@ function trashBlocks(editor) {
   }
 }
 
-  function dump(block, editor) {
-    if(block[0] === undefined) {
+function dump(block, editor) {
+  if(block[0] === undefined) {
         var frame = block.animateState.frame;
         block.dmove(block.animateState.adx, block.animateState.ady, (frame === 1), block);
         block.animateState.count += 1;
