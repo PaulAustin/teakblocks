@@ -66,7 +66,10 @@ b.pictureBlock = {
     }
     root.appendChild(group);
   },
-  html:``,
+  configurator: function(domRoot) {
+    console.log('custom config page', domRoot);
+    return;
+  }
 
 };
 // - SVG element construcio.
