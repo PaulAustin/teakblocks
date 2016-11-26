@@ -32,42 +32,49 @@ module.exports = function () {
   };
 
   blockSettings.insert = function(domRoot) {
-    var div = document.createElement("div");
-    div.innerHTML =
+    // Create a div shell that will be positioned and scaled as needed.
+    var commonDiv = document.createElement("div");
+    commonDiv.innerHTML =
     `<div id="block-settings" class="teakform blockform">
-        <label><input type="checkbox" id="show-code" data-bind="checked:visible">
-          <span class="label-text">Power</span>
-        </label>
-        <br>
         <button id="block-clear">
-          <i class="fa fa-trash-o" aria-hidden="true" style="font-size:16px"></i>
+        <i class="fa fa-trash-o" aria-hidden="true" style="font-size:16px"></i>
         </button>
-        <br>
+        <div id="block-settings-custom">
+        </div>
     </div>`;
-    //style="position:fixed;right:8em;bottom:1em;"
-    blockSettings.domId = 'block-settings';
-    domRoot.appendChild(div);
-    ko.applyBindings(blockSettings, div);
+    domRoot.appendChild(commonDiv);
+    blockSettings.commonDiv = commonDiv;
 
+    // Add delete button handler.
     document.getElementById('block-clear').onclick = function() {
-      console.log('clear this block', blockSettings.activeBlock);
-      tbe.deleteChunk(blockSettings.activeBlock, blockSettings.activeBlock);
+      if (blockSettings.activeBlock !== null) {
+        tbe.deleteChunk(blockSettings.activeBlock, blockSettings.activeBlock);
+      }
     };
+
+    // Get a reference to the part that is customized for each block.
+    blockSettings.customDiv = document.getElementById('block-settings-custom');
   };
 
   blockSettings.hide = function(exceptBlock) {
+    // If the form is actally associated with a block, hide it.
     if (this.activeBlock !== null && this.activeBlock !== exceptBlock) {
       this.activeBlock = null;
-      var dom = document.getElementById(this.domId);
-      dom.style.transition = 'all 0.2s ease';
-      dom.style.position = 'absolute';
-      dom.style.transform = 'scale(0.33, 0.0)';
-      dom.style.pointerEvents = 'all';
+
+      // Start animation to hide the form.
+      var div = blockSettings.commonDiv;
+      div.style.transition = 'all 0.2s ease';
+      div.style.position = 'absolute';
+      div.style.transform = 'scale(0.33, 0.0)';
+      div.style.pointerEvents = 'all';
+
+      // Clear out the custom part of the form
+      blockSettings.customDiv.innerHTML = '';
     }
   };
 
   // A block has been  tapped on, the gesture for the config page.
-  // bring it up toggle or move as apppropriate.
+  // bring it up, toggle or move as apppropriate.
   blockSettings.tap = function(block) {
     if (this.activeBlock === block) {
       // Clicked on the same block make it go away.
@@ -85,27 +92,48 @@ module.exports = function () {
     }
   };
 
+  blockSettings.defaultContents = function(div) {
+    // For initial testing.
+    div.innerHTML =
+    `<div>
+        <br>
+        <label><input type="checkbox" id="show-code" data-bind="checked:visible">
+          <span class="label-text">Power</span>
+        </label>
+    </div>`;
+  //  ko.applyBindings(blockSettings, div);
+  };
+
   // Internal method to show the form.
   blockSettings.showActive = function (event) {
     if (event !== null) {
       this.removeEventListener('transitionend', this.showActive);
     }
+
+    // Allow block to customize bottom part of form.
+    var congfigurator = this.activeBlock.funcs.configurator;
+    if (typeof congfigurator === "function") {
+      congfigurator(blockSettings.customDiv);
+    } else {
+      blockSettings.defaultContents(blockSettings.customDiv);
+    }
+
+    // Start animation to show settings form.
     var x = this.activeBlock.rect.left;
     var y = this.activeBlock.rect.bottom;
-
-    var dom = document.getElementById(this.domId);
-    dom.style.transition = 'all 0.0s ease';
-    dom.style.left = (x-80) + 'px';
-    dom.style.right = (x+80) + 'px';
-    dom.style.top = (y+5) + 'px';
+    var div = blockSettings.commonDiv;
+    div.style.transition = 'all 0.0s ease';
+    div.style.left = (x-80) + 'px';
+    div.style.right = (x+80) + 'px';
+    div.style.top = (y+5) + 'px';
     // Second step has to be done in callback in order to allow
     // animation to work.
     setTimeout(function() {
-      dom.style.transition = 'all 0.2s ease';
-      dom.style.position = 'absolute';
-      dom.style.width= '240px';
-      dom.style.transform = 'scale(1.0, 1.0)';
-      dom.style.pointerEvents = 'all';
+      div.style.transition = 'all 0.2s ease';
+      div.style.position = 'absolute';
+      div.style.width= '240px';
+      div.style.transform = 'scale(1.0, 1.0)';
+      div.style.pointerEvents = 'all';
     }, 10);
   };
 
