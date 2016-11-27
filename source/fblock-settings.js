@@ -66,8 +66,26 @@ b.pictureBlock = {
     }
     root.appendChild(group);
   },
-  configurator: function(domRoot) {
-    console.log('custom config page', domRoot);
+  configurator: function(root) {
+    root.innerHTML =
+       `<svg id='pictureEditor' width='200' height='175' align='center' xmlns='http://www.w3.org/2000/svg'>
+          <rect width=175 height=175 x=13 rx=10 ry='10' class='svg-clear block-picture-board'/>
+        </svg>`;
+
+    var svg = document.getElementById('pictureEditor');
+    for (var iy = 0; iy < 5; iy++) {
+      for (var ix = 0; ix < 5; ix++) {
+        var style = '';
+        if (true /* data[ix + (iy*5)] === 0*/ ) {
+          style = 'svg-clear block-picture-led-off';
+        } else {
+          style = 'svg-clear block-picture-led-on';
+        }
+        var led = svgb.createCircle(style, 30+(ix*35), 17.5+(iy*35), 13);
+        svg.appendChild(led);
+      }
+    }
+
     return;
   }
 

@@ -35,8 +35,7 @@
     "font-awesome": "^4.6.3",
     "interact.js": "^1.2.6",
     "knockout": "^3.4.0",
-    "teak": "0.0.11",
-    "webcomponents.js": "^0.7.22"
+    "teak": "0.0.11"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.14.0",
