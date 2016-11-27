@@ -252,7 +252,7 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   };
 
   this.name = blockName;
-  var funcs = fblocks.bind(blockName);
+  this.funcs = fblocks.bind(blockName);
 
   // Place holder for sequencing links.
   this.prev = null;
@@ -279,7 +279,7 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   group.appendChild(rect);
 
   // build custom svg elements for this block.
-  funcs.svg(group, this);
+  this.funcs.svg(group, this);
 
   this.dmove(x, y, true);
   tbe.svg.appendChild(group);
@@ -602,8 +602,8 @@ tbe.FunctionBlock.prototype.removeTargetShadows = function() {
 
 tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
   var thisLast = this.last;
-  var frameCount = 10;
   var targx = 0;
+  var frameCount = 10;
 
   assert(this.prev === null);
   assert(thisLast.next === null);
@@ -637,9 +637,9 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
 
       // Set up animation to slide down old blocks.
       var animateInsert = {
+        frame: frameCount,
         adx: width / frameCount,
         ady: 0,
-        frame: frameCount,
         chunkStart: this.snapTarget,
         chunkEnd: this.snapTarget.last
       };
@@ -654,9 +654,9 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
       // The model snaps directly to the target location
       // but the view eases to it.
     var animateSlideDown = {
+      frame: frameCount,
       adx: dx / frameCount,
       ady: dy / frameCount,
-      frame: frameCount,
       chunkStart: this,
       chunkEnd: thisLast
     };
