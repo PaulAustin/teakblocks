@@ -369,5 +369,38 @@ for their version of the service. One list I found was in [Noble package](https:
 At this point teak-blocks just needs the one for the nordic chips, but its good to see the others.
 
 I found several examples of accessing BLE-UART from JS related to Adafruit's
-(Bluefruit)[https://www.adafruit.com/product/2479] board which is based on the
+[Bluefruit](https://www.adafruit.com/product/2479) board which is based on the
 same nordic chip used by the micro:bit.
+
+## Time off for thanks giving. :)
+
+## November 28
+More work on config panel. In many place white space in HTML has no impact. But here is a subtle one.
+I spent a while tracking down why some buttons appeared to have a margin, or padding.
+
+```
+  <button >
+    123
+  </button>
+  <button>
+    ABC..
+  </button>
+```
+In case one above, the new line between will turn into a space. This is not margin, or padding though it looks like it.
+```
+  <button >
+    123
+  </button><button>
+    ABC..
+  </button>
+```
+Remove *all* whitespace between the buttons so the buttons touch one another. This was helpful for creating tabs.
+Learn more [here](http://stackoverflow.com/questions/17365017/how-to-delete-extra-space-between-buttons). Also,
+it helpful to know that border radius parameter can be set for [each corner](http://stackoverflow.com/questions/11483708/creating-rounded-corners-for-top-half-of-the-buttons-in-css).
+
+```
+<button style="border-radius:0px 0px 10px 0px">
+  ...
+</button>
+```
+This allows the buttons to blend with the edge of the rounded container they are in.

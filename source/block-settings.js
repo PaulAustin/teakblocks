@@ -35,17 +35,19 @@ module.exports = function () {
     var commonDiv = document.createElement("div");
     commonDiv.innerHTML =
     `<div id="block-settings" class="block-config-form blockform">
-        <button id="block-run">
-          <i class="fa fa-step-forward" aria-hidden="true"></i>
-        </button>
-        <button id="block-clone">
-          <i class="fa fa-clone" aria-hidden="true"></i>
-        </button>
-        <button id="block-clear">
-          <i class="fa fa-trash-o" aria-hidden="true"></i>
-        </button>
-        <div id="block-settings-custom">
+        <div class="block-settings-editops">
+          <button id="block-run">
+            <i class="fa fa-step-forward" aria-hidden="true"></i>
+          </button>
+          <button id="block-clone">
+            <i class="fa fa-clone" aria-hidden="true"></i>
+          </button>
+          <button id="block-clear">
+            <i class="fa fa-trash-o" aria-hidden="true"></i>
+          </button>
         </div>
+        <div id="block-settings-custom"></div>
+        <div id="block-settings-controllers" class="block-controllers"></div>
     </div>`;
     domRoot.appendChild(commonDiv);
     blockSettings.commonDiv = commonDiv;
@@ -57,8 +59,11 @@ module.exports = function () {
       }
     };
 
-    // Get a reference to the part that is customized for each block.
+    // Get a reference to the div that is customized for each block.
     blockSettings.customDiv = document.getElementById('block-settings-custom');
+
+    // Get a reference to the div that lists controllers.
+    blockSettings.controllersDiv = document.getElementById('block-settings-controllers');
   };
 
   blockSettings.hide = function(exceptBlock) {
@@ -121,6 +126,14 @@ module.exports = function () {
       congfigurator(blockSettings.customDiv);
     } else {
       blockSettings.defaultContents(blockSettings.customDiv);
+    }
+
+    // Add controller tabs at the bottom.
+    var controllers = this.activeBlock.funcs.controllers;
+    if (typeof controllers === "function") {
+      controllers(blockSettings.controllersDiv);
+    } else {
+      blockSettings.controllersDiv.innerHTML = '';
     }
 
     // Start animation to show settings form.
