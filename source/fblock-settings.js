@@ -22,6 +22,7 @@ SOFTWARE.
 
 module.exports = function () {
 
+var interact = require('interact.js');
 var svgb = require('./svgbuilder.js');
 var pb = svgb.pathBuilder;
 var b = {};
@@ -45,6 +46,16 @@ b.unknownBlock = {
   }
 };
 
+// Use CSS clases for LED lit state.
+function setPicturePixel(svgPixel, state) {
+  if (state === 1) {
+    svgPixel.setAttribute('class', 'block-picture-led-on pix-editor');
+  } else {
+    svgPixel.setAttribute('class', 'block-picture-led-off pix-editor');
+  }
+}
+
+// Picture block made up of a 5x5 LED display
 b.pictureBlock = {
   pictSmile: [0,0,0,0,0, 0,1,0,1,0, 0,0,0,0,0, 1,0,0,0,1, 0,1,1,1,0],
   svg: function(svg) {
@@ -66,6 +77,8 @@ b.pictureBlock = {
     }
     svg.appendChild(group);
   },
+  // Inject the HTML for the controllers editor.
+  // TODO: pass in the controller. That might all move our of this class.
   configurator: function(div) {
     div.innerHTML =
        `<svg id='pictureEditor' width='200px' height='175px' align='center' xmlns='http://www.w3.org/2000/svg'>
@@ -73,24 +86,51 @@ b.pictureBlock = {
         </svg>`;
 
     var svg = document.getElementById('pictureEditor');
+    var dindex = 0;
+
+    // Create a editor state object for the interactions to work with.
+    var pixEditorState = {
+      pixOn:0,
+      data:b.pictureBlock.pictSmile
+    };
+
     for (var iy = 0; iy < 5; iy++) {
       for (var ix = 0; ix < 5; ix++) {
-        var style = '';
-        if (true /* data[ix + (iy*5)] === 0*/ ) {
-          style = 'svg-clear block-picture-led-off';
-        } else {
-          style = 'svg-clear block-picture-led-on';
-        }
-        var led = svgb.createCircle(style, 33+(ix*35), 17.5+(iy*35), 13);
+        // Create each LED and initialize its lit state.
+        var led = svgb.createCircle('', 33+(ix*35), 17.5+(iy*35), 13);
+        setPicturePixel(led, pixEditorState.data[dindex]);
+        led.setAttribute('led-index', String(dindex));
         svg.appendChild(led);
+        dindex += 1;
       }
     }
 
-    // set up interact.
+    interact('.pix-editor', {context:svg})
+      .on('down', function (event) {
+        // Flip brush state based on pixel clicked on, then paint.
+        var i = parseInt(event.target.getAttribute('led-index'), 10);
+        if (pixEditorState.data[i] === 0) {
+          pixEditorState.pixOn = 1;
+        } else {
+          pixEditorState.pixOn = 0;
+        }
+        pixEditorState.data[i] = pixEditorState.pixOn;
+        setPicturePixel(event.target, pixEditorState.data[i]);
+        // update block image.
+      })
+      .on('move', function(event) {
+        // Paint pixel based on brush state.
+        if (event.interaction.pointerIsDown) {
+          var i = parseInt(event.target.getAttribute('led-index'), 10);
+          pixEditorState.data[i] = pixEditorState.pixOn;
+          setPicturePixel(event.target, pixEditorState.data[i]);
+        }
+        // update block image.
+      });
     return;
   },
+  // Add a list of contorllers valid for the picture actor.
   controllers: function(div) {
-    console.log('add buttons');
     div.innerHTML = `
     <div><button id="data-picture" style="border-radius:0px 0px 0px 10px";>
         <i class="fa fa-smile-o" aria-hidden="true"></i>
