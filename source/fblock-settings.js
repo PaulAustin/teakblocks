@@ -47,7 +47,7 @@ b.unknownBlock = {
 
 b.pictureBlock = {
   pictSmile: [0,0,0,0,0, 0,1,0,1,0, 0,0,0,0,0, 1,0,0,0,1, 0,1,1,1,0],
-  svg: function(root) {
+  svg: function(svg) {
     var data = b.pictureBlock.pictSmile;
     var group = svgb.createGroup('svg-clear', 24, 15);
     var box = svgb.createRect('svg-clear block-picture-board', -8, -8, 48, 48, 4);
@@ -64,11 +64,11 @@ b.pictureBlock = {
         group.appendChild(led);
       }
     }
-    root.appendChild(group);
+    svg.appendChild(group);
   },
-  configurator: function(root) {
-    root.innerHTML =
-       `<svg id='pictureEditor' width='200px' height='175px' style='padding:10px;' align='center' xmlns='http://www.w3.org/2000/svg'>
+  configurator: function(div) {
+    div.innerHTML =
+       `<svg id='pictureEditor' width='200px' height='175px' align='center' xmlns='http://www.w3.org/2000/svg'>
           <rect width=175px height=175px x=16  rx=10 ry='10' class='svg-clear block-picture-board'/>
         </svg>`;
 
@@ -88,8 +88,22 @@ b.pictureBlock = {
 
     // set up interact.
     return;
+  },
+  controllers: function(div) {
+    console.log('add buttons');
+    div.innerHTML = `
+    <div><button id="data-picture" style="border-radius:0px 0px 0px 10px";>
+        <i class="fa fa-smile-o" aria-hidden="true"></i>
+      </button><button id="data-text" style="border-radius:0px">
+        ABC..
+      </button><button id="data-movie" style="border-radius:0px">
+        <i class="fa fa-film" aria-hidden="true"></i>
+      </button><button id="data-dynamic" style="border-radius:0px 0px 10px 0px">
+        <i class="fa fa-tachometer" aria-hidden="true"></i>
+      </button>
+      </div>
+    `;
   }
-
 };
 // - SVG element construcio.
 // - HTML sub parts

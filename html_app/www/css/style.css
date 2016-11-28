@@ -139,12 +139,13 @@ html, body { margin:0; padding:0; overflow:hidden }
   font-family:"helvetica";
 /*  color:#33691E; */
   font-size:20px;
-  padding:5px;
   touch-action: none; /* prevents any screen bounce on android */
 }
-
-/* buttons for the bock config edit operations run, copy, delete */
-.block-config-form button {
+/* Buttons for the bock config edit operations run, copy, delete */
+.block-settings-editops {
+  padding:5px;
+}
+.block-settings-editops button {
   width:72.5px;
   font-size:20px;
   border: 2px solid #81C784;
@@ -153,9 +154,31 @@ html, body { margin:0; padding:0; overflow:hidden }
   user-select: none;
   outline: none;
 }
-.block-config-form button:active {
+.block-settings-editops button:active {
   background-color: #4CAF50;
 }
+/* Controller settings for the block. */
+#block-settings-custom {
+  padding:10px;
+}
+/* Block controllers is a row of tab-like buttons on the edge of the config panel */
+.block-controllers {
+  width:100%;
+}
+.block-controllers button{
+  font-size: 20px;
+  width:25%;
+  padding: 0px;
+  margin: 0px;
+  border: 1px solid #03A9F4;
+  background-color: #29B6F6;
+  user-select: none;
+  outline: none;
+}
+.block-controllers button:active {
+  background-color: #1E88E5;
+}
+/* Use this class for SVG elements that do not directly interact with the pointer */
 .svg-clear {
   pointer-events: none;
 }
