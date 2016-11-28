@@ -68,8 +68,8 @@ b.pictureBlock = {
   },
   configurator: function(root) {
     root.innerHTML =
-       `<svg id='pictureEditor' width='200' height='175' align='center' xmlns='http://www.w3.org/2000/svg'>
-          <rect width=175 height=175 x=13 rx=10 ry='10' class='svg-clear block-picture-board'/>
+       `<svg id='pictureEditor' width='200px' height='175px' style='padding:10px;' align='center' xmlns='http://www.w3.org/2000/svg'>
+          <rect width=175px height=175px x=16  rx=10 ry='10' class='svg-clear block-picture-board'/>
         </svg>`;
 
     var svg = document.getElementById('pictureEditor');
@@ -81,11 +81,12 @@ b.pictureBlock = {
         } else {
           style = 'svg-clear block-picture-led-on';
         }
-        var led = svgb.createCircle(style, 30+(ix*35), 17.5+(iy*35), 13);
+        var led = svgb.createCircle(style, 33+(ix*35), 17.5+(iy*35), 13);
         svg.appendChild(led);
       }
     }
 
+    // set up interact.
     return;
   }
 

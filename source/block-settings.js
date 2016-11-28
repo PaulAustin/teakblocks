@@ -24,7 +24,6 @@ module.exports = function () {
   var ko = require('knockout');
   var tbe = require('./teakblocks.js');
 
-
   // Set of propoerties that can be bound to.
   var blockSettings = {
     visible: ko.observable(true),
@@ -35,9 +34,15 @@ module.exports = function () {
     // Create a div shell that will be positioned and scaled as needed.
     var commonDiv = document.createElement("div");
     commonDiv.innerHTML =
-    `<div id="block-settings" class="teakform blockform">
+    `<div id="block-settings" class="block-config-form blockform">
+        <button id="block-run">
+          <i class="fa fa-step-forward" aria-hidden="true"></i>
+        </button>
+        <button id="block-clone">
+          <i class="fa fa-clone" aria-hidden="true"></i>
+        </button>
         <button id="block-clear">
-        <i class="fa fa-trash-o" aria-hidden="true" style="font-size:16px"></i>
+          <i class="fa fa-trash-o" aria-hidden="true"></i>
         </button>
         <div id="block-settings-custom">
         </div>
