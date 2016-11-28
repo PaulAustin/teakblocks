@@ -130,6 +130,32 @@ html, body { margin:0; padding:0; overflow:hidden }
 .block-motor-shaft {
   fill: #202020;
 }
+.block-config-form {
+  /* setting dialogs */
+  background-color: #C8E6C9;
+  border-radius: 10px;
+  box-sizing:border-box;
+  box-shadow: 1px 4px 5px 2px rgba(0, 0, 0, 0.2);
+  font-family:"helvetica";
+/*  color:#33691E; */
+  font-size:20px;
+  padding:5px;
+  touch-action: none; /* prevents any screen bounce on android */
+}
+
+/* buttons for the bock config edit operations run, copy, delete */
+.block-config-form button {
+  width:72.5px;
+  font-size:20px;
+  border: 2px solid #81C784;
+  border-radius: 6px;
+  background-color: #81C784;
+  user-select: none;
+  outline: none;
+}
+.block-config-form button:active {
+  background-color: #4CAF50;
+}
 .svg-clear {
   pointer-events: none;
 }
