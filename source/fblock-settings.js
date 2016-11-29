@@ -48,10 +48,27 @@ b.unknownBlock = {
 
 // Use CSS clases for LED lit state.
 function setPicturePixel(svgPixel, state) {
+  if (svgPixel === undefined) {
+    return;
+  }
   if (state === 1) {
-    svgPixel.setAttribute('class', 'block-picture-led-on pix-editor');
+    svgPixel.setAttribute('class', 'svg-clear block-picture-led-on');
   } else {
-    svgPixel.setAttribute('class', 'block-picture-led-off pix-editor');
+    svgPixel.setAttribute('class', 'svg-clear block-picture-led-off');
+  }
+}
+
+function pictureEventToIndex(event) {
+  // Offset is experimental not supported on all browsers.
+  // var x = Math.floor(event.offsetX / 35);
+  // var y = Math.floor(event.offsetY / 35);
+  var bb = event.target.parentNode.getBoundingClientRect();
+  var x = Math.floor((event.pageX - bb.left) / 35);
+  var y = Math.floor((event.pageY - bb.top) / 35);
+  if (x>4 || y>4) {
+    return -1;
+  } else {
+    return (y * 5) + x;
   }
 }
 
@@ -81,12 +98,13 @@ b.pictureBlock = {
   // TODO: pass in the controller. That might all move our of this class.
   configurator: function(div) {
     div.innerHTML =
-       `<svg id='pictureEditor' width='200px' height='175px' align='center' xmlns='http://www.w3.org/2000/svg'>
-          <rect width=175px height=175px x=16  rx=10 ry='10' class='svg-clear block-picture-board'/>
-        </svg>`;
+        `<div id='pictureEditorDiv'>
+          <svg id='pictureEditor' width='175px' height='175px' xmlns='http://www.w3.org/2000/svg'>
+            <rect id='pictureRect' width=175px height=175px rx=10 ry='10' class='pix-editor block-picture-board'/>
+            </svg>
+        </div>`;
 
     var svg = document.getElementById('pictureEditor');
-    var dindex = 0;
 
     // Create a editor state object for the interactions to work with.
     var pixEditorState = {
@@ -94,12 +112,12 @@ b.pictureBlock = {
       data:b.pictureBlock.pictSmile
     };
 
+    var dindex = 0;
     for (var iy = 0; iy < 5; iy++) {
       for (var ix = 0; ix < 5; ix++) {
         // Create each LED and initialize its lit state.
-        var led = svgb.createCircle('', 33+(ix*35), 17.5+(iy*35), 13);
+        var led = svgb.createCircle('', 17.5+(ix*35), 17.5+(iy*35), 13);
         setPicturePixel(led, pixEditorState.data[dindex]);
-        led.setAttribute('led-index', String(dindex));
         svg.appendChild(led);
         dindex += 1;
       }
@@ -108,22 +126,26 @@ b.pictureBlock = {
     interact('.pix-editor', {context:svg})
       .on('down', function (event) {
         // Flip brush state based on pixel clicked on, then paint.
-        var i = parseInt(event.target.getAttribute('led-index'), 10);
-        if (pixEditorState.data[i] === 0) {
-          pixEditorState.pixOn = 1;
-        } else {
-          pixEditorState.pixOn = 0;
+        var i = pictureEventToIndex(event);
+        if (i >= 0) {
+          if (pixEditorState.data[i] === 0) {
+            pixEditorState.pixOn = 1;
+          } else {
+            pixEditorState.pixOn = 0;
+          }
         }
         pixEditorState.data[i] = pixEditorState.pixOn;
-        setPicturePixel(event.target, pixEditorState.data[i]);
+        setPicturePixel(event.target.parentNode.children[i+1], pixEditorState.data[i]);
         // update block image.
       })
       .on('move', function(event) {
         // Paint pixel based on brush state.
         if (event.interaction.pointerIsDown) {
-          var i = parseInt(event.target.getAttribute('led-index'), 10);
-          pixEditorState.data[i] = pixEditorState.pixOn;
-          setPicturePixel(event.target, pixEditorState.data[i]);
+          var i = pictureEventToIndex(event);
+          if (i >= 0) {
+            pixEditorState.data[i] = pixEditorState.pixOn;
+            setPicturePixel(event.target.parentNode.children[i+1], pixEditorState.data[i]);
+          }
         }
         // update block image.
       });
