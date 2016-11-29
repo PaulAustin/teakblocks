@@ -154,13 +154,13 @@ b.pictureBlock = {
   // Add a list of contorllers valid for the picture actor.
   controllers: function(div) {
     div.innerHTML = `
-    <div><button id="data-picture" style="border-radius:0px 0px 0px 10px";>
+    <div><button id="data-picture" class="block-settings-tab tab-selected" style="border-radius:0px 0px 0px 10px";>
         <i class="fa fa-smile-o" aria-hidden="true"></i>
-      </button><button id="data-text" style="border-radius:0px">
-        ABC..
-      </button><button id="data-movie" style="border-radius:0px">
+      </button><button id="data-text" class="block-settings-tab" style="border-radius:0px">
+        abc
+      </button><button id="data-movie" class="block-settings-tab" style="border-radius:0px">
         <i class="fa fa-film" aria-hidden="true"></i>
-      </button><button id="data-dynamic" style="border-radius:0px 0px 10px 0px">
+      </button><button id="data-dynamic" class="block-settings-tab" style="border-radius:0px 0px 10px 0px">
         <i class="fa fa-tachometer" aria-hidden="true"></i>
       </button>
       </div>

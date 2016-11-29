@@ -23,6 +23,7 @@ SOFTWARE.
 module.exports = function () {
   var ko = require('knockout');
   var tbe = require('./teakblocks.js');
+  var interact = require('interact.js');
 
   // Set of propoerties that can be bound to.
   var blockSettings = {
@@ -47,11 +48,10 @@ module.exports = function () {
           </button>
         </div>
         <div id="block-settings-custom"></div>
-        <div id="block-settings-controllers" class="block-controllers"></div>
+        <div id="block-controller-tabs"></div>
     </div>`;
     domRoot.appendChild(commonDiv);
     blockSettings.commonDiv = commonDiv;
-
     // Add delete button handler.
     document.getElementById('block-clear').onclick = function() {
       if (blockSettings.activeBlock !== null) {
@@ -63,7 +63,7 @@ module.exports = function () {
     blockSettings.customDiv = document.getElementById('block-settings-custom');
 
     // Get a reference to the div that lists controllers.
-    blockSettings.controllersDiv = document.getElementById('block-settings-controllers');
+    blockSettings.controllersDiv = document.getElementById('block-controller-tabs');
   };
 
   blockSettings.hide = function(exceptBlock) {
@@ -132,6 +132,10 @@ module.exports = function () {
     var controllers = this.activeBlock.funcs.controllers;
     if (typeof controllers === "function") {
       controllers(blockSettings.controllersDiv);
+      interact('.block-settings-tab',blockSettings.controllersDiv)
+        .on('down', function(e) {
+            console.log('down', e.target);
+        });
     } else {
       blockSettings.controllersDiv.innerHTML = '';
     }
