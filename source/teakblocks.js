@@ -744,6 +744,8 @@ tbe.configInteractions = function configInteractions() {
   interact('.drag-delete')
     .on('down', function () {
       var block = thisTbe.elementToBlock(event.target);
+      if (block === null)
+        return;
       thisTbe.clearStates();
       thisTbe.deleteChunk(block, block.last);
     });
