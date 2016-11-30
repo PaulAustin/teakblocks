@@ -123,7 +123,7 @@ module.exports = function () {
     // Allow block to customize bottom part of form.
     var congfigurator = this.activeBlock.funcs.configurator;
     if (typeof congfigurator === "function") {
-      congfigurator(blockSettings.customDiv);
+      congfigurator(blockSettings.customDiv, this.activeBlock);
     } else {
       blockSettings.defaultContents(blockSettings.customDiv);
     }
