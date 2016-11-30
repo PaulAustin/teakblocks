@@ -75,8 +75,17 @@ function pictureEventToIndex(event) {
 // Picture block made up of a 5x5 LED display
 b.pictureBlock = {
   pictSmile: [0,0,0,0,0, 0,1,0,1,0, 0,0,0,0,0, 1,0,0,0,1, 0,1,1,1,0],
-  svg: function(svg) {
-    var data = b.pictureBlock.pictSmile;
+  defaultSettings: function() {
+    // return a new object with settings for the controller.
+    return {
+      // Indicate what editor should be used.
+      controller:'picture5x5',
+      // And the data that goes with that editor.
+      data:[0,0,0,0,0, 0,1,0,1,0, 0,0,0,0,0, 1,0,0,0,1, 0,1,1,1,0],
+    };
+  },
+  svg: function(svg, block) {
+    var data = block.controllerSettings.data;
     var group = svgb.createGroup('svg-clear', 24, 15);
     var box = svgb.createRect('svg-clear block-picture-board', -8, -8, 48, 48, 4);
     group.appendChild(box);
@@ -96,7 +105,7 @@ b.pictureBlock = {
   },
   // Inject the HTML for the controllers editor.
   // TODO: pass in the controller. That might all move our of this class.
-  configurator: function(div) {
+  configurator: function(div, block) {
     div.innerHTML =
         `<div id='pictureEditorDiv'>
           <svg id='pictureEditor' width='175px' height='175px' xmlns='http://www.w3.org/2000/svg'>
@@ -107,17 +116,14 @@ b.pictureBlock = {
     var svg = document.getElementById('pictureEditor');
 
     // Create a editor state object for the interactions to work with.
-    var pixEditorState = {
-      pixOn:0,
-      data:b.pictureBlock.pictSmile
-    };
-
+    var data = block.controllerSettings.data;
+    var pixOn = 0;
     var dindex = 0;
     for (var iy = 0; iy < 5; iy++) {
       for (var ix = 0; ix < 5; ix++) {
         // Create each LED and initialize its lit state.
         var led = svgb.createCircle('', 17.5+(ix*35), 17.5+(iy*35), 13);
-        setPicturePixel(led, pixEditorState.data[dindex]);
+        setPicturePixel(led, data[dindex]);
         svg.appendChild(led);
         dindex += 1;
       }
@@ -128,26 +134,26 @@ b.pictureBlock = {
         // Flip brush state based on pixel clicked on, then paint.
         var i = pictureEventToIndex(event);
         if (i >= 0) {
-          if (pixEditorState.data[i] === 0) {
-            pixEditorState.pixOn = 1;
+          if (data[i] === 0) {
+            pixOn = 1;
           } else {
-            pixEditorState.pixOn = 0;
+            pixOn = 0;
           }
         }
-        pixEditorState.data[i] = pixEditorState.pixOn;
-        setPicturePixel(event.target.parentNode.children[i+1], pixEditorState.data[i]);
-        // update block image.
+        data[i] = pixOn;
+        setPicturePixel(event.target.parentNode.children[i+1], data[i]);
+        block.updateSvg();
       })
       .on('move', function(event) {
         // Paint pixel based on brush state.
         if (event.interaction.pointerIsDown) {
           var i = pictureEventToIndex(event);
           if (i >= 0) {
-            pixEditorState.data[i] = pixEditorState.pixOn;
-            setPicturePixel(event.target.parentNode.children[i+1], pixEditorState.data[i]);
+            data[i] = pixOn;
+            setPicturePixel(event.target.parentNode.children[i+1], data[i]);
           }
         }
-        // update block image.
+        block.updateSvg();
       });
     return;
   },

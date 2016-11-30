@@ -32,7 +32,6 @@ var svglog = require('./svglog.js');
 var trashBlocks = require('./physics.js');
 var fblocks = require('./fblock-settings.js');
 
-
 var tbe = {};
 
 tbe.diagramBlocks = {};
@@ -201,6 +200,7 @@ tbe.replicate = function(chain){
       }
 
       newBlock.params = JSON.parse(JSON.stringify(b.params));
+      newBlock.controllerSettings = JSON.parse(JSON.stringify(b.controllerSettings));
       newBlock.isPaletteBlock = false;
       newBlock.interactId = tbe.nextBlockId('d:');
       this.diagramBlocks[newBlock.interactId] = newBlock;
@@ -222,6 +222,13 @@ tbe.replicate = function(chain){
     while (b !== null) {
       b.newBlock.fixupCrossBlockSvg();
       b.newBlock = null;
+      b = b.next;
+    }
+
+    // Update images in the new chain
+    b = newChain;
+    while (b !== null) {
+      b.updateSvg();
       b = b.next;
     }
 
@@ -253,6 +260,11 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
 
   this.name = blockName;
   this.funcs = fblocks.bind(blockName);
+  if (typeof this.funcs.defaultSettings === "function" ) {
+    this.controllerSettings = this.funcs.defaultSettings();
+  } else {
+    this.controllerSettings = {controller:'none', data:0 };
+  }
 
   // Place holder for sequencing links.
   this.prev = null;
@@ -268,24 +280,32 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   this.snapAction = null;   // append, prepend, replace, ...
   this.targetShadow = null; // Svg element to hilite target location
 
-  var group = svgb.createGroup('drag-group', 0, 0);
-  this.svgGroup = group;
+  this.svgGroup = svgb.createGroup('drag-group', 0, 0);
 
-  // Create the actual SVG object. Its a group of two pieces
-  // a rounded rect and a text box. The group is moved by changing
-  // it's transform (see dmove)
-  var rect = svgb.createRect('function-block', 0, 0, 80, 80, 10);
-  this.svgRect= rect;
-  group.appendChild(rect);
-
-  // build custom svg elements for this block.
-  this.funcs.svg(group, this);
+  // Create the actual SVG object. Its a group of two pieces:
+  // a rounded rect and a group that holds the custom graphics for the block.
+  this.svgRect = svgb.createRect('function-block', 0, 0, 80, 80, 10);
+  this.svgGroup.appendChild(this.svgRect);
+  this.svgCustomGroup = null; // see updateSvg()
 
   this.dmove(x, y, true);
-  tbe.svg.appendChild(group);
+  this.updateSvg();
 
-  // if the block is loop ( or blockopen) then make a block end to go with it.
-  // This could be turned insode out so that fblock code does this.
+  // Add block to the editor tree. This makes it visible.
+  tbe.svg.appendChild(this.svgGroup);
+};
+
+// Create an image fothe block base on its type.
+tbe.FunctionBlock.prototype.updateSvg = function() {
+  // Remove the old custom image if they exist.
+  if (this.svgCustomGroup !== null) {
+    this.svgGroup.removeChild(this.svgCustomGroup);
+  }
+
+  // Build custom image for this block.
+  this.svgCustomGroup = svgb.createGroup('', 0, 0);
+  this.funcs.svg(this.svgCustomGroup, this);
+  this.svgGroup.appendChild(this.svgCustomGroup);
 };
 
 tbe.FunctionBlock.prototype.fixupChainSvg = function() {
@@ -691,6 +711,7 @@ tbe.clearDiagramBlocks = function clearDiagramBlocks() {
   tbe.forEachDiagramBlock(function (block) {
     tbe.svg.removeChild(block.svgGroup);
     block.svgGroup = null;
+    block.svgCustomGroup = null;
     block.svgRect = null;
     block.next = null;
     block.prev = null;
