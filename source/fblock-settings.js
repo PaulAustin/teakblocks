@@ -147,13 +147,14 @@ b.pictureBlock = {
       .on('move', function(event) {
         // Paint pixel based on brush state.
         if (event.interaction.pointerIsDown) {
+          //If it's in range and there was an actualy change then paint.
           var i = pictureEventToIndex(event);
-          if (i >= 0) {
+          if ((i >= 0) &&  (data[i] !== pixOn)) {
             data[i] = pixOn;
             setPicturePixel(event.target.parentNode.children[i+1], data[i]);
+            block.updateSvg();
           }
         }
-        block.updateSvg();
       });
     return;
   },
