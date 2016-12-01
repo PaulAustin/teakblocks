@@ -80,6 +80,9 @@ module.exports = function () {
 
       // Clear out the custom part of the form
       blockSettings.customDiv.innerHTML = '';
+
+      this.tabNames = [];
+      this.tabButtons = [];
     }
   };
 
@@ -102,16 +105,89 @@ module.exports = function () {
     }
   };
 
-  blockSettings.defaultContents = function(div) {
-    // For initial testing.
-    div.innerHTML =
-    `<div>
-        <br>
-        <label><input type="checkbox" id="show-code" data-bind="checked:visible">
-          <span class="label-text">Power</span>
-        </label>
-    </div>`;
-  //  ko.applyBindings(blockSettings, div);
+  // Build the tow of tabs one for each controller editor that canbe used
+  // by the actor.
+  blockSettings.buildControllerTabs = function() {
+    // Clear out old tabs.
+    blockSettings.controllersDiv.innerHTML = '';
+
+    // Get the list of tabs wiht HTML snippets
+    var tabs = this.activeBlock.funcs.tabs;
+    this.tabButtons = [];
+    if (tabs !== undefined) {
+      this.tabNames = Object.keys(tabs);
+
+      // Build some SOM for the buttons
+      var tabCount = this.tabNames.length;
+      var tabsDiv = document.createElement('div');
+      for (var i = 0; i < tabCount; i++) {
+        var button = document.createElement('button');
+        var name = this.tabNames[i];
+        blockSettings.tabButtons.push(button);
+        tabsDiv.appendChild(button);
+        button.id = name;
+        button.className = 'block-settings-tab';
+
+        // tweak the curved edges based on position.
+        if (i===0) {
+          button.style.borderRadius='0px 0px 0px 10px';
+        } else if (i === (tabCount-1)) {
+          button.style.borderRadius='0px 0px 10px 0px';
+        } else {
+          button.style.borderRadius='0px';
+        }
+
+        // Inject the HTML snippet
+        button.innerHTML = tabs[name];
+        button.onclick = blockSettings.onClickTab;
+      }
+      this.controllersDiv.appendChild(tabsDiv);
+
+      // Select the initial tab
+      this.selectActiveTab(this.activeBlock.controllerSettings.controller);
+    } else {
+      // Add controller tabs at the bottom.
+      var controllers = this.activeBlock.funcs.controllers;
+      if (typeof controllers === "function") {
+        // OLD way, delete once other code merged
+        controllers(blockSettings.controllersDiv);
+      } else {
+        blockSettings.controllersDiv.innerHTML = '';
+      }
+    }
+  };
+
+  blockSettings.onClickTab = function() {
+    // Since its DOM event, 'this' will be the button.
+    blockSettings.selectActiveTab(this.id);
+  };
+
+  blockSettings.selectActiveTab = function(name) {
+    var count = this.tabNames.length;
+    for ( var i = 0; i < count; i++) {
+      if (this.tabNames[i] === name) {
+        this.tabButtons[i].classList.add('tab-selected');
+      } else {
+        this.tabButtons[i].classList.remove('tab-selected');
+      }
+    }
+  };
+
+  // Build the middle from part, the controllers editor.
+  blockSettings.buildController = function() {
+    // Allow block to customize bottom part of form.
+    var congfigurator = this.activeBlock.funcs.configurator;
+    if (typeof congfigurator === "function") {
+      congfigurator(blockSettings.customDiv, this.activeBlock);
+    } else {
+      blockSettings.customDiv.innerHTML =
+      `<div>
+          <br>
+          <label><input type="checkbox" id="show-code" data-bind="checked:visible">
+            <span class="label-text">Power</span>
+          </label>
+      </div>`;
+    }
   };
 
   // Internal method to show the form.
@@ -120,25 +196,8 @@ module.exports = function () {
       this.removeEventListener('transitionend', this.showActive);
     }
 
-    // Allow block to customize bottom part of form.
-    var congfigurator = this.activeBlock.funcs.configurator;
-    if (typeof congfigurator === "function") {
-      congfigurator(blockSettings.customDiv, this.activeBlock);
-    } else {
-      blockSettings.defaultContents(blockSettings.customDiv);
-    }
-
-    // Add controller tabs at the bottom.
-    var controllers = this.activeBlock.funcs.controllers;
-    if (typeof controllers === "function") {
-      controllers(blockSettings.controllersDiv);
-      interact('.block-settings-tab',blockSettings.controllersDiv)
-        .on('down', function(e) {
-            console.log('down', e.target);
-        });
-    } else {
-      blockSettings.controllersDiv.innerHTML = '';
-    }
+    this.buildController();
+    this.buildControllerTabs();
 
     // Start animation to show settings form.
     var x = this.activeBlock.rect.left;

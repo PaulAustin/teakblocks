@@ -74,16 +74,24 @@ function pictureEventToIndex(event) {
 
 // Picture block made up of a 5x5 LED display
 b.pictureBlock = {
-  pictSmile: [0,0,0,0,0, 0,1,0,1,0, 0,0,0,0,0, 1,0,0,0,1, 0,1,1,1,0],
+  // List of HTML snippets used for controller tabs.
+  tabs: {
+    '5x5picture' : '<i class="fa fa-smile-o" aria-hidden="true"></i>',
+    '5x5string'  : 'abc',
+    '5x5movie'   : '<i class="fa fa-film" aria-hidden="true"></i>',
+    '5x5sensor'  : '<i class="fa fa-tachometer" aria-hidden="true"></i>'
+  },
+  // Initial setting for blocks of this type.
   defaultSettings: function() {
     // return a new object with settings for the controller.
     return {
-      // Indicate what editor should be used.
-      controller:'picture5x5',
       // And the data that goes with that editor.
       data:[0,0,0,0,0, 0,1,0,1,0, 0,0,0,0,0, 1,0,0,0,1, 0,1,1,1,0],
+      // Indicate what controller is active. This may affect the data format.
+      controller:'5x5picture',
     };
   },
+  // Generate and SVG based image for a specific block.
   svg: function(svg, block) {
     var data = block.controllerSettings.data;
     var group = svgb.createGroup('svg-clear', 24, 15);
@@ -157,21 +165,6 @@ b.pictureBlock = {
         }
       });
     return;
-  },
-  // Add a list of contorllers valid for the picture actor.
-  controllers: function(div) {
-    div.innerHTML = `
-    <div><button id="data-picture" class="block-settings-tab tab-selected" style="border-radius:0px 0px 0px 10px";>
-        <i class="fa fa-smile-o" aria-hidden="true"></i>
-      </button><button id="data-text" class="block-settings-tab" style="border-radius:0px">
-        abc
-      </button><button id="data-movie" class="block-settings-tab" style="border-radius:0px">
-        <i class="fa fa-film" aria-hidden="true"></i>
-      </button><button id="data-dynamic" class="block-settings-tab" style="border-radius:0px 0px 10px 0px">
-        <i class="fa fa-tachometer" aria-hidden="true"></i>
-      </button>
-      </div>
-    `;
   }
 };
 // - SVG element construcio.
