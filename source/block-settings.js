@@ -69,17 +69,20 @@ module.exports = function () {
   blockSettings.hide = function(exceptBlock) {
     // If the form is actally associated with a block, hide it.
     if (this.activeBlock !== null && this.activeBlock !== exceptBlock) {
+      if (this.activeBlock.funcs.configuratorClose !== undefined) {
+        this.activeBlock.funcs.configuratorClose(this.customDiv, this.activeBlock);
+      }
       this.activeBlock = null;
 
       // Start animation to hide the form.
-      var div = blockSettings.commonDiv;
+      var div = this.commonDiv;
       div.style.transition = 'all 0.2s ease';
       div.style.position = 'absolute';
       div.style.transform = 'scale(0.33, 0.0)';
       div.style.pointerEvents = 'all';
 
       // Clear out the custom part of the form
-      blockSettings.customDiv.innerHTML = '';
+      this.customDiv.innerHTML = '';
 
       this.tabNames = [];
       this.tabButtons = [];
@@ -120,14 +123,19 @@ module.exports = function () {
       // Build some SOM for the buttons
       var tabCount = this.tabNames.length;
       var tabsDiv = document.createElement('div');
+      var width = (100 / tabCount) + '%';
+
       for (var i = 0; i < tabCount; i++) {
+        // Create the button
         var button = document.createElement('button');
         var name = this.tabNames[i];
         blockSettings.tabButtons.push(button);
         tabsDiv.appendChild(button);
+
+        // Configure all its settings.
         button.id = name;
         button.className = 'block-settings-tab';
-
+        button.style.width = width;
         // tweak the curved edges based on position.
         if (i===0) {
           button.style.borderRadius='0px 0px 0px 10px';
@@ -141,6 +149,7 @@ module.exports = function () {
         button.innerHTML = tabs[name];
         button.onclick = blockSettings.onClickTab;
       }
+      // Add the row of tabs to the view.
       this.controllersDiv.appendChild(tabsDiv);
 
       // Select the initial tab

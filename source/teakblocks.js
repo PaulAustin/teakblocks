@@ -923,24 +923,26 @@ tbe.initPaletteBox = function initPaletteBox() {
 
 tbe.addPalette = function addPalette(palette) {
 
+  /* Using a single row so palette tabs not needed */
+  /*
   var tab = svgb.createGroup("",0, 0);
   var tabblock = svgb.createRect('tab-block', 0, 0, 40, 25, 5);
   var text = svgb.createText('tab-text', 10, 20, palette.name);
-
   var tabIndex = this.tabs.length;
-  this.tabs.push(palette);
   tab.appendChild(tabblock);
   tab.appendChild(text);
   tab.setAttribute('transform', 'translate(20, ' + (5 + (30 * tabIndex)) + ')');
   tab.setAttribute('letter', palette.name);
   tbe.dropAreaGroup.appendChild(tab);
+  */
+  this.tabs.push(palette);
 
+  var indent = 10;
   var blocks = palette.blocks;
-  var i = 0;
   var blockTop = window.innerHeight - 90;
   for (var key in blocks) {
     if (blocks.hasOwnProperty(key)) {
-      var block = this.addPaletteBlock(80 + (90 * i), blockTop, key, {});
+      var block = this.addPaletteBlock(indent, blockTop, key, {});
       if (key === 'loop') {
         var blockTail = this.addPaletteBlock(block.rect.right, blockTop, 'tail', {});
         block.next = blockTail;
@@ -949,9 +951,8 @@ tbe.addPalette = function addPalette(palette) {
         block.loopTail = blockTail;
         blockTail.loopHead = block;
         blockTail.fixupCrossBlockSvg();
-        i += 1; // Not quite right, base insertion point on chain length sum.
       }
-      i += 1;
+      indent += block.chainWidth + 10;
     }
   }
 };
