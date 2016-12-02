@@ -113,6 +113,9 @@ b.pictureBlock = {
   },
   // Inject the HTML for the controllers editor.
   // TODO: pass in the controller. That might all move our of this class.
+  configuratorClose: function(div, block) {
+    console.log('configurator closing', block);
+  },
   configurator: function(div, block) {
     div.innerHTML =
         `<div id='pictureEditorDiv'>
@@ -164,6 +167,7 @@ b.pictureBlock = {
           }
         }
       });
+    console.log('configurator opened', block);
     return;
   }
 };
@@ -182,6 +186,29 @@ b.ledColorStripBlock = {
 // Start block is a work in progress, might not be needed. Might be
 // for naming seperate targets.
 b.startBlock = {
+  tabs: {
+    'event': '<i class="fa fa-bolt" aria-hidden="true"></i>',
+    'target-bt': '<i class="fa fa-bluetooth-b" aria-hidden="true"></i>',
+    'target-usb': '<i class="fa fa-usb" aria-hidden="true"></i>',
+  },
+  // Initial setting for blocks of this type.
+  defaultSettings: function() {
+    // return a new object with settings for the controller.
+    return {
+      // And the data that goes with that editor.
+      data:{deviceName:'zorgav', bus:'ble', start:'click'},
+      // Indicate what controller is active. This may affect the data format.
+      controller:'target-bt',
+    };
+  },
+  configuratorClose: function(div, block) {
+    console.log('start configurator closing', block);
+  },
+  configurator: function(div) {
+    div.innerHTML =
+        `<div id='scannerDiv' width=185 hieght=185>
+        </div>`;
+  },
   svg: function(root) {
     var pathd = '';
     pathd =  pb.move(31, 21);
