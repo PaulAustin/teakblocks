@@ -22,7 +22,6 @@ SOFTWARE.
 
 module.exports = function () {
 
-var interact = require('interact.js');
 var svgb = require('./svgbuilder.js');
 var pb = svgb.pathBuilder;
 var b = {};
@@ -46,131 +45,10 @@ b.unknownBlock = {
   }
 };
 
-// Use CSS clases for LED lit state.
-function setPicturePixel(svgPixel, state) {
-  if (svgPixel === undefined) {
-    return;
-  }
-  if (state === 1) {
-    svgPixel.setAttribute('class', 'svg-clear block-picture-led-on');
-  } else {
-    svgPixel.setAttribute('class', 'svg-clear block-picture-led-off');
-  }
-}
+b.startBlock = require('./blocks/startBlock.js');
+b.pictureBlock = require('./blocks/pictureBlock.js');
 
-function pictureEventToIndex(event) {
-  // Offset is experimental not supported on all browsers.
-  // var x = Math.floor(event.offsetX / 35);
-  // var y = Math.floor(event.offsetY / 35);
-  var bb = event.target.parentNode.getBoundingClientRect();
-  var x = Math.floor((event.pageX - bb.left) / 35);
-  var y = Math.floor((event.pageY - bb.top) / 35);
-  if (x>4 || y>4) {
-    return -1;
-  } else {
-    return (y * 5) + x;
-  }
-}
 
-// Picture block made up of a 5x5 LED display
-b.pictureBlock = {
-  // List of HTML snippets used for controller tabs.
-  tabs: {
-    '5x5picture' : '<i class="fa fa-smile-o" aria-hidden="true"></i>',
-    '5x5string'  : 'abc',
-    '5x5movie'   : '<i class="fa fa-film" aria-hidden="true"></i>',
-    '5x5sensor'  : '<i class="fa fa-tachometer" aria-hidden="true"></i>'
-  },
-  // Initial setting for blocks of this type.
-  defaultSettings: function() {
-    // return a new object with settings for the controller.
-    return {
-      // And the data that goes with that editor.
-      data:[0,0,0,0,0, 0,1,0,1,0, 0,0,0,0,0, 1,0,0,0,1, 0,1,1,1,0],
-      // Indicate what controller is active. This may affect the data format.
-      controller:'5x5picture',
-    };
-  },
-  // Generate and SVG based image for a specific block.
-  svg: function(svg, block) {
-    var data = block.controllerSettings.data;
-    var group = svgb.createGroup('svg-clear', 24, 15);
-    var box = svgb.createRect('svg-clear block-picture-board', -8, -8, 48, 48, 4);
-    group.appendChild(box);
-    for (var iy = 0; iy < 5; iy++) {
-      for (var ix = 0; ix < 5; ix++) {
-        var style = '';
-        if (data[ix + (iy*5)] === 0) {
-          style = 'svg-clear block-picture-led-off';
-        } else {
-          style = 'svg-clear block-picture-led-on';
-        }
-        var led = svgb.createCircle(style, (ix*8), (iy*8), 3);
-        group.appendChild(led);
-      }
-    }
-    svg.appendChild(group);
-  },
-  // Inject the HTML for the controllers editor.
-  // TODO: pass in the controller. That might all move our of this class.
-  configuratorClose: function(div, block) {
-    console.log('configurator closing', block);
-  },
-  configurator: function(div, block) {
-    div.innerHTML =
-        `<div id='pictureEditorDiv'>
-          <svg id='pictureEditor' width='175px' height='175px' xmlns='http://www.w3.org/2000/svg'>
-            <rect id='pictureRect' width=175px height=175px rx=10 ry='10' class='pix-editor block-picture-board'/>
-            </svg>
-        </div>`;
-
-    var svg = document.getElementById('pictureEditor');
-
-    // Create a editor state object for the interactions to work with.
-    var data = block.controllerSettings.data;
-    var pixOn = 0;
-    var dindex = 0;
-    for (var iy = 0; iy < 5; iy++) {
-      for (var ix = 0; ix < 5; ix++) {
-        // Create each LED and initialize its lit state.
-        var led = svgb.createCircle('', 17.5+(ix*35), 17.5+(iy*35), 13);
-        setPicturePixel(led, data[dindex]);
-        svg.appendChild(led);
-        dindex += 1;
-      }
-    }
-
-    interact('.pix-editor', {context:svg})
-      .on('down', function (event) {
-        // Flip brush state based on pixel clicked on, then paint.
-        var i = pictureEventToIndex(event);
-        if (i >= 0) {
-          if (data[i] === 0) {
-            pixOn = 1;
-          } else {
-            pixOn = 0;
-          }
-        }
-        data[i] = pixOn;
-        setPicturePixel(event.target.parentNode.children[i+1], data[i]);
-        block.updateSvg();
-      })
-      .on('move', function(event) {
-        // Paint pixel based on brush state.
-        if (event.interaction.pointerIsDown) {
-          //If it's in range and there was an actualy change then paint.
-          var i = pictureEventToIndex(event);
-          if ((i >= 0) &&  (data[i] !== pixOn)) {
-            data[i] = pixOn;
-            setPicturePixel(event.target.parentNode.children[i+1], data[i]);
-            block.updateSvg();
-          }
-        }
-      });
-    console.log('configurator opened', block);
-    return;
-  }
-};
 // - SVG element construcio.
 // - HTML sub parts
 // - property serialization
@@ -180,46 +58,6 @@ b.pictureBlock = {
 b.ledColorStripBlock = {
   svg: function(root) {
     return root;
-  }
-};
-
-// Start block is a work in progress, might not be needed. Might be
-// for naming seperate targets.
-b.startBlock = {
-  tabs: {
-    'event': '<i class="fa fa-bolt" aria-hidden="true"></i>',
-    'target-bt': '<i class="fa fa-bluetooth-b" aria-hidden="true"></i>',
-    'target-usb': '<i class="fa fa-usb" aria-hidden="true"></i>',
-  },
-  // Initial setting for blocks of this type.
-  defaultSettings: function() {
-    // return a new object with settings for the controller.
-    return {
-      // And the data that goes with that editor.
-      data:{deviceName:'zorgav', bus:'ble', start:'click'},
-      // Indicate what controller is active. This may affect the data format.
-      controller:'target-bt',
-    };
-  },
-  configuratorClose: function(div, block) {
-    console.log('start configurator closing', block);
-  },
-  configurator: function(div) {
-    div.innerHTML =
-        `<div id='scannerDiv' width=185 hieght=185>
-        </div>`;
-  },
-  svg: function(root) {
-    var pathd = '';
-    pathd =  pb.move(31, 21);
-    pathd += pb.hline(18);
-    pathd += pb.arc(9, 180, 0, 1, 0, 18);
-    pathd += pb.hline(-18);
-    pathd += pb.arc(9, 180, 0, 1, 0, -18);
-    var path = svgb.createPath('svg-clear block-stencil', pathd);
-    root.appendChild(path);
-    root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 31, 30, 2));
-    root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 49, 30, 2));
   }
 };
 
