@@ -107,6 +107,13 @@ html, body { margin:0; padding:0; overflow:hidden }
   fill: #FFB74D;
   stroke-linejoin: round;
 }
+.block-start-text {
+  /* For name of connected device */
+  font-family: "helvetica";
+  text-align: center;
+  font-size: 18px;
+  fill: #FFB74D;
+}
 .block-picture-board {
   fill: #332222;
 }
