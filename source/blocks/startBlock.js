@@ -96,18 +96,18 @@ module.exports = function () {
 
   startBlock.svg = function(root, block) {
     var pathd = '';
-    pathd =  pb.move(31, 16);
+    pathd =  pb.move(31, 11);
     pathd += pb.hline(18);
     pathd += pb.arc(9, 180, 0, 1, 0, 18);
     pathd += pb.hline(-18);
     pathd += pb.arc(9, 180, 0, 1, 0, -18);
     var path = svgb.createPath('svg-clear block-stencil', pathd);
     root.appendChild(path);
-    root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 31, 25, 2));
-    root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 49, 25, 2));
+    root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 31, 20, 2));
+    root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 49, 20, 2));
 
     var name = block.controllerSettings.data.deviceName;
-    var text = svgb.createText('block-start-text svg-clear', 40, 65, name);
+    var text = svgb.createText('block-start-text svg-clear', 40, 50, name);
     text.setAttribute('text-anchor', 'middle');
     root.appendChild(text);
   };
