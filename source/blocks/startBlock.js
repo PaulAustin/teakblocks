@@ -22,6 +22,9 @@ SOFTWARE.
 
 module.exports = function () {
   var svgb = require('./../svgbuilder.js');
+  require('./../evothings/easyble.dist.js');
+  var ko = require('knockout');
+
   var pb = svgb.pathBuilder;
   var startBlock = {};
 
@@ -53,6 +56,15 @@ module.exports = function () {
   startBlock.configurator = function(div) {
     div.innerHTML =
       `<div id='scannerDiv' width=185 hieght=185>
+        <div class="scroll-div">
+          <table id="device-table" class='tf-table' width='100%'>
+          <tbody data-bind="foreach: devices">
+              <tr data-bind="click: $parent.onDeviceClick;">
+                <td data-bind="text: name"></td>
+              </tr>
+          </tbody>
+          </table>
+        </div>
       </div>`;
   };
 

@@ -48,12 +48,6 @@ b.unknownBlock = {
 b.startBlock = require('./blocks/startBlock.js');
 b.pictureBlock = require('./blocks/pictureBlock.js');
 
-
-// - SVG element construcio.
-// - HTML sub parts
-// - property serialization
-// - animation?
-
 // LED color
 b.ledColorStripBlock = {
   svg: function(root) {
