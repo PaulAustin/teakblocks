@@ -36,17 +36,13 @@ module.exports = function () {
     var commonDiv = document.createElement("div");
     commonDiv.innerHTML =
     `<div id="block-settings" class="block-config-form blockform">
-        <div class="block-settings-editops">
-          <button id="block-run">
+        <div class="block-settings-editops"><button id="block-run">
             <i class="fa fa-step-forward" aria-hidden="true"></i>
-          </button>
-          <button id="block-clone">
+          </button><button id="block-clone">
             <i class="fa fa-clone" aria-hidden="true"></i>
-          </button>
-          <button id="block-clear">
+          </button><button id="block-clear">
             <i class="fa fa-trash-o" aria-hidden="true"></i>
-          </button>
-        </div>
+          </button></div>
         <div id="block-settings-custom"></div>
         <div id="block-controller-tabs"></div>
     </div>`;
@@ -191,8 +187,7 @@ module.exports = function () {
     } else {
       blockSettings.customDiv.innerHTML =
       `<div>
-          <br>
-          <label><input type="checkbox" id="show-code" data-bind="checked:visible">
+          <label><input type="checkbox">
             <span class="label-text">Power</span>
           </label>
       </div>`;

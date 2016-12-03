@@ -80,7 +80,7 @@ module.exports = function () {
     for (var iy = 0; iy < 5; iy++) {
       for (var ix = 0; ix < 5; ix++) {
         var style = '';
-        if (data[ix + (iy*5)] === 0) {
+        if (data[ix + (iy * 5)] === 0) {
           style = 'svg-clear block-picture-led-off';
         } else {
           style = 'svg-clear block-picture-led-on';
@@ -101,9 +101,9 @@ module.exports = function () {
   pictureBlock.configurator= function(div, block) {
     div.innerHTML =
         `<div id='pictureEditorDiv'>
-          <svg id='pictureEditor' width='175px' height='175px' xmlns='http://www.w3.org/2000/svg'>
-            <rect id='pictureRect' width=175px height=175px rx=10 ry='10' class='pix-editor block-picture-board'/>
-            </svg>
+          <svg id='pictureEditor' width=175px height=175px xmlns='http://www.w3.org/2000/svg'>
+            <rect id='pictureRect' width=175px height=175px rx=10 ry=10 class='pix-editor block-picture-board'/>
+          </svg>
         </div>`;
 
     // Create a editor state object for the interactions to work with.

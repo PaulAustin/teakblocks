@@ -142,10 +142,11 @@ html, body { margin:0; padding:0; overflow:hidden }
 }
 /* Buttons for the bock config edit operations run, copy, delete */
 .block-settings-editops {
-  padding:5px;
+  padding:2px;
 }
 .block-settings-editops button {
-  width:72.5px;
+  margin:2px;
+  width:31.6%;
   font-size:20px;
   border: 2px solid #81C784;
   border-radius: 6px;
@@ -158,7 +159,10 @@ html, body { margin:0; padding:0; overflow:hidden }
 }
 /* Controller settings for the block. */
 #block-settings-custom {
-  padding:10px;
+  /* Ensure rom on left and right */
+  margin: 0px 5px 0px 5px;
+  /* All editors should be the same height */
+  height: 175px;
 }
 #pictureEditorDiv {
   text-align:center;
@@ -168,16 +172,15 @@ html, body { margin:0; padding:0; overflow:hidden }
   text-align: center;
   font-size: 24px;
   height: 36px;
-  padding: 0px;
-  margin: 0px;
-  border: 1px solid #81C784;
+  margin: 5px 0px 0px 0px;
+  border: 0px solid #81C784;
   background-color: #81C784;
   user-select: none;
   outline: none;
 }
 .tab-selected {
   background-color: #C8E6C9;
-  border: 1px solid #C8E6C9;
+  border: 0px solid #C8E6C9;
 }
 /* Use this class for SVG elements that do not directly interact with the pointer */
 .svg-clear {
@@ -321,12 +324,13 @@ outline: none;
 }
 .scroll-div {
   width:100%;
-  height:200px;
+  height:175px;
   overflow-y:scroll;
-  box-shadow:  0px 0px 5px 3px rgba(73, 137, 144, 0.2);
+/*  box-shadow:  0px 0px 5px 3px rgba(73, 137, 144, 0.2); */
 }
 .tf-table {
   list-style: none;
+  height:175px;
   list-style-position:inside;
-  background-color: #BAEDF3;
+  background-color: #90CAF9;
 }
