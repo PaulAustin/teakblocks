@@ -63,9 +63,6 @@ function deviceReady() {
   var clearButton = document.getElementById('clear-button');
   clearButton.onclick = function() { tbe.clearAllBlocks(); };
 
-  var scanButton = document.getElementById('scan-button');
-  scanButton.onclick = function() { tf.showHide(tbe.components.scan); };
-
   // these could be loaded from JSON files/strings
   var package1 = {
   name:'A',
