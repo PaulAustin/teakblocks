@@ -28,6 +28,15 @@ module.exports = function () {
   var pb = svgb.pathBuilder;
   var startBlock = {};
 
+  // Items for selecting a device from a list.
+  startBlock.devices = ko.observableArray([]);
+  startBlock.deviceInfos = {};
+
+  startBlock.koDiv = null;
+  startBlock.onDeviceClick = function() {
+    console.log('got a  click', this);
+  };
+
   // Start block is a work in progress, might not be needed. Might be
   // for naming seperate targets.
   startBlock.tabs = {
@@ -54,6 +63,7 @@ module.exports = function () {
   };
 
   startBlock.configurator = function(div) {
+    startBlock.koDiv = div;
     div.innerHTML =
       `<div id='scannerDiv' width=185 hieght=185>
         <div class="scroll-div">
@@ -66,9 +76,18 @@ module.exports = function () {
           </table>
         </div>
       </div>`;
+
+    // Connect the dataBinding.
+    ko.applyBindings(startBlock, div);
+
+    // Need to be smart about aging out old items.
+    // and filetring
+    startBlock.devices.removeAll();
+    startBlock.startScan();
   };
 
   startBlock.configuratorClose = function(div, block) {
+    ko.cleanNode(startBlock.koDiv);
     console.log('start configurator closing', block);
   };
 
@@ -83,6 +102,52 @@ module.exports = function () {
     root.appendChild(path);
     root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 31, 30, 2));
     root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 49, 30, 2));
+  };
+
+  startBlock.foundDevice = function (device) {
+    console.log('device found', device.name);
+    if ((device.name !== undefined) &&
+        (startBlock.deviceInfos[device.name] === undefined)) {
+      // Add new devices to the list.
+      startBlock.devices.push({ name: device.name });
+      startBlock.deviceInfos[device.name] = {
+        name:device.name,
+        device:device,
+        selected: false,
+        timeStamp: Date.now()
+      };
+    }
+  };
+
+  startBlock.startScan = function () {
+    var ble = window.evothings.ble;
+    if (ble === undefined) {
+      startBlock.devices.removeAll();
+      startBlock.devices.push({ name: 'rowbin' });
+      startBlock.devices.push({ name: 'zorgav' });
+      startBlock.devices.push({ name: 'vargon' });
+      startBlock.devices.push({ name: 'rimbor' });
+      // Add extra rows so the cell don stretch to fill the table.
+      startBlock.devices.push({ name: '' });
+      return;
+    } else {
+      console.log('starting BLE scan');
+      var self = this;
+      ble.stopScan();
+      ble.startScan(
+        function(device) { self.foundDevice(device); },
+        function(errorCode) {
+          console.log('error:' + errorCode);
+        });
+    }
+  };
+
+  startBlock.stopScan = function () {
+    var ble = window.evothings.ble;
+    if (ble === undefined)
+      return;
+    console.log('stopping scan');
+    ble.stopScan();
   };
 
   return startBlock;
