@@ -34,7 +34,9 @@ module.exports = function () {
 
   startBlock.koDiv = null;
   startBlock.onDeviceClick = function() {
-    console.log('got a  click', this);
+    var block = startBlock.activeBlock;
+    block.controllerSettings.data.deviceName = this.name;
+    block.updateSvg();
   };
 
   // Start block is a work in progress, might not be needed. Might be
@@ -53,7 +55,7 @@ module.exports = function () {
         // What triggers this chain, mouse click, button, message,...
         start:'click',
         // Device name
-        deviceName:'zorgav',
+        deviceName:'-?-',
         // Connection mechanism
         bus:'ble',
       },
@@ -62,7 +64,8 @@ module.exports = function () {
     };
   };
 
-  startBlock.configurator = function(div) {
+  startBlock.configurator = function(div, block) {
+    startBlock.activeBlock = block;
     startBlock.koDiv = div;
     div.innerHTML =
       `<div id='scannerDiv' width=185 hieght=185>
@@ -86,26 +89,30 @@ module.exports = function () {
     startBlock.startScan();
   };
 
-  startBlock.configuratorClose = function(div, block) {
+  startBlock.configuratorClose = function() {
+    startBlock.activeBlock = null;
     ko.cleanNode(startBlock.koDiv);
-    console.log('start configurator closing', block);
   };
 
-  startBlock.svg = function(root) {
+  startBlock.svg = function(root, block) {
     var pathd = '';
-    pathd =  pb.move(31, 21);
+    pathd =  pb.move(31, 16);
     pathd += pb.hline(18);
     pathd += pb.arc(9, 180, 0, 1, 0, 18);
     pathd += pb.hline(-18);
     pathd += pb.arc(9, 180, 0, 1, 0, -18);
     var path = svgb.createPath('svg-clear block-stencil', pathd);
     root.appendChild(path);
-    root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 31, 30, 2));
-    root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 49, 30, 2));
+    root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 31, 25, 2));
+    root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 49, 25, 2));
+
+    var name = block.controllerSettings.data.deviceName;
+    var text = svgb.createText('block-start-text svg-clear', 40, 65, name);
+    text.setAttribute('text-anchor', 'middle');
+    root.appendChild(text);
   };
 
   startBlock.foundDevice = function (device) {
-    console.log('device found', device.name);
     if ((device.name !== undefined) &&
         (startBlock.deviceInfos[device.name] === undefined)) {
       // Add new devices to the list.
@@ -127,11 +134,10 @@ module.exports = function () {
       startBlock.devices.push({ name: 'zorgav' });
       startBlock.devices.push({ name: 'vargon' });
       startBlock.devices.push({ name: 'rimbor' });
-      // Add extra rows so the cell don stretch to fill the table.
+      // Add extra rows so the cell don't stretch to fill the table.
       startBlock.devices.push({ name: '' });
       return;
     } else {
-      console.log('starting BLE scan');
       var self = this;
       ble.stopScan();
       ble.startScan(
@@ -144,10 +150,11 @@ module.exports = function () {
 
   startBlock.stopScan = function () {
     var ble = window.evothings.ble;
-    if (ble === undefined)
+    if (ble === undefined) {
       return;
-    console.log('stopping scan');
-    ble.stopScan();
+    } else {
+      ble.stopScan();
+    }
   };
 
   return startBlock;
