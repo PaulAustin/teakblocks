@@ -343,3 +343,6 @@ outline: none;
   list-style-position:inside;
   background-color: #90CAF9;
 }
+.calcButtons{
+  fill: #4CAF50;
+}
