@@ -25,6 +25,8 @@ module.exports = function () {
 var svgb = require('./svgbuilder.js');
 var pb = svgb.pathBuilder;
 var b = {};
+  var interact = require('interact.js');
+
 
 b.bind = function(style){
   var key = style + 'Block';
@@ -55,8 +57,22 @@ b.ledColorStripBlock = {
   }
 };
 
+
+function pixelToBlock(event, array){
+    var num = 0;
+    if((event.layerY - 94) <= 0){
+      return array[Math.floor((event.layerX-20)/33)];
+    }
+    else{
+      return array[Math.floor((event.layerX-20)/33) + 6];
+
+    }
+    return null;
+}
+
 // Single motor
 b.motorBlock = {
+  numArray: ["0", "1", "2", "3", "4",  "<-", "5","6", "7", "8", "9", "."],
   svg: function(root) {
     // The graphic is a composite concept of a motor/wheel. In many cases
     // students might only see the wheel.
@@ -65,6 +81,120 @@ b.motorBlock = {
     var shaft = svgb.createCircle('svg-clear block-motor-shaft', 40, 30, 4);
     root.appendChild(shaft);
     return root;
+  },
+  configurator: function(div){
+    div.innerHTML =
+        `<div id='pictureEditorDiv'>
+          <svg id='pictureEditor' width='200px' height='200px' xmlns='http://www.w3.org/2000/svg'>
+            <svg id="calc" class='area' width='225px' height='72.5px' xmlns='http://www.w3.org/2000/svg'></svg>
+            <svg id="output" width='100px' height='100px' xmlns='http://www.w3.org/2000/svg'></svg>
+            </svg>
+        </div>`;
+    var svg = document.getElementById('pictureEditor');
+    var calcArea = document.getElementById('calc');
+    var output = document.getElementById('output');
+    var num = 0;
+    var strNum = "";
+    var mult = true;
+    var decimalOne = true;
+    var decimalTwo = true;
+    var decimalThree = true;
+    var decimalFour = true;
+    //var textToDisplay = svgb.createText('', 10, 80, num);
+    
+
+    // Create a editor state object for the interactions to work with.
+    
+    for (var iy = 0; iy < 2; iy++) {
+      for (var ix = 0; ix < 6; ix++) {
+        // Create each LED and initialize its lit state.
+        var button = svgb.createGroup('', 0, 0);
+        var box = svgb.createRect('calcButtons', ((ix)*33), 17.5+(iy*30), 30, 25, 2);
+        var text = svgb.createText('', 10+((ix)*33), 37.5+(iy*30), b.motorBlock.numArray[((iy)*6) + ix]);
+
+        button.appendChild(box);
+        button.appendChild(text);
+
+        calcArea.appendChild(button);
+      }
+    }
+    
+    interact('.area', {context:svg})
+      .on('down', function (event) {
+
+
+
+        
+          strNum = pixelToBlock(event, b.motorBlock.numArray);
+        
+          if(strNum === "."){
+            if(typeof num != "string") num = num.toFixed(1);
+            mult = false;
+          }
+          else if(strNum === "<-"){
+            num = 0;
+            strNum = "";
+            mult = true;
+            decimalOne = true;
+            decimalTwo = true;
+            decimalThree = true;
+            decimalFour = true;
+          }
+          else{
+            
+              if(typeof num === "string"){
+                if(decimalOne){
+                  num = parseInt(num) + parseFloat(strNum , 10)/10;
+                  decimalOne = false;
+                }
+                else if(decimalTwo){
+                  num = parseFloat(num) + parseFloat(strNum , 10)/100;
+                  decimalTwo = false;
+                }
+                
+                mult = false;
+              }
+              else{
+                
+                  if(num % 1 > 0 && decimalThree){
+                    num = parseFloat(num) + parseFloat(strNum , 10)/100;
+                    decimalThree = false;
+                  } 
+                  else if(decimalFour){
+                    if(num < 10){
+                      if((num*10) % 1 !== 0){
+                        decimalFour = false;
+                      }
+                      else{
+                        num += parseFloat(strNum , 10)/10;
+
+                      }
+                    }
+
+                  }
+              }
+          }
+          if(mult){
+            num *= 10;
+          }
+          if(num.toString().length > 5 && typeof num === "number") {
+            //num = num.parseFloat(num.toFixed(2));
+            num = Math.round(100 * num)/100;
+
+          }
+          
+        if(strNum === "<-"){
+          num = 0;
+        }
+
+          console.log("num:", num, strNum, typeof num, typeof strNum); 
+      });
+      
+    return;
+    
+  },
+  controllers: function(div){
+
   }
 };
 
