@@ -2,14 +2,15 @@
   background-color: white;
 }
 .function-block {
-  fill: #0066FF;
+/*  fill: #0066FF; */
+  fill: #795548;
   stroke-width: 4;
-  stroke: #00CCCC;
+  stroke: #873600;
 }
 .function-block-dragging {
-  fill: #0066FF;
+  fill: #795548;
   stroke-width: 4;
-  stroke: #00CCCC;
+  stroke: #4E342E;
 }
 .function-text {
   fill: #D6E2FE;
@@ -17,7 +18,7 @@
 .loop-region {
   fill: none;
   stroke-width: 4;
-  stroke: #00CCCC;
+  stroke: #4E342E;
 }
 .shadow-block {
   fill:SkyBlue;
