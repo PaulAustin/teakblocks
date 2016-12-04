@@ -78,8 +78,8 @@ html, body { margin:0; padding:0; overflow:hidden }
   z-index: 501;
 }
 .function-block {
-  fill:#90CAF9;
-/*  fill: #3372FF; blue */
+/*  fill:#90CAF9; */
+  fill: #3372FF; 
 /*  transition: fill 0.3s ease; */
   stroke-width: 4;
   stroke: #5A33FF;
