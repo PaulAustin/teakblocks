@@ -30,7 +30,8 @@ module.exports = function () {
 
   // Items for selecting a device from a list.
   startBlock.devices = ko.observableArray([]);
-  startBlock.deviceInfos = {};
+  startBlock.deviceName = {};
+  startBlock.cullTimer = null;
 
   startBlock.koDiv = null;
   startBlock.onDeviceClick = function() {
@@ -90,6 +91,7 @@ module.exports = function () {
   };
 
   startBlock.configuratorClose = function() {
+    startBlock.stopScan();
     startBlock.activeBlock = null;
     ko.cleanNode(startBlock.koDiv);
   };
@@ -113,30 +115,65 @@ module.exports = function () {
   };
 
   startBlock.foundDevice = function (device) {
-    if ((device.name !== undefined) &&
-        (startBlock.deviceInfos[device.name] === undefined)) {
-      // Add new devices to the list.
-      startBlock.devices.push({ name: device.name });
-      startBlock.deviceInfos[device.name] = {
-        name:device.name,
-        device:device,
-        selected: false,
-        timeStamp: Date.now()
-      };
+    // Does it look like real device?
+    if (device.name !== undefined) {
+      var hwType = '';
+      if (device.name.startsWith('BBC micro:bit [')) {
+        var str = device.name.split('[', 2)[1].split(']',1)[0];
+        device.name = str;
+        hwType = 'micro:bit';
+      } else {
+        // arduino, other...
+        hwType = 'unknown';
+      }
+
+      var now = Date.now();
+
+      // See if that item already exists.
+      var match = ko.utils.arrayFirst(startBlock.devices(), function(item) {
+        return (item.name === device.name);
+      });
+      if (!match) {
+        startBlock.devices.unshift({
+          name: device.name,
+          hwType: hwType,
+          device: device,
+          selected: false,
+          ts: now
+        });
+      } else {
+        match.ts = now;
+      }
     }
   };
 
+  startBlock.cullDevices = function () {
+    // for testing on desktop,
+    // startBlock.foundDevice({name:'BBC micro:bit [gato]'});
+    var now = Date.now();
+    startBlock.devices.remove(function(item) {
+      if (item.ts === 0) {
+        return false;
+      }
+      return ((now - item.ts) > 2500);
+    });
+    startBlock.cullTimer = setTimeout(startBlock.cullDevices, 1000);
+  };
+
   startBlock.startScan = function () {
+    // Put empty  rows so the cell don't stretch to fill the table.
+    startBlock.devices.removeAll();
+    for (var i = 0; i < 8; i++) {
+      startBlock.devices.push({ name: '', ts: 0});
+    }
+
+    // Start up scanning, or add fake ones.
     var ble = window.evothings.ble;
     if (ble === undefined) {
-      startBlock.devices.removeAll();
-      startBlock.devices.push({ name: 'rowbin' });
-      startBlock.devices.push({ name: 'zorgav' });
-      startBlock.devices.push({ name: 'vargon' });
-      startBlock.devices.push({ name: 'rimbor' });
-      // Add extra rows so the cell don't stretch to fill the table.
-      startBlock.devices.push({ name: '' });
-      return;
+      startBlock.devices.unshift({ name: 'rowbin', ts: 0});
+      startBlock.devices.unshift({ name: 'zorgav', ts: (Date.now()+1500)});
+      startBlock.devices.unshift({ name: 'vargon', ts: (Date.now()+3000)});
+      startBlock.devices.unshift({ name: 'rimbor', ts: 0});
     } else {
       var self = this;
       ble.stopScan();
@@ -146,6 +183,8 @@ module.exports = function () {
           console.log('error:' + errorCode);
         });
     }
+    // Periodically remove old items.
+    startBlock.cullDevices();
   };
 
   startBlock.stopScan = function () {
@@ -154,6 +193,10 @@ module.exports = function () {
       return;
     } else {
       ble.stopScan();
+    }
+    if (startBlock.cullTimer !== null) {
+      clearTimeout(startBlock.cullTimer);
+      startBlock.cullTimer = null;
     }
   };
 
