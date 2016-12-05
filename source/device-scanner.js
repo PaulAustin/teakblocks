@@ -140,12 +140,13 @@ module.exports = function () {
       return;
     }
 
-    var self = this;
     ble.stopScan();
     ble.startScan(
       function(device) {
         if (device.name !== undefined) {
-          self.foundDevice(device);
+          if (activeDevices[device.name] === undefined) {
+            this.addDevice(device);
+          }
         }
       },
       function(errorCode) {
