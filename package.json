@@ -8,6 +8,7 @@
     "bifyu": "browserify source/index.js -t [ babelify --presets es2015 ] | uglifyjs >html_app/www/bundled_tbe.js; ls -l html_app/www/bundled_tbe.js",
     "bify": "browserify source/index.js -o html_app/www/bundled_tbe.js; ls -l html_app/www/bundled_tbe.js",
     "wify": "watchify source/index.js -o html_app/www/bundled_tbe.js -v",
+    "azap": "npm run bifyu; npm run abuild; npm run adeploy",
     "abuild": "cd html_app; cordova build android",
     "ibuild": "cd html_app; cordova build iOS",
     "irun": "cd html_app; cordova run iOS",
