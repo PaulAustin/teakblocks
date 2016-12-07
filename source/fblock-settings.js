@@ -59,20 +59,14 @@ b.ledColorStripBlock = {
 
 
 function pixelToBlock(event, array){
-    var num = 0;
-    if((event.layerY - 94) <= 0){
-      return array[Math.floor((event.layerX-20)/33)];
-    }
-    else{
-      return array[Math.floor((event.layerX-20)/33) + 6];
-
-    }
-    return null;
+    var xPos = Math.floor((event.layerX - 20)/70);
+    var yPos = Math.floor((event.layerY - 62)/30);
+    return array[(yPos*3) + xPos];
 }
 
 // Single motor
 b.motorBlock = {
-  numArray: ["0", "1", "2", "3", "4",  "<-", "5","6", "7", "8", "9", "."],
+  numArray: ["1", "2", "3", "4", "5","6", "7", "8", "9", ".", "0", "<-"],
   svg: function(root) {
     // The graphic is a composite concept of a motor/wheel. In many cases
     // students might only see the wheel.
@@ -86,7 +80,7 @@ b.motorBlock = {
     div.innerHTML =
         `<div id='pictureEditorDiv'>
           <svg id='pictureEditor' width='200px' height='200px' xmlns='http://www.w3.org/2000/svg'>
-            <svg id="calc" class='area' width='225px' height='72.5px' xmlns='http://www.w3.org/2000/svg'></svg>
+            <svg id="calc" class='area' width='225px' height='167.5px' xmlns='http://www.w3.org/2000/svg'></svg>
             <svg id="output" width='100px' height='100px' xmlns='http://www.w3.org/2000/svg'></svg>
             </svg>
         </div>`;
@@ -105,12 +99,12 @@ b.motorBlock = {
 
     // Create a editor state object for the interactions to work with.
     
-    for (var iy = 0; iy < 2; iy++) {
-      for (var ix = 0; ix < 6; ix++) {
+    for (var iy = 0; iy < 4; iy++) {
+      for (var ix = 0; ix < 3; ix++) {
         // Create each LED and initialize its lit state.
         var button = svgb.createGroup('', 0, 0);
-        var box = svgb.createRect('calcButtons', ((ix)*33), 17.5+(iy*30), 30, 25, 2);
-        var text = svgb.createText('', 10+((ix)*33), 37.5+(iy*30), b.motorBlock.numArray[((iy)*6) + ix]);
+        var box = svgb.createRect('calcButtons', ((ix)*70), 22.5+(iy*30), 60, 25, 2);
+        var text = svgb.createText('', 25+((ix)*70), 42.5+(iy*30), b.motorBlock.numArray[((iy)*3) + ix]);
 
         button.appendChild(box);
         button.appendChild(text);
@@ -122,13 +116,11 @@ b.motorBlock = {
     interact('.area', {context:svg})
       .on('down', function (event) {
 
-
-
         
           strNum = pixelToBlock(event, b.motorBlock.numArray);
         
           if(strNum === "."){
-            if(typeof num != "string") num = num.toFixed(1);
+            if(typeof num != "string" && (num*10) % 1 == 0) num = num.toFixed(1);
             mult = false;
           }
           else if(strNum === "<-"){
@@ -169,6 +161,9 @@ b.motorBlock = {
                         num += parseFloat(strNum , 10)/10;
 
                       }
+                    }
+                    else{
+                      mult = false;
                     }
 
                   }
