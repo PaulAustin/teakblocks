@@ -30,14 +30,19 @@ module.exports = function () {
 
   // Items for selecting a device from a list.
   startBlock.devices = ko.observableArray([]);
+  startBlock.selectedDevice = ko.observable();
   startBlock.deviceName = {};
   startBlock.cullTimer = null;
 
   startBlock.koDiv = null;
+
   startBlock.onDeviceClick = function() {
-    var block = startBlock.activeBlock;
-    block.controllerSettings.data.deviceName = this.name;
-    block.updateSvg();
+    var name = this.selectedDevice();
+    if (typeof name === 'string') {
+      var block = startBlock.activeBlock;
+      block.controllerSettings.data.deviceName = name;
+      block.updateSvg();
+    }
   };
 
   // Start block is a work in progress, might not be needed. Might be
@@ -69,23 +74,24 @@ module.exports = function () {
     startBlock.activeBlock = block;
     startBlock.koDiv = div;
     div.innerHTML =
-      `<div id='scannerDiv' width=185 hieght=185>
-        <div class="scroll-div">
-          <table id="device-table" class='tf-table' width='100%'>
-          <tbody data-bind="foreach: devices">
-              <tr data-bind="click: $parent.onDeviceClick;">
-                <td data-bind="text: name"></td>
-              </tr>
-          </tbody>
-          </table>
-        </div>
+      `<div id='scannerDiv' class='list-box' width=185 hieght=185>
+        <select multiple='multiple' size='6'
+          data-bind="
+            options:devices,
+            optionsText:'name',
+            optionsValue:'name',
+            value:selectedDevice,
+            click:onDeviceClick
+            ">
+        </select>
       </div>`;
 
+//, selectedOptions:selectedItems
     // Connect the dataBinding.
     ko.applyBindings(startBlock, div);
 
     // Need to be smart about aging out old items.
-    // and filetring
+    // and filtering
     startBlock.devices.removeAll();
     startBlock.startScan();
   };
@@ -163,17 +169,14 @@ module.exports = function () {
   startBlock.startScan = function () {
     // Put empty  rows so the cell don't stretch to fill the table.
     startBlock.devices.removeAll();
-    for (var i = 0; i < 8; i++) {
-      startBlock.devices.push({ name: '', ts: 0});
-    }
 
     // Start up scanning, or add fake ones.
     var ble = window.evothings.ble;
     if (ble === undefined) {
-      startBlock.devices.unshift({ name: 'rowbin', ts: 0});
-      startBlock.devices.unshift({ name: 'zorgav', ts: (Date.now()+1500)});
-      startBlock.devices.unshift({ name: 'vargon', ts: (Date.now()+3000)});
-      startBlock.devices.unshift({ name: 'rimbor', ts: 0});
+      startBlock.devices.unshift({ name: 'rowbin', selected:false, ts: 0});
+      startBlock.devices.unshift({ name: 'zorgav', selected:false, ts: (Date.now()+1500)});
+      startBlock.devices.unshift({ name: 'vargon', selected:false, ts: (Date.now()+3000)});
+      startBlock.devices.unshift({ name: 'rimbor', selected:false, ts: 0});
     } else {
       var self = this;
       ble.stopScan();

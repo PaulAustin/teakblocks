@@ -79,7 +79,7 @@ html, body { margin:0; padding:0; overflow:hidden }
 }
 .function-block {
 /*  fill:#90CAF9; */
-  fill: #3372FF; 
+  fill: #3372FF;
 /*  transition: fill 0.3s ease; */
   stroke-width: 4;
   stroke: #5A33FF;
@@ -326,23 +326,24 @@ label input[type="checkbox"]:disabled + .label-text:before {
   border: 2px solid #06a3e9;
   border-radius: 4px;
   background-color: #75DCE7;
-    user-select: none;
+  user-select: none;
 }
 .teakform button:active {
 outline: none;
 }
-.scroll-div {
-  width:100%;
-  height:175px;
-  overflow-y:scroll;
-/*  box-shadow:  0px 0px 5px 3px rgba(73, 137, 144, 0.2); */
-}
-.tf-table {
-  list-style: none;
-  height:175px;
-  list-style-position:inside;
-  background-color: #90CAF9;
-}
+
+.list-box select[multiple] {
+   width: 100%; height: 100%;
+   font-family: "helvetica";
+   border-radius: 6px;
+   border: 3px solid #81C784;
+   background-color: #C8E6C9;
+   color: #33691E;
+   font-size: 20px;
+   user-select: none;
+   outline: none;
+ }
+
 .calcButtons{
   fill: #4CAF50;
 }
