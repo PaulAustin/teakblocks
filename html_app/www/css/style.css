@@ -347,10 +347,14 @@ label input[type="checkbox"]:disabled + .label-text:before {
   display:block;
   overflow:scroll;
 }
+.list-item-selected {
+  background-color: #33691E;
+  color: #C8E6C9;
+}
 .list-box {
   margin: 0px;
   list-style: none;
-  padding-left: 5px;
+  padding-left: 0px;
 }
 .calcButtons{
   fill: #4CAF50;

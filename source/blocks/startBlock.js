@@ -37,8 +37,10 @@ module.exports = function () {
   startBlock.koDiv = null;
 
   startBlock.onDeviceClick = function() {
-    var name = this.selectedDevice();
+    console.log('on click', this);
+    var name = this.name;
     if (typeof name === 'string') {
+      this.selected = true;
       var block = startBlock.activeBlock;
       block.controllerSettings.data.deviceName = name;
       block.updateSvg();
@@ -76,7 +78,9 @@ module.exports = function () {
     div.innerHTML =
       `<div class='list-box-shell' hieght=100%>
           <ul class='list-box' data-bind='foreach: devices'>
-            <li><span data-bind="text: name"></span></li>
+            <li data-bind= "css:{'list-item-selected':selected}">
+              <span data-bind= "text:name, click:$parent.onDeviceClick"></span>
+            </li>
           </ul>
       </div>`;
 
@@ -169,7 +173,13 @@ module.exports = function () {
       startBlock.devices.unshift({ name: 'rowbin', selected:false, ts: 0});
       startBlock.devices.unshift({ name: 'zorgav', selected:false, ts: (Date.now()+1500)});
       startBlock.devices.unshift({ name: 'vargon', selected:false, ts: (Date.now()+3000)});
-      startBlock.devices.unshift({ name: 'rimbor', selected:false, ts: 0});
+      startBlock.devices.unshift({ name: 'vargon1', selected:true, ts: (Date.now()+3000)});
+      startBlock.devices.unshift({ name: 'vargon2', selected:false, ts: (Date.now()+3500)});
+      startBlock.devices.unshift({ name: 'vargon3', selected:false, ts: (Date.now()+4000)});
+      startBlock.devices.unshift({ name: 'vargon4', selected:false, ts: (Date.now()+4500)});
+      startBlock.devices.unshift({ name: 'vargon5', selected:false, ts: (Date.now()+5000)});
+      startBlock.devices.unshift({ name: 'vargon6', selected:false, ts: (Date.now()+5500)});
+      startBlock.devices.unshift({ name: 'rimbor', selected:true, ts: 0});
     } else {
       var self = this;
       ble.stopScan();
