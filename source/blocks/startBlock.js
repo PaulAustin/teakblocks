@@ -74,19 +74,12 @@ module.exports = function () {
     startBlock.activeBlock = block;
     startBlock.koDiv = div;
     div.innerHTML =
-      `<div id='scannerDiv' class='list-box' width=185 hieght=185>
-        <select multiple='multiple' size='6'
-          data-bind="
-            options:devices,
-            optionsText:'name',
-            optionsValue:'name',
-            value:selectedDevice,
-            click:onDeviceClick
-            ">
-        </select>
+      `<div class='list-box-shell' hieght=100%>
+          <ul class='list-box' data-bind='foreach: devices'>
+            <li><span data-bind="text: name"></span></li>
+          </ul>
       </div>`;
 
-//, selectedOptions:selectedItems
     // Connect the dataBinding.
     ko.applyBindings(startBlock, div);
 

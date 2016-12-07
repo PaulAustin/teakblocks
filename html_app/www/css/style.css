@@ -329,21 +329,29 @@ label input[type="checkbox"]:disabled + .label-text:before {
   user-select: none;
 }
 .teakform button:active {
-outline: none;
+  outline: none;
 }
-
-.list-box select[multiple] {
-   width: 100%; height: 100%;
-   font-family: "helvetica";
-   border-radius: 6px;
-   border: 3px solid #81C784;
-   background-color: #C8E6C9;
-   color: #33691E;
-   font-size: 20px;
-   user-select: none;
-   outline: none;
- }
-
+.list-box-shell {
+  font-family: "helvetica";
+  height:97%;
+  border-radius: 6px;
+  margin-left: -1px;
+  margin-right: -1px;
+  margin-bottom: 5px;
+  /* margin-right: -1px; */
+  border: 3px solid #81C784;
+  background-color: #C8E6C9;
+  color: #33691E;
+  font-size: 20px;
+  user-select: none;
+  display:block;
+  overflow:scroll;
+}
+.list-box {
+  margin: 0px;
+  list-style: none;
+  padding-left: 5px;
+}
 .calcButtons{
   fill: #4CAF50;
 }
