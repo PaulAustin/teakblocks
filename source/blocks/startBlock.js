@@ -37,13 +37,26 @@ module.exports = function () {
   startBlock.koDiv = null;
 
   startBlock.onDeviceClick = function() {
-    console.log('on click', this);
     var name = this.name;
     if (typeof name === 'string') {
-      this.selected = true;
+      // Mark this item as selected.
+      this.selected(true);
+
+      // Find the current item and make sure it is unselected.
       var block = startBlock.activeBlock;
+      var currentname = block.controllerSettings.data.deviceName;
+      var match = ko.utils.arrayFirst(startBlock.devices(), function(item) {
+        return (item().name === currentname);
+      });
+      if (match) {
+        match().selected(false);
+      }
+
+      // Move the selected name into the object
       block.controllerSettings.data.deviceName = name;
       block.updateSvg();
+
+      // TODO set hwType icon, connecting status as well.
     }
   };
 
@@ -76,9 +89,9 @@ module.exports = function () {
     startBlock.activeBlock = block;
     startBlock.koDiv = div;
     div.innerHTML =
-      `<div class='list-box-shell' hieght=100%>
+      `<div class='list-box-shell'>
           <ul class='list-box' data-bind='foreach: devices'>
-            <li data-bind= "css:{'list-item-selected':selected}">
+            <li data-bind= "css:{'list-item-selected':selected()}">
               <span data-bind= "text:name, click:$parent.onDeviceClick"></span>
             </li>
           </ul>
@@ -134,20 +147,23 @@ module.exports = function () {
 
       // See if that item already exists.
       var match = ko.utils.arrayFirst(startBlock.devices(), function(item) {
-        return (item.name === device.name);
+        return (item().name === device.name);
       });
       if (!match) {
-        startBlock.devices.unshift({
-          name: device.name,
-          hwType: hwType,
-          device: device,
-          selected: false,
-          ts: now
-        });
+        startBlock.addItem(device.name, Date.now(), hwType);
       } else {
-        match.ts = now;
+        match().ts = now;
       }
     }
+  };
+
+  startBlock.addItem = function (name, timeStamp) {
+    var item = ko.observable({
+      name: name,
+      selected: ko.observable(false),
+      ts: timeStamp
+    });
+    startBlock.devices.unshift(item);
   };
 
   startBlock.cullDevices = function () {
@@ -155,10 +171,10 @@ module.exports = function () {
     // startBlock.foundDevice({name:'BBC micro:bit [gato]'});
     var now = Date.now();
     startBlock.devices.remove(function(item) {
-      if (item.ts === 0) {
+      if (item().ts === 0) {
         return false;
       }
-      return ((now - item.ts) > 2500);
+      return ((now - item().ts) > 2500);
     });
     startBlock.cullTimer = setTimeout(startBlock.cullDevices, 1000);
   };
@@ -170,16 +186,11 @@ module.exports = function () {
     // Start up scanning, or add fake ones.
     var ble = window.evothings.ble;
     if (ble === undefined) {
-      startBlock.devices.unshift({ name: 'rowbin', selected:false, ts: 0});
-      startBlock.devices.unshift({ name: 'zorgav', selected:false, ts: (Date.now()+1500)});
-      startBlock.devices.unshift({ name: 'vargon', selected:false, ts: (Date.now()+3000)});
-      startBlock.devices.unshift({ name: 'vargon1', selected:true, ts: (Date.now()+3000)});
-      startBlock.devices.unshift({ name: 'vargon2', selected:false, ts: (Date.now()+3500)});
-      startBlock.devices.unshift({ name: 'vargon3', selected:false, ts: (Date.now()+4000)});
-      startBlock.devices.unshift({ name: 'vargon4', selected:false, ts: (Date.now()+4500)});
-      startBlock.devices.unshift({ name: 'vargon5', selected:false, ts: (Date.now()+5000)});
-      startBlock.devices.unshift({ name: 'vargon6', selected:false, ts: (Date.now()+5500)});
-      startBlock.devices.unshift({ name: 'rimbor', selected:true, ts: 0});
+      startBlock.addItem('rowbin', (Date.now()+500) );
+      startBlock.addItem('zorgav', (Date.now()+1000) );
+      startBlock.addItem('vargon', (Date.now()+2000) );
+      startBlock.addItem('vigot',  0 );
+      startBlock.addItem('rimbor', (Date.now()+3000) );
     } else {
       var self = this;
       ble.stopScan();

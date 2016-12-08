@@ -348,8 +348,8 @@ label input[type="checkbox"]:disabled + .label-text:before {
   overflow:scroll;
 }
 .list-item-selected {
-  background-color: #33691E;
-  color: #C8E6C9;
+  background-color: #81C784;
+  color: #33691E;
 }
 .list-box {
   margin: 0px;
