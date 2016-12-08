@@ -404,3 +404,26 @@ it helpful to know that border radius parameter can be set for [each corner](htt
 </button>
 ```
 This allows the buttons to blend with the edge of the rounded container they are in.
+
+## December 5-7
+### much more work on the device list
+There are many ways to make a list-box in HTML, mnay bad ways and a few good. Very few.
+First was the nice use of the <select tag> its a native element and very nice, however
+mobile browsers take it upon them selves to ignore all CSS and thow up a full screen display to choose
+perhaps one of two items. The table method was originally used. But attempt 3 is the unordered list.
+
+One key part was learning more about nested observables. with care this works quite well.
+now setting the selected flag in the view model automatically adds/removes a CSS class based
+on knockouts css binding feature. Much of it come down to this:
+
+```
+<div class='list-box-shell'>
+    <ul class='list-box' data-bind='foreach: devices'>
+      <li data-bind= "css:{'list-item-selected':selected()}">
+        <span data-bind= "text:name, click:$parent.onDeviceClick"></span>
+      </li>
+    </ul>
+</div>`
+```
+
+Now back on to establishing connecting...
