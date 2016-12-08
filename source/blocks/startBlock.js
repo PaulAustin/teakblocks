@@ -158,9 +158,12 @@ module.exports = function () {
   };
 
   startBlock.addItem = function (name, timeStamp) {
+
+    var block = startBlock.activeBlock;
+    var targetName = block.controllerSettings.data.deviceName;
     var item = ko.observable({
       name: name,
-      selected: ko.observable(false),
+      selected: ko.observable(name === targetName),
       ts: timeStamp
     });
     startBlock.devices.unshift(item);
