@@ -275,7 +275,6 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
 
   // Dragging state information.
   this.dragging = false;
-  this.coasting = 0;
   this.snapTarget = null;   // Object to append, prepend, replace
   this.snapAction = null;   // append, prepend, replace, ...
   this.targetShadow = null; // Svg element to hilite target location
@@ -741,6 +740,10 @@ tbe.findChunkStart = function findChunkStart(clickedBlock) {
 tbe.configInteractions = function configInteractions() {
   var thisTbe = tbe;
 
+  // Most edit transaction start from code dispatched from this code.
+  // know it well and edit with caution. There are subtle interaction states
+  // managed in these event handlers.
+
   interact('.drag-delete')
     .on('down', function () {
       var block = thisTbe.elementToBlock(event.target);
@@ -753,27 +756,28 @@ tbe.configInteractions = function configInteractions() {
   interact('.drag-delete').dropzone({
   });
 
+  // Pointer events to the background go here. Might make sure the even is not
+  // right next to a block, e.g. allow some safe zones.
   interact('.editor-background')
     .on('down', function () {
       thisTbe.clearStates();
     });
 
+  // Event directed to function blocks (SVG objects with class 'drag-group')
+  // There come in two main types. Pointer events(mouse, track, and touch) and
+  // drag events. Drag events start manually, if the semantics of the pointer
+  // event inndicate that makes sense. Note that the object at the root of the
+  // drag event may different than the object the pointer event came to.
+  // For example, dragging may use the head of a loop, not the tail that was
+  // clicked on or that chain dragged might be a copy of the block clicked on.
+  //
+  // After making change test on FF, Safari, Chrome, desktop and tablet. Most
+  // browser breaking behaviour differences have been in this code.
+
   interact('.drag-group')
+    // Pointer events.
     .on('down', function (event) {
       tbe.pointerDownObject = event.target;
-      var block = thisTbe.elementToBlock(event.target);
-      if (block === null)
-        return;
-      tbe.clearStates(block);
-      block.coasting = 0;
-    })
-    .on('up', function (event) {
-      // Mark the chain as coasting. if it finds a target
-      // it will snap to it.
-      var block = thisTbe.elementToBlock(event.target);
-      if (block === null)
-        return;
-      block.coasting = 1;
     })
     .on('tap', function(event) {
       var block = thisTbe.elementToBlock(event.target);
@@ -784,17 +788,18 @@ tbe.configInteractions = function configInteractions() {
     })
     .on('hold', function(event) {
        var block = thisTbe.elementToBlock(event.target);
-
+       event.interaction.stop();
        if (block.isPaletteBlock) {
+         // Hold on palette item, any special behaviour here?
+         // not for now.
          return;
        }
        // bring up config, dont let drag start
-       event.interaction.stop();
        thisTbe.components.blockSettings.tap(block);
     })
     .on('move', function(event) {
       var interaction = event.interaction;
-      // if the pointer was moved while being held down
+      // If the pointer was moved while being held down
       // and an interaction hasn't started yet
       if (interaction.pointerIsDown && !interaction.interacting()) {
         if (tbe.pointerDownObject === event.target) {
@@ -802,13 +807,14 @@ tbe.configInteractions = function configInteractions() {
           block = tbe.findChunkStart(block);
           var targetToDrag = block.svgGroup;
 
-          // if coming from pallette, or if coming from shift drag
+          // If coming from pallette, or if coming from shift drag
           if (block.isPaletteBlock || event.shiftKey) {
             block = thisTbe.replicate(block);
             targetToDrag = block.svgGroup;
           }
 
           // Start a drag interaction targeting the clone
+          tbe.clearStates();
           block.setDraggingState(true);
           interaction.start({ name: 'drag' },
                             event.interactable,
@@ -834,51 +840,54 @@ tbe.configInteractions = function configInteractions() {
         endSpeed: 1
       },
       max: Infinity,
-      onstart: function(event) {
-        var block = thisTbe.elementToBlock(event.target);
-        if (block === null) {
-          return;
-        }
+      onstart: function() {
       },
       onend: function(event) {
         var block = thisTbe.elementToBlock(event.target);
         if (block === null)
           return;
 
-        if (block.coasting > 0) {
-          block.coasting = 0;
+        if(block.dragging) {
+          // If snap happens in coastin-move
+          // the chain will no longer be dragging.
           block.moveToPossibleTarget();
+          block.setDraggingState(false);
+          svglog.clearLog();
         }
-        block.setDraggingState(false);
 
-        svglog.clearLog();
         // Serialize after all moving has settled.
         // TODO clean this up, canoverlap next transaction
         setTimeout(thisTbe.diagramChanged(), 500);
       },
       onmove: function (event) {
         // Since there is inertia these callbacks continue to
-        // happen after the user lets go. If a target is found
-        // in the coasting state, start the animation to the target.
-        // dont wait to coas to a stop.
+        // happen after the user lets go.
 
         var block = thisTbe.elementToBlock(event.target);
         if (block === null)
           return;
 
-        if (block.dragging) {
-          block.dmove(event.dx, event.dy, true);
+        if (!block.dragging) {
+          // If snap happens in coasting-move
+          // the chain will no longer be dragging.
+          return;
         }
 
-        if (block.coasting >= 0) {
-          var target = block.hilitePossibleTarget();
-          // If target found while coasting, then snap to it.
-          // other wise just show the shadows.
-          if ((target !== null) &&
-              (block.coasting > 0)) {
-            block.coasting = -1; // ignore further coasting.
+        // Move the chain to the new location based on deltas.
+        block.dmove(event.dx, event.dy, true);
+
+        // Then see if there is a possbile target, a place to snap to.
+        var target = block.hilitePossibleTarget();
+
+        // If thre is a target and its in the coasting phase then redirect
+        // the coasting to the target.
+        if (target !== null) {
+          var iStatus = event.interaction.inertiaStatus;
+          if ((iStatus !== undefined && iStatus !== null) && iStatus.active) {
+            // Its in the coasting state, just move it to the snapping place.
             block.moveToPossibleTarget();
             block.setDraggingState(false);
+            svglog.clearLog();
           }
         }
       }
