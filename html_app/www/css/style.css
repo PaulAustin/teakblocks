@@ -342,7 +342,7 @@ label input[type="checkbox"]:disabled + .label-text:before {
   border: 3px solid #81C784;
   background-color: #C8E6C9;
   color: #33691E;
-  font-size: 20px;
+  font-size: 30px;
   user-select: none;
   display:block;
   overflow:scroll;
@@ -357,5 +357,5 @@ label input[type="checkbox"]:disabled + .label-text:before {
   padding-left: 0px;
 }
 .calcButtons{
-  fill: #4CAF50;
+  fill: #81C784;
 }
