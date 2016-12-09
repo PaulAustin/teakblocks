@@ -200,6 +200,9 @@ module.exports = function () {
     if (event !== null) {
     //  this.removeEventListener('transitionend', this.showActive);
     }
+    if (this.activeBlock === null) {
+      return; // Nothing to show.
+    }
 
     this.buildController();
     this.buildControllerTabs();
