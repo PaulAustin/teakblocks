@@ -96,7 +96,8 @@ module.exports = function () {
       // Then show the new one once the hide transition is done.
       this.hide();
       this.activeBlock = block;
-      this.addEventListener('transitionend', this.showActive);
+      setTimeout(function() { blockSettings.showActive(); }, 400);
+//      this.addEventListener(this.showActive, 500);
     } else {
       // Nothing showing, make it popop up.
       this.activeBlock = block;
@@ -197,7 +198,7 @@ module.exports = function () {
   // Internal method to show the form.
   blockSettings.showActive = function (event) {
     if (event !== null) {
-      this.removeEventListener('transitionend', this.showActive);
+    //  this.removeEventListener('transitionend', this.showActive);
     }
 
     this.buildController();
