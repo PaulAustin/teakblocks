@@ -30,13 +30,11 @@ function deviceReady() {
   // Initialize knockout databinding for documnets DOM
   tbe.components = {};
   tbe.components.appSettings = require('./app-settings.js');
-  tbe.components.scan = require('./device-scanner.js');
   tbe.components.blockSettings = require('./block-settings.js');
   ko.applyBindings(tbe.components);
 
   var formsDiv = document.getElementById('tbe-forms');
   tbe.components.appSettings.insert(formsDiv);
-  tbe.components.scan.insert(formsDiv);
   tbe.components.blockSettings.insert(formsDiv);
 
   // Some early experiments. seems to work well for desktop Chrome
