@@ -25,7 +25,8 @@ module.exports = function () {
 var svgb = require('./svgbuilder.js');
 var pb = svgb.pathBuilder;
 var b = {};
-  var interact = require('interact.js');
+var interact = require('interact.js');
+var ko = require('knockout');
 
 
 b.bind = function(style){
@@ -57,13 +58,6 @@ b.ledColorStripBlock = {
   }
 };
 
-
-function pixelToBlock(event, array){
-    var xPos = Math.floor((event.layerX - 20)/70);
-    var yPos = Math.floor((event.layerY - 62)/30);
-    return array[(yPos*3) + xPos];
-}
-
 // Single motor
 b.motorBlock = {
   // Some experimental tabs
@@ -71,7 +65,7 @@ b.motorBlock = {
     'speed': '<i class="fa fa-tachometer" aria-hidden="true"></i>',
     'duration': '<i class="fa fa-clock-o" aria-hidden="true"></i>',
   },
-
+  keyPadValue : ko.observable(50),
   defaultSettings : function() {
     // Return a new object with settings for the controller.
     return {
@@ -96,16 +90,20 @@ b.motorBlock = {
   },
   configurator: function(div){
     div.innerHTML =
-        `<div id='pictureEditorDiv'>
-          <svg id='pictureEditor' width='200px' height='200px' xmlns='http://www.w3.org/2000/svg'>
+        `<div id='motorEditorDiv'>
+            <span id="numeric-display" width='100px' height='50px' data-bind='text: keyPadValue'>
+              
+            </span>
             <svg id="calc" class='area' width='225px' height='167.5px' xmlns='http://www.w3.org/2000/svg'></svg>
-            <svg id="output" width='100px' height='100px' xmlns='http://www.w3.org/2000/svg'></svg>
             </svg>
         </div>`;
+
+
+    ko.applyBindings(b.motorBlock, div);
     var svg = document.getElementById('pictureEditor');
     var calcArea = document.getElementById('calc');
     var output = document.getElementById('output');
-    var num = 0;
+    var num = 0.00;
     var strNum = "";
     var mult = true;
     var decimalOne = true;
@@ -122,27 +120,35 @@ b.motorBlock = {
         // Create each LED and initialize its lit state.
         var button = svgb.createGroup('', 0, 0);
         var box = svgb.createRect('calcButtons', ((ix)*70), 22.5+(iy*30), 60, 25, 6);
-        var text = svgb.createText('', 25+((ix)*70), 42.5+(iy*30), b.motorBlock.numArray[((iy)*3) + ix]);
+        var text = svgb.createText('svg-clear', 25+((ix)*70), 42.5+(iy*30), b.motorBlock.numArray[((iy)*3) + ix]);
+
+        // add setAttribute to the seperate blocks
 
         button.appendChild(box);
         button.appendChild(text);
+        
+        box.setAttribute('name', b.motorBlock.numArray[((iy)*3) + ix]);
 
         calcArea.appendChild(button);
       }
     }
+    
+    // Interact on calcButtons
+    // do on tap
+    // Take event, make event.target
+    // get characteristic of dom element
 
-    interact('.area', {context:svg})
-      .on('down', function (event) {
+    interact('.calcButtons', {context:svg})
+      .on('tap', function (event) {
 
-
-          strNum = pixelToBlock(event, b.motorBlock.numArray);
+          strNum = event.target.getAttribute('name');
 
           if(strNum === "."){
             if(typeof num != "string" && (num*10) % 1 == 0) num = num.toFixed(1);
             mult = false;
           }
           else if(strNum === "<-"){
-            num = 0;
+            num = 0.00;
             strNum = "";
             mult = true;
             decimalOne = true;
@@ -201,6 +207,10 @@ b.motorBlock = {
         }
 
           console.log("num:", num, strNum, typeof num, typeof strNum);
+
+          b.motorBlock.keyPadValue(num.toString());
+
+
       });
 
     return;

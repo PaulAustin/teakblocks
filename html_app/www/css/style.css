@@ -176,6 +176,9 @@ html, body { margin:0; padding:0; overflow:hidden }
 #pictureEditorDiv {
   text-align:center;
 }
+#motorEditorDiv {
+  text-align:center;
+}
 /* Block controllers is a row of tab-like buttons on the edge of the config panel */
 .block-settings-tab {
   text-align: center;
