@@ -148,9 +148,8 @@ module.exports = function () {
           }
         }
       });
-    console.log('configurator opened', block);
     return;
   };
 
-return pictureBlock;
+  return pictureBlock;
 }();
