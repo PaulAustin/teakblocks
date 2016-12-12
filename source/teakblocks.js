@@ -271,6 +271,7 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   this.next = null;
   this.loopHead = null;
   this.loopTail = null;
+  // Blocks at the top leve have a nesting of 0
   this.nesting = 0;
 
   // Dragging state information.
@@ -307,28 +308,50 @@ tbe.FunctionBlock.prototype.updateSvg = function() {
   this.svgGroup.appendChild(this.svgCustomGroup);
 };
 
-tbe.FunctionBlock.prototype.fixupChainSvg = function() {
-
+tbe.FunctionBlock.prototype.refreshNesting = function() {
   var nesting = 0;
-  var maxNesting = 0;
-
   var b = this.first;
   while (b !== null) {
     if (b.loopTail !== null) {
+      b.nesting = nesting;
       nesting += 1;
-      if (nesting > maxNesting) {
-        maxNesting = nesting;
-      }
     } else if (b.loopHead !== null) {
       nesting -= 1;
+      b.nesting = nesting;
+    } else {
       b.nesting = nesting;
     }
     b = b.next;
   }
+};
 
+tbe.FunctionBlock.prototype.calculateEnclosedScopes = function() {
+  // walk back from end of a loop to its front and determine the deepest
+  // number of scopes it contains.
+  var nesting = 0;
+  var maxNesting = 0;
+  var b = this.prev;
+  // Null should not be hit.
+  while ((b !== null) && (b.nesting > this.nesting)) {
+    if (b.loopHead !== null) {
+      nesting += 1;
+      if (nesting > maxNesting) {
+        maxNesting = nesting;
+      }
+    } else if (b.loopLail !== null) {
+      nesting -= 1;
+    }
+    // Walk back looking for head.
+    b = b.prev;
+  }
+  return maxNesting;
+};
+
+tbe.FunctionBlock.prototype.fixupChainSvg = function() {
+  this.refreshNesting();
   // Fixing blocks down stream will catch all tails.
   // loop graphics are don by the tail, so this should work fine.
-  b = this;
+  var b = this;
   while (b !== null) {
     b.fixupCrossBlockSvg();
     b = b.next;
@@ -344,6 +367,8 @@ tbe.FunctionBlock.prototype.fixupCrossBlockSvg = function() {
     return;     // A bit of a hack for now.
   }
 
+  var depth = this.calculateEnclosedScopes();
+  // The tail of the loop does the bar rendering.
   var left = 40 - (this.rect.left - this.loopHead.rect.left);
   var width = this.rect.right - this.loopHead.rect.left - 80;
   var radius = 10;
@@ -356,9 +381,9 @@ tbe.FunctionBlock.prototype.fixupCrossBlockSvg = function() {
   var pb = svgb.pathBuilder;
   var pathd = '';
   pathd =  pb.move(left, 0);
-  pathd += pb.arc(radius, 90, 0, 1, radius, (-radius * (this.nesting + 1)));
+  pathd += pb.arc(radius, 90, 0, 1, radius, (-radius * (depth + 1)));
   pathd += pb.hline(width - (2 * radius));
-  pathd += pb.arc(radius, 90, 0, 1, radius, (radius  * (this.nesting + 1)));
+  pathd += pb.arc(radius, 90, 0, 1, radius, (radius  * (depth + 1)));
   scb = svgb.createPath('loop-region svg-clear', pathd);
   this.svgGroup.insertBefore(scb, this.svgRect);
   this.svgCrossBlock = scb;
@@ -723,15 +748,17 @@ tbe.clearDiagramBlocks = function clearDiagramBlocks() {
 // should be selected, typically that is the selected block to the end.
 // But for loops it more subtle.
 tbe.findChunkStart = function findChunkStart(clickedBlock) {
+
+  // Find the nesting depth, then find the opening for the block
   // If the tail of the loop is selected
   // Scan to end see if a loop tail is found.
   var chunkStart = clickedBlock;
   var b = clickedBlock;
   while (b !== null) {
-    if (b.loopTail !== null) {
-      chunkStart = b;
+    if (b.loopHead !== null) {
+      chunkStart = b.loopHead;
     }
-    b = b.prev;
+    b = b.next;
   }
   return chunkStart;
 };
