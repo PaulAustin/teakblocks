@@ -34,6 +34,7 @@ b.bind = function(style){
   var def = this[key];
   if (def === undefined) {
     def = this.unknownBlock;
+    console.log('cant find style for ', key);
   }
   return def;
 };
@@ -50,6 +51,9 @@ b.unknownBlock = {
 
 b.startBlock = require('./blocks/startBlock.js');
 b.pictureBlock = require('./blocks/pictureBlock.js');
+var flowBlocks = require('./blocks/flowBlocks.js');
+b.loopBlock = flowBlocks.flowBlockHead;  // TODO name change
+b.tailBlock = flowBlocks.flowBlockTail;  // TODO name change
 
 // LED color
 b.ledColorStripBlock = {
@@ -92,7 +96,7 @@ b.motorBlock = {
     div.innerHTML =
         `<div id='motorEditorDiv'>
             <span id="numeric-display" width='100px' height='50px' data-bind='text: keyPadValue'>
-              
+
             </span>
             <svg id="calc" class='area' width='225px' height='167.5px' xmlns='http://www.w3.org/2000/svg'></svg>
             </svg>
@@ -126,13 +130,13 @@ b.motorBlock = {
 
         button.appendChild(box);
         button.appendChild(text);
-        
+
         box.setAttribute('name', b.motorBlock.numArray[((iy)*3) + ix]);
 
         calcArea.appendChild(button);
       }
     }
-    
+
     // Interact on calcButtons
     // do on tap
     // Take event, make event.target

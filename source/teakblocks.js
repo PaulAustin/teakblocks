@@ -220,7 +220,7 @@ tbe.replicate = function(chain){
     // Clear out the newBlock field, and fix up svg as needed.
     b = chain;
     while (b !== null) {
-      b.newBlock.fixupCrossBlockSvg();
+      b.newBlock.fixupChainCrossBlockSvg();
       b.newBlock = null;
       b = b.next;
     }
@@ -238,7 +238,6 @@ tbe.replicate = function(chain){
 
 //------------------------------------------------------------------------------
 // FunctionBlock -- Constructor for FunctionBlock object.
-//
 //
 //      *-- svgGroup
 //        |
@@ -260,7 +259,7 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
 
   this.name = blockName;
   this.funcs = fblocks.bind(blockName);
-  if (typeof this.funcs.defaultSettings === "function" ) {
+  if (typeof this.funcs.defaultSettings === 'function' ) {
     this.controllerSettings = this.funcs.defaultSettings();
   } else {
     this.controllerSettings = {controller:'none', data:0 };
@@ -304,7 +303,9 @@ tbe.FunctionBlock.prototype.updateSvg = function() {
 
   // Build custom image for this block.
   this.svgCustomGroup = svgb.createGroup('', 0, 0);
-  this.funcs.svg(this.svgCustomGroup, this);
+  if (typeof this.funcs.svg === 'function' ) {
+    this.funcs.svg(this.svgCustomGroup, this);
+  }
   this.svgGroup.appendChild(this.svgCustomGroup);
 };
 
@@ -325,68 +326,19 @@ tbe.FunctionBlock.prototype.refreshNesting = function() {
   }
 };
 
-tbe.FunctionBlock.prototype.calculateEnclosedScopes = function() {
-  // walk back from end of a loop to its front and determine the deepest
-  // number of scopes it contains.
-  var nesting = 0;
-  var maxNesting = 0;
-  var b = this.prev;
-  // Null should not be hit.
-  while ((b !== null) && (b.nesting > this.nesting)) {
-    if (b.loopHead !== null) {
-      nesting += 1;
-      if (nesting > maxNesting) {
-        maxNesting = nesting;
-      }
-    } else if (b.loopLail !== null) {
-      nesting -= 1;
-    }
-    // Walk back looking for head.
-    b = b.prev;
-  }
-  return maxNesting;
-};
-
-tbe.FunctionBlock.prototype.fixupChainSvg = function() {
+// Scan down the chain and allow any block that has cross block graphics
+// to update them
+tbe.FunctionBlock.prototype.fixupChainCrossBlockSvg = function() {
+  // TODO, only refresh nesting when the links actually change.
+  // no need to do it during each animation step.
   this.refreshNesting();
-  // Fixing blocks down stream will catch all tails.
-  // loop graphics are don by the tail, so this should work fine.
   var b = this;
   while (b !== null) {
-    b.fixupCrossBlockSvg();
+    if (typeof b.funcs.crossBlockSvg === 'function' ) {
+      b.funcs.crossBlockSvg(b);
+    }
     b = b.next;
   }
-};
-
-// fixupCrossBlockSvg
-// initialize cross block graphics
-// cross block graphics are regions or arrows that CONNECTION
-// a range of blocks
-tbe.FunctionBlock.prototype.fixupCrossBlockSvg = function() {
-  if (this.loopHead === null) {
-    return;     // A bit of a hack for now.
-  }
-
-  var depth = this.calculateEnclosedScopes();
-  // The tail of the loop does the bar rendering.
-  var left = 40 - (this.rect.left - this.loopHead.rect.left);
-  var width = this.rect.right - this.loopHead.rect.left - 80;
-  var radius = 10;
-
-  var scb = this.svgCrossBlock;
-  if (scb !== undefined) {
-    this.svgGroup.removeChild(scb);
-  }
-
-  var pb = svgb.pathBuilder;
-  var pathd = '';
-  pathd =  pb.move(left, 0);
-  pathd += pb.arc(radius, 90, 0, 1, radius, (-radius * (depth + 1)));
-  pathd += pb.hline(width - (2 * radius));
-  pathd += pb.arc(radius, 90, 0, 1, radius, (radius  * (depth + 1)));
-  scb = svgb.createPath('loop-region svg-clear', pathd);
-  this.svgGroup.insertBefore(scb, this.svgRect);
-  this.svgCrossBlock = scb;
 };
 
 Object.defineProperty(tbe.FunctionBlock.prototype, 'first', {
@@ -720,7 +672,7 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
 tbe.animateMove = function animateMove(state) {
   var frame = state.frame;
   state.chunkStart.dmove(state.adx, state.ady, (frame === 1), state.chunkEnd);
-  state.chunkStart.fixupChainSvg();
+  state.chunkStart.fixupChainCrossBlockSvg();
   if (frame > 1) {
     state.frame = frame - 1;
     requestAnimationFrame(function() { animateMove(state); });
@@ -749,14 +701,17 @@ tbe.clearDiagramBlocks = function clearDiagramBlocks() {
 // But for loops it more subtle.
 tbe.findChunkStart = function findChunkStart(clickedBlock) {
 
-  // Find the nesting depth, then find the opening for the block
-  // If the tail of the loop is selected
   // Scan to end see if a loop tail is found.
   var chunkStart = clickedBlock;
   var b = clickedBlock;
   while (b !== null) {
+    // If tail found inlcude the whole loop.
     if (b.loopHead !== null) {
       chunkStart = b.loopHead;
+    }
+    // If at the top its a clean place to break the chain.
+    if (b.nesting === 0) {
+      break;
     }
     b = b.next;
   }
@@ -770,7 +725,6 @@ tbe.configInteractions = function configInteractions() {
   // Most edit transaction start from code dispatched from this code.
   // know it well and edit with caution. There are subtle interaction states
   // managed in these event handlers.
-
   interact('.drag-delete')
     .on('down', function () {
       var block = thisTbe.elementToBlock(event.target);
@@ -986,7 +940,7 @@ tbe.addPalette = function addPalette(palette) {
         // A loop set has direct pointers between the two end points.
         block.loopTail = blockTail;
         blockTail.loopHead = block;
-        blockTail.fixupCrossBlockSvg();
+        blockTail.fixupChainCrossBlockSvg();
       }
       indent += block.chainWidth + 10;
     }
