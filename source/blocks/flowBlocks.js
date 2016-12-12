@@ -57,13 +57,13 @@ module.exports = function () {
     var maxDepth = 0;
     var b = blockTail.prev;
     // Null should not be hit.
-    while ((b !== null) && (b !== blockTail.loopHead)) {
-      if (b.loopHead !== null) {
+    while ((b !== null) && (b !== blockTail.flowHead)) {
+      if (b.flowHead !== null) {
         nesting += 1;
         if (nesting > maxDepth) {
           maxDepth = nesting;
         }
-      } else if (b.loopTail !== null) {
+      } else if (b.flowTail !== null) {
         nesting -= 1;
       }
       // Walk back looking for head.
@@ -77,9 +77,9 @@ module.exports = function () {
 
   flowBlockTail.crossBlockSvg = function(block) {
     var depth = this.calculateEnclosedScopeDepth(block);
-    // The tail of the loop does the flow-bar rendering.
-    var left = 40 - (block.rect.left - block.loopHead.rect.left);
-    var width = block.rect.right - block.loopHead.rect.left - 80;
+    // The tail of the flow block does the flow-bar rendering.
+    var left = 40 - (block.rect.left - block.flowHead.rect.left);
+    var width = block.rect.right - block.flowHead.rect.left - 80;
     var radius = 10;
 
     var scb = block.svgCrossBlock;

@@ -213,8 +213,8 @@ tbe.replicate = function(chain){
       newBlock = b.newBlock;
       newBlock.next = b.mapToNewBlock(b.next);
       newBlock.prev = b.mapToNewBlock(b.prev);
-      newBlock.loopHead = b.mapToNewBlock(b.loopHead);
-      newBlock.loopTail = b.mapToNewBlock(b.loopTail);
+      newBlock.flowHead = b.mapToNewBlock(b.flowHead);
+      newBlock.flowTail = b.mapToNewBlock(b.flowTail);
       b = b.next;
     }
     // Clear out the newBlock field, and fix up svg as needed.
@@ -268,8 +268,8 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   // Place holder for sequencing links.
   this.prev = null;
   this.next = null;
-  this.loopHead = null;
-  this.loopTail = null;
+  this.flowHead = null;
+  this.flowTail = null;
   // Blocks at the top leve have a nesting of 0
   this.nesting = 0;
 
@@ -313,10 +313,10 @@ tbe.FunctionBlock.prototype.refreshNesting = function() {
   var nesting = 0;
   var b = this.first;
   while (b !== null) {
-    if (b.loopTail !== null) {
+    if (b.flowTail !== null) {
       b.nesting = nesting;
       nesting += 1;
-    } else if (b.loopHead !== null) {
+    } else if (b.flowHead !== null) {
       nesting -= 1;
       b.nesting = nesting;
     } else {
@@ -698,16 +698,16 @@ tbe.clearDiagramBlocks = function clearDiagramBlocks() {
 
 // Starting at a block that was clicked on find the logical range that
 // should be selected, typically that is the selected block to the end.
-// But for loops it more subtle.
+// But for flow blocks it more subtle.
 tbe.findChunkStart = function findChunkStart(clickedBlock) {
 
-  // Scan to end see if a loop tail is found.
+  // Scan to end see if a flow tail is found.
   var chunkStart = clickedBlock;
   var b = clickedBlock;
   while (b !== null) {
-    // If tail found inlcude the whole loop.
-    if (b.loopHead !== null) {
-      chunkStart = b.loopHead;
+    // If tail found inlcude the whole flow block.
+    if (b.flowHead !== null) {
+      chunkStart = b.flowHead;
     }
     // If at the top its a clean place to break the chain.
     if (b.nesting === 0) {
@@ -749,7 +749,7 @@ tbe.configInteractions = function configInteractions() {
   // drag events. Drag events start manually, if the semantics of the pointer
   // event inndicate that makes sense. Note that the object at the root of the
   // drag event may different than the object the pointer event came to.
-  // For example, dragging may use the head of a loop, not the tail that was
+  // For example, dragging may use the head of a flow block, not the tail that was
   // clicked on or that chain dragged might be a copy of the block clicked on.
   //
   // After making change test on FF, Safari, Chrome, desktop and tablet. Most
@@ -937,9 +937,9 @@ tbe.addPalette = function addPalette(palette) {
         var blockTail = this.addPaletteBlock(block.rect.right, blockTop, 'tail', {});
         block.next = blockTail;
         blockTail.prev = block;
-        // A loop set has direct pointers between the two end points.
-        block.loopTail = blockTail;
-        blockTail.loopHead = block;
+        // A flow block set has direct pointers between the two end points.
+        block.flowTail = blockTail;
+        blockTail.flowHead = block;
         blockTail.fixupChainCrossBlockSvg();
       }
       indent += block.chainWidth + 10;
