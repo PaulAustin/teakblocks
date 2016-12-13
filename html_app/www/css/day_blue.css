@@ -15,10 +15,8 @@
 .function-text {
   fill: #D6E2FE;
 }
-.loop-region {
-  fill: none;
-  stroke-width: 4;
-  stroke: #4E342E;
+.flow-path {
+  stroke: #873600;
 }
 .shadow-block {
   fill:SkyBlue;

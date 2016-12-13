@@ -91,10 +91,13 @@ html, body { margin:0; padding:0; overflow:hidden }
   stroke-width: 4;
   stroke: #5A33FF;
 }
-.loop-region {
+.flow-path {
   fill: none;
   stroke-width: 4;
   stroke: #5A33FF;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  /* stroke-dasharray: 8, 3.5; */
 }
 .block-stencil {
   fill: none;

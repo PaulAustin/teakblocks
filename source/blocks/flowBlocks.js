@@ -76,11 +76,13 @@ module.exports = function () {
   };
 
   flowBlockTail.crossBlockSvg = function(block) {
-    var depth = this.calculateEnclosedScopeDepth(block);
+    var depth = this.calculateEnclosedScopeDepth(block) + 1;
     // The tail of the flow block does the flow-bar rendering.
     var left = 40 - (block.rect.left - block.flowHead.rect.left);
     var width = block.rect.right - block.flowHead.rect.left - 80;
-    var radius = 10;
+    var hieght = (8 * depth);
+    var dxBar = 5 * depth;
+    var radius = 7;
 
     var scb = block.svgCrossBlock;
     if (scb !== undefined) {
@@ -89,11 +91,14 @@ module.exports = function () {
 
     var pb = svgb.pathBuilder;
     var pathd = '';
+
     pathd =  pb.move(left, 0);
-    pathd += pb.arc(radius, 90, 0, 1, radius, (-radius * (depth + 1)));
-    pathd += pb.hline(width - (2 * radius));
-    pathd += pb.arc(radius, 90, 0, 1, radius, (radius  * (depth + 1)));
-    scb = svgb.createPath('loop-region svg-clear', pathd);
+    pathd += pb.line(dxBar, -hieght);
+    pathd += pb.arc(radius, 60, 0, 1, (radius * 0.9), -(radius * 0.7));
+    pathd += pb.hline(width - (2*radius) - (2*dxBar));
+    pathd += pb.arc(radius, 60, 0, 1, (radius * 0.9), (radius * 0.7));
+    pathd += pb.line(dxBar, hieght);
+    scb = svgb.createPath('flow-path svg-clear', pathd);
     block.svgGroup.insertBefore(scb, block.svgRect);
     block.svgCrossBlock = scb;
   };
