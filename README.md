@@ -15,6 +15,7 @@ native apps you need [Condova](https://cordova.apache.org/) as well. Cordova is 
 
 ```
 npm install -g cordova
+npm install -g uglify-js
 ```
 
 The html_app already has a few config files set up to work with Cordova however, to build for a native platform you need pull down support files for the platforms. These additional files are not part of this repo, but they are easy to add. Change directories to the top of the html_app and run the Cordova commands. For android, it should look like this:
