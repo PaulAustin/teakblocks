@@ -152,6 +152,18 @@ html, body { margin:0; padding:0; overflow:hidden }
   font-size:20px;
   touch-action: none; /* prevents any screen bounce on android */
 }
+.block-sound-piano-w {
+  fill: #FFFDE7;
+}
+.block-sound-piano-w-pressed{
+  fill: #FFE082;
+}
+.block-sound-piano-b {
+  fill: #212121;
+}
+.block-sound-piano {
+  fill: #3E2723;
+}
 /* Buttons for the bock config edit operations run, copy, delete */
 .block-settings-editops {
   padding:2px;
