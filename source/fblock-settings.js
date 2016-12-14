@@ -51,6 +51,7 @@ b.unknownBlock = {
 
 b.startBlock = require('./blocks/startBlock.js');
 b.pictureBlock = require('./blocks/pictureBlock.js');
+b.soundBlock = require('./blocks/soundBlock.js');
 var flowBlocks = require('./blocks/flowBlocks.js');
 b.loopBlock = flowBlocks.flowBlockHead;  // TODO name change
 b.tailBlock = flowBlocks.flowBlockTail;  // TODO name change
@@ -279,35 +280,6 @@ b.serialWriteBlock = {
 
 b.I2CWriteBlock = {
   // TODO
-};
-
-// Sound block to make a joyful noise.
-b.soundBlock = {
-  svg: function(root) {
-    var pathd = '';
-    pathd =  pb.move(20, 25);
-    pathd += pb.hline(9);
-    pathd += pb.line(10, -10);
-    pathd += pb.vline(30);
-    pathd += pb.line(-10, -10);
-    pathd += pb.hline(-9);
-    pathd += pb.vline(-10);
-    pathd += pb.close();
-    var path = svgb.createPath('svg-clear block-stencil-fill', pathd);
-    root.appendChild(path);
-
-    pathd = '';
-    pathd =  pb.move(45, 25);
-    pathd += pb.arc(12, 90, 0, 1, 0, 10);
-    pathd += pb.move(5, -15);
-    pathd += pb.arc(20, 90, 0, 1, 0, 20);
-    pathd += pb.move(5, -25);
-    pathd += pb.arc(28, 90, 0, 1, 0, 30);
-    var soundPath = svgb.createPath('svg-clear block-stencil', pathd);
-    soundPath.setAttribute('stroke-linecap', 'round');
-    root.appendChild(soundPath);
-    return root;
-  }
 };
 
 // Wait block - wait until something happens, such as time passing.
