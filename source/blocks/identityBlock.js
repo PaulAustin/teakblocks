@@ -28,25 +28,43 @@ module.exports = function () {
   var pb = svgb.pathBuilder;
   var identityBlock = {};
 
+  // Added by by EVO things if BLE is supported.
+  identityBlock.ble = window.evothings.ble;
+
   // Items for selecting a device from a list.
   identityBlock.devices = ko.observableArray([]);
   identityBlock.selectedDevice = ko.observable();
   identityBlock.deviceName = {};
   identityBlock.cullTimer = null;
 
-  identityBlock.koDiv = null;
+  identityBlock.connect = function(device) {
+    if (identityBlock.ble === undefined)
+      return;
+
+    identityBlock.ble.connect(device.address,
+      function(connectInfo) {
+        console.log('Connected to BLE device ' + connectInfo.name);
+        console.log('connect info ', connectInfo);
+      },
+      function(errorCode) {
+        console.log('Failed to connect to BLE device: ' + errorCode);
+      }
+    );
+  };
 
   identityBlock.onDeviceClick = function() {
     var name = this.name;
     if (typeof name === 'string') {
       // Mark this item as selected.
       this.selected(true);
+      var deviceToConnectTo = this.device;
+      console.log('device', deviceToConnectTo);
 
       // Find the current item and make sure it is unselected.
       var block = identityBlock.activeBlock;
-      var currentname = block.controllerSettings.data.deviceName;
+      var currentName = block.controllerSettings.data.deviceName;
       var match = ko.utils.arrayFirst(identityBlock.devices(), function(item) {
-        return (item().name === currentname);
+        return (item().name === currentName);
       });
       if (match) {
         match().selected(false);
@@ -56,6 +74,7 @@ module.exports = function () {
       block.controllerSettings.data.deviceName = name;
       block.updateSvg();
 
+      identityBlock.connect(deviceToConnectTo);
       // TODO set hwType icon, connecting status as well.
     }
   };
@@ -87,7 +106,6 @@ module.exports = function () {
 
   identityBlock.configurator = function(div, block) {
     identityBlock.activeBlock = block;
-    identityBlock.koDiv = div;
     div.innerHTML =
       `<div class='list-box-shell'>
           <ul class='list-box' data-bind='foreach: devices'>
@@ -106,10 +124,10 @@ module.exports = function () {
     identityBlock.startScan();
   };
 
-  identityBlock.configuratorClose = function() {
+  identityBlock.configuratorClose = function(div) {
     identityBlock.stopScan();
     identityBlock.activeBlock = null;
-    ko.cleanNode(identityBlock.koDiv);
+    ko.cleanNode(div);
   };
 
   identityBlock.svg = function(root, block) {
@@ -125,7 +143,7 @@ module.exports = function () {
     root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 49, 20, 2));
 
     var name = block.controllerSettings.data.deviceName;
-    var text = svgb.createText('block-start-text svg-clear', 40, 50, name);
+    var text = svgb.createText('block-identity-text svg-clear', 40, 50, name);
     text.setAttribute('text-anchor', 'middle');
     root.appendChild(text);
   };
@@ -150,19 +168,20 @@ module.exports = function () {
         return (item().name === device.name);
       });
       if (!match) {
-        identityBlock.addItem(device.name, Date.now(), hwType);
+        identityBlock.addItem(device, Date.now(), hwType);
       } else {
         match().ts = now;
       }
     }
   };
 
-  identityBlock.addItem = function (name, timeStamp) {
+  identityBlock.addItem = function (device, timeStamp) {
 
     var block = identityBlock.activeBlock;
     var targetName = block.controllerSettings.data.deviceName;
     var item = ko.observable({
-      name: name,
+      name: device.name,
+      device: device,
       selected: ko.observable(name === targetName),
       ts: timeStamp
     });
@@ -187,17 +206,18 @@ module.exports = function () {
     identityBlock.devices.removeAll();
 
     // Start up scanning, or add fake ones.
-    var ble = window.evothings.ble;
-    if (ble === undefined) {
-      identityBlock.addItem('rowbin', (Date.now()+500) );
-      identityBlock.addItem('zorgav', (Date.now()+1000) );
-      identityBlock.addItem('vargon', (Date.now()+2000) );
-      identityBlock.addItem('vigot',  0 );
-      identityBlock.addItem('rimbor', (Date.now()+3000) );
+    console.log('identityBlock.ble', identityBlock.ble);
+    if (identityBlock.ble === undefined) {
+      console.log('add items');
+      identityBlock.addItem({name:'Aragorn'}, (Date.now()+500) );
+      identityBlock.addItem({name:'Boromir'}, (Date.now()+1000) );
+      identityBlock.addItem({name:'Gandalf'}, (Date.now()+2000) );
+      identityBlock.addItem({name:'Treebeard'},  0 );
+      identityBlock.addItem({name:'Gimli'}, (Date.now()+3000) );
     } else {
       var self = this;
-      ble.stopScan();
-      ble.startScan(
+      identityBlock.ble.stopScan();
+      identityBlock.ble.startScan(
         function(device) { self.foundDevice(device); },
         function(errorCode) {
           console.log('error:' + errorCode);
@@ -208,11 +228,10 @@ module.exports = function () {
   };
 
   identityBlock.stopScan = function () {
-    var ble = window.evothings.ble;
-    if (ble === undefined) {
+    if (identityBlock.ble === undefined) {
       return;
     } else {
-      ble.stopScan();
+      identityBlock.ble.stopScan();
     }
     if (identityBlock.cullTimer !== null) {
       clearTimeout(identityBlock.cullTimer);
