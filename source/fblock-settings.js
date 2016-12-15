@@ -221,8 +221,9 @@ b.motorBlock = {
     return;
 
   },
-  controllers: function(div){
 
+  configuratorClose: function(div) {
+    ko.cleanNode(div);
   }
 };
 
