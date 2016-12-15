@@ -163,6 +163,8 @@ html, body { margin:0; padding:0; overflow:hidden }
 }
 .block-sound-piano {
   fill: #3E2723;
+  stroke: #3E2723;
+  stroke-width: 2px;
 }
 /* Buttons for the bock config edit operations run, copy, delete */
 .block-settings-editops {

@@ -45,9 +45,8 @@ module.exports = function () {
   soundBlock.configurator= function(div) {
     div.innerHTML =
         `<div id='pictureEditorDiv'>
-          <br>
-          <svg id='pianoSvg'width=210px height=95px xmlns='http://www.w3.org/2000/svg'>
-            <rect id='pictureRect' width=209px height=95px rx=4 ry=4 class='block-sound-piano'/>
+          <svg id='pianoSvg'width=231px height=145px xmlns='http://www.w3.org/2000/svg'>
+            <rect id='pictureRect' y=40px width=231px height=100px rx=4 ry=4 class='block-sound-piano'/>
           </svg>
         </div>`;
 
@@ -57,19 +56,19 @@ module.exports = function () {
 
     // Create a editor state object for the interactions to work with.
     for (var iwKey = 0; iwKey < 8; iwKey++) {
-      var wkey = svgb.createRect('piano-key block-sound-piano-w', 5+(iwKey*25), 13, 24, 78, 3);
+      var wkey = svgb.createRect('piano-key block-sound-piano-w', 4+(iwKey*28), 53, 27, 84, 3);
       wkey.setAttribute('key', iwKey.toString());
       svg.appendChild(wkey);
     }
     for (var ibKey = 0; ibKey < 7; ibKey++) {
       if (ibKey !== 2 && ibKey !== 6) {
-        var bkey = svgb.createRect('piano-key block-sound-piano-b', 20+(ibKey*25), 13, 18, 43, 3);
+        var bkey = svgb.createRect('piano-key block-sound-piano-b', 21+(ibKey*28), 53, 20, 45, 3);
         svg.appendChild(bkey);
       }
     }
-    var r = svgb.createRect('svg-clear block-sound-piano', 0, 0, 209, 14, 4);
+    var r = svgb.createRect('svg-clear block-sound-piano', 0, 40, 231, 15, 4);
     svg.appendChild(r);
-/* still some work to do http-server
+///* still some work for mouse events
     interact('.piano-key ', {context:svg})
     .on('down', function (event) {
       var key = event.target.getAttribute('key');
@@ -91,7 +90,7 @@ module.exports = function () {
       event.target.setAttribute('class', 'piano-key block-sound-piano-w');
       console.log('key up', key);
     });
-    */
+
   };
 
   // Sound block to make a joyful noise.
