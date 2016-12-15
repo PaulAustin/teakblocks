@@ -26,26 +26,26 @@ module.exports = function () {
   var ko = require('knockout');
 
   var pb = svgb.pathBuilder;
-  var startBlock = {};
+  var identityBlock = {};
 
   // Items for selecting a device from a list.
-  startBlock.devices = ko.observableArray([]);
-  startBlock.selectedDevice = ko.observable();
-  startBlock.deviceName = {};
-  startBlock.cullTimer = null;
+  identityBlock.devices = ko.observableArray([]);
+  identityBlock.selectedDevice = ko.observable();
+  identityBlock.deviceName = {};
+  identityBlock.cullTimer = null;
 
-  startBlock.koDiv = null;
+  identityBlock.koDiv = null;
 
-  startBlock.onDeviceClick = function() {
+  identityBlock.onDeviceClick = function() {
     var name = this.name;
     if (typeof name === 'string') {
       // Mark this item as selected.
       this.selected(true);
 
       // Find the current item and make sure it is unselected.
-      var block = startBlock.activeBlock;
+      var block = identityBlock.activeBlock;
       var currentname = block.controllerSettings.data.deviceName;
-      var match = ko.utils.arrayFirst(startBlock.devices(), function(item) {
+      var match = ko.utils.arrayFirst(identityBlock.devices(), function(item) {
         return (item().name === currentname);
       });
       if (match) {
@@ -62,14 +62,14 @@ module.exports = function () {
 
   // Start block is a work in progress, might not be needed. Might be
   // for naming seperate targets.
-  startBlock.tabs = {
+  identityBlock.tabs = {
     'event': '<i class="fa fa-bolt" aria-hidden="true"></i>',
     'target-bt': '<i class="fa fa-bluetooth-b" aria-hidden="true"></i>',
     'target-usb': '<i class="fa fa-usb" aria-hidden="true"></i>',
   };
 
   // Initial setting for blocks of this type.
-  startBlock.defaultSettings = function() {
+  identityBlock.defaultSettings = function() {
     // Return a new object with settings for the controller.
     return {
       data:{
@@ -85,9 +85,9 @@ module.exports = function () {
     };
   };
 
-  startBlock.configurator = function(div, block) {
-    startBlock.activeBlock = block;
-    startBlock.koDiv = div;
+  identityBlock.configurator = function(div, block) {
+    identityBlock.activeBlock = block;
+    identityBlock.koDiv = div;
     div.innerHTML =
       `<div class='list-box-shell'>
           <ul class='list-box' data-bind='foreach: devices'>
@@ -98,21 +98,21 @@ module.exports = function () {
       </div>`;
 
     // Connect the dataBinding.
-    ko.applyBindings(startBlock, div);
+    ko.applyBindings(identityBlock, div);
 
     // Need to be smart about aging out old items.
     // and filtering
-    startBlock.devices.removeAll();
-    startBlock.startScan();
+    identityBlock.devices.removeAll();
+    identityBlock.startScan();
   };
 
-  startBlock.configuratorClose = function() {
-    startBlock.stopScan();
-    startBlock.activeBlock = null;
-    ko.cleanNode(startBlock.koDiv);
+  identityBlock.configuratorClose = function() {
+    identityBlock.stopScan();
+    identityBlock.activeBlock = null;
+    ko.cleanNode(identityBlock.koDiv);
   };
 
-  startBlock.svg = function(root, block) {
+  identityBlock.svg = function(root, block) {
     var pathd = '';
     pathd =  pb.move(31, 11);
     pathd += pb.hline(18);
@@ -130,7 +130,7 @@ module.exports = function () {
     root.appendChild(text);
   };
 
-  startBlock.foundDevice = function (device) {
+  identityBlock.foundDevice = function (device) {
     // Does it look like real device?
     if (device.name !== undefined) {
       var hwType = '';
@@ -146,54 +146,54 @@ module.exports = function () {
       var now = Date.now();
 
       // See if that item already exists.
-      var match = ko.utils.arrayFirst(startBlock.devices(), function(item) {
+      var match = ko.utils.arrayFirst(identityBlock.devices(), function(item) {
         return (item().name === device.name);
       });
       if (!match) {
-        startBlock.addItem(device.name, Date.now(), hwType);
+        identityBlock.addItem(device.name, Date.now(), hwType);
       } else {
         match().ts = now;
       }
     }
   };
 
-  startBlock.addItem = function (name, timeStamp) {
+  identityBlock.addItem = function (name, timeStamp) {
 
-    var block = startBlock.activeBlock;
+    var block = identityBlock.activeBlock;
     var targetName = block.controllerSettings.data.deviceName;
     var item = ko.observable({
       name: name,
       selected: ko.observable(name === targetName),
       ts: timeStamp
     });
-    startBlock.devices.unshift(item);
+    identityBlock.devices.unshift(item);
   };
 
-  startBlock.cullDevices = function () {
+  identityBlock.cullDevices = function () {
     // for testing on desktop,
-    // startBlock.foundDevice({name:'BBC micro:bit [gato]'});
+    // identityBlock.foundDevice({name:'BBC micro:bit [gato]'});
     var now = Date.now();
-    startBlock.devices.remove(function(item) {
+    identityBlock.devices.remove(function(item) {
       if (item().ts === 0) {
         return false;
       }
       return ((now - item().ts) > 2500);
     });
-    startBlock.cullTimer = setTimeout(startBlock.cullDevices, 1000);
+    identityBlock.cullTimer = setTimeout(identityBlock.cullDevices, 1000);
   };
 
-  startBlock.startScan = function () {
+  identityBlock.startScan = function () {
     // Put empty  rows so the cell don't stretch to fill the table.
-    startBlock.devices.removeAll();
+    identityBlock.devices.removeAll();
 
     // Start up scanning, or add fake ones.
     var ble = window.evothings.ble;
     if (ble === undefined) {
-      startBlock.addItem('rowbin', (Date.now()+500) );
-      startBlock.addItem('zorgav', (Date.now()+1000) );
-      startBlock.addItem('vargon', (Date.now()+2000) );
-      startBlock.addItem('vigot',  0 );
-      startBlock.addItem('rimbor', (Date.now()+3000) );
+      identityBlock.addItem('rowbin', (Date.now()+500) );
+      identityBlock.addItem('zorgav', (Date.now()+1000) );
+      identityBlock.addItem('vargon', (Date.now()+2000) );
+      identityBlock.addItem('vigot',  0 );
+      identityBlock.addItem('rimbor', (Date.now()+3000) );
     } else {
       var self = this;
       ble.stopScan();
@@ -204,21 +204,21 @@ module.exports = function () {
         });
     }
     // Periodically remove old items.
-    startBlock.cullDevices();
+    identityBlock.cullDevices();
   };
 
-  startBlock.stopScan = function () {
+  identityBlock.stopScan = function () {
     var ble = window.evothings.ble;
     if (ble === undefined) {
       return;
     } else {
       ble.stopScan();
     }
-    if (startBlock.cullTimer !== null) {
-      clearTimeout(startBlock.cullTimer);
-      startBlock.cullTimer = null;
+    if (identityBlock.cullTimer !== null) {
+      clearTimeout(identityBlock.cullTimer);
+      identityBlock.cullTimer = null;
     }
   };
 
-  return startBlock;
+  return identityBlock;
   }();

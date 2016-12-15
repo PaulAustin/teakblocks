@@ -65,12 +65,12 @@ function deviceReady() {
   var package1 = {
   name:'A',
   blocks:{
-      'start':{},
+      'identity':{},
       'picture':{},
+      'sound':{},
       'motor':{},
       'twoMotor':{},
       'microServo':{},
-      'sound':{},
       'wait':{},
       'loop':{}
     }
