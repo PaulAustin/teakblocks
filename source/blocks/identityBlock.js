@@ -38,10 +38,17 @@ module.exports = function () {
   identityBlock.cullTimer = null;
 
   identityBlock.connect = function(device) {
+    // Mark selected, so data-binding will select the item.
+    device.selected(true);
+    // Mark time stamp 0 so it wont be removed from the list.
+    // TODO, once connected the ts will be updated after
+    // each communication with the target. If it stop responding
+    // then it may stay in the list but be 'greyed out'
+    device.ts = 0;
     if (identityBlock.ble === undefined)
       return;
 
-    identityBlock.ble.connect(device.address,
+    identityBlock.ble.connect(device.hwDescription.address,
       function(connectInfo) {
         console.log('Connected to BLE device ' + connectInfo.name);
         console.log('connect info ', connectInfo);
@@ -55,10 +62,6 @@ module.exports = function () {
   identityBlock.onDeviceClick = function() {
     var name = this.name;
     if (typeof name === 'string') {
-      // Mark this item as selected.
-      this.selected(true);
-      var deviceToConnectTo = this.device;
-      console.log('device', deviceToConnectTo);
 
       // Find the current item and make sure it is unselected.
       var block = identityBlock.activeBlock;
@@ -74,7 +77,8 @@ module.exports = function () {
       block.controllerSettings.data.deviceName = name;
       block.updateSvg();
 
-      identityBlock.connect(deviceToConnectTo);
+      // Mark this item as selected.
+      identityBlock.connect(this);
       // TODO set hwType icon, connecting status as well.
     }
   };
@@ -148,13 +152,14 @@ module.exports = function () {
     root.appendChild(text);
   };
 
-  identityBlock.foundDevice = function (device) {
+  identityBlock.foundDevice = function (bleDeviceInfo) {
     // Does it look like real device?
-    if (device.name !== undefined) {
+    if (bleDeviceInfo.name !== undefined) {
       var hwType = '';
-      if (device.name.startsWith('BBC micro:bit [')) {
-        var str = device.name.split('[', 2)[1].split(']',1)[0];
-        device.name = str;
+      if (bleDeviceInfo.name.startsWith('BBC micro:bit [')) {
+        var str = bleDeviceInfo.name.split('[', 2)[1].split(']',1)[0];
+        // Over writing name, not a good idea.
+        bleDeviceInfo.name = str;
         hwType = 'micro:bit';
       } else {
         // arduino, other...
@@ -165,23 +170,23 @@ module.exports = function () {
 
       // See if that item already exists.
       var match = ko.utils.arrayFirst(identityBlock.devices(), function(item) {
-        return (item().name === device.name);
+        return (item().name === bleDeviceInfo.name);
       });
       if (!match) {
-        identityBlock.addItem(device, Date.now(), hwType);
+        identityBlock.addItem(bleDeviceInfo, Date.now(), hwType);
       } else {
         match().ts = now;
       }
     }
   };
 
-  identityBlock.addItem = function (device, timeStamp) {
+  identityBlock.addItem = function (hwDescription, timeStamp) {
 
     var block = identityBlock.activeBlock;
     var targetName = block.controllerSettings.data.deviceName;
     var item = ko.observable({
-      name: device.name,
-      device: device,
+      name: hwDescription.name,
+      hwDescription: hwDescription,
       selected: ko.observable(name === targetName),
       ts: timeStamp
     });
