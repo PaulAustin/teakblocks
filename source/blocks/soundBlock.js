@@ -62,7 +62,7 @@ module.exports = function () {
     }
     for (var ibKey = 0; ibKey < 7; ibKey++) {
       if (ibKey !== 2 && ibKey !== 6) {
-        var bkey = svgb.createRect('piano-key block-sound-piano-b', 21+(ibKey*28), 53, 20, 45, 3);
+        var bkey = svgb.createRect('block-sound-piano-b', 21+(ibKey*28), 53, 20, 45, 3);
         svg.appendChild(bkey);
       }
     }
