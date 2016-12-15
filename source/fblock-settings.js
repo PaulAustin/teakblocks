@@ -49,7 +49,7 @@ b.unknownBlock = {
   }
 };
 
-b.startBlock = require('./blocks/startBlock.js');
+b.identityBlock = require('./blocks/identityBlock.js');
 b.pictureBlock = require('./blocks/pictureBlock.js');
 b.soundBlock = require('./blocks/soundBlock.js');
 var flowBlocks = require('./blocks/flowBlocks.js');
