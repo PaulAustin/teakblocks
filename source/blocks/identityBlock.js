@@ -146,6 +146,7 @@ module.exports = function () {
     root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 31, 20, 2));
     root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 49, 20, 2));
 
+    // Add identity name
     var name = block.controllerSettings.data.deviceName;
     var text = svgb.createText('block-identity-text svg-clear', 40, 50, name);
     text.setAttribute('text-anchor', 'middle');

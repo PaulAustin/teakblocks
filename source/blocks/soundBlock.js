@@ -36,7 +36,7 @@ module.exports = function () {
     // return a new object with settings for the controller.
     return {
       // And the data that goes with that editor.
-      data:{'note':'c4', 'period':'1/4'},
+      data:{'description':'', 'period':'1/4'},
       // Indicate what controller is active. This may affect the data format.
       controller:'pianoKeyboard',
     };
@@ -44,23 +44,24 @@ module.exports = function () {
 
   var keyInfo = [
     // Naturals 8
-    { name:'c4', f:261.6 }, //0
-    { name:'d4', f:293.7 },
-    { name:'e4', f:329.6 },
-    { name:'f4', f:349.2 },
-    { name:'g4', f:392.0 }, //4
-    { name:'a4', f:440.0 },
-    { name:'b4', f:493.9 },
-    { name:'c5', f:523.2 }, //7
+    { name:'C4', f:261.6 }, //0
+    { name:'D4', f:293.7 },
+    { name:'E4', f:329.6 },
+    { name:'F4', f:349.2 },
+    { name:'G4', f:392.0 }, //4
+    { name:'A4', f:440.0 },
+    { name:'B4', f:493.9 },
+    { name:'C5', f:523.2 }, //7
     // Accidentals, is easier to not interleave them.
-    { name:'c#4', f:277.2, keyShift:-3 },
-    { name:'d#4', f:311.1, keyShift:3  },
-    { name:'f#4', f:370.0, keyShift:-4 },
-    { name:'g#4', f:415.3, keyShift:0  },
-    { name:'a#4', f:466.1, keyShift:4  }
+    { name:'C#4', f:277.2, keyShift:-3 },
+    { name:'D#4', f:311.1, keyShift:3  },
+    { name:'F#4', f:370.0, keyShift:-4 },
+    { name:'G#4', f:415.3, keyShift:0  },
+    { name:'A#4', f:466.1, keyShift:4  }
   ];
 
-  soundBlock.configurator= function(div) {
+  soundBlock.configurator= function(div, block) {
+    soundBlock.activeBlock = block;
     div.innerHTML =
         `<div id='pictureEditorDiv'>
           <svg id='pianoSvg'width=231px height=145px xmlns='http://www.w3.org/2000/svg'>
@@ -143,6 +144,10 @@ module.exports = function () {
     soundBlock.keyTimer = setTimeout(function() {
       soundBlock.stopCurrentKey();
     }, 400);
+
+    // Update block
+    soundBlock.activeBlock.controllerSettings.data.description = keyInfo[keyIndex].name;
+    soundBlock.activeBlock.updateSvg();
   };
 
   soundBlock.stopCurrentKey = function() {
@@ -155,7 +160,8 @@ module.exports = function () {
     // Stop Oscillator
   };
   // Sound block to make a joyful noise.
-  soundBlock.svg = function(root) {
+  soundBlock.svg = function(root, block) {
+    // Speaker
     var pathd = '';
     pathd =  pb.move(20, 25);
     pathd += pb.hline(9);
@@ -168,6 +174,7 @@ module.exports = function () {
     var path = svgb.createPath('svg-clear block-stencil-fill', pathd);
     root.appendChild(path);
 
+    // Sound waves
     pathd = '';
     pathd =  pb.move(45, 25);
     pathd += pb.arc(12, 90, 0, 1, 0, 10);
@@ -178,6 +185,13 @@ module.exports = function () {
     var soundPath = svgb.createPath('svg-clear block-stencil', pathd);
     soundPath.setAttribute('stroke-linecap', 'round');
     root.appendChild(soundPath);
+
+    // Description
+    var name = block.controllerSettings.data.description;
+    var text = svgb.createText('block-identity-text svg-clear', 40, 70, name);
+    text.setAttribute('text-anchor', 'middle');
+    root.appendChild(text);
+
     return root;
   };
 
