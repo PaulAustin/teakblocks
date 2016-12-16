@@ -185,20 +185,30 @@ tbe.deleteChunk = function(block, endBlock){
   }
 };
 
-tbe.replicate = function(chain){
+// Copy a chunk, or the rest of the chain, return the copy.
+// the section specififed should not have links to parts out side.
+tbe.replicateChunk = function(chain, endBlock) {
+
+    var stopPoint = null;
+    if (endBlock !== undefined && endBlock !== null) {
+      // this might be null as well.
+      stopPoint = endBlock.next;
+    }
+
     var newChain = null;
     var newBlock = null;
     var b = null;
 
     // Copy the chain of blocks and set the newBlock field.
     b = chain;
-    while (b !== null) {
+    while (b !== stopPoint) {
       newBlock = new this.FunctionBlock(b.rect.left, b.rect.top, b.name);
       b.newBlock = newBlock;
       if (newChain === null) {
         newChain = newBlock;
       }
 
+      // TODO can params and contorller settings be combined?
       newBlock.params = JSON.parse(JSON.stringify(b.params));
       newBlock.controllerSettings = JSON.parse(JSON.stringify(b.controllerSettings));
       newBlock.isPaletteBlock = false;
@@ -206,10 +216,9 @@ tbe.replicate = function(chain){
       this.diagramBlocks[newBlock.interactId] = newBlock;
       b = b.next;
     }
-
     // Fix up pointers in the new chain.
     b = chain;
-    while (b !== null) {
+    while (b !== stopPoint) {
       newBlock = b.newBlock;
       newBlock.next = b.mapToNewBlock(b.next);
       newBlock.prev = b.mapToNewBlock(b.prev);
@@ -219,10 +228,11 @@ tbe.replicate = function(chain){
     }
     // Clear out the newBlock field, and fix up svg as needed.
     b = chain;
-    while (b !== null) {
-      b.newBlock.fixupChainCrossBlockSvg();
+    while (b !== stopPoint) {
+      var temp = b.newBlock;
       b.newBlock = null;
       b = b.next;
+      temp.fixupChainCrossBlockSvg();
     }
 
     // Update images in the new chain
@@ -272,6 +282,7 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   this.flowTail = null;
   // Blocks at the top leve have a nesting of 0
   this.nesting = 0;
+  this.newBlock = null;
 
   // Dragging state information.
   this.dragging = false;
@@ -391,7 +402,7 @@ Object.defineProperty(tbe.FunctionBlock.prototype, 'interactId', {
   },
 });
 
-// mapToNewBlock -- used by replicate to fix up pointers in a
+// mapToNewBlock -- used by replicateChunk to fix up pointers in a
 // copied chain.
 tbe.FunctionBlock.prototype.mapToNewBlock = function (object) {
   if (object === undefined || object === null) {
@@ -669,6 +680,7 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
 
 // animateMove -- move a chunk of block to its new location. The prev and next
 // links should already be set up for the final location.
+// TODO, need ease in/out
 tbe.animateMove = function animateMove(state) {
   var frame = state.frame;
   state.chunkStart.dmove(state.adx, state.ady, (frame === 1), state.chunkEnd);
@@ -790,7 +802,7 @@ tbe.configInteractions = function configInteractions() {
 
           // If coming from pallette, or if coming from shift drag
           if (block.isPaletteBlock || event.shiftKey) {
-            block = thisTbe.replicate(block);
+            block = thisTbe.replicateChunk(block);
             targetToDrag = block.svgGroup;
           }
 

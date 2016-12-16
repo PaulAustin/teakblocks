@@ -23,7 +23,6 @@ SOFTWARE.
 module.exports = function () {
   var ko = require('knockout');
   var tbe = require('./teakblocks.js');
-  var interact = require('interact.js');
 
   // Set of propoerties that can be bound to.
   var blockSettings = {
@@ -48,8 +47,46 @@ module.exports = function () {
     </div>`;
     domRoot.appendChild(commonDiv);
     blockSettings.commonDiv = commonDiv;
+
+    // Add step/run button handler.
+    document.getElementById('block-run').onclick = function() {
+      console.log('step');
+    };
+
+    // Add delete button handler.
+    document.getElementById('block-clone').onclick = function() {
+      // TODO grab whole loop if necessary
+      if (blockSettings.activeBlock !== null) {
+        // Back up start if necessary for clone to be logical.
+        var startBlock = blockSettings.activeBlock;
+        if (startBlock.flowHead !== null) {
+          startBlock = startBlock.flowHead;
+        }
+        // Extend end if necessary for clone to be logical.
+        var endBlock = startBlock;
+        if (endBlock.flowTail !== null) {
+          endBlock = endBlock.flowTail;
+        }
+        var clone = tbe.replicateChunk(startBlock, endBlock);
+        var dy = -140;
+        if (clone.rect.top < 140) {
+          dy = 140;
+        }
+        var animateClone = {
+          frame: 20,
+          adx: 0,
+          ady: dy / 20,
+          chunkStart: clone,
+          chunkEnd: clone.last
+        };
+        tbe.animateMove(animateClone);
+        //clone.dmove(0, -140, true);
+      }
+    };
+
     // Add delete button handler.
     document.getElementById('block-clear').onclick = function() {
+      // TODO grab whole loop if necessary
       if (blockSettings.activeBlock !== null) {
         tbe.deleteChunk(blockSettings.activeBlock, blockSettings.activeBlock);
       }
