@@ -161,6 +161,9 @@ html, body { margin:0; padding:0; overflow:hidden }
 .block-sound-piano-b {
   fill: #212121;
 }
+.block-sound-piano-b-pressed{
+  fill: #616161;
+}
 .block-sound-piano {
   fill: #3E2723;
   stroke: #3E2723;
