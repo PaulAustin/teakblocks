@@ -230,20 +230,20 @@ html, body { margin:0; padding:0; overflow:hidden }
 }
 @keyframes shadowFadeIn {
     from{opacity:0.0;}
-    to{opacity:0.3;}
+    to{opacity:0.4;}
 }
 .shadow-block {
-  opacity:0.3;
-  fill:SkyBlue;
+  opacity:0.4;
+  fill: #skyBlue;;
   animation: shadowFadeIn 0.35s ease;
 }
 @keyframes shadowFadeOut {
-    from{opacity:0.3;}
+    from{opacity:0.4;}
     to{opacity:0.0;}
 }
 .shadow-block-leave {
   opacity:0.0;
-  fill:SkyBlue;
+  fill: #skyBlue;
   animation: shadowFadeOut 0.35s ease;
 }
 button {
