@@ -52,7 +52,7 @@ module.exports = function () {
     { name:'A4', f:440.0 },
     { name:'B4', f:493.9 },
     { name:'C5', f:523.2 }, //7
-    // Accidentals, is easier to not interleave them.
+    // Accidentals, its easier to not to interleave them.
     { name:'C#4', f:277.2, keyShift:-3 },
     { name:'D#4', f:311.1, keyShift:3  },
     { name:'F#4', f:370.0, keyShift:-4 },
@@ -71,9 +71,7 @@ module.exports = function () {
 
     // Create a editor state object for the interactions to work with.
     var svg = document.getElementById('pianoSvg');
-    //  var data = block.controllerSettings.data;
     var keyIndex = 0;
-    // Create a editor state object for the interactions to work with.
     for (var iwKey = 0; iwKey < 8; iwKey++) {
       var wkey = svgb.createRect('piano-key block-sound-piano-w', 4+(iwKey*28), 53, 27, 84, 3);
       wkey.setAttribute('key', keyIndex);
@@ -92,6 +90,7 @@ module.exports = function () {
     var r = svgb.createRect('svg-clear block-sound-piano', 0, 40, 231, 15, 4);
     svg.appendChild(r);
 
+    // Create audio context for generating tones.
     soundBlock.audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
     interact('.piano-key ', {context:svg})
@@ -108,16 +107,23 @@ module.exports = function () {
       }
     })
     .on('up', function () {
-//      soundBlock.lastKey = null;
       soundBlock.stopCurrentKey();
     })
     ;
   };
 
+  // Release the audioContext.
+  soundBlock.configuratorClose = function() {
+    soundBlock.audioContext.close();
+    soundBlock.audioContext = null;
+  };
+
+  // State variables for pointer tracking.
   soundBlock.currentKey = null;
   soundBlock.originalClass = null;
   soundBlock.lastKey = null;
 
+  // play a key, updage graphics, etc.
   soundBlock.playKey = function(svgElt) {
     var keyIndex = Number(svgElt.getAttribute('key'));
     svgElt.setAttribute('key', keyIndex);
@@ -137,8 +143,8 @@ module.exports = function () {
     oscillator.type = 'sine';
     oscillator.frequency.value = keyInfo[keyIndex].f;
     oscillator.start();
-    oscillator.stop(ctx.currentTime + 0.5);
-    gain.gain.setTargetAtTime(0, ctx.currentTime + 0.4, 0.015);
+    oscillator.stop(ctx.currentTime + 0.4);
+    gain.gain.setTargetAtTime(0, ctx.currentTime + 0.3, 0.015);
 
     // Make sure note ends.
     soundBlock.keyTimer = setTimeout(function() {
@@ -174,7 +180,7 @@ module.exports = function () {
     var path = svgb.createPath('svg-clear block-stencil-fill', pathd);
     root.appendChild(path);
 
-    // Sound waves
+    // Sound wave arcs
     pathd = '';
     pathd =  pb.move(45, 25);
     pathd += pb.arc(12, 90, 0, 1, 0, 10);
@@ -186,7 +192,7 @@ module.exports = function () {
     soundPath.setAttribute('stroke-linecap', 'round');
     root.appendChild(soundPath);
 
-    // Description
+    // Description such as note name.
     var name = block.controllerSettings.data.description;
     var text = svgb.createText('block-identity-text svg-clear', 40, 70, name);
     text.setAttribute('text-anchor', 'middle');
