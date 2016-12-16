@@ -42,6 +42,24 @@ module.exports = function () {
     };
   };
 
+  var keyInfo = [
+    // Naturals 8
+    { name:'c4', f:261.6 }, //0
+    { name:'d4', f:293.7 },
+    { name:'e4', f:329.6 },
+    { name:'f4', f:349.2 },
+    { name:'g4', f:392.0 }, //4
+    { name:'a4', f:440.0 },
+    { name:'b4', f:493.9 },
+    { name:'c5', f:523.2 }, //7
+    // Accidentals, is easier to not interleave them.
+    { name:'c#4', f:277.2, keyShift:-3 },
+    { name:'d#4', f:311.1, keyShift:3  },
+    { name:'f#4', f:370.0, keyShift:-4 },
+    { name:'g#4', f:415.3, keyShift:0  },
+    { name:'a#4', f:466.1, keyShift:4  }
+  ];
+
   soundBlock.configurator= function(div) {
     div.innerHTML =
         `<div id='pictureEditorDiv'>
@@ -52,47 +70,90 @@ module.exports = function () {
 
     // Create a editor state object for the interactions to work with.
     var svg = document.getElementById('pianoSvg');
-  //  var data = block.controllerSettings.data;
-
+    //  var data = block.controllerSettings.data;
+    var keyIndex = 0;
     // Create a editor state object for the interactions to work with.
     for (var iwKey = 0; iwKey < 8; iwKey++) {
       var wkey = svgb.createRect('piano-key block-sound-piano-w', 4+(iwKey*28), 53, 27, 84, 3);
-      wkey.setAttribute('key', iwKey.toString());
+      wkey.setAttribute('key', keyIndex);
+      keyIndex += 1;
       svg.appendChild(wkey);
     }
     for (var ibKey = 0; ibKey < 7; ibKey++) {
       if (ibKey !== 2 && ibKey !== 6) {
-        var bkey = svgb.createRect('block-sound-piano-b', 21+(ibKey*28), 53, 20, 45, 3);
+        var left = 21+(ibKey*28) + keyInfo[keyIndex].keyShift;
+        var bkey = svgb.createRect('piano-key block-sound-piano-b', left, 53, 22, 45, 3);
+        bkey.setAttribute('key', keyIndex);
+        keyIndex += 1;
         svg.appendChild(bkey);
       }
     }
     var r = svgb.createRect('svg-clear block-sound-piano', 0, 40, 231, 15, 4);
     svg.appendChild(r);
-///* still some work for mouse events
+
+    soundBlock.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
     interact('.piano-key ', {context:svg})
     .on('down', function (event) {
-      var key = event.target.getAttribute('key');
-      console.log('key down', key);
-      event.target.setAttribute('class', 'piano-key block-sound-piano-w-pressed');
+      soundBlock.lastKey = event.target;
+      soundBlock.playKey(event.target);
     })
     .on('move', function (event) {
       if (event.interaction.pointerIsDown) {
-        var key = event.target.getAttribute('key');
-        event.target.setAttribute('class', 'piano-key block-sound-piano-w-pressed');
-        console.log('key play', key);
-      } else {
-        event.target.setAttribute('class', 'piano-key block-sound-piano-w');
-        // move stuff
+        if (soundBlock.currentKey !== event.target && soundBlock.lastKey !== event.target) {
+          soundBlock.lastKey = event.target;
+          soundBlock.playKey(event.target);
+        }
       }
     })
-    .on('up', function (event) {
-      var key = event.target.getAttribute('key');
-      event.target.setAttribute('class', 'piano-key block-sound-piano-w');
-      console.log('key up', key);
-    });
-
+    .on('up', function () {
+//      soundBlock.lastKey = null;
+      soundBlock.stopCurrentKey();
+    })
+    ;
   };
 
+  soundBlock.currentKey = null;
+  soundBlock.originalClass = null;
+  soundBlock.lastKey = null;
+
+  soundBlock.playKey = function(svgElt) {
+    var keyIndex = Number(svgElt.getAttribute('key'));
+    svgElt.setAttribute('key', keyIndex);
+    soundBlock.stopCurrentKey();
+    soundBlock.currentKey = svgElt;
+    soundBlock.originalClass = svgElt.getAttribute('class');
+    var newClass = soundBlock.originalClass + '-pressed';
+    svgElt.setAttribute('class', newClass);
+
+    // Start Oscillator
+    var ctx = soundBlock.audioContext;
+    var oscillator = ctx.createOscillator();
+    var gain = ctx.createGain();
+    oscillator.connect(gain);
+    gain.connect(ctx.destination);
+    gain.gain.value = 0.3;
+    oscillator.type = 'sine';
+    oscillator.frequency.value = keyInfo[keyIndex].f;
+    oscillator.start();
+    oscillator.stop(ctx.currentTime + 0.5);
+    gain.gain.setTargetAtTime(0, ctx.currentTime + 0.4, 0.015);
+
+    // Make sure note ends.
+    soundBlock.keyTimer = setTimeout(function() {
+      soundBlock.stopCurrentKey();
+    }, 400);
+  };
+
+  soundBlock.stopCurrentKey = function() {
+    if (soundBlock.currentKey !== null) {
+      clearTimeout(soundBlock.keyTimer);
+      soundBlock.keyTimer = undefined;
+      soundBlock.currentKey.setAttribute('class', soundBlock.originalClass);
+      soundBlock.currentKey = null;
+    }
+    // Stop Oscillator
+  };
   // Sound block to make a joyful noise.
   soundBlock.svg = function(root) {
     var pathd = '';
