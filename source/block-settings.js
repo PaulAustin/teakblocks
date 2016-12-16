@@ -68,6 +68,9 @@ module.exports = function () {
           endBlock = endBlock.flowTail;
         }
         var clone = tbe.replicateChunk(startBlock, endBlock);
+
+        // move it to some open space
+        // TODO use more logic to find a good place to put the block.
         var dy = -140;
         if (clone.rect.top < 140) {
           dy = 140;
@@ -88,7 +91,22 @@ module.exports = function () {
     document.getElementById('block-clear').onclick = function() {
       // TODO grab whole loop if necessary
       if (blockSettings.activeBlock !== null) {
-        tbe.deleteChunk(blockSettings.activeBlock, blockSettings.activeBlock);
+        // Delete the block.
+        var block1 = blockSettings.activeBlock;
+        var block2 = null;
+
+        // If ends of a flow block remove both parts,
+        // delte the tail first, since it owns the graphics.
+        if (block1.flowHead !== null) {
+          block2 = block1.flowHead;
+        } else if (block1.flowTail !== null) {
+          block2 = block1;
+          block1 = block1.flowTail;
+        }
+        tbe.deleteChunk(block1, block1);
+        if (block2 !== null) {
+          tbe.deleteChunk(block2, block2);
+        }
       }
     };
 
