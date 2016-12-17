@@ -528,7 +528,7 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
 
   // Refine the action based on geometery.
   if (target !== null) {
-    if (self.rect.left < (target.rect.left)) {
+    if (self.rect.left <= (target.rect.left)) {
       if (target.prev !== null) {
         action = 'insert';
       } else {
