@@ -189,61 +189,63 @@ tbe.deleteChunk = function(block, endBlock){
 // the section specififed should not have links to parts out side.
 tbe.replicateChunk = function(chain, endBlock) {
 
-    var stopPoint = null;
-    if (endBlock !== undefined && endBlock !== null) {
-      // this might be null as well.
-      stopPoint = endBlock.next;
+  this.clearStates(); //???
+
+  var stopPoint = null;
+  if (endBlock !== undefined && endBlock !== null) {
+    // this might be null as well.
+    stopPoint = endBlock.next;
+  }
+
+  var newChain = null;
+  var newBlock = null;
+  var b = null;
+
+  // Copy the chain of blocks and set the newBlock field.
+  b = chain;
+  while (b !== stopPoint) {
+    newBlock = new this.FunctionBlock(b.rect.left, b.rect.top, b.name);
+    b.newBlock = newBlock;
+    if (newChain === null) {
+      newChain = newBlock;
     }
 
-    var newChain = null;
-    var newBlock = null;
-    var b = null;
+    // TODO can params and contorller settings be combined?
+    newBlock.params = JSON.parse(JSON.stringify(b.params));
+    newBlock.controllerSettings = JSON.parse(JSON.stringify(b.controllerSettings));
+    newBlock.isPaletteBlock = false;
+    newBlock.interactId = tbe.nextBlockId('d:');
+    this.diagramBlocks[newBlock.interactId] = newBlock;
+    b = b.next;
+  }
+  // Fix up pointers in the new chain.
+  b = chain;
+  while (b !== stopPoint) {
+    newBlock = b.newBlock;
+    newBlock.next = b.mapToNewBlock(b.next);
+    newBlock.prev = b.mapToNewBlock(b.prev);
+    newBlock.flowHead = b.mapToNewBlock(b.flowHead);
+    newBlock.flowTail = b.mapToNewBlock(b.flowTail);
+    b = b.next;
+  }
+  // Clear out the newBlock field, and fix up svg as needed.
+  b = chain;
+  while (b !== stopPoint) {
+    var temp = b.newBlock;
+    b.newBlock = null;
+    b = b.next;
+    temp.fixupChainCrossBlockSvg();
+  }
 
-    // Copy the chain of blocks and set the newBlock field.
-    b = chain;
-    while (b !== stopPoint) {
-      newBlock = new this.FunctionBlock(b.rect.left, b.rect.top, b.name);
-      b.newBlock = newBlock;
-      if (newChain === null) {
-        newChain = newBlock;
-      }
+  // Update images in the new chain
+  b = newChain;
+  while (b !== null) {
+    b.updateSvg();
+    b = b.next;
+  }
 
-      // TODO can params and contorller settings be combined?
-      newBlock.params = JSON.parse(JSON.stringify(b.params));
-      newBlock.controllerSettings = JSON.parse(JSON.stringify(b.controllerSettings));
-      newBlock.isPaletteBlock = false;
-      newBlock.interactId = tbe.nextBlockId('d:');
-      this.diagramBlocks[newBlock.interactId] = newBlock;
-      b = b.next;
-    }
-    // Fix up pointers in the new chain.
-    b = chain;
-    while (b !== stopPoint) {
-      newBlock = b.newBlock;
-      newBlock.next = b.mapToNewBlock(b.next);
-      newBlock.prev = b.mapToNewBlock(b.prev);
-      newBlock.flowHead = b.mapToNewBlock(b.flowHead);
-      newBlock.flowTail = b.mapToNewBlock(b.flowTail);
-      b = b.next;
-    }
-    // Clear out the newBlock field, and fix up svg as needed.
-    b = chain;
-    while (b !== stopPoint) {
-      var temp = b.newBlock;
-      b.newBlock = null;
-      b = b.next;
-      temp.fixupChainCrossBlockSvg();
-    }
-
-    // Update images in the new chain
-    b = newChain;
-    while (b !== null) {
-      b.updateSvg();
-      b = b.next;
-    }
-
-    // Return pointer to head of new chain.
-    return newChain;
+  // Return pointer to head of new chain.
+  return newChain;
 };
 
 //------------------------------------------------------------------------------
