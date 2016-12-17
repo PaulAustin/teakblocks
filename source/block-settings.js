@@ -96,7 +96,7 @@ module.exports = function () {
         var block2 = null;
 
         // If ends of a flow block remove both parts,
-        // delte the tail first, since it owns the graphics.
+        // delete the tail first, since it owns the graphics.
         if (block1.flowHead !== null) {
           block2 = block1.flowHead;
         } else if (block1.flowTail !== null) {

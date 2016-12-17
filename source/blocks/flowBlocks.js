@@ -76,27 +76,28 @@ module.exports = function () {
   };
 
   flowBlockTail.crossBlockSvg = function(block) {
-    var depth = this.calculateEnclosedScopeDepth(block) + 1;
-    // The tail of the flow block does the flow-bar rendering.
-    var left = 40 - (block.rect.left - block.flowHead.rect.left);
-    var width = block.rect.right - block.flowHead.rect.left - 80;
-    var hieght = (8 * depth);
-    var dxBar = 5 * depth;
-    var radius = 7;
-
+    // Remove old cross block graphic.
     var scb = block.svgCrossBlock;
     if (scb !== undefined) {
       block.svgGroup.removeChild(scb);
     }
 
+    // Make a new one.
+    var depth = this.calculateEnclosedScopeDepth(block) + 1;
+    // The tail of the flow block does the flow-bar rendering.
+    var left = 40 - (block.rect.left - block.flowHead.rect.left);
+    var width = block.rect.right - block.flowHead.rect.left - 80;
+    var hieght = (8 * depth);
+    var dxBar = 4 * depth;
+    var radius = 8;
+
     var pb = svgb.pathBuilder;
     var pathd = '';
-
     pathd =  pb.move(left, 0);
     pathd += pb.line(dxBar, -hieght);
-    pathd += pb.arc(radius, 60, 0, 1, (radius * 0.9), -(radius * 0.7));
+    pathd += pb.arc(radius , 60, 0, 1, (radius * 0.9), -(radius * 0.7));
     pathd += pb.hline(width - (2*radius) - (2*dxBar));
-    pathd += pb.arc(radius, 60, 0, 1, (radius * 0.9), (radius * 0.7));
+    pathd += pb.arc(radius, 60, 0, 1, (radius*0.9), (radius*0.7));
     pathd += pb.line(dxBar, hieght);
     scb = svgb.createPath('flow-path svg-clear', pathd);
     block.svgGroup.insertBefore(scb, block.svgRect);
