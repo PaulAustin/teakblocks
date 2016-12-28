@@ -112,6 +112,20 @@ html, body { margin:0; padding:0; overflow:hidden }
   fill: #FFB74D;
   stroke-linejoin: round;
 }
+.block-sensor-stencil {
+  fill: none;
+  stroke-width: 1.5;
+  stroke: #FFB74D;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.block-sensor-stencil-value {
+  fill: #33FF33;
+  stroke-width: 0;
+  stroke: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .block-identity-text {
   /* For name of connected device */
   font-family: "helvetica";
