@@ -23,11 +23,9 @@ SOFTWARE.
 module.exports = function () {
 
 var svgb = require('./svgbuilder.js');
-var pb = svgb.pathBuilder;
 var b = {};
 var interact = require('interact.js');
 var ko = require('knockout');
-
 
 b.bind = function(style){
   var key = style + 'Block';
@@ -52,6 +50,9 @@ b.unknownBlock = {
 b.identityBlock = require('./blocks/identityBlock.js');
 b.pictureBlock = require('./blocks/pictureBlock.js');
 b.soundBlock = require('./blocks/soundBlock.js');
+b.servoBlock = require('./blocks/servoBlock.js');
+b.waitBlock = require('./blocks/waitBlock.js');
+b.colorStripBlock = require('./blocks/colorStripBlock.js');
 var flowBlocks = require('./blocks/flowBlocks.js');
 b.loopBlock = flowBlocks.flowBlockHead;  // TODO name change
 b.tailBlock = flowBlocks.flowBlockTail;  // TODO name change
@@ -128,7 +129,6 @@ b.motorBlock = {
         var text = svgb.createText('svg-clear', 25+((ix)*70), 42.5+(iy*30), b.motorBlock.numArray[((iy)*3) + ix]);
 
         // add setAttribute to the seperate blocks
-
         button.appendChild(box);
         button.appendChild(text);
 
@@ -243,27 +243,6 @@ b.twoMotorBlock = {
   }
 };
 
-// Micro servo block
-b.microServoBlock = {
-  svg: function(root) {
-    // servo body
-    var box = svgb.createRect('svg-clear block-micro-servo-body', 18, 20, 44, 24, 2.5);
-    root.appendChild(box);
-
-    // simple servo arm
-    var pathd = '';
-    pathd =  pb.move(45, 32);
-    pathd +=  pb.line(2.5, -19);
-    pathd +=  pb.hline(1);
-    pathd +=  pb.line(2.5, 19);
-    pathd += pb.arc(3.0, 180, 1, 1, -6, 0);
-    pathd +=  pb.close();
-    var path = svgb.createPath('svg-clear block-stencil-fill', pathd);
-    root.appendChild(path);
-    return root;
-  }
-};
-
 b.digitalWriteBlock = {
   svg: function(root) {
     // TODO
@@ -283,37 +262,12 @@ b.I2CWriteBlock = {
   // TODO
 };
 
-// Wait block - wait until something happens, such as time passing.
-b.waitBlock = {
-  svg: function(root) {
-    var pathd = '';
-    pathd =  pb.move(40, 19);
-    pathd += pb.vline(-7);
-    pathd += pb.arc(19, 340, 1, 1, -12, 4);
-    pathd +=  pb.move(10.6, 16.5);
-    pathd +=  pb.arc(1.3, 300, 0, 0, 2.2, -0.8);
-    pathd +=  pb.line(-7.8, -10.5);
-    pathd +=  pb.close();
-    var path = svgb.createPath('svg-clear block-stencil', pathd);
-    root.appendChild(path);
-    return root;
-  }
-};
-
 // Calculator
 b.calculatorBlock = {
   svg: function(root) {
     return root;
   }
 };
-
-// Loop
-b.loop = {
-  svg: function(root) {
-    return root;
-  }
-};
-
 // Binding sources are things that provide values that can be connected to
 // actors. Much still TODO :)
 b.musicNoteValue = {

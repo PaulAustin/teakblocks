@@ -70,7 +70,7 @@ function deviceReady() {
       'sound':{},
       'motor':{},
       'twoMotor':{},
-      'microServo':{},
+      'servo':{},
       'wait':{},
       'loop':{}
     }
