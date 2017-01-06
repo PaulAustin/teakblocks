@@ -21,8 +21,8 @@ SOFTWARE.
 */
 
 module.exports = function () {
-  //var interact = require('interact.js');
   var svgb = require('./../svgbuilder.js');
+  var formTools = require('./../block-settings.js');
   var pb = svgb.pathBuilder;
   var waitBlock = {};
 
@@ -41,6 +41,17 @@ module.exports = function () {
     root.appendChild(path);
     return root;
   };
+
+  waitBlock.configurator= function(div) {
+    div.innerHTML =
+        `<div id='pictureEditorDiv'>
+          <br>
+          <i class="fa fa-tachometer" aria-hidden="true"></i><div class="slider"></div>
+          <br>
+          <i class="fa fa-clock-o" aria-hidden="true"></i><div class="slider"></div>
+        </div>`;
+    formTools.sliderInteract(div);
+    };
 
   return waitBlock;
 }();
