@@ -57,13 +57,6 @@ var flowBlocks = require('./blocks/flowBlocks.js');
 b.loopBlock = flowBlocks.flowBlockHead;  // TODO name change
 b.tailBlock = flowBlocks.flowBlockTail;  // TODO name change
 
-// LED color
-b.ledColorStripBlock = {
-  svg: function(root) {
-    return root;
-  }
-};
-
 // Single motor
 b.motorBlock = {
   // Some experimental tabs
