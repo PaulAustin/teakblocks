@@ -108,7 +108,6 @@ b.motorBlock = {
     ko.applyBindings(b.motorBlock, div);
     var svg = document.getElementById('pictureEditor');
     var calcArea = document.getElementById('calc');
-    var output = document.getElementById('output');
     var num = 0.00;
     var strNum = "";
     var mult = true;
@@ -149,10 +148,9 @@ b.motorBlock = {
           strNum = event.target.getAttribute('name');
 
           if(strNum === "."){
-            if(typeof num != "string" && (num*10) % 1 == 0) num = num.toFixed(1);
+            if((typeof num !== "string") && (num*10) % 1 === 0) num = num.toFixed(1);
             mult = false;
-          }
-          else if(strNum === "<-"){
+          } else if(strNum === "<-"){
             num = 0.00;
             strNum = "";
             mult = true;
@@ -160,43 +158,31 @@ b.motorBlock = {
             decimalTwo = true;
             decimalThree = true;
             decimalFour = true;
-          }
-          else{
+          } else if(typeof num === "string"){
+            if(decimalOne){
+              num = parseInt(num, 10) + (parseFloat(strNum , 10)/10);
+              decimalOne = false;
+            } else if(decimalTwo){
+              num = parseFloat(num) + (parseFloat(strNum , 10)/100);
+              decimalTwo = false;
+            }
 
-              if(typeof num === "string"){
-                if(decimalOne){
-                  num = parseInt(num) + parseFloat(strNum , 10)/10;
-                  decimalOne = false;
-                }
-                else if(decimalTwo){
-                  num = parseFloat(num) + parseFloat(strNum , 10)/100;
-                  decimalTwo = false;
-                }
+            mult = false;
+          } else if(num % 1 > 0 && decimalThree){
+            num = parseFloat(num) + (parseFloat(strNum , 10)/100);
+            decimalThree = false;
+          } else if(decimalFour){
+            if(num < 10){
+              if((num*10) % 1 !== 0){
+                decimalFour = false;
+              } else{
+                num += parseFloat(strNum , 10)/10;
 
-                mult = false;
               }
-              else{
+            } else{
+              mult = false;
+            }
 
-                  if(num % 1 > 0 && decimalThree){
-                    num = parseFloat(num) + parseFloat(strNum , 10)/100;
-                    decimalThree = false;
-                  }
-                  else if(decimalFour){
-                    if(num < 10){
-                      if((num*10) % 1 !== 0){
-                        decimalFour = false;
-                      }
-                      else{
-                        num += parseFloat(strNum , 10)/10;
-
-                      }
-                    }
-                    else{
-                      mult = false;
-                    }
-
-                  }
-              }
           }
           if(mult){
             num *= 10;

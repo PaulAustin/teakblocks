@@ -1,13 +1,30 @@
 
 module.exports = function (){
 
+  function dump(block, editor) {
+    if(block[0] === undefined) {
+          var frame = block.animateState.frame;
+          block.dmove(block.animateState.adx, block.animateState.ady, (frame === 1), block);
+          block.animateState.count += 1;
+
+      if (frame > 1 ) {
+        block.animateState.frame = frame - 1;
+
+        requestAnimationFrame(function() {
+          dump(block, editor);
+        });
+      } else {
+          editor.clearDiagramBlocks();
+      }
+    }
+  }
+
 function trashBlocks(editor) {
 
     // Determine center of block chain, then have all blocks scatter
     // from that point. (righ now it does it from the center of the screen)
-    if (true || editor.diagramBlocks.length > 0 ) {
-
-      editor.forEachDiagramBlock(function(block) {
+    //if (true || editor.diagramBlocks.length > 0 ) {
+        editor.forEachDiagramBlock(function(block) {
         var frameCount = 100;
         var xPos = block.rect.left - (window.innerWidth/2);
         var yPos = block.rect.top - (window.innerHeight/2);
@@ -26,25 +43,7 @@ function trashBlocks(editor) {
     editor.forEachDiagramBlock(function(block) {
       dump(block, editor);
     });
-  }
-}
-
-function dump(block, editor) {
-  if(block[0] === undefined) {
-        var frame = block.animateState.frame;
-        block.dmove(block.animateState.adx, block.animateState.ady, (frame === 1), block);
-        block.animateState.count += 1;
-
-    if (frame > 1 ) {
-      block.animateState.frame = frame - 1;
-
-      requestAnimationFrame(function(timestamp) {
-        dump(block, editor);
-      });
-    } else {
-        editor.clearDiagramBlocks();
-    }
-  }
+  //}
 }
 
 return trashBlocks;
