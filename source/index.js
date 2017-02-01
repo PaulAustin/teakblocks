@@ -20,11 +20,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+// Load cordova.js if not in regular browser, and then set up initialization.
+var isRegularBrowser = false;
+
 function deviceReady() {
 
   var tbe = require('./teakblocks.js');
   var tf = require('./teak-forms.js');
   var ko = require('knockout');
+
+  /* font awesome strings */
+  var fastr = {
+    play: '\uf04b',
+    pause: '\uf04c',
+    stop: '\uf04D',
+    file: '\uf016',
+    trash: '\uf014',
+    folder: '\uf115',
+    undo: '\uf0e2',
+    redo: '\uf01e',
+    settings: '\uf013',
+  };
+
+  // A few things are sensitive to diffs from running in tablet vs.
+  // browser.
+  tbe.isRegularBrowser = isRegularBrowser;
 
   // Configuation components for the app and blocks
   // Initialize knockout databinding for documnets DOM
@@ -55,11 +75,18 @@ function deviceReady() {
     document.getElementById('editorCanvas'),
     document.getElementById('teakCode'));
 
+  tbe.commands = {
+    'settings': function() { tf.showHide(tbe.components.appSettings); },
+    'trash': function() { tbe.clearAllBlocks(); },
+  };
+
+/*
   var configButton = document.getElementById('app-settings-button');
   configButton.onclick = function() { tf.showHide(tbe.components.appSettings); };
 
   var clearButton = document.getElementById('clear-button');
   clearButton.onclick = function() { tbe.clearAllBlocks(); };
+*/
 
   // these could be loaded from JSON files/strings
   var package1 = {
@@ -77,10 +104,16 @@ function deviceReady() {
   };
 
  tbe.addPalette(package1);
+ tbe.addActionButton(0.5, fastr.play, 'play', 4);
+ tbe.addActionButton(1.5, fastr.stop, 'stop');
+ tbe.addActionButton(5, fastr.file, 'TODO');
+ tbe.addActionButton(7, fastr.trash, 'trash');
+ // tbe.addActionButton(9.1, fastr.settings, 'settings');
+ tbe.addActionButton(11.2, fastr.redo, 'redo');
+ tbe.addActionButton(12.2, fastr.undo, 'undo');
 }
 
-// Load cordova.js if not in regular browser, and then set up initialization.
-var isRegularBrowser =
+isRegularBrowser =
   document.URL.indexOf('http://') >= 0 ||
   document.URL.indexOf('https://') >= -0;
 

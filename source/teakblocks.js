@@ -748,7 +748,19 @@ tbe.configInteractions = function configInteractions() {
       thisTbe.deleteChunk(block, block.last);
     });
 
-  interact('.drag-delete').dropzone({
+  interact('.action-dot')
+  .on('down', function (event) {
+    event.currentTarget.classList.toggle('switch-bg');
+  })
+  .on('up', function (event) {
+    var cmd = event.currentTarget.getAttribute('command');
+    console.log('action-dot tapped', cmd);
+    var cmdFunction = tbe.commands[cmd];
+    if (typeof cmdFunction === 'function') {
+      console.log('action-dot tapped', cmd);
+      cmdFunction();
+    }
+    event.currentTarget.classList.toggle('switch-bg');
   });
 
   // Pointer events to the background go here. Might make sure the even is not
@@ -923,6 +935,25 @@ tbe.initPaletteBox = function initPaletteBox() {
 
   this.tabs = [];
   this.sizePaletteToWindow();
+};
+
+// Action buttons are circle with icons that are at the top.
+// icons can be Font-awesome, or ?? (png, svg) will start with FA icons.
+tbe.addActionButton = function(position, str, command, tweakx) {
+  var dx = 0;
+  if (tweakx !== undefined) {
+    dx = tweakx;
+  }
+  //var group = svgb.createGroup("", 0, 0);
+  var circle = svgb.createCircle('action-dot', (40 * (position * 2)), 40, 33);
+
+  circle.setAttribute('command', command);
+  var text = svgb.createText('action-dot-text', (40 * (position * 2)) + dx, 53, str);
+
+//infoGroup.append("text").attr("class", "svg-icon").text("\uf005");
+
+  tbe.svg.appendChild(circle);
+  tbe.svg.appendChild(text);
 };
 
 tbe.addPalette = function addPalette(palette) {

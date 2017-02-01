@@ -396,6 +396,20 @@ label input[type="checkbox"]:disabled + .label-text:before {
 .calcButtons{
   fill: #81C784;
 }
+/* actton dot are 'bottons' along the top of the canvas */
+.action-dot {
+  fill: #FFCCBC;
+}
+.action-dot.switch-bg {
+  fill: #FF00BC;
+}
+.action-dot-text {
+  fill: #FF7043;
+  font-family: FontAwesome;
+  font-size: 36px;
+  text-anchor: middle;
+  pointer-events: none;
+}
 .slider {
   position: relative;
   width: 100%;
