@@ -754,10 +754,8 @@ tbe.configInteractions = function configInteractions() {
   })
   .on('up', function (event) {
     var cmd = event.currentTarget.getAttribute('command');
-    console.log('action-dot tapped', cmd);
     var cmdFunction = tbe.commands[cmd];
     if (typeof cmdFunction === 'function') {
-      console.log('action-dot tapped', cmd);
       cmdFunction();
     }
     event.currentTarget.classList.toggle('switch-bg');
