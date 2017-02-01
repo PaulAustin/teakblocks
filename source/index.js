@@ -106,9 +106,9 @@ function deviceReady() {
  tbe.addPalette(package1);
  tbe.addActionButton(0.5, fastr.play, 'play', 4);
  tbe.addActionButton(1.5, fastr.stop, 'stop');
- tbe.addActionButton(5, fastr.file, 'TODO');
- tbe.addActionButton(7, fastr.trash, 'trash');
- // tbe.addActionButton(9.1, fastr.settings, 'settings');
+ tbe.addActionButton(4.5, fastr.file, 'TODO');
+ tbe.addActionButton(6.5, fastr.trash, 'trash');
+ tbe.addActionButton(8.5, fastr.settings, 'settings');
  tbe.addActionButton(11.2, fastr.redo, 'redo');
  tbe.addActionButton(12.2, fastr.undo, 'undo');
 }

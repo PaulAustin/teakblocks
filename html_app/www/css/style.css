@@ -398,10 +398,11 @@ label input[type="checkbox"]:disabled + .label-text:before {
 }
 /* actton dot are 'bottons' along the top of the canvas */
 .action-dot {
-  fill: #FFCCBC;
+  transition: fill 0.2s ease;
+  fill: #F6DDCC;
 }
 .action-dot.switch-bg {
-  fill: #FF00BC;
+  fill: #4DD0E1;
 }
 .action-dot-text {
   fill: #FF7043;
