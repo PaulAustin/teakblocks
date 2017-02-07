@@ -10,7 +10,15 @@
     "cordova-plugin-ble": {
         "source": {
             "type": "registry",
-            "id": "cordova-plugin-ble"
+            "id": "cordova-plugin-ble@2.0.1"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-bluetooth-serial": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-bluetooth-serial"
         },
         "is_top_level": true,
         "variables": {}

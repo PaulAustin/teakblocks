@@ -12,6 +12,9 @@
         },
         "cordova-plugin-ble": {
             "PACKAGE_NAME": "io.hld.teakblocks"
+        },
+        "cordova-plugin-bluetooth-serial": {
+            "PACKAGE_NAME": "io.hld.teakblocks"
         }
     },
     "dependent_plugins": {}

@@ -34,6 +34,7 @@ var fblocks = require('./fblock-settings.js');
 
 var tbe = {};
 
+tbe.fblocks = fblocks;
 tbe.diagramBlocks = {};
 tbe.paletteBlocks = {};
 tbe.blockIdSequence = 100;
@@ -943,10 +944,10 @@ tbe.addActionButton = function(position, str, command, tweakx) {
     dx = tweakx;
   }
   //var group = svgb.createGroup("", 0, 0);
-  var circle = svgb.createCircle('action-dot', (40 * (position * 2)), 40, 33);
+  var circle = svgb.createCircle('action-dot', (45 * (position * 2)), 45, 40);
 
   circle.setAttribute('command', command);
-  var text = svgb.createText('action-dot-text', (40 * (position * 2)) + dx, 53, str);
+  var text = svgb.createText('action-dot-text', (45 * (position * 2)) + dx, 57, str);
 
 //infoGroup.append("text").attr("class", "svg-icon").text("\uf005");
 
