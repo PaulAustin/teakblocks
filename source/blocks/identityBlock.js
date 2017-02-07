@@ -22,22 +22,84 @@ SOFTWARE.
 
 module.exports = function () {
   var svgb = require('./../svgbuilder.js');
-  require('./../evothings/easyble.dist.js');
   var ko = require('knockout');
 
   var pb = svgb.pathBuilder;
   var identityBlock = {};
 
-  // Added by by EVO things if BLE is supported.
-  identityBlock.ble = window.evothings.ble;
+  if (window.evothings !== undefined) {
+    identityBlock.ble = window.evothings.ble;
+  } else {
+    identityBlock.ble = null;
+  }
+  console.log(' ble is ', identityBlock.ble);
 
   // Items for selecting a device from a list.
   identityBlock.devices = ko.observableArray([]);
-  identityBlock.selectedDevice = ko.observable();
+  identityBlock.selectedDevice = null;
+  //identityBlock.selectedDevice = ko.observable();
   identityBlock.deviceName = {};
   identityBlock.cullTimer = null;
 
+  identityBlock.disconnectMessage = function() {
+    console.log('disconnect', identityBlock.selectedDevice);
+    // disconnect the selected item. It is still the selected item!
+    if (identityBlock.selectedDevice !== null) {
+      identityBlock.ble.close(identityBlock.selectedDevice.hwDescription);
+    }
+  };
+
+  identityBlock.sendMessage = function(message) {
+    console.log('connect', identityBlock.selectedDevice);
+    // connect to the selected item.
+    identityBlock.connect(identityBlock.selectedDevice);
+    // TODO set hwType icon, connecting status as well.
+
+    console.log('BT send message', message);
+
+/*
+
+if (handle)
+{
+  ble.writeDescriptor(
+    deviceHandle,
+    handle,
+    value,
+    function()
+    {
+      console.log(writeFunc + ': ' + handle + ' success.');
+    },
+    function(errorCode)
+    {
+      console.log(writeFunc + ': ' + handle + ' error: ' + errorCode);
+    });
+
+    BluefruitUART.writeCharacteristic
+      (
+      BLEDevice.writeCharacteristicUUID,
+      data,
+      function()
+      {
+        console.log('Sent: ' + message);
+      },
+      function(errorString)
+      {
+        console.log('BLE writeCharacteristic error: ' + errorString);
+      }
+      )
+
+      //  var data = evothings.ble.toUtf8(message);
+}
+
+*/
+
+  };
+
   identityBlock.connect = function(device) {
+
+    if (device === null)
+      return;
+
     // Mark selected, so data-binding will select the item.
     device.selected(true);
     // Mark time stamp 0 so it wont be removed from the list.
@@ -48,10 +110,12 @@ module.exports = function () {
     if (identityBlock.ble === undefined)
       return;
 
-    identityBlock.ble.connect(device.hwDescription.address,
+    identityBlock.ble.connectToDevice(device.hwDescription,
       function(connectInfo) {
         console.log('Connected to BLE device ' + connectInfo.name);
-        console.log('connect info ', connectInfo);
+      },
+      function(connectInfo) {
+        console.log('Disconnected from BLE device: ' + connectInfo.name);
       },
       function(errorCode) {
         console.log('Failed to connect to BLE device: ' + errorCode);
@@ -60,12 +124,20 @@ module.exports = function () {
   };
 
   identityBlock.onDeviceClick = function() {
+    // Ah JavaScript... 'this' is NOT identityBlock.
+    // It is the knockout item in the observable array.
+
     var name = this.name;
     if (typeof name === 'string') {
+      identityBlock.selectedDevice = this;
 
       // Find the current item and make sure it is unselected.
       var block = identityBlock.activeBlock;
       var currentName = block.controllerSettings.data.deviceName;
+
+      // Look for an item in the list that matches the blocks name.
+      // If it is there then mark the item as selected. This selection
+      // is UX only. BT selection happens (XXXXXX else where)
       var match = ko.utils.arrayFirst(identityBlock.devices(), function(item) {
         return (item().name === currentName);
       });
@@ -76,10 +148,6 @@ module.exports = function () {
       // Move the selected name into the object
       block.controllerSettings.data.deviceName = name;
       block.updateSvg();
-
-      // Mark this item as selected.
-      identityBlock.connect(this);
-      // TODO set hwType icon, connecting status as well.
     }
   };
 
@@ -154,6 +222,10 @@ module.exports = function () {
   };
 
   identityBlock.foundDevice = function (bleDeviceInfo) {
+
+    // It the item found matches the block name mark the UX as selected.
+    // until that that happens the block should indicate that it is not connected.
+
     // Does it look like real device?
     if (bleDeviceInfo.name !== undefined) {
       var hwType = '';
@@ -199,9 +271,14 @@ module.exports = function () {
     // identityBlock.foundDevice({name:'BBC micro:bit [gato]'});
     var now = Date.now();
     identityBlock.devices.remove(function(item) {
+      // ts of 0 means it never is culled.
       if (item().ts === 0) {
         return false;
       }
+      // If no communicationin 2.5 sec it gone.
+      // A. Items should be seen in pbroadcast.
+      // Commected items will update the time stamp in their
+      // heart beat.
       return ((now - item().ts) > 2500);
     });
     identityBlock.cullTimer = setTimeout(identityBlock.cullDevices, 1000);

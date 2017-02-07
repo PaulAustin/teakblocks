@@ -78,6 +78,9 @@ function deviceReady() {
   tbe.commands = {
     'settings': function() { tf.showHide(tbe.components.appSettings); },
     'trash': function() { tbe.clearAllBlocks(); },
+    // This is a hack.
+    'play': function() { tbe.fblocks.identityBlock.sendMessage(); },
+    'stop': function() { tbe.fblocks.identityBlock.disconnectMessage(); },
   };
 
 /*
