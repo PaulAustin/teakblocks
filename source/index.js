@@ -35,11 +35,12 @@ function deviceReady() {
     pause: '\uf04c',
     stop: '\uf04D',
     file: '\uf016',
-    trash: '\uf014',
+    trashEmpty: '\uf014',
     folder: '\uf115',
     undo: '\uf0e2',
     redo: '\uf01e',
     settings: '\uf013',
+    trashFull: '\uf1f8',
   };
 
   // A few things are sensitive to diffs from running in tablet vs.
@@ -75,11 +76,37 @@ function deviceReady() {
     document.getElementById('editorCanvas'),
     document.getElementById('teakCode'));
 
+  tbe.deleteButton = null;
   tbe.commands = {
     'settings': function() { tf.showHide(tbe.components.appSettings); },
-    'trash': function() { tbe.clearAllBlocks(); },
+    'trashFirst': function() { tbe.stage1deletion(fastr); },
+    'trashSecond': function() {  tbe.stage2deletion(fastr); },
+    'loadDocA': function(){ tbe.loadDoc('docA'); },
+    'loadDocB': function(){ tbe.loadDoc('docB'); },
   };
 
+  //create a method to make a group
+  //
+/*
+tbe.loadDoc(docName) {
+
+  if (docName === tbe.currentDoc) {
+  // for now save docname
+   return ;
+} else {
+  save.update file (tbe.currentDoc, .....); //
+  clear existing doc
+  vsr text = save.loadFile(docName);
+  console.log(text)
+  deserialize text;
+}
+}
+/*
+docFile - serialezed dat in utf8
+model - function block objects wiht links
+view - svg elements in the pages DOM  ( partof TBE SVG elt)
+*/
+// if(on docA -> docB) 1. save docA, 2. clear the screen 3. set currentDoc to docB 4. update editor with saved version of docB
 /*
   var configButton = document.getElementById('app-settings-button');
   configButton.onclick = function() { tf.showHide(tbe.components.appSettings); };
@@ -106,11 +133,12 @@ function deviceReady() {
  tbe.addPalette(package1);
  tbe.addActionButton(0.5, fastr.play, 'play', 4);
  tbe.addActionButton(1.5, fastr.stop, 'stop');
- tbe.addActionButton(4.5, fastr.file, 'TODO');
- tbe.addActionButton(6.5, fastr.trash, 'trash');
- tbe.addActionButton(8.5, fastr.settings, 'settings');
- tbe.addActionButton(11.2, fastr.redo, 'redo');
- tbe.addActionButton(12.2, fastr.undo, 'undo');
+ tbe.addActionButton(4.5, fastr.file, 'loadDocA');
+ tbe.addActionButton(5.5, fastr.file, 'loadDocB');
+ tbe.deleteButton = tbe.addActionButton(7.5, fastr.trashEmpty, 'trashFirst');
+ tbe.addActionButton(9.5, fastr.settings, 'settings');
+ tbe.addActionButton(12.2, fastr.redo, 'redo');
+ tbe.addActionButton(13.2, fastr.undo, 'undo');
 }
 
 isRegularBrowser =

@@ -24,19 +24,21 @@ module.exports = function (){
 
 var assert = require('assert');
 var interact = require('interact.js');
-//zzz6 var teak = require('teak');
+//var teak = require('teak');
 var tf = require('./teak-forms.js');
 var teakText = require('./teaktext.js');
 var svgb = require('./svgbuilder.js');
 var svglog = require('./svglog.js');
 var trashBlocks = require('./physics.js');
 var fblocks = require('./fblock-settings.js');
+var save = require('./save.js');
 
 var tbe = {};
 
 tbe.diagramBlocks = {};
 tbe.paletteBlocks = {};
 tbe.blockIdSequence = 100;
+tbe.currentDoc = 'docA';
 
 tbe.forEachDiagramBlock = function (callBack) {
   for (var key in tbe.diagramBlocks) {
@@ -110,6 +112,19 @@ tbe.clearAllBlocks = function() {
   trashBlocks(tbe);
 };
 
+tbe.loadDoc = function(docName) {
+  save.updateFile(docName, teakText.blocksToText(tbe.forEachDiagramChain));//document.getElementById('teakCode').innerHTML);
+  if(tbe.currentDoc === docName){
+    return;
+  } else{
+    tbe.clearStates();
+    tbe.clearDiagramBlocks();
+    tbe.currentDoc = docName;
+    var text = save.openFile(docName);
+    console.log("text:", text);
+  }
+};
+
 tbe.nextBlockId = function(prefix) {
   var blockId = prefix + String(tbe.blockIdSequence);
   tbe.blockIdSequence += 1;
@@ -118,7 +133,7 @@ tbe.nextBlockId = function(prefix) {
 
 tbe.addBlock = function(x, y, name, params) {
    var block = new this.FunctionBlock(x, y, name);
-   block.params = params;
+   //block.params = params;
    block.isPaletteBlock = false;
    block.interactId = tbe.nextBlockId('d:');
    this.diagramBlocks[block.interactId] = block.interactId;
@@ -127,7 +142,7 @@ tbe.addBlock = function(x, y, name, params) {
 
 tbe.addPaletteBlock = function(x, y, name, params) {
    var block = new this.FunctionBlock(x, y, name);
-   block.params = params;
+   //block.params = params;
    block.isPaletteBlock = true;
    block.interactId = tbe.nextBlockId('p:');
    this.paletteBlocks[block.interactId] = block;
@@ -211,7 +226,7 @@ tbe.replicateChunk = function(chain, endBlock) {
     }
 
     // TODO can params and contorller settings be combined?
-    newBlock.params = JSON.parse(JSON.stringify(b.params));
+    //newBlock.params = JSON.parse(JSON.stringify(b.params));
     newBlock.controllerSettings = JSON.parse(JSON.stringify(b.controllerSettings));
     newBlock.isPaletteBlock = false;
     newBlock.interactId = tbe.nextBlockId('d:');
@@ -899,6 +914,16 @@ tbe.configInteractions = function configInteractions() {
     });
 };
 
+tbe.stage1deletion = function(fastr){
+  tbe.svg.removeChild(tbe.deleteButton);
+  tbe.deleteButton = tbe.addActionButton(7.5, fastr.trashFull, 'trashSecond');
+};
+tbe.stage2deletion = function(fastr){
+  tbe.clearAllBlocks();
+  tbe.svg.removeChild(tbe.deleteButton);
+  tbe.deleteButton = tbe.addActionButton(7.5, fastr.trashEmpty, 'trashFirst');
+};
+
 tbe.diagramChanged = function diagramChanged() {
   if (teakText) {
     this.teakCode.value = teakText.blocksToText(tbe.forEachDiagramChain);
@@ -942,7 +967,7 @@ tbe.addActionButton = function(position, str, command, tweakx) {
   if (tweakx !== undefined) {
     dx = tweakx;
   }
-  //var group = svgb.createGroup("", 0, 0);
+  var group = svgb.createGroup('buttonGroup', 0, 0);
   var circle = svgb.createCircle('action-dot', (40 * (position * 2)), 40, 33);
 
   circle.setAttribute('command', command);
@@ -950,8 +975,15 @@ tbe.addActionButton = function(position, str, command, tweakx) {
 
 //infoGroup.append("text").attr("class", "svg-icon").text("\uf005");
 
-  tbe.svg.appendChild(circle);
-  tbe.svg.appendChild(text);
+  group.setAttribute('buttonCommand', command);
+
+  group.appendChild(circle);
+  group.appendChild(text);
+
+  tbe.svg.appendChild(group);
+
+  return group;
+  //tbe.svg.appendChild(text);
 };
 
 tbe.addPalette = function addPalette(palette) {

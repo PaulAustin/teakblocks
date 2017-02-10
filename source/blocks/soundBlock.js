@@ -36,7 +36,7 @@ module.exports = function () {
     // return a new object with settings for the controller.
     return {
       // And the data that goes with that editor.
-      data:{'description':'', 'period':'1/4'},
+      data:{'description':'C4', 'period':'1/4'},
       // Indicate what controller is active. This may affect the data format.
       controller:'pianoKeyboard',
     };
