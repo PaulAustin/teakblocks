@@ -28,6 +28,8 @@ function deviceReady() {
   var tbe = require('./teakblocks.js');
   var tf = require('./teak-forms.js');
   var ko = require('knockout');
+  var Clipboard = require('clipboard');
+  var tt = require('./teaktext.js');
 
   /* font awesome strings */
   var fastr = {
@@ -41,6 +43,7 @@ function deviceReady() {
     redo: '\uf01e',
     settings: '\uf013',
     trashFull: '\uf1f8',
+    copyToClipboard: '\uf0ea',
   };
 
   // A few things are sensitive to diffs from running in tablet vs.
@@ -76,7 +79,7 @@ function deviceReady() {
     document.getElementById('editorCanvas'),
     document.getElementById('teakCode'));
 
-  tbe.deleteButton = null;
+  tbe.deleteRay = null;
   tbe.commands = {
     'settings': function() { tf.showHide(tbe.components.appSettings); },
     'trashFirst': function() { tbe.stage1deletion(fastr); },
@@ -85,6 +88,19 @@ function deviceReady() {
     'loadDocB': function(){ tbe.loadDoc('docB'); },
   };
 
+
+  var clipboard = new Clipboard('.copy-button', {
+    text: function() {
+        return tt.blocksToText(tbe.forEachDiagramChain);
+    }
+  });
+  clipboard.on('success', function(e) {
+    console.log(e);
+  });
+
+  clipboard.on('error', function(e) {
+      console.log(e);
+  });
   //create a method to make a group
   //
 /*
@@ -131,16 +147,31 @@ view - svg elements in the pages DOM  ( partof TBE SVG elt)
   };
 
  tbe.addPalette(package1);
+ var actionButtons = [
+   {'alignment': 'L', 'position': 1, 'label': fastr.play, 'command': 'play', 'tweakx': 4},
+   {'alignment': 'L', 'position': 2, 'label': fastr.stop, 'command': 'stop'},
+   {'alignment': 'M', 'position': 1, 'label': fastr.file, 'command': 'loadDocA'},
+   {'alignment': 'M', 'position': 2, 'label': fastr.file, 'command': 'loadDocB'},
+   {'alignment': 'M', 'position': 3, 'label': fastr.trashEmpty, 'command': 'trashFirst'},
+   {'alignment': 'R', 'position': 3, 'label': fastr.copyToClipboard, 'command': 'copyToClipboard'},
+   {'alignment': 'R', 'position': 2, 'label': fastr.redo, 'command': 'redo'},
+   {'alignment': 'R', 'position': 1, 'label': fastr.undo, 'command': 'undo'}
+ ];
+
+ tbe.deleteRay = tbe.addActionButtons(actionButtons);
+ /*
+ actionButtons[0] = {'alignment': 'L', 'position': 1, 'label': fastr.play, 'tweak': 4};
  tbe.addActionButton(0.5, fastr.play, 'play', 4);
  tbe.addActionButton(1.5, fastr.stop, 'stop');
  tbe.addActionButton(4.5, fastr.file, 'loadDocA');
  tbe.addActionButton(5.5, fastr.file, 'loadDocB');
  tbe.deleteButton = tbe.addActionButton(7.5, fastr.trashEmpty, 'trashFirst');
- tbe.addActionButton(9.5, fastr.settings, 'settings');
+ //tbe.addActionButton(9.5, fastr.settings, 'settings');
+ tbe.addActionButton(9.5, fastr.copyToClipboard, 'copyToClipboard');
  tbe.addActionButton(12.2, fastr.redo, 'redo');
- tbe.addActionButton(13.2, fastr.undo, 'undo');
+ tbe.addActionButton((window.innerWidth/80)*0.8, fastr.undo, 'undo');//13.2 innerWidth .7135
+*/
 }
-
 isRegularBrowser =
   document.URL.indexOf('http://') >= 0 ||
   document.URL.indexOf('https://') >= -0;
