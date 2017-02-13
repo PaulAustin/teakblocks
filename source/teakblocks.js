@@ -915,13 +915,13 @@ tbe.configInteractions = function configInteractions() {
 };
 
 tbe.stage1deletion = function(fastr){
-  tbe.svg.removeChild(tbe.deleteButton);
-  tbe.deleteButton = tbe.addActionButton(7.5, fastr.trashFull, 'trashSecond');
+  tbe.deleteRay[0].setAttribute('command', 'trashSecond');
+  tbe.deleteRay[1].innerHTML = fastr.trashFull;
 };
 tbe.stage2deletion = function(fastr){
   tbe.clearAllBlocks();
-  tbe.svg.removeChild(tbe.deleteButton);
-  tbe.deleteButton = tbe.addActionButton(7.5, fastr.trashEmpty, 'trashFirst');
+  tbe.deleteRay[0].setAttribute('command', 'trashFirst');
+  tbe.deleteRay[1].innerHTML = fastr.trashEmpty;
 };
 
 tbe.diagramChanged = function diagramChanged() {
@@ -962,7 +962,7 @@ tbe.initPaletteBox = function initPaletteBox() {
 
 // Action buttons are circle with icons that are at the top.
 // icons can be Font-awesome, or ?? (png, svg) will start with FA icons.
-tbe.addActionButton = function(position, str, command, tweakx) {
+/*tbe.addActionButton = function(position, str, command, tweakx) {
   var dx = 0;
   if (tweakx !== undefined) {
     dx = tweakx;
@@ -983,6 +983,102 @@ tbe.addActionButton = function(position, str, command, tweakx) {
   tbe.svg.appendChild(group);
 
   return group;
+  //tbe.svg.appendChild(text);
+};*/
+tbe.addActionButtons = function(buttons) {
+  var position = null;
+  var alignment = null;
+  var command = '';
+  var tweakx = 0;
+  var label = '';
+  var notFound = true;
+  var numMiddle = 0;
+  var toReturn = null;
+  //var scale = window.innerWidth/80;
+
+  var group = null;
+  var circle = null;
+  var text = null;
+
+
+  var dx = 0;
+  if (tweakx !== undefined) {
+    dx = tweakx;
+  }
+  for(var k = 0; k < buttons.length; k++){
+    if(buttons[k].alignment === 'M' && buttons[k].position > numMiddle){
+      numMiddle = buttons[k].position;
+    }
+  }
+
+
+  for(var i = buttons.length - 1; i >= 0; i--){
+    position = buttons[i].position;
+    alignment = buttons[i].alignment;
+    command = buttons[i].command;
+    tweakx = buttons[i].tweakx;
+    label = buttons[i].label;
+
+    if(alignment === 'L'){
+      group = svgb.createGroup('buttonGroup', 0, 0);
+      circle = svgb.createCircle('action-dot', ((0.1 * window.innerWidth) * (position)), 40, 33);
+
+      circle.setAttribute('command', command);
+      text = svgb.createText('action-dot-text', ((0.1 * window.innerWidth) * (position)) + dx, 53, label);
+
+
+      group.appendChild(circle);
+      group.appendChild(text);
+
+      tbe.svg.appendChild(group);
+      console.log("done");
+    } else if(alignment === 'M'){ // TODO make seperate loop to find biggest then DEBUG
+      if(notFound){
+        numMiddle = position;
+        notFound = false;
+      }
+      var half = window.innerWidth/2;
+      group = svgb.createGroup('buttonGroup', 0, 0);
+      circle = svgb.createCircle('action-dot', half - (0.05*window.innerWidth), 40, 33);
+      //circle = svgb.createCircle('action-dot', half - 0.05, 40, 33);
+      //circle = svgb.createCircle('action-dot', (half - (((0.1 * numMiddle)/2)*window.innerWidth)) + ((0.1 * window.innerWidth) * (position)), 40, 33);//middle - (bw x mbc)/2 = left
+      circle = svgb.createCircle('action-dot', (half - (((numMiddle + 1) * 0.05)*window.innerWidth)) + ((0.1 * window.innerWidth) * (position)), 40, 33);//middle - (bw x mbc)/2 = left
+      console.log("pos:", (half - (((0.1 * numMiddle)/2)*window.innerWidth)) + ((0.1 * window.innerWidth) * (position)), "position:", position, "numMiddle:", numMiddle, "(0.1 * numMiddle)/2", (0.1 * numMiddle)/2);
+      circle.setAttribute('command', command);
+      text = svgb.createText('action-dot-text', (half - (((numMiddle + 1) * 0.05)*window.innerWidth)) + ((0.1 * window.innerWidth) * (position)) + dx, 53, label);
+
+
+      group.appendChild(circle);
+      group.appendChild(text);
+
+      tbe.svg.appendChild(group);
+      if(buttons[i].command === 'trashFirst'){
+        toReturn = [circle, text];
+      }
+    } else if(alignment === 'R'){
+      group = svgb.createGroup('buttonGroup', 0, 0);
+      circle = svgb.createCircle('action-dot', window.innerWidth - ((0.1 * window.innerWidth) * (position)), 40, 33);
+
+      circle.setAttribute('command', command);
+      text = svgb.createText('action-dot-text', window.innerWidth - ((0.1 * window.innerWidth) * (position)) + dx, 53, label);
+
+
+      group.appendChild(circle);
+      group.appendChild(text);
+
+      if(buttons[i].command === 'copyToClipboard'){
+        group.setAttribute('class', 'copy-button')
+      }
+
+      tbe.svg.appendChild(group);
+    }
+  }
+
+
+  return toReturn;
+  //infoGroup.append("text").attr("class", "svg-icon").text("\uf005");
+
+  //return group;
   //tbe.svg.appendChild(text);
 };
 
