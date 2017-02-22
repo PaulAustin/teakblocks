@@ -114,15 +114,19 @@ tbe.clearAllBlocks = function() {
 };
 
 tbe.loadDoc = function(docName) {
-  save.updateFile(docName, teakText.blocksToText(tbe.forEachDiagramChain));//document.getElementById('teakCode').innerHTML);
-  if(tbe.currentDoc === docName){
-    return;
-  } else {
+
+  // First, save the current document.
+  var currentDocText = teakText.blocksToText(tbe.forEachDiagramChain);
+  console.log('save text is', currentDocText);
+  save.saveFile(docName, currentDocText);//document.getElementById('teakCode').innerHTML);
+
+  // Second if they are acrualy switching the load the new one.
+  if (tbe.currentDoc !== docName) {
     tbe.clearStates();
     tbe.clearDiagramBlocks();
     tbe.currentDoc = docName;
-    var text = save.openFile(docName);
-    console.log("text:", text);
+    var loadedDocText = save.loadFile(docName);
+    console.log("loaded text is:", loadedDocText);
   }
 };
 

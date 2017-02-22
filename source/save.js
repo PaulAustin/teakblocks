@@ -6,24 +6,27 @@ var teak = require('teak');
 module.exports = function (){
 
   var save = {};
-  save.openFile = function(fileName){
+  save.loadFile = function(fileName){
     //tbe.currentDoc = fileName;
     return localStorage.getItem(fileName);
   };
 
-  save.updateFile = function(fileName, content){
+  save.saveFile = function(fileName, content){
     //Serialize
     console.log("content: ", content);
-    var symbols ={
-      picture:function(){},
-      sound:function(){},
-    };
-    var state = {};
-    var serialized = teak.parse(content, state, symbols);
-    console.log("serialized:", serialized);
+  //  var symbols ={
+  //    picture:function(){},
+  //    sound:function(){},
+  //  };
+  //  var state = {};
+  //  var serialized = teak.parse(content, state, symbols);
+  //  console.log("serialized:", serialized);
     if (typeof (Storage) !== "undefined") {
-        // Store
-        localStorage.setItem(fileName, serialized);
+      // Store
+      console.log('saved to local storage');
+      localStorage.setItem(fileName, content);
+    } else {
+      console.log('no local storage');
     }
     //update
   };
