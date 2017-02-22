@@ -28,6 +28,8 @@ function deviceReady() {
   var tbe = require('./teakblocks.js');
   var tf = require('./teak-forms.js');
   var ko = require('knockout');
+  var Clipboard = require('clipboard');
+  var tt = require('./teaktext.js');
 
   /* font awesome strings */
   var fastr = {
@@ -35,11 +37,13 @@ function deviceReady() {
     pause: '\uf04c',
     stop: '\uf04D',
     file: '\uf016',
-    trash: '\uf014',
+    trashEmpty: '\uf014',
     folder: '\uf115',
     undo: '\uf0e2',
     redo: '\uf01e',
     settings: '\uf013',
+    trashFull: '\uf1f8',
+    copyToClipboard: '\uf0ea',
   };
 
   // A few things are sensitive to diffs from running in tablet vs.
@@ -75,14 +79,52 @@ function deviceReady() {
     document.getElementById('editorCanvas'),
     document.getElementById('teakCode'));
 
+  tbe.deleteRay = null;
   tbe.commands = {
     'settings': function() { tf.showHide(tbe.components.appSettings); },
-    'trash': function() { tbe.clearAllBlocks(); },
-    // This is a hack.
     'play': function() { tbe.fblocks.identityBlock.sendMessage(); },
     'stop': function() { tbe.fblocks.identityBlock.disconnectMessage(); },
+    'trashFirst': function() { tbe.stage1deletion(fastr); },
+    'trashSecond': function() {  tbe.stage2deletion(fastr); },
+    'loadDocA': function(){ tbe.loadDoc('docA'); },
+    'loadDocB': function(){ tbe.loadDoc('docB'); },
   };
 
+
+  var clipboard = new Clipboard('.copy-button', {
+    text: function() {
+        return tt.blocksToText(tbe.forEachDiagramChain);
+    }
+  });
+  clipboard.on('success', function(e) {
+    console.log(e);
+  });
+
+  clipboard.on('error', function(e) {
+      console.log(e);
+  });
+  //create a method to make a group
+  //
+/*
+tbe.loadDoc(docName) {
+
+  if (docName === tbe.currentDoc) {
+  // for now save docname
+   return ;
+} else {
+  save.update file (tbe.currentDoc, .....); //
+  clear existing doc
+  vsr text = save.loadFile(docName);
+  console.log(text)
+  deserialize text;
+}
+}
+/*
+docFile - serialezed dat in utf8
+model - function block objects wiht links
+view - svg elements in the pages DOM  ( partof TBE SVG elt)
+*/
+// if(on docA -> docB) 1. save docA, 2. clear the screen 3. set currentDoc to docB 4. update editor with saved version of docB
 /*
   var configButton = document.getElementById('app-settings-button');
   configButton.onclick = function() { tf.showHide(tbe.components.appSettings); };
@@ -107,15 +149,31 @@ function deviceReady() {
   };
 
  tbe.addPalette(package1);
+ var actionButtons = [
+   {'alignment': 'L', 'position': 1, 'label': fastr.play, 'command': 'play', 'tweakx': 4},
+   {'alignment': 'L', 'position': 2, 'label': fastr.stop, 'command': 'stop'},
+   {'alignment': 'M', 'position': 1, 'label': fastr.file, 'command': 'loadDocA'},
+   {'alignment': 'M', 'position': 2, 'label': fastr.file, 'command': 'loadDocB'},
+   {'alignment': 'M', 'position': 3, 'label': fastr.trashEmpty, 'command': 'trashFirst'},
+   {'alignment': 'R', 'position': 3, 'label': fastr.copyToClipboard, 'command': 'copyToClipboard'},
+   {'alignment': 'R', 'position': 2, 'label': fastr.redo, 'command': 'redo'},
+   {'alignment': 'R', 'position': 1, 'label': fastr.undo, 'command': 'undo'}
+ ];
+
+ tbe.deleteRay = tbe.addActionButtons(actionButtons);
+ /*
+ actionButtons[0] = {'alignment': 'L', 'position': 1, 'label': fastr.play, 'tweak': 4};
  tbe.addActionButton(0.5, fastr.play, 'play', 4);
  tbe.addActionButton(1.5, fastr.stop, 'stop');
- tbe.addActionButton(4.5, fastr.file, 'TODO');
- tbe.addActionButton(6.5, fastr.trash, 'trash');
- tbe.addActionButton(8.5, fastr.settings, 'settings');
- tbe.addActionButton(11.2, fastr.redo, 'redo');
- tbe.addActionButton(12.2, fastr.undo, 'undo');
+ tbe.addActionButton(4.5, fastr.file, 'loadDocA');
+ tbe.addActionButton(5.5, fastr.file, 'loadDocB');
+ tbe.deleteButton = tbe.addActionButton(7.5, fastr.trashEmpty, 'trashFirst');
+ //tbe.addActionButton(9.5, fastr.settings, 'settings');
+ tbe.addActionButton(9.5, fastr.copyToClipboard, 'copyToClipboard');
+ tbe.addActionButton(12.2, fastr.redo, 'redo');
+ tbe.addActionButton((window.innerWidth/80)*0.8, fastr.undo, 'undo');//13.2 innerWidth .7135
+*/
 }
-
 isRegularBrowser =
   document.URL.indexOf('http://') >= 0 ||
   document.URL.indexOf('https://') >= -0;

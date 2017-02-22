@@ -44,8 +44,8 @@ module.exports = function () {
             <i class="fa fa-trash-o" aria-hidden="true"></i>
           </button></div>
         <div id="block-settings-custom"></div>
-        <div id="block-controller-tabs"></div>
-    </div>`;
+        <!--div id="block-controller-tabs"></div-->
+    </div>`;//TABS - uncomment html
     domRoot.appendChild(commonDiv);
     blockSettings.commonDiv = commonDiv;
 
@@ -115,7 +115,7 @@ module.exports = function () {
     blockSettings.customDiv = document.getElementById('block-settings-custom');
 
     // Get a reference to the div that lists controllers.
-    blockSettings.controllersDiv = document.getElementById('block-controller-tabs');
+    //blockSettings.controllersDiv = document.getElementById('block-controller-tabs');//TABS - uncomment
   };
 
   blockSettings.hide = function(exceptBlock) {
@@ -165,7 +165,7 @@ module.exports = function () {
   // by the actor.
   blockSettings.buildControllerTabs = function() {
     // Clear out old tabs.
-    blockSettings.controllersDiv.innerHTML = '';
+    //blockSettings.controllersDiv.innerHTML = '';//TABS - uncomment
 
     // Get the list of tabs wiht HTML snippets
     var tabs = this.activeBlock.funcs.tabs;
@@ -183,7 +183,7 @@ module.exports = function () {
         var button = document.createElement('button');
         var name = this.tabNames[i];
         blockSettings.tabButtons.push(button);
-        tabsDiv.appendChild(button);
+        //tabsDiv.appendChild(button);//TABS - uncomment
 
         // Configure all its settings.
         button.id = name;
@@ -203,7 +203,7 @@ module.exports = function () {
         button.onclick = blockSettings.onClickTab;
       }
       // Add the row of tabs to the view.
-      this.controllersDiv.appendChild(tabsDiv);
+      //this.controllersDiv.appendChild(tabsDiv);//TABS - uncomment
 
       // Select the initial tab
       this.selectActiveTab(this.activeBlock.controllerSettings.controller);
@@ -212,9 +212,9 @@ module.exports = function () {
       var controllers = this.activeBlock.funcs.controllers;
       if (typeof controllers === "function") {
         // OLD way, delete once other code merged
-        controllers(blockSettings.controllersDiv);
+        //controllers(blockSettings.controllersDiv);//TABS - uncomment
       } else {
-        blockSettings.controllersDiv.innerHTML = '';
+        //blockSettings.controllersDiv.innerHTML = '';//TABS - uncomment
       }
     }
   };
