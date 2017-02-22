@@ -7,8 +7,9 @@ module.exports = function (){
 
   var save = {};
   save.loadFile = function(fileName){
-    //tbe.currentDoc = fileName;
-    return localStorage.getItem(fileName);
+    var content =  localStorage.getItem(fileName);
+    console.log('loaded text:', content);
+    return content;
   };
 
   save.saveFile = function(fileName, content){
