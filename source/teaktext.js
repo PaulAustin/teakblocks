@@ -33,8 +33,8 @@ teakText.blocksToText = function(blockChainIterator) {
       if (block.prev === null) {
         text += ' x:' + block.rect.left + ' y:' +  block.rect.top;
       }
-      if (block.params !== null) {
-        text += teakText.blockParamsToText(block.params);
+      if (block.controllerSettings !== null) {
+        text += teakText.blockParamsToText(block.controllerSettings.data);
       }
       if (block.targetShadow !== null) {
         // For debugging, this ocassionally happens since

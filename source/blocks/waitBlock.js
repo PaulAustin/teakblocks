@@ -22,7 +22,7 @@ SOFTWARE.
 
 module.exports = function () {
   var svgb = require('./../svgbuilder.js');
-  var formTools = require('./../block-settings.js');
+  //var formTools = require('./../block-settings.js');
   var pb = svgb.pathBuilder;
   var waitBlock = {};
 
