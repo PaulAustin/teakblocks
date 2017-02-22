@@ -117,7 +117,7 @@ tbe.loadDoc = function(docName) {
   save.updateFile(docName, teakText.blocksToText(tbe.forEachDiagramChain));//document.getElementById('teakCode').innerHTML);
   if(tbe.currentDoc === docName){
     return;
-  } else{
+  } else {
     tbe.clearStates();
     tbe.clearDiagramBlocks();
     tbe.currentDoc = docName;
@@ -132,18 +132,18 @@ tbe.nextBlockId = function(prefix) {
   return blockId;
 };
 
-tbe.addBlock = function(x, y, name, params) {
+/* may be used for loading
+tbe.addBlock = function(x, y, name) {
    var block = new this.FunctionBlock(x, y, name);
-   //block.params = params;
    block.isPaletteBlock = false;
    block.interactId = tbe.nextBlockId('d:');
    this.diagramBlocks[block.interactId] = block.interactId;
    return block;
 };
+*/
 
-tbe.addPaletteBlock = function(x, y, name, params) {
+tbe.addPaletteBlock = function(x, y, name) {
    var block = new this.FunctionBlock(x, y, name);
-   //block.params = params;
    block.isPaletteBlock = true;
    block.interactId = tbe.nextBlockId('p:');
    this.paletteBlocks[block.interactId] = block;
@@ -1001,40 +1001,39 @@ tbe.addActionButtons = function(buttons) {
   var circle = null;
   var text = null;
 
-
   var dx = 0;
   if (tweakx !== undefined) {
     dx = tweakx;
   }
-  for(var k = 0; k < buttons.length; k++){
-    if(buttons[k].alignment === 'M' && buttons[k].position > numMiddle){
+
+  // Determine how many buttons are inthe middle
+  for (var k = 0; k < buttons.length; k++) {
+    if (buttons[k].alignment === 'M' && buttons[k].position > numMiddle) {
       numMiddle = buttons[k].position;
     }
   }
 
-
-  for(var i = buttons.length - 1; i >= 0; i--){
+  for (var i = buttons.length - 1; i >= 0; i--) {
     position = buttons[i].position;
     alignment = buttons[i].alignment;
     command = buttons[i].command;
     tweakx = buttons[i].tweakx;
     label = buttons[i].label;
 
-    if(alignment === 'L'){
+    if (alignment === 'L') {
       group = svgb.createGroup('buttonGroup', 0, 0);
       circle = svgb.createCircle('action-dot', ((0.1 * window.innerWidth) * (position)), 40, 33);
 
       circle.setAttribute('command', command);
       text = svgb.createText('action-dot-text', ((0.1 * window.innerWidth) * (position)) + dx, 53, label);
 
-
       group.appendChild(circle);
       group.appendChild(text);
 
       tbe.svg.appendChild(group);
       console.log("done");
-    } else if(alignment === 'M'){ // TODO make seperate loop to find biggest then DEBUG
-      if(notFound){
+    } else if(alignment === 'M') { // TODO make seperate loop to find biggest then DEBUG
+      if (notFound) {
         numMiddle = position;
         notFound = false;
       }
@@ -1048,7 +1047,6 @@ tbe.addActionButtons = function(buttons) {
       circle.setAttribute('command', command);
       text = svgb.createText('action-dot-text', (half - (((numMiddle + 1) * 0.05)*window.innerWidth)) + ((0.1 * window.innerWidth) * (position)) + dx, 53, label);
 
-
       group.appendChild(circle);
       group.appendChild(text);
 
@@ -1056,25 +1054,23 @@ tbe.addActionButtons = function(buttons) {
       if(buttons[i].command === 'trashFirst'){
         toReturn = [circle, text];
       }
-    } else if(alignment === 'R'){
+    } else if (alignment === 'R') {
       group = svgb.createGroup('buttonGroup', 0, 0);
       circle = svgb.createCircle('action-dot', window.innerWidth - ((0.1 * window.innerWidth) * (position)), 40, 33);
 
       circle.setAttribute('command', command);
       text = svgb.createText('action-dot-text', window.innerWidth - ((0.1 * window.innerWidth) * (position)) + dx, 53, label);
 
-
       group.appendChild(circle);
       group.appendChild(text);
 
-      if(buttons[i].command === 'copyToClipboard'){
-        group.setAttribute('class', 'copy-button')
+      if (buttons[i].command === 'copyToClipboard') {
+        group.setAttribute('class', 'copy-button');
       }
 
       tbe.svg.appendChild(group);
     }
   }
-
 
   return toReturn;
   //infoGroup.append("text").attr("class", "svg-icon").text("\uf005");
