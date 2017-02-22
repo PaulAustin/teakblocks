@@ -15,7 +15,7 @@ module.exports = function (){
   save.saveFile = function(fileName, content){
     //Serialize
     console.log("content: ", content);
-  //  var symbols ={
+  //  var symbols = {
   //    picture:function(){},
   //    sound:function(){},
   //  };

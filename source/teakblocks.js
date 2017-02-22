@@ -1000,8 +1000,8 @@ tbe.addActionButtons = function(buttons) {
   var toReturn = null;
 
   var group = null;
-  var circle = null;
-  var text = null;
+  var svgCircle = null;
+  var svgText = null;
 
   // Determine how many buttons are inthe middle
   for (var k = 0; k < buttons.length; k++) {
@@ -1031,13 +1031,16 @@ tbe.addActionButtons = function(buttons) {
     } else if (alignment === 'R') {
       x = window.innerWidth - ((0.1 * window.innerWidth) * position);
     }
+
     group = svgb.createGroup('buttonGroup', 0, 0);
-    circle = svgb.createCircle('action-dot', x, 40, 33);
-    circle.setAttribute('command', command);
-    text = svgb.createText('action-dot-text', x + tweakx, 53, label);
-    group.appendChild(circle);
-    group.appendChild(text);
+    svgCircle = svgb.createCircle('action-dot', x, 40, 33);
+    svgText = svgb.createText('action-dot-text', x + tweakx, 53, label);
+    group.appendChild(svgCircle);
+    group.appendChild(svgText);
     tbe.svg.appendChild(group);
+    buttons[i].svgText = svgText;
+    buttons[i].svgCircle = svgCircle;
+    svgCircle.setAttribute('command', command);
 
     if (buttons[i].command === 'copyToClipboard') {
       // TODO, abstract it
@@ -1045,7 +1048,7 @@ tbe.addActionButtons = function(buttons) {
     }
     if(buttons[i].command === 'trashFirst'){
       // TODO, abstract it
-      toReturn = [circle, text];
+      toReturn = [svgCircle, svgText];
     }
   }
 
