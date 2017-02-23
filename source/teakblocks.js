@@ -24,7 +24,7 @@ module.exports = function (){
 
 var assert = require('assert');
 var interact = require('interact.js');
-//var teak = require('teak');
+var teak = require('teak');
 var tf = require('./teak-forms.js');
 var teakText = require('./teaktext.js');
 var svgb = require('./svgbuilder.js');
@@ -127,6 +127,18 @@ tbe.loadDoc = function(docName) {
     tbe.currentDoc = docName;
     var loadedDocText = save.loadFile(docName);
     console.log("loaded text is:", loadedDocText);
+
+    if (loadedDocText !== null) {
+      var symbols = {
+          chain:function(){},
+          picture:function(){},
+          sound:function(){},
+        };
+      var state = {};
+      // Visitor pattern may be better, a lot better.
+      var teakJSO = teak.parse(loadedDocText, state, symbols);
+      console.log("serialized:", teakJSO);
+    }
   }
 };
 
