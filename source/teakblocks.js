@@ -117,8 +117,8 @@ tbe.loadDoc = function(docName) {
 
   // First, save the current document.
   var currentDocText = teakText.blocksToText(tbe.forEachDiagramChain);
-  console.log('save text is', currentDocText);
-  save.saveFile(docName, currentDocText);//document.getElementById('teakCode').innerHTML);
+  console.log('doc is', docName, ' save text is', currentDocText);
+  save.saveFile(tbe.currentDoc, currentDocText);//document.getElementById('teakCode').innerHTML);
 
   // Second if they are acrualy switching the load the new one.
   if (tbe.currentDoc !== docName) {
