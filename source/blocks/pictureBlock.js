@@ -65,7 +65,7 @@ module.exports = function () {
     // return a new object with settings for the controller.
     return {
       // And the data that goes with that editor.
-      data:[0,0,0,0,0, 0,1,0,1,0, 0,0,0,0,0, 1,0,0,0,1, 0,1,1,1,0],
+      data:{pix:[0,0,0,0,0, 0,1,0,1,0, 0,0,0,0,0, 1,0,0,0,1, 0,1,1,1,0]},
       // Indicate what controller is active. This may affect the data format.
       controller:'5x5picture',
     };
@@ -73,7 +73,7 @@ module.exports = function () {
 
   // Generate and SVG based image for a specific block.
   pictureBlock.svg= function(svg, block) {
-    var data = block.controllerSettings.data;
+    var data = block.controllerSettings.data.pix;
     var group = svgb.createGroup('svg-clear', 24, 15);
     var box = svgb.createRect('svg-clear block-picture-board', -8, -8, 48, 48, 4);
     group.appendChild(box);
@@ -108,7 +108,7 @@ module.exports = function () {
 
     // Create a editor state object for the interactions to work with.
     var svg = document.getElementById('pictureEditor');
-    var data = block.controllerSettings.data;
+    var data = block.controllerSettings.data.pix;
     var pixOn = 0;
     var dindex = 0;
     for (var iy = 0; iy < 5; iy++) {
