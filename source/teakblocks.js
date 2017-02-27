@@ -90,6 +90,7 @@ tbe.init = function init(svg, text) {
 };
 
 tbe.symbolResolver = function (name) {
+  console.log('resolving <' + name + '>');
   return '__' + name;
 };
 
@@ -133,17 +134,32 @@ tbe.loadDoc = function(docName) {
     console.log("loaded text is:", loadedDocText);
 
     if (loadedDocText !== null) {
-/*      var symbols = {
-          chain:function(){},
-          picture:function(){},
-          sound:function(){},
-        };
-*/
       var state = {};
       // Visitor pattern may be better, a lot better.
       var teakJSO = teak.parse(loadedDocText, state, tbe.symbolResolver);
-      console.log("serialized:", teakJSO);
+      tbe.loadTeakJSO(teakJSO);
     }
+  }
+};
+
+tbe.loadTeakJSO = function(teakJSO) {
+  if (Array.isArray(teakJSO)) {
+    let i = 0;
+    for (i=0; i < teakJSO.length; i++) {
+      var chain = teakJSO[i];
+      if (chain[0] !== '__chain') {
+        console.log(' unrecognized chain section');
+        return;
+      } else {
+        let j = 1;
+        for (j=1; j < chain.length; j++) {
+          console.log('block[' + j + ']', chain[j]);
+        }
+      }
+    }
+  } else {
+    console.log(' unrecognized teak file');
+    return;
   }
 };
 
