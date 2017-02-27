@@ -15,13 +15,7 @@ module.exports = function (){
   save.saveFile = function(fileName, content){
     //Serialize
     console.log("content: ", content);
-  //  var symbols = {
-  //    picture:function(){},
-  //    sound:function(){},
-  //  };
-  //  var state = {};
-  //  var serialized = teak.parse(content, state, symbols);
-  //  console.log("serialized:", serialized);
+
     if (typeof (Storage) !== "undefined") {
       // Store
       console.log('saved to local storage');
