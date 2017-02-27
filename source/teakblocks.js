@@ -89,6 +89,10 @@ tbe.init = function init(svg, text) {
   return this;
 };
 
+tbe.symbolResolver = function (name) {
+  return '__' + name;
+};
+
 tbe.elementToBlock = function(el) {
     var text = el.getAttribute('interact-id');
     if (text === null) {
@@ -129,14 +133,15 @@ tbe.loadDoc = function(docName) {
     console.log("loaded text is:", loadedDocText);
 
     if (loadedDocText !== null) {
-      var symbols = {
+/*      var symbols = {
           chain:function(){},
           picture:function(){},
           sound:function(){},
         };
+*/
       var state = {};
       // Visitor pattern may be better, a lot better.
-      var teakJSO = teak.parse(loadedDocText, state, symbols);
+      var teakJSO = teak.parse(loadedDocText, state, tbe.symbolResolver);
       console.log("serialized:", teakJSO);
     }
   }
