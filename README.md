@@ -32,6 +32,8 @@ cordova run android
 Automation is still minimal but there are a few tools packaged as npm scripts. One nice upside to npm scripts is that they can be run from any directory in the repo's file structure. To see how the scripts work look at the `<package.json>` file.
 
 ```
+npm run cpfonts // copy font awesome from modules to html_app (run this once)
+
 npm run bify    // Run browserify
 
 npm run wify    // Run browserify with watchify
