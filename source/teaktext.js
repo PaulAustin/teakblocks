@@ -34,7 +34,7 @@ teakText.blocksToText = function(blockChainIterator) {
         text += ' x:' + block.rect.left + ' y:' +  block.rect.top;
       }
       if (block.controllerSettings !== null) {
-        text += teakText.blockParamsToText(block.controllerSettings.data);
+        text += ' ' + teakText.blockParamsToText(block.controllerSettings.data);
       }
       if (block.targetShadow !== null) {
         // For debugging, this ocassionally happens since
@@ -53,8 +53,28 @@ teakText.blocksToText = function(blockChainIterator) {
 
 teakText.blockParamsToText = function blockParamsToText(params) {
   var text = '';
+  var spaceSeparator = '';
   for(var propertyName in params) {
-    text += ' ' + propertyName + ':' + params[propertyName];
+    var value = params[propertyName];
+    text += spaceSeparator + propertyName + ':' + this.valueToText(value);
+    spaceSeparator = ' ';
+  }
+  return text;
+};
+
+teakText.valueToText = function(value) {
+  var text = '';
+  if (value.constructor === Array) {
+    var spaceSeparator = '';
+    var index = 0;
+    text = '(';
+    for (index = 0; index < value.length; index += 1) {
+      text += spaceSeparator + this.valueToText(value[index]);
+      spaceSeparator = ' ';
+    }
+    text += ')';
+  } else {
+    text = String(value);
   }
   return text;
 };
