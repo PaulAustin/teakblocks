@@ -120,7 +120,7 @@ tbe.loadDoc = function(docName) {
   console.log('doc is', docName, ' save text is', currentDocText);
   save.saveFile(tbe.currentDoc, currentDocText);//document.getElementById('teakCode').innerHTML);
 
-  // Second if they are acrualy switching the load the new one.
+  // Second if they are actully switching then load the new one.
   if (tbe.currentDoc !== docName) {
     tbe.clearStates();
     tbe.clearDiagramBlocks();
@@ -173,9 +173,23 @@ tbe.loadTeakJSOChain = function(chain) {
       prev.next = block;
       block.prev = prev;
     }
+    // Load block specific settings, and refresh visual.
+    this.loadProperties(block, chain[i]);
+    block.updateSvg();
     prev = block;
-    console.log('cblock', block);
-    console.log('sblock', chain[i]);
+
+  }
+};
+
+tbe.loadProperties = function (block, loadedBlock) {
+  for (var key in loadedBlock) {
+    if (loadedBlock.hasOwnProperty(key)) {
+      if ( key === '_0' || key === 'x' || key === 'y') {
+        // ignore these
+      } else {
+        block.controllerSettings.data[key] = loadedBlock[key];
+      }
+    }
   }
 };
 
