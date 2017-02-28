@@ -89,11 +89,6 @@ tbe.init = function init(svg, text) {
   return this;
 };
 
-tbe.symbolResolver = function (name) {
-  console.log('resolving <' + name + '>');
-  return '__' + name;
-};
-
 tbe.elementToBlock = function(el) {
     var text = el.getAttribute('interact-id');
     if (text === null) {
@@ -131,12 +126,11 @@ tbe.loadDoc = function(docName) {
     tbe.clearDiagramBlocks();
     tbe.currentDoc = docName;
     var loadedDocText = save.loadFile(docName);
-    console.log("loaded text is:", loadedDocText);
 
     if (loadedDocText !== null) {
       var state = {};
       // Visitor pattern may be better, a lot better.
-      var teakJSO = teak.parse(loadedDocText, state, tbe.symbolResolver);
+      var teakJSO = teak.parse(loadedDocText, state, function(name) { return name; });
       tbe.loadTeakJSO(teakJSO);
     }
   }
@@ -145,21 +139,43 @@ tbe.loadDoc = function(docName) {
 tbe.loadTeakJSO = function(teakJSO) {
   if (Array.isArray(teakJSO)) {
     let i = 0;
-    for (i=0; i < teakJSO.length; i++) {
+    for (i = 0; i < teakJSO.length; i++) {
       var chain = teakJSO[i];
-      if (chain[0] !== '__chain') {
+      if (chain[0] !== 'chain') {
         console.log(' unrecognized chain section');
         return;
       } else {
-        let j = 1;
-        for (j=1; j < chain.length; j++) {
-          console.log('block[' + j + ']', chain[j]);
-        }
+        tbe.loadTeakJSOChain(chain);
       }
     }
   } else {
     console.log(' unrecognized teak file');
     return;
+  }
+};
+
+tbe.loadTeakJSOChain = function(chain) {
+  let i = 1;
+  let x = 0;
+  let y = 0;
+  let blockName = '';
+  let block = null;
+  let prev = null;
+  for (i = 1; i < chain.length; i++) {
+    blockName = chain[i]._0;
+    if (i === 1) {
+      x = chain[i].x;
+      y = chain[i].y;
+    }
+    block = tbe.addBlock(x, y, blockName);
+    x += block.blockWidth;
+    if (prev !== null) {
+      prev.next = block;
+      block.prev = prev;
+    }
+    prev = block;
+    console.log('cblock', block);
+    console.log('sblock', chain[i]);
   }
 };
 
@@ -169,15 +185,13 @@ tbe.nextBlockId = function(prefix) {
   return blockId;
 };
 
-/* may be used for loading
 tbe.addBlock = function(x, y, name) {
    var block = new this.FunctionBlock(x, y, name);
    block.isPaletteBlock = false;
    block.interactId = tbe.nextBlockId('d:');
-   this.diagramBlocks[block.interactId] = block.interactId;
+   this.diagramBlocks[block.interactId] = block;
    return block;
 };
-*/
 
 tbe.addPaletteBlock = function(x, y, name) {
    var block = new this.FunctionBlock(x, y, name);
@@ -327,7 +341,7 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   if (typeof this.funcs.defaultSettings === 'function' ) {
     this.controllerSettings = this.funcs.defaultSettings();
   } else {
-    this.controllerSettings = {controller:'none', data:0 };
+    this.controllerSettings = {controller:'none', data:4 };
   }
 
   // Place holder for sequencing links.
@@ -998,31 +1012,6 @@ tbe.initPaletteBox = function initPaletteBox() {
   this.sizePaletteToWindow();
 };
 
-// Action buttons are circle with icons that are at the top.
-// icons can be Font-awesome, or ?? (png, svg) will start with FA icons.
-/*tbe.addActionButton = function(position, str, command, tweakx) {
-  var dx = 0;
-  if (tweakx !== undefined) {
-    dx = tweakx;
-  }
-  var group = svgb.createGroup('buttonGroup', 0, 0);
-  var circle = svgb.createCircle('action-dot', (40 * (position * 2)), 40, 33);
-
-  circle.setAttribute('command', command);
-  var text = svgb.createText('action-dot-text', (45 * (position * 2)) + dx, 57, str);
-
-//infoGroup.append("text").attr("class", "svg-icon").text("\uf005");
-
-  group.setAttribute('buttonCommand', command);
-
-  group.appendChild(circle);
-  group.appendChild(text);
-
-  tbe.svg.appendChild(group);
-
-  return group;
-  //tbe.svg.appendChild(text);
-};*/
 tbe.addActionButtons = function(buttons) {
   var position = null;
   var alignment = null;
@@ -1090,18 +1079,6 @@ tbe.addActionButtons = function(buttons) {
 
 tbe.addPalette = function addPalette(palette) {
 
-  /* Using a single row so palette tabs not needed */
-  /*
-  var tab = svgb.createGroup("",0, 0);
-  var tabblock = svgb.createRect('tab-block', 0, 0, 40, 25, 5);
-  var text = svgb.createText('tab-text', 10, 20, palette.name);
-  var tabIndex = this.tabs.length;
-  tab.appendChild(tabblock);
-  tab.appendChild(text);
-  tab.setAttribute('transform', 'translate(20, ' + (5 + (30 * tabIndex)) + ')');
-  tab.setAttribute('letter', palette.name);
-  tbe.dropAreaGroup.appendChild(tab);
-  */
   this.tabs.push(palette);
 
   var indent = 10;
@@ -1109,9 +1086,9 @@ tbe.addPalette = function addPalette(palette) {
   var blockTop = window.innerHeight - 90;
   for (var key in blocks) {
     if (blocks.hasOwnProperty(key)) {
-      var block = this.addPaletteBlock(indent, blockTop, key, {});
+      var block = this.addPaletteBlock(indent, blockTop, key);
       if (key === 'loop') {
-        var blockTail = this.addPaletteBlock(block.rect.right, blockTop, 'tail', {});
+        var blockTail = this.addPaletteBlock(block.rect.right, blockTop, 'tail');
         block.next = blockTail;
         blockTail.prev = block;
         // A flow block set has direct pointers between the two end points.
@@ -1122,87 +1099,6 @@ tbe.addPalette = function addPalette(palette) {
       indent += block.chainWidth + 10;
     }
   }
-};
-
-tbe.initPalettes =  function initPalettes(palettes) {
-
-  document.body.onresize = this.sizePaletteToWindow;
-  this.blockObject = palettes;
-
-  this.dropAreaGroup = svgb.createGroup("", 0, 0);
-  this.dropArea = svgb.createRect('dropArea', 0, 0, window.innerWidth, 100, 0);
-  this.dropAreaGroup.appendChild(this.dropArea);
-
-  this.tabs = [];
-  for (var tabIndex = 0; tabIndex < this.blockObject.tabs.length; tabIndex++){
-
-    var tab = svgb.createGroup("",0, 0);
-    var tabblock = svgb.createRect('tab-block', 0, 0, 40, 25, 5);
-    var tabName = this.blockObject.tabs[tabIndex];
-    var text = svgb.createText('tab-text', 10, 20, tabName);
-
-    tab.appendChild(tabblock);
-    tab.appendChild(text);
-
-    var letpath = '';
-    switch (tabIndex) {
-      case 0:
-        letpath = 'A';
-        break;
-      case 1:
-        letpath = 'B';
-        break;
-      case 2:
-        letpath = 'C';
-        break;
-      case 3:
-        letpath = 'D';
-        break;
-      case 4:
-        letpath = 'E';
-        break;
-    }
-
-    tab.setAttribute('transform', 'translate(20, ' + (5 + (30 * tabIndex)) + ')');
-    tab.setAttribute('letter', letpath);
-
-    tab.addEventListener('click', function() {
-      tbe.clearStates();
-      var path = null;
-      switch(this.getAttribute('letter')) {
-          case 'A':
-            path = tbe.blockObject.A;
-            break;
-          case 'B':
-            path = tbe.blockObject.B;
-            break;
-          case 'C':
-            path = tbe.blockObject.C;
-            break;
-          case 'D':
-            path = tbe.blockObject.D;
-            break;
-          case 'E':
-            path = tbe.blockObject.E;
-            break;
-        }
-
-      for(var i = 0; i < tbe.blockObject.A.length; i++) {
-        //find letter inside tag
-        // move the palettes to the front.
-        // TODO Just move palettes, no need to make new ones.
-        tbe.addPaletteBlock(80 + (90 * i), tbe.windowRect.bottom - 90,  path[i],{ });
-      }
-    });
-    tbe.dropAreaGroup.appendChild(tab);
-  }
-  this.svg.appendChild(this.dropAreaGroup);
-
-  for(var i = 0; i < this.blockObject.A.length; i++) {
-    this.addPaletteBlock(80 + (90 * i), 0, this.blockObject.A[i], {port:'a','power':50,'time':'2.5s'});
-  }
-
-  this.sizePaletteToWindow();
 };
 
 return tbe;

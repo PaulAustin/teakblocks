@@ -8,14 +8,10 @@ module.exports = function (){
   var save = {};
   save.loadFile = function(fileName){
     var content =  localStorage.getItem(fileName);
-    console.log('loaded text:', content);
     return content;
   };
 
   save.saveFile = function(fileName, content){
-    //Serialize
-    console.log("content: ", content);
-
     if (typeof (Storage) !== "undefined") {
       // Store
       console.log('saved to local storage');

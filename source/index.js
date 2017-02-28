@@ -160,18 +160,6 @@ view - svg elements in the pages DOM  ( partof TBE SVG elt)
  ];
 
  tbe.deleteRay = tbe.addActionButtons(actionButtons);
- /*
- actionButtons[0] = {'alignment': 'L', 'position': 1, 'label': fastr.play, 'tweak': 4};
- tbe.addActionButton(0.5, fastr.play, 'play', 4);
- tbe.addActionButton(1.5, fastr.stop, 'stop');
- tbe.addActionButton(4.5, fastr.file, 'loadDocA');
- tbe.addActionButton(5.5, fastr.file, 'loadDocB');
- tbe.deleteButton = tbe.addActionButton(7.5, fastr.trashEmpty, 'trashFirst');
- //tbe.addActionButton(9.5, fastr.settings, 'settings');
- tbe.addActionButton(9.5, fastr.copyToClipboard, 'copyToClipboard');
- tbe.addActionButton(12.2, fastr.redo, 'redo');
- tbe.addActionButton((window.innerWidth/80)*0.8, fastr.undo, 'undo');//13.2 innerWidth .7135
-*/
 }
 isRegularBrowser =
   document.URL.indexOf('http://') >= 0 ||
