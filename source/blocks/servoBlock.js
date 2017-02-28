@@ -26,6 +26,16 @@ module.exports = function () {
   var pb = svgb.pathBuilder;
   var servoBlock = {};
 
+  // Initial setting for blocks of this type.
+  servoBlock.defaultSettings= function() {
+    // return a new object with settings for the controller.
+    return {
+      // And the data that goes with that editor.
+      data:{ 'pos':90 },
+      // Indicate what controller is active. This may affect the data format.
+    };
+  };
+
   servoBlock.svg = function (root) {
     // servo body
     var box = svgb.createRect('svg-clear block-micro-servo-body', 18, 20, 44, 24, 2.5);

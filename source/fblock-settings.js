@@ -219,7 +219,18 @@ b.twoMotorBlock = {
     shaft = svgb.createCircle('svg-clear block-motor-shaft', 53, 30, 4);
     root.appendChild(shaft);
     return root;
-  }
+  },
+  defaultSettings : function() {
+    // Return a new object with settings for the controller.
+    return {
+      data:{
+        speed: 50,
+        duration: 0,
+      },
+      // Indicate what controller is active. This may affect the data format.
+      controller:'speed',
+    };
+  },
 };
 
 b.digitalWriteBlock = {
