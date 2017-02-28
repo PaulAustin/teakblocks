@@ -73,6 +73,8 @@ teakText.valueToText = function(value) {
       spaceSeparator = ' ';
     }
     text += ')';
+  } else if (typeof value === 'string') {
+    text = "'" + String(value) + "'";
   } else {
     text = String(value);
   }
