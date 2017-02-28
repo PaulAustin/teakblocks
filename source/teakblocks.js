@@ -161,6 +161,7 @@ tbe.loadTeakJSOChain = function(chain) {
   let blockName = '';
   let block = null;
   let prev = null;
+  console.log(' TJDO', chain);
   for (i = 1; i < chain.length; i++) {
     blockName = chain[i]._0;
     if (i === 1) {

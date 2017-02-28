@@ -26,6 +26,15 @@ module.exports = function () {
   var pb = svgb.pathBuilder;
   var waitBlock = {};
 
+  // Initial setting for blocks of this type.
+  waitBlock.defaultSettings= function() {
+    // return a new object with settings for the controller.
+    return {
+      // And the data that goes with that editor.
+      data:{ 'duration':1.0 },
+      // Indicate what controller is active. This may affect the data format.
+    };
+  };
   // Wait block - Wait until something happens, it can wait for things other
   // than time, but it is given that time pasing is part of the function.
   waitBlock.svg = function(root) {
