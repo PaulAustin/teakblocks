@@ -88,6 +88,8 @@ function deviceReady() {
     'trashSecond': function() {  tbe.stage2deletion(fastr); },
     'loadDocA': function(){ tbe.loadDoc('docA'); },
     'loadDocB': function(){ tbe.loadDoc('docB'); },
+    'undo': function(){ tbe.undoAction(); },
+    'redo': function(){ tbe.redoAction(); },
   };
 
 

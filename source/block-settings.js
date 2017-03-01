@@ -123,6 +123,7 @@ module.exports = function () {
     if (this.activeBlock !== null && this.activeBlock !== exceptBlock) {
       if (this.activeBlock.funcs.configuratorClose !== undefined) {
         this.activeBlock.funcs.configuratorClose(this.customDiv, this.activeBlock);
+        // TODO too aggresive, but works
       }
       this.activeBlock = null;
 
@@ -139,6 +140,7 @@ module.exports = function () {
       this.tabNames = [];
       this.tabButtons = [];
     }
+    tbe.diagramChanged();
   };
 
   // A block has been  tapped on, the gesture for the config page.
