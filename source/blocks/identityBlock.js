@@ -29,7 +29,7 @@ module.exports = function () {
   var pb = svgb.pathBuilder;
   var identityBlock = {};
 
-  if (ble !== undefined) {
+  if (typeof ble !== 'undefined') {
     console.log('found ble', ble);
     identityBlock.ble = ble;
   //  identityBlock.ble = window.evothings.ble;
@@ -305,8 +305,8 @@ if (handle)
       var self = this;
       //identityBlock.ble.stopScan();
       console.log('starting scan');
-      identityBlock.ble.startScan(
-        [],
+      identityBlock.ble.startScanWithOptions(
+        [], { reportDuplicates: true },
         function(device) { self.foundDevice(device); },
         function(errorCode) {
           console.log('error:' + errorCode);
