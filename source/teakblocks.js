@@ -40,6 +40,9 @@ tbe.diagramBlocks = {};
 tbe.paletteBlocks = {};
 tbe.blockIdSequence = 100;
 tbe.currentDoc = 'docA';
+tbe.undoArray = [];
+tbe.currentUndoIndex = 0;
+tbe.stopUndo = false;
 
 tbe.forEachDiagramBlock = function (callBack) {
   for (var key in tbe.diagramBlocks) {
@@ -114,6 +117,9 @@ tbe.clearAllBlocks = function() {
 };
 
 tbe.loadDoc = function(docName) {
+
+  tbe.undoArray = {}; //When we switch documents we want to clear undo history
+  tbe.undoTransactionIndex = 0;
 
   // First, save the current document.
   var currentDocText = teakText.blocksToText(tbe.forEachDiagramChain);
@@ -780,6 +786,10 @@ tbe.animateMove = function animateMove(state) {
 };
 
 tbe.clearDiagramBlocks = function clearDiagramBlocks() {
+  tbe.internalClearDiagramBlocks();
+  tbe.diagramChanged();
+};
+tbe.internalClearDiagramBlocks = function clearDiagramBlocks() {
   tbe.forEachDiagramBlock(function (block) {
     tbe.svg.removeChild(block.svgGroup);
     block.svgGroup = null;
@@ -789,7 +799,6 @@ tbe.clearDiagramBlocks = function clearDiagramBlocks() {
     block.prev = null;
   });
   tbe.diagramBlocks = {};
-  tbe.diagramChanged();
 };
 
 // Starting at a block that was clicked on find the logical range that
@@ -894,6 +903,7 @@ tbe.configInteractions = function configInteractions() {
           block = tbe.findChunkStart(block);
           var targetToDrag = block.svgGroup;
 
+          tbe.clearStates();
           // If coming from pallette, or if coming from shift drag
           if (block.isPaletteBlock || event.shiftKey) {
             block = thisTbe.replicateChunk(block);
@@ -901,7 +911,6 @@ tbe.configInteractions = function configInteractions() {
           }
 
           // Start a drag interaction targeting the clone
-          tbe.clearStates();
           block.setDraggingState(true);
           interaction.start({ name: 'drag' },
                             event.interactable,
@@ -990,11 +999,50 @@ tbe.stage2deletion = function(fastr){
   tbe.deleteRay[0].setAttribute('command', 'trashFirst');
   tbe.deleteRay[1].innerHTML = fastr.trashEmpty;
 };
+tbe.undoArray[0] = teakText.blocksToText(tbe.forEachDiagramChain);
 
 tbe.diagramChanged = function diagramChanged() {
   if (teakText) {
     this.teakCode.value = teakText.blocksToText(tbe.forEachDiagramChain);
   }
+  var text = teakText.blocksToText(tbe.forEachDiagramChain);
+  if(tbe.undoArray[tbe.currentUndoIndex] !== text){
+    tbe.currentUndoIndex += 1;
+    tbe.undoArray[tbe.currentUndoIndex] = text;
+  }
+  if(tbe.currentUndoIndex < 0){
+    tbe.currentUndoIndex = 0;
+  }
+};
+
+tbe.undoAction = function() {
+  tbe.clearStates();
+  tbe.internalClearDiagramBlocks();
+  if(tbe.currentUndoIndex > 0){
+    tbe.currentUndoIndex -= 1;
+  }
+
+  if(tbe.undoArray[tbe.currentUndoIndex] !== undefined){
+    var state = {};
+    var content = teak.parse(tbe.undoArray[tbe.currentUndoIndex].toString(), state, function(name) { return name; });
+    tbe.loadTeakJSO(content);
+  }
+};
+
+tbe.redoAction = function() {
+
+  if(tbe.currentUndoIndex < tbe.undoArray.length - 1){
+    tbe.clearStates();
+    tbe.internalClearDiagramBlocks();
+    tbe.currentUndoIndex += 1;
+  }
+
+  if(tbe.undoArray[tbe.currentUndoIndex] !== undefined){
+    var state = {};
+    var content = teak.parse(tbe.undoArray[tbe.currentUndoIndex].toString(), state, function(name) { return name; });
+    tbe.loadTeakJSO(content);
+  }
+
 };
 
 tbe.buildSvgTabs = function buildSvgTabs() {
