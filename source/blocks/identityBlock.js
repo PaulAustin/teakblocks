@@ -47,9 +47,9 @@ module.exports = function () {
 
   identityBlock.disconnectMessage = function() {
     console.log('disconnect', identityBlock.selectedDevice);
-    // disconnect the selected item. It is still the selected item!
+    // disconnect the BLE selected item. It is still the selected item!
     if (identityBlock.selectedDevice !== null) {
-      identityBlock.ble.close(identityBlock.selectedDevice.hwDescription);
+      identityBlock.disconnect(identityBlock.selectedDevice);
     }
   };
 
@@ -60,7 +60,6 @@ module.exports = function () {
     // TODO set hwType icon, connecting status as well.
 
     console.log('BT send message', message);
-
 /*
 
 if (handle)
@@ -99,6 +98,10 @@ if (handle)
 
   };
 
+  identityBlock.disconnect = function(device) {
+    identityBlock.ble.disconnect(device.hwDescription.id);
+  };
+
   identityBlock.connect = function(device) {
 
     if (device === null)
@@ -114,7 +117,9 @@ if (handle)
     if (identityBlock.ble === undefined)
       return;
 
-    identityBlock.ble.connectToDevice(device.hwDescription,
+    console.log('calling connect', device.hwDescription);
+
+    identityBlock.ble.connect(device.hwDescription.id,
       function(connectInfo) {
         console.log('Connected to BLE device ' + connectInfo.name);
       },
@@ -320,6 +325,7 @@ if (handle)
     if (identityBlock.ble === undefined) {
       return;
     } else {
+      // TODO, could add success/failure callbacks
       identityBlock.ble.stopScan();
     }
     if (identityBlock.cullTimer !== null) {
