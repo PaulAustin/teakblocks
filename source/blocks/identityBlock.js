@@ -22,6 +22,7 @@ SOFTWARE.
 
 /* global ble  */
 
+
 module.exports = function () {
   var svgb = require('./../svgbuilder.js');
   var ko = require('knockout');
@@ -29,10 +30,27 @@ module.exports = function () {
   var pb = svgb.pathBuilder;
   var identityBlock = {};
 
+  function stringToBuffer(str) {
+    var array = new Uint8Array(str.length);
+    for (var i = 0, l = str.length; i < l; i++) {
+        array[i] = str.charCodeAt(i);
+    }
+    return array.buffer;
+  }
+  function bufferToString(buffer) {
+    return String.fromCharCode.apply(null, new Uint8Array(buffer));
+  }
+
+  // this is Nordic's UART service
+  var nordicUARTservice = {
+      serviceUUID: '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
+      txCharacteristic: '6e400002-b5a3-f393-e0a9-e50e24dcca9e', // transmit is from the phone's perspective
+      rxCharacteristic: '6e400003-b5a3-f393-e0a9-e50e24dcca9e'  // receive is from the phone's perspective
+  };
+
   if (typeof ble !== 'undefined') {
     console.log('found ble', ble);
     identityBlock.ble = ble;
-  //  identityBlock.ble = window.evothings.ble;
   } else {
     identityBlock.ble = null;
   }
@@ -45,63 +63,50 @@ module.exports = function () {
   identityBlock.deviceName = {};
   identityBlock.cullTimer = null;
 
-  identityBlock.disconnectMessage = function() {
-    console.log('disconnect', identityBlock.selectedDevice);
-    // disconnect the BLE selected item. It is still the selected item!
-    if (identityBlock.selectedDevice !== null) {
-      identityBlock.disconnect(identityBlock.selectedDevice);
-    }
+  identityBlock.stopMessage = function() {
+
+    identityBlock.write('(stop):');
   };
 
   identityBlock.sendMessage = function(message) {
     console.log('connect', identityBlock.selectedDevice);
     // connect to the selected item.
     identityBlock.connect(identityBlock.selectedDevice);
+
     // TODO set hwType icon, connecting status as well.
-
     console.log('BT send message', message);
-/*
+  };
 
-if (handle)
-{
-  ble.writeDescriptor(
-    deviceHandle,
-    handle,
-    value,
-    function()
-    {
-      console.log(writeFunc + ': ' + handle + ' success.');
-    },
-    function(errorCode)
-    {
-      console.log(writeFunc + ': ' + handle + ' error: ' + errorCode);
-    });
+  identityBlock.write = function(message) {
+    var buffer = stringToBuffer(message);
+    console.log('ble write', message, buffer);
 
-    BluefruitUART.writeCharacteristic
-      (
-      BLEDevice.writeCharacteristicUUID,
-      data,
-      function()
-      {
-        console.log('Sent: ' + message);
-      },
-      function(errorString)
-      {
-        console.log('BLE writeCharacteristic error: ' + errorString);
-      }
-      )
+    // Break the message into smaller sections.
+    identityBlock.ble.write(identityBlock.selectedDevice.hwDescription.id,
+      nordicUARTservice.serviceUUID,
+      nordicUARTservice.txCharacteristic,
+      buffer,
+      identityBlock.onWriteOK,
+      identityBlock.onWriteFail);
+  };
 
-      //  var data = evothings.ble.toUtf8(message);
-}
-
-*/
-
+  identityBlock.onWriteOK = function (data) {
+    console.log('write ok', data);
+  };
+  identityBlock.onWriteFail = function (data) {
+    console.log('write fail', data);
   };
 
   identityBlock.disconnect = function(device) {
     identityBlock.ble.disconnect(device.hwDescription.id);
   };
-
+  identityBlock.onData = function(data) {
+    var str = bufferToString(data);
+    console.log('On Data:', str);
+  };
+  identityBlock.onError = function(reason) {
+    console.log('Error:', reason);
+  };
   identityBlock.connect = function(device) {
 
     if (device === null)
@@ -122,6 +127,13 @@ if (handle)
     identityBlock.ble.connect(device.hwDescription.id,
       function(connectInfo) {
         console.log('Connected to BLE device ' + connectInfo.name);
+
+        identityBlock.ble.startNotification(device.hwDescription.id,
+           nordicUARTservice.serviceUUID,
+           nordicUARTservice.rxCharacteristic,
+           identityBlock.onData,
+           identityBlock.onError);
+
       },
       function(connectInfo) {
         console.log('Disconnected from BLE device: ' + connectInfo.name);
@@ -311,7 +323,7 @@ if (handle)
       //identityBlock.ble.stopScan();
       console.log('starting scan');
       identityBlock.ble.startScanWithOptions(
-        [], { reportDuplicates: true },
+        [/*nordicUARTservice.serviceUUID*/], { reportDuplicates: true },
         function(device) { self.foundDevice(device); },
         function(errorCode) {
           console.log('error:' + errorCode);

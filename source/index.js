@@ -83,7 +83,7 @@ function deviceReady() {
   tbe.commands = {
     'settings': function() { tf.showHide(tbe.components.appSettings); },
     'play': function() { tbe.fblocks.identityBlock.sendMessage(); },
-    'stop': function() { tbe.fblocks.identityBlock.disconnectMessage(); },
+    'stop': function() { tbe.fblocks.identityBlock.stopMessage(); },
     'trashFirst': function() { tbe.stage1deletion(fastr); },
     'trashSecond': function() {  tbe.stage2deletion(fastr); },
     'loadDocA': function(){ tbe.loadDoc('docA'); },
@@ -106,33 +106,6 @@ function deviceReady() {
   });
   //create a method to make a group
   //
-/*
-tbe.loadDoc(docName) {
-
-  if (docName === tbe.currentDoc) {
-  // for now save docname
-   return ;
-} else {
-  save.update file (tbe.currentDoc, .....); //
-  clear existing doc
-  vsr text = save.loadFile(docName);
-  console.log(text)
-  deserialize text;
-}
-}
-/*
-docFile - serialezed dat in utf8
-model - function block objects wiht links
-view - svg elements in the pages DOM  ( partof TBE SVG elt)
-*/
-// if(on docA -> docB) 1. save docA, 2. clear the screen 3. set currentDoc to docB 4. update editor with saved version of docB
-/*
-  var configButton = document.getElementById('app-settings-button');
-  configButton.onclick = function() { tf.showHide(tbe.components.appSettings); };
-
-  var clearButton = document.getElementById('clear-button');
-  clearButton.onclick = function() { tbe.clearAllBlocks(); };
-*/
 
   // these could be loaded from JSON files/strings
   var package1 = {
