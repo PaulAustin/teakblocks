@@ -20,6 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/* global ble  */
+
 module.exports = function () {
   var svgb = require('./../svgbuilder.js');
   var ko = require('knockout');
@@ -27,8 +29,10 @@ module.exports = function () {
   var pb = svgb.pathBuilder;
   var identityBlock = {};
 
-  if (window.evothings !== undefined) {
-    identityBlock.ble = window.evothings.ble;
+  if (ble !== undefined) {
+    console.log('found ble', ble);
+    identityBlock.ble = ble;
+  //  identityBlock.ble = window.evothings.ble;
   } else {
     identityBlock.ble = null;
   }
@@ -299,8 +303,10 @@ if (handle)
       identityBlock.addItem({name:'Gimli'}, (Date.now()+3000) );
     } else {
       var self = this;
-      identityBlock.ble.stopScan();
+      //identityBlock.ble.stopScan();
+      console.log('starting scan');
       identityBlock.ble.startScan(
+        [],
         function(device) { self.foundDevice(device); },
         function(errorCode) {
           console.log('error:' + errorCode);

@@ -163,7 +163,7 @@ module.exports = function () {
     }
   };
 
-  // Build the tow of tabs one for each controller editor that canbe used
+  // Build the row of tabs one for each controller editor that canbe used
   // by the actor.
   blockSettings.buildControllerTabs = function() {
     // Clear out old tabs.
