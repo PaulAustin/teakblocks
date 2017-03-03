@@ -30,6 +30,7 @@ function deviceReady() {
   var ko = require('knockout');
   var Clipboard = require('clipboard');
   var tt = require('./teaktext.js');
+  var conductor = require('./conductor.js')
 
   /* font awesome strings */
   var fastr = {
@@ -135,7 +136,12 @@ function deviceReady() {
  ];
 
  tbe.deleteRay = tbe.addActionButtons(actionButtons);
+
+ // The conductor coordinates the score managed by the editor and the collection
+ // of bots that make up the orchestra.
+ conductor.attachToScoreEditor(tbe);
 }
+
 isRegularBrowser =
   document.URL.indexOf('http://') >= 0 ||
   document.URL.indexOf('https://') >= -0;
