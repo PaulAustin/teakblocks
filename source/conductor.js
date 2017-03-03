@@ -21,11 +21,11 @@ SOFTWARE.
 */
 
 module.exports = function () {
-  var execution = {};
-  execution.tbe = null;
-  execution.hbTimer = 0;
+  var conductor = {};
+  conductor.tbe = null;
+  conductor.hbTimer = 0;
 
-  // Once the execution system is connected to editor, it will ping the target
+  // Once the conductor system is connected to editor, it will ping the target
   // device to determine its current state.
 
   // Scan the editor looking for identity blocks
@@ -34,12 +34,12 @@ module.exports = function () {
 
   // Give some time for the animation to complete, then remove.
 
-  execution.attachToScoreEditor = function(tbe) {
-    execution.tbe = tbe;
-    execution.hbTimer = setTimeout(function() { execution.linkHeartBeat(); }, 3000);
+  conductor.attachToScoreEditor = function(tbe) {
+    conductor.tbe = tbe;
+    conductor.hbTimer = setTimeout(function() { conductor.linkHeartBeat(); }, 3000);
   };
 
-  execution.linkHeartBeat = function() {
+  conductor.linkHeartBeat = function() {
     console.log('heartBeat');
 
     // See what replies we have seen in last window
@@ -47,14 +47,14 @@ module.exports = function () {
     // or need to checked during the next heart beat.
     // May look at async notifications from the target that let the editor indicate
     // what part of the score the targets are at.
-    execution.checkAllIdentityBlocks();
+    conductor.checkAllIdentityBlocks();
 
-    execution.hbTimer = setTimeout(function() { execution.linkHeartBeat(); }, 3000);
+    conductor.hbTimer = setTimeout(function() { conductor.linkHeartBeat(); }, 3000);
   };
 
-  execution.checkAllIdentityBlocks = function() {
+  conductor.checkAllIdentityBlocks = function() {
     // var currentDocText = teakText.blocksToText(tbe.forEachDiagramChain);
-    var blockChainIterator  = execution.tbe.forEachDiagramChain;
+    var blockChainIterator  = conductor.tbe.forEachDiagramChain;
     blockChainIterator(function(chainStart) {
       // Ignore chains that dont start with an identity block.
       if (chainStart.name === 'identity') {
@@ -64,21 +64,21 @@ module.exports = function () {
     });
   };
 
-  execution.runSingleBlock = function() {
+  conductor.runSingleBlock = function() {
     // Single step, find target and head of chain and run the single block.
   };
 
-  execution.runSingleChain = function() {
+  conductor.runSingleChain = function() {
     // The conductor starts one chain (part of the score)
   };
 
-  execution.runAllChains = function() {
+  conductor.runAllChains = function() {
     // The conductor starts the whole band on the whole score
   };
 
-  execution.stopObservingAllChains = function() {
+  conductor.stopObservingAllChains = function() {
     // Single step, find target and head of chain and run the single block.
   };
 
-  return execution;
+  return conductor;
 }();
