@@ -105,6 +105,9 @@ tbe.elementToBlock = function(el) {
     } else if (values[0] === 'p') {
       obj = this.paletteBlocks[text];
     }
+    if (obj === undefined) {
+      obj = null;
+    }
     if (obj === null)  {
       console.log('block not found, id was <', text, '>');
     }
