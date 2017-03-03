@@ -39,7 +39,7 @@ teakText.blocksToText = function(blockChainIterator) {
       if (block.targetShadow !== null) {
         // For debugging, this ocassionally happens since
         // compile is asynchronous. TODO fixit.
-        text += ' shadow:true';
+        //text += ' shadow:true'; //COMMENTED
       }
       text += ')\n';
       block = block.next;

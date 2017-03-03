@@ -411,6 +411,13 @@ label input[type="checkbox"]:disabled + .label-text:before {
   text-anchor: middle;
   pointer-events: none;
 }
+.action-dot-doc-label {
+  fill: #FF7043;
+  font-family: "helvetica";
+  font-size: 24px;
+  text-anchor: middle;
+  pointer-events: none;
+}
 .slider {
   position: relative;
   width: 100%;

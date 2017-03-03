@@ -1013,6 +1013,11 @@ tbe.diagramChanged = function diagramChanged() {
   if(tbe.currentUndoIndex < 0){
     tbe.currentUndoIndex = 0;
   }
+  if(tbe.currentUndoIndex < tbe.undoArray.length - 1){
+    //console.log("inside if");
+    tbe.undoArray.splice(tbe.currentUndoIndex, tbe.undoArray.length);
+  }
+  //console.log(tbe.currentUndoIndex, tbe.undoArray, tbe.undoArray.length - 1);
 };
 
 tbe.undoAction = function() {
@@ -1035,12 +1040,11 @@ tbe.redoAction = function() {
     tbe.clearStates();
     tbe.internalClearDiagramBlocks();
     tbe.currentUndoIndex += 1;
-  }
-
-  if(tbe.undoArray[tbe.currentUndoIndex] !== undefined){
-    var state = {};
-    var content = teak.parse(tbe.undoArray[tbe.currentUndoIndex].toString(), state, function(name) { return name; });
-    tbe.loadTeakJSO(content);
+    if(tbe.undoArray[tbe.currentUndoIndex] !== undefined){
+      var state = {};
+      var content = teak.parse(tbe.undoArray[tbe.currentUndoIndex].toString(), state, function(name) { return name; });
+      tbe.loadTeakJSO(content);
+    }
   }
 
 };
@@ -1087,6 +1091,7 @@ tbe.addActionButtons = function(buttons) {
   var group = null;
   var svgCircle = null;
   var svgText = null;
+  var svgText2 = null;
 
   // Determine how many buttons are inthe middle
   for (var k = 0; k < buttons.length; k++) {
@@ -1119,9 +1124,19 @@ tbe.addActionButtons = function(buttons) {
 
     group = svgb.createGroup('buttonGroup', 0, 0);
     svgCircle = svgb.createCircle('action-dot', x, 40, 33);
-    svgText = svgb.createText('action-dot-text', x + tweakx, 53, label);
-    group.appendChild(svgCircle);
-    group.appendChild(svgText);
+    //console.log(label.length, label);
+    if(label.length > 1){
+      svgText = svgb.createText('action-dot-text', x + tweakx, 53, label.substring(0, 1));
+      svgText2 = svgb.createText('action-dot-doc-label', x + tweakx, 53, label.substring(1));
+      group.appendChild(svgCircle);
+      group.appendChild(svgText);
+      group.appendChild(svgText2);
+    } else{
+      svgText = svgb.createText('action-dot-text', x + tweakx, 53, label);
+      group.appendChild(svgCircle);
+      group.appendChild(svgText);
+    }
+
     tbe.svg.appendChild(group);
     buttons[i].svgText = svgText;
     buttons[i].svgCircle = svgCircle;
