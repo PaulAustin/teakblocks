@@ -83,6 +83,14 @@ bleConnnection.startObserving = function (callback) {
   }
 };
 
+bleConnnection.checkDeviceStatus = function (name) {
+  if (name === '-?-') {
+    // TODO a bit hard coded.
+    return 0;
+  }
+  return 0;
+};
+
 bleConnnection.addFoundDevice = function (device) {
   var existing = bleConnnection.devs[device.name];
 };
@@ -153,5 +161,22 @@ bleConnnection.onWriteFail = function (data) {
   console.log('write fail', data);
 };
 
+/*
+identityBlock.cullDevices = function () {
+  var now = Date.now();
+  identityBlock.devices.remove(function(item) {
+    // ts of 0 means it never is culled.
+    if (item().ts === 0) {
+      return false;
+    }
+    // If no communicationin 3 sec it gone.
+    // A. Items should be seen in pbroadcast.
+    // Commected items will update the time stamp in their
+    // heart beat.
+    return ((now - item().ts) > 3000);
+  });
+  identityBlock.cullTimer = setTimeout(identityBlock.cullDevices, 1000);
+};
+*/
 return bleConnnection;
 }();

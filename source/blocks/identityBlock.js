@@ -33,23 +33,6 @@ module.exports = function () {
   identityBlock.selectedDevice = null;
   //identityBlock.selectedDevice = ko.observable();
   identityBlock.deviceName = {};
-  identityBlock.cullTimer = null;
-
-  identityBlock.stopMessage = function() {
-    /*
-    identityBlock.write('(stop):');
-    */
-  };
-
-  identityBlock.sendMessage = function() {
-/*    console.log('connect', identityBlock.selectedDevice);
-    // connect to the selected item.
-    identityBlock.connect(identityBlock.selectedDevice);
-
-    // TODO set hwType icon, connecting status as well.
-    console.log('BT send message', message);
-  */
-  };
 
   identityBlock.connect = function(device) {
 
@@ -64,30 +47,6 @@ module.exports = function () {
     // then it may stay in the list but be 'greyed out'
     device.ts = 0;
 
-    /*
-    if (identityBlock.ble === undefined)
-      return;
-
-    console.log('calling connect', device.hwDescription);
-
-    identityBlock.ble.connect(device.hwDescription.id,
-      function(connectInfo) {
-        console.log('Connected to BLE device ' + connectInfo.name);
-
-        identityBlock.ble.startNotification(device.hwDescription.id,
-           nordicUARTservice.serviceUUID,
-           nordicUARTservice.rxCharacteristic,
-           identityBlock.onData,
-           identityBlock.onError);
-      },
-      function(connectInfo) {
-        console.log('Disconnected from BLE device: ' + connectInfo.name);
-      },
-      function(errorCode) {
-        console.log('Failed to connect to BLE device: ' + errorCode);
-      }
-    );
-    */
   };
 
   identityBlock.onDeviceClick = function() {
@@ -140,6 +99,7 @@ module.exports = function () {
       },
       // Indicate what controller is active. This may affect the data format.
       controller:'target-bt',
+      status:0,
     };
   };
 
@@ -161,14 +121,9 @@ module.exports = function () {
     // and filtering
     identityBlock.devices.removeAll();
     bleCon.startObserving(identityBlock.foundDevice);
-    identityBlock.cullDevices();
   };
 
   identityBlock.configuratorClose = function(div) {
-    if (identityBlock.cullTimer !== null) {
-      clearTimeout(identityBlock.cullTimer);
-      identityBlock.cullTimer = null;
-    }
     bleCon.stopObserving();
     identityBlock.activeBlock = null;
     ko.cleanNode(div);
@@ -251,22 +206,6 @@ module.exports = function () {
       });
       identityBlock.devices.unshift(item);
     }
-  };
-
-  identityBlock.cullDevices = function () {
-    var now = Date.now();
-    identityBlock.devices.remove(function(item) {
-      // ts of 0 means it never is culled.
-      if (item().ts === 0) {
-        return false;
-      }
-      // If no communicationin 3 sec it gone.
-      // A. Items should be seen in pbroadcast.
-      // Commected items will update the time stamp in their
-      // heart beat.
-      return ((now - item().ts) > 3000);
-    });
-    identityBlock.cullTimer = setTimeout(identityBlock.cullDevices, 1000);
   };
 
   return identityBlock;

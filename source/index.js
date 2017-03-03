@@ -83,8 +83,8 @@ function deviceReady() {
   tbe.deleteRay = null;
   tbe.commands = {
     'settings': function() { tf.showHide(tbe.components.appSettings); },
-    'play': function() { tbe.fblocks.identityBlock.sendMessage(); },
-    'stop': function() { tbe.fblocks.identityBlock.stopMessage(); },
+    'play': function() { conductor.playAll(); },
+    'stop': function() { conductor.stopAll(); },
     'trashFirst': function() { tbe.stage1deletion(fastr); },
     'trashSecond': function() {  tbe.stage2deletion(fastr); },
     'loadDocA': function(){ tbe.loadDoc('docA'); },
