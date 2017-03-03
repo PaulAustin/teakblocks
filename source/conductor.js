@@ -63,8 +63,10 @@ module.exports = function () {
       if (chainStart.name === 'identity') {
         var botName = chainStart.controllerSettings.data.deviceName;
 
-        if (botName !== '-?-') {
-          chainStart.controllerSettings.connected = 1;
+        var status = conductor.ble.checkDeviceStatus(botName);
+
+        if (chainStart.controllerSettings.status !== status) {
+          chainStart.controllerSettings.status = status;
           chainStart.updateSvg();
         }
         console.log('id block target name', chainStart.name, botName);
@@ -72,21 +74,26 @@ module.exports = function () {
     });
   };
 
-  conductor.runSingleBlock = function() {
-    // Single step, find target and head of chain and run the single block.
-  };
-
-  conductor.runSingleChain = function() {
-    // The conductor starts one chain (part of the score)
-  };
-
-  conductor.runAllChains = function() {
+  conductor.playAll = function() {
+    console.log('play all');
     // The conductor starts the whole band on the whole score
   };
 
-  conductor.stopObservingAllChains = function() {
+  conductor.stopAll = function() {
+    console.log('stop all');
     // Single step, find target and head of chain and run the single block.
   };
+
+  conductor.playOne = function(block) {
+    console.log('play single block', block.name);
+    // Single step, find target and head of chain and run the single block.
+  };
+
+  conductor.playSingleChain = function() {
+    console.log('play single chain');
+    // The conductor starts one chain (part of the score)
+  };
+
 
   return conductor;
 }();
