@@ -142,6 +142,15 @@ html, body { margin:0; padding:0; overflow:hidden }
 .block-picture-led-on {
   fill: #FF0033;
 }
+.block-bot-connected {
+  fill: #4CAF50;
+}
+.block-bot-not-found {
+  fill: #FDD835;
+}
+.block-bot-connection-error {
+  fill: #FF5722;
+}
 .block-micro-servo-body {
   stroke: #303F9F;
   fill: #0033FF;
