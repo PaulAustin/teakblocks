@@ -126,8 +126,8 @@ function deviceReady() {
  var actionButtons = [
    {'alignment': 'L', 'position': 1, 'label': fastr.play, 'command': 'play', 'tweakx': 4},
    {'alignment': 'L', 'position': 2, 'label': fastr.stop, 'command': 'stop'},
-   {'alignment': 'M', 'position': 1, 'label': fastr.file, 'command': 'loadDocA'},
-   {'alignment': 'M', 'position': 2, 'label': fastr.file, 'command': 'loadDocB'},
+   {'alignment': 'M', 'position': 1, 'label': fastr.file+"A", 'command': 'loadDocA'},
+   {'alignment': 'M', 'position': 2, 'label': fastr.file+"B", 'command': 'loadDocB'}, //check char count and based on that add new text
    {'alignment': 'M', 'position': 3, 'label': fastr.trashEmpty, 'command': 'trashFirst'},
    {'alignment': 'R', 'position': 3, 'label': fastr.copyToClipboard, 'command': 'copyToClipboard'},
    {'alignment': 'R', 'position': 2, 'label': fastr.redo, 'command': 'redo'},
