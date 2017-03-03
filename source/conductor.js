@@ -36,9 +36,31 @@ module.exports = function () {
 
   // Give some time for the animation to complete, then remove.
 
+  conductor.activeBits = [];
+
   conductor.attachToScoreEditor = function(tbe) {
     conductor.tbe = tbe;
     conductor.hbTimer = setTimeout(function() { conductor.linkHeartBeat(); }, 3000);
+    conductor.ble.startObserving(conductor.foundBot);
+  };
+
+  conductor.foundBot = function(bleDeviceInfo) {
+    // It the item found matches the block name mark the UX as selected.
+    // until that that happens the block should indicate that it is not connected.
+    // Does it look like real device?
+    if (bleDeviceInfo.name !== undefined) {
+      var hwType = '';
+      if (bleDeviceInfo.name.startsWith('BBC micro:bit [')) {
+        var str = bleDeviceInfo.name.split('[', 2)[1].split(']',1)[0];
+        // Over writing name, not a good idea.
+        bleDeviceInfo.name = str;
+        hwType = 'micro:bit';
+      } else {
+        // arduino, other...
+        hwType = 'unknown';
+      }
+    }
+    console.log('found device', bleDeviceInfo, hwType);
   };
 
   conductor.linkHeartBeat = function() {
@@ -62,14 +84,11 @@ module.exports = function () {
 
       if (chainStart.name === 'identity') {
         var botName = chainStart.controllerSettings.data.deviceName;
-
         var status = conductor.ble.checkDeviceStatus(botName);
-
         if (chainStart.controllerSettings.status !== status) {
           chainStart.controllerSettings.status = status;
           chainStart.updateSvg();
         }
-        console.log('id block target name', chainStart.name, botName);
       }
     });
   };

@@ -53,7 +53,34 @@ if (typeof ble !== 'undefined') {
   bleConnnection.bleApi = null;
 }
 
+var pbi = 0;
+var pseudoBots = [
+  {aragorn:1},
+  {aragorn:1, frodo:2},
+  {aragorn:1, frodo:2},
+  {aragorn:1, frodo:2},
+  {frodo:2},
+  {frodo:2},
+  {},
+  {},
+];
+
+bleConnnection.visibleDevices = {};
+bleConnnection.scanning = false;
+bleConnnection.psedoScan = function () {
+  if (pbi >= pseudoBots.length) {
+    pbi = 0;
+  }
+  bleConnnection.visibleDevices = pseudoBots[pbi];
+  console.log(bleConnnection.visibleDevices);
+  pbi += 1;
+  if (bleConnnection.scanning) {
+    setTimeout(function() { bleConnnection.psedoScan(); }, 3000);
+  }
+};
+
 bleConnnection.stopObserving = function () {
+  bleConnnection.scanning = true;
   if (bleConnnection.bleApi !== null) {
     this.bleApi.stopScan();
   }
@@ -62,12 +89,9 @@ bleConnnection.stopObserving = function () {
 bleConnnection.startObserving = function (callback) {
   // Put empty  rows so the cell don't stretch to fill the table.
   //identityBlock.devices.removeAll();
-
+  bleConnnection.scanning = true;
   if (this.bleApi === null) {
-    setTimeout(function() {
-      callback({name:'Aragorn'});
-      },
-      1000);
+    bleConnnection.psedoScan();
   } else {
     // TODO identityBlock.ble.stopScan();
     console.log('starting scan');
@@ -87,11 +111,14 @@ bleConnnection.checkDeviceStatus = function (name) {
   if (name === '-?-') {
     // TODO a bit hard coded.
     return 0;
+  } else if (bleConnnection.visibleDevices.hasOwnProperty(name)) {
+    return 1;
   }
   return 0;
 };
 
 bleConnnection.addFoundDevice = function (device) {
+  // TODO
   var existing = bleConnnection.devs[device.name];
 };
 
