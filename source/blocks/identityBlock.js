@@ -187,10 +187,23 @@ module.exports = function () {
     root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 49, 20, 2));
 
     // Add identity name
-    var name = block.controllerSettings.data.deviceName;
-    var text = svgb.createText('block-identity-text svg-clear', 40, 50, name);
+    var botName = block.controllerSettings.data.deviceName;
+    var text = svgb.createText('block-identity-text svg-clear', 40, 50, botName);
     text.setAttribute('text-anchor', 'middle');
     root.appendChild(text);
+
+    if (botName !== '-?-') {
+      // Connection status dot
+      var statusClass = 'block-bot-not-found';
+      if (block.controllerSettings.connected > 0 ) {
+        statusClass = 'block-bot-connected';
+      } else if (block.controllerSettings.connected < 0 ) {
+        // Connected but with protocol errors. Might be wrong FW
+        // or not really a teakblocks device.
+        statusClass = 'block-bot-connection-error';
+      }
+      root.appendChild(svgb.createCircle('svg-clear ' + statusClass, 40, 65, 5));
+    }
   };
 
   identityBlock.foundDevice = function (bleDeviceInfo) {

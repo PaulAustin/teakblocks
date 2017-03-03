@@ -22,6 +22,8 @@ SOFTWARE.
 
 module.exports = function () {
   var conductor = {};
+
+  conductor.ble = require('./bleConnections.js');
   conductor.tbe = null;
   conductor.hbTimer = 0;
 
@@ -57,9 +59,15 @@ module.exports = function () {
     var blockChainIterator  = conductor.tbe.forEachDiagramChain;
     blockChainIterator(function(chainStart) {
       // Ignore chains that dont start with an identity block.
+
       if (chainStart.name === 'identity') {
-        var currentName = chainStart.controllerSettings.data.deviceName;
-        console.log('id block target name', chainStart.name, currentName);
+        var botName = chainStart.controllerSettings.data.deviceName;
+
+        if (botName !== '-?-') {
+          chainStart.controllerSettings.connected = 1;
+          chainStart.updateSvg();
+        }
+        console.log('id block target name', chainStart.name, botName);
       }
     });
   };
