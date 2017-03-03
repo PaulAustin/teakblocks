@@ -20,41 +20,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/* global ble  */
-
-
 module.exports = function () {
   var svgb = require('./../svgbuilder.js');
+  var bleCon = require('./../bleConnections.js');
   var ko = require('knockout');
 
   var pb = svgb.pathBuilder;
   var identityBlock = {};
-
-  function stringToBuffer(str) {
-    var array = new Uint8Array(str.length);
-    for (var i = 0, l = str.length; i < l; i++) {
-        array[i] = str.charCodeAt(i);
-    }
-    return array.buffer;
-  }
-  function bufferToString(buffer) {
-    return String.fromCharCode.apply(null, new Uint8Array(buffer));
-  }
-
-  // this is Nordic's UART service
-  var nordicUARTservice = {
-      serviceUUID: '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
-      txCharacteristic: '6e400002-b5a3-f393-e0a9-e50e24dcca9e', // transmit is from the phone's perspective
-      rxCharacteristic: '6e400003-b5a3-f393-e0a9-e50e24dcca9e'  // receive is from the phone's perspective
-  };
-
-  if (typeof ble !== 'undefined') {
-    console.log('found ble', ble);
-    identityBlock.ble = ble;
-  } else {
-    identityBlock.ble = null;
-  }
-  console.log(' ble is ', identityBlock.ble);
 
   // Items for selecting a device from a list.
   identityBlock.devices = ko.observableArray([]);
@@ -64,49 +36,21 @@ module.exports = function () {
   identityBlock.cullTimer = null;
 
   identityBlock.stopMessage = function() {
-
+    /*
     identityBlock.write('(stop):');
+    */
   };
 
-  identityBlock.sendMessage = function(message) {
-    console.log('connect', identityBlock.selectedDevice);
+  identityBlock.sendMessage = function() {
+/*    console.log('connect', identityBlock.selectedDevice);
     // connect to the selected item.
     identityBlock.connect(identityBlock.selectedDevice);
 
     // TODO set hwType icon, connecting status as well.
     console.log('BT send message', message);
+  */
   };
 
-  identityBlock.write = function(message) {
-    var buffer = stringToBuffer(message);
-    console.log('ble write', message, buffer);
-
-    // Break the message into smaller sections.
-    identityBlock.ble.write(identityBlock.selectedDevice.hwDescription.id,
-      nordicUARTservice.serviceUUID,
-      nordicUARTservice.txCharacteristic,
-      buffer,
-      identityBlock.onWriteOK,
-      identityBlock.onWriteFail);
-  };
-
-  identityBlock.onWriteOK = function (data) {
-    console.log('write ok', data);
-  };
-  identityBlock.onWriteFail = function (data) {
-    console.log('write fail', data);
-  };
-
-  identityBlock.disconnect = function(device) {
-    identityBlock.ble.disconnect(device.hwDescription.id);
-  };
-  identityBlock.onData = function(data) {
-    var str = bufferToString(data);
-    console.log('On Data:', str);
-  };
-  identityBlock.onError = function(reason) {
-    console.log('Error:', reason);
-  };
   identityBlock.connect = function(device) {
 
     if (device === null)
@@ -119,6 +63,8 @@ module.exports = function () {
     // each communication with the target. If it stop responding
     // then it may stay in the list but be 'greyed out'
     device.ts = 0;
+
+    /*
     if (identityBlock.ble === undefined)
       return;
 
@@ -133,7 +79,6 @@ module.exports = function () {
            nordicUARTservice.rxCharacteristic,
            identityBlock.onData,
            identityBlock.onError);
-
       },
       function(connectInfo) {
         console.log('Disconnected from BLE device: ' + connectInfo.name);
@@ -142,6 +87,7 @@ module.exports = function () {
         console.log('Failed to connect to BLE device: ' + errorCode);
       }
     );
+    */
   };
 
   identityBlock.onDeviceClick = function() {
@@ -214,11 +160,16 @@ module.exports = function () {
     // Need to be smart about aging out old items.
     // and filtering
     identityBlock.devices.removeAll();
-    identityBlock.startScan();
+    bleCon.startObserving(identityBlock.foundDevice);
+    identityBlock.cullDevices();
   };
 
   identityBlock.configuratorClose = function(div) {
-    identityBlock.stopScan();
+    if (identityBlock.cullTimer !== null) {
+      clearTimeout(identityBlock.cullTimer);
+      identityBlock.cullTimer = null;
+    }
+    bleCon.stopObserving();
     identityBlock.activeBlock = null;
     ko.cleanNode(div);
   };
@@ -262,7 +213,7 @@ module.exports = function () {
 
       var now = Date.now();
 
-      // See if that item already exists.
+      // See if that item already exists, if not, add it.
       var match = ko.utils.arrayFirst(identityBlock.devices(), function(item) {
         return (item().name === bleDeviceInfo.name);
       });
@@ -277,73 +228,32 @@ module.exports = function () {
   identityBlock.addItem = function (hwDescription, timeStamp) {
 
     var block = identityBlock.activeBlock;
-    var targetName = block.controllerSettings.data.deviceName;
-    var item = ko.observable({
-      name: hwDescription.name,
-      hwDescription: hwDescription,
-      selected: ko.observable(name === targetName),
-      ts: timeStamp
-    });
-    identityBlock.devices.unshift(item);
+    if (block !== null) {
+      var targetName = block.controllerSettings.data.deviceName;
+      var item = ko.observable({
+        name: hwDescription.name,
+        hwDescription: hwDescription,
+        selected: ko.observable(name === targetName),
+        ts: timeStamp
+      });
+      identityBlock.devices.unshift(item);
+    }
   };
 
   identityBlock.cullDevices = function () {
-    // for testing on desktop,
-    // identityBlock.foundDevice({name:'BBC micro:bit [gato]'});
     var now = Date.now();
     identityBlock.devices.remove(function(item) {
       // ts of 0 means it never is culled.
       if (item().ts === 0) {
         return false;
       }
-      // If no communicationin 2.5 sec it gone.
+      // If no communicationin 3 sec it gone.
       // A. Items should be seen in pbroadcast.
       // Commected items will update the time stamp in their
       // heart beat.
-      return ((now - item().ts) > 2500);
+      return ((now - item().ts) > 3000);
     });
     identityBlock.cullTimer = setTimeout(identityBlock.cullDevices, 1000);
-  };
-
-  identityBlock.startScan = function () {
-    // Put empty  rows so the cell don't stretch to fill the table.
-    identityBlock.devices.removeAll();
-
-    // Start up scanning, or add fake ones.
-    console.log('identityBlock.ble', identityBlock.ble);
-    if (identityBlock.ble === undefined) {
-      console.log('add items');
-      identityBlock.addItem({name:'Aragorn'}, (Date.now()+500) );
-      identityBlock.addItem({name:'Boromir'}, (Date.now()+1000) );
-      identityBlock.addItem({name:'Gandalf'}, (Date.now()+2000) );
-      identityBlock.addItem({name:'Treebeard'},  0 );
-      identityBlock.addItem({name:'Gimli'}, (Date.now()+3000) );
-    } else {
-      var self = this;
-      //identityBlock.ble.stopScan();
-      console.log('starting scan');
-      identityBlock.ble.startScanWithOptions(
-        [/*nordicUARTservice.serviceUUID*/], { reportDuplicates: true },
-        function(device) { self.foundDevice(device); },
-        function(errorCode) {
-          console.log('error:' + errorCode);
-        });
-    }
-    // Periodically remove old items.
-    identityBlock.cullDevices();
-  };
-
-  identityBlock.stopScan = function () {
-    if (identityBlock.ble === undefined) {
-      return;
-    } else {
-      // TODO, could add success/failure callbacks
-      identityBlock.ble.stopScan();
-    }
-    if (identityBlock.cullTimer !== null) {
-      clearTimeout(identityBlock.cullTimer);
-      identityBlock.cullTimer = null;
-    }
   };
 
   return identityBlock;
