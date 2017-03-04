@@ -145,6 +145,9 @@ html, body { margin:0; padding:0; overflow:hidden }
 .block-bot-connected {
   fill: #4CAF50;
 }
+.block-bot-visible {
+  fill: #42A5F5;
+}
 .block-bot-not-found {
   fill: #FDD835;
 }

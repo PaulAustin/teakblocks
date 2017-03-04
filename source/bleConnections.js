@@ -56,7 +56,7 @@ if (typeof ble !== 'undefined') {
 var pbi = 0;
 var pseudoBeacons = [
  {name:'BBC micro:bit [aragorn]', mac:'0000000A', delay:500},
- {name:'puck.js 4e75', mac:'00004e75', delay:1000},
+ {name:'puck.js 4e75', mac:'00004e75', delay:500},
  {name:'BBC micro:bit [frodo]', mac:'0000000F', delay:1000},
  {name:'BBC micro:bit [aragorn]', mac:'0000000A', delay:1000},
  {name:'BBC micro:bit [frodo]', mac:'0000000F', delay:500},
@@ -73,21 +73,16 @@ bleConnnection.psedoScan = function () {
   if (pbi >= pseudoBeacons.length) {
     pbi = 0;
   }
-
-  bleConnnection.beaconReceived(pseudoBeacons[pbi]);
+  var beaconInfo = pseudoBeacons[pbi];
+  bleConnnection.beaconReceived(beaconInfo);
   pbi += 1;
   if (bleConnnection.scanning) {
-    setTimeout(function() { bleConnnection.psedoScan(); }, 3000);
+    setTimeout(function() { bleConnnection.psedoScan(); }, beaconInfo.delay);
   }
 };
 
 bleConnnection.observeDevices = function(callback) {
   this.observerCallback = callback;
-  /*
-  if (callback!== null) {
-    this.observerCallback(bleConnnection.visibleDevices);
-  }
-  */
 };
 
 bleConnnection.stopObserving = function () {
@@ -103,13 +98,13 @@ bleConnnection.beaconReceived = function(bleBeaconInfo) {
       var botName = bleBeaconInfo.name.split('[', 2)[1].split(']',1)[0];
 
       // Merge into list
-      if (!bleConnnection.visibleDevices.hasOwnProperty(botName)) {
-        bleConnnection.visibleDevices[botName] = { mac:bleBeaconInfo.mac };
+      if (!this.visibleDevices.hasOwnProperty(botName)) {
+        this.visibleDevices[botName] = { mac:bleBeaconInfo.mac, status:1 };
       }
 
       // Update last-seen time stamp
-      bleConnnection.visibleDevices[botName].ts = Date.now();
-      bleConnnection.cullList();
+      this.visibleDevices[botName].ts = Date.now();
+      this.cullList();
     }
   }
 };
@@ -151,10 +146,9 @@ bleConnnection.startObserving = function () {
 
 bleConnnection.checkDeviceStatus = function (name) {
   if (name === '-?-') {
-    // TODO a bit hard coded.
-    return 0;
+    return 0;  // TODO a bit hard coded.
   } else if (bleConnnection.visibleDevices.hasOwnProperty(name)) {
-    return 1;
+    return bleConnnection.visibleDevices[name].status;
   }
   return 0;
 };
@@ -165,27 +159,34 @@ bleConnnection.disconnect = function(mac) {
   }
 };
 
-bleConnnection.connect = function(mac) {
-  if (bleConnnection.bleApl === undefined)
-    return;
+bleConnnection.connect = function(name) {
+  console.log('ble connect', name);
+  if (this.visibleDevices.hasOwnProperty(name)) {
+    var mac = this.visibleDevices[name].mac;
 
-  bleConnnection.ble.connect(mac,
-    function(connectInfo) {
-      console.log('Connected to BLE device ' + connectInfo.name);
-      // If connectio works, then start listening for incomming messages.
-      bleConnnection.bleApl.startNotification(mac,
-         nordicUARTservice.serviceUUID,
-         nordicUARTservice.rxCharacteristic,
-         bleConnnection.onData,
-         bleConnnection.onError);
-    },
-    function(connectInfo) {
-      console.log('Disconnected from BLE device: ' + connectInfo.name);
-    },
-    function(errorCode) {
-      console.log('Failed to connect to BLE device: ' + errorCode);
+    if (bleConnnection.bleApl === undefined) {
+      bleConnnection.visibleDevices[name].status = 2;
+    } else {
+      bleConnnection.ble.connect(mac, bleConnnection.onConnect,
+        bleConnnection.onDisconnect, bleConnnection.onError);
     }
-  );
+  }
+};
+
+bleConnnection.onConnect = function(info) {
+  console.log('On Connected:', info.name, info);
+  // If connection works, then start listening for incomming messages.
+  bleConnnection.bleApl.startNotification(info.mac,
+     nordicUARTservice.serviceUUID,
+     nordicUARTservice.rxCharacteristic,
+     bleConnnection.onData,
+     bleConnnection.onError);
+
+  bleConnnection.visibleDevices[info.name].status = 2;
+};
+
+bleConnnection.onDisconnect = function(info) {
+  console.log('On Disconnect:' + info.name);
 };
 
 bleConnnection.onData = function(data) {

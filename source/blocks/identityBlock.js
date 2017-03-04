@@ -22,7 +22,7 @@ SOFTWARE.
 
 module.exports = function () {
   var svgb = require('./../svgbuilder.js');
-  var bleCon = require('./../bleConnections.js');
+  var ble = require('./../bleConnections.js');
   var ko = require('knockout');
 
   var pb = svgb.pathBuilder;
@@ -115,7 +115,8 @@ module.exports = function () {
     // Connect the dataBinding.
     ko.applyBindings(identityBlock, div);
 
-    bleCon.observeDevices(identityBlock.refreshList);
+    identityBlock.refreshList(ble.visibleDevices);
+    ble.observeDevices(identityBlock.refreshList);
   };
 
   identityBlock.refreshList = function (bots) {
@@ -132,7 +133,7 @@ module.exports = function () {
   };
 
   identityBlock.configuratorClose = function(div) {
-    bleCon.observeDevices(null);
+    ble.observeDevices(null);
     identityBlock.activeBlock = null;
     ko.cleanNode(div);
   };
@@ -157,8 +158,11 @@ module.exports = function () {
 
     if (botName !== '-?-') {
       // Connection status dot
-      var statusClass = 'block-bot-not-found';
-      if (block.controllerSettings.status > 0 ) {
+      if (block.controllerSettings.status === 0 ) {
+        var statusClass = 'block-bot-not-found';
+      } else if (block.controllerSettings.status === 1 ) {
+        statusClass = 'block-bot-visible';
+      } else if (block.controllerSettings.status === 2 ) {
         statusClass = 'block-bot-connected';
       } else if (block.controllerSettings.status < 0 ) {
         // Connected but with protocol errors. Might be wrong FW
