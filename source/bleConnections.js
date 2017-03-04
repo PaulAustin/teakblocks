@@ -190,7 +190,7 @@ bleConnnection.onConnect = function(info) {
   bleConnnection.bleApi.startNotification(info.id,
      nordicUARTservice.serviceUUID,
      nordicUARTservice.rxCharacteristic,
-     bleConnnection.onData,
+     function (data) { bleConnnection.onData(info.name, data); },
      bleConnnection.onError);
 
   var dev = bleConnnection.findDeviceByMac(info.id);
@@ -203,26 +203,32 @@ bleConnnection.onDisconnect = function(info) {
   console.log('On Disconnect:' + info.name);
 };
 
-bleConnnection.onData = function(data) {
+bleConnnection.onData = function(name, data) {
   var str = bufferToString(data);
-  console.log('On Data:', str);
+  console.log('On Data:', name, str);
 };
 
 bleConnnection.onError = function(reason) {
   console.log('Error2:', reason);
 };
 
-bleConnnection.write = function(mac, message) {
-  var buffer = stringToBuffer(message);
-  console.log('ble write', message, buffer);
+bleConnnection.write = function(name, message) {
+  if (this.devices.hasOwnProperty(name)) {
+    var mac = this.devices[name].mac;
 
-  // Break the message into smaller sections.
-  bleConnnection.bleApi.write(mac,
-    nordicUARTservice.serviceUUID,
-    nordicUARTservice.txCharacteristic,
-    buffer,
-    bleConnnection.onWriteOK,
-    bleConnnection.onWriteFail);
+    console.log('ble write', name, mac, message);
+    if (bleConnnection.bleApi !== null) {
+      var buffer = stringToBuffer(message);
+
+      // Break the message into smaller sections.
+      bleConnnection.bleApi.write(mac,
+        nordicUARTservice.serviceUUID,
+        nordicUARTservice.txCharacteristic,
+        buffer,
+        bleConnnection.onWriteOK,
+        bleConnnection.onWriteFail);
+    }
+  }
 };
 
 bleConnnection.onWriteOK = function (data) {
