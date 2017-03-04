@@ -117,7 +117,7 @@ function deviceReady() {
       'sound':{},
       'motor':{},
       'twoMotor':{},
-      'servo':{},
+    //  'servo':{}, hide for now.
       'wait':{},
       'loop':{}
     }
