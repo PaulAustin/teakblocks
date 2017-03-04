@@ -76,7 +76,6 @@ module.exports = function () {
       // If any found that are not yet connected, connected
       // if connected ones exists that are not still needed, disconnect.
       for (var i = 0; i < botsToConnect.length; i++) {
-        console.log(' bot to try and connect to', botsToConnect[i]);
         conductor.ble.connect(botsToConnect[i]);
       }
     });

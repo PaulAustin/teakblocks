@@ -157,12 +157,15 @@ module.exports = function () {
     root.appendChild(text);
 
     if (botName !== '-?-') {
+      var statusClass = 0;
       // Connection status dot
       if (block.controllerSettings.status === 0 ) {
-        var statusClass = 'block-bot-not-found';
+        statusClass = 'block-bot-not-found';
       } else if (block.controllerSettings.status === 1 ) {
         statusClass = 'block-bot-visible';
       } else if (block.controllerSettings.status === 2 ) {
+        statusClass = 'block-bot-connecting';
+      } else if (block.controllerSettings.status === 3 ) {
         statusClass = 'block-bot-connected';
       } else if (block.controllerSettings.status < 0 ) {
         // Connected but with protocol errors. Might be wrong FW

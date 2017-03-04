@@ -142,6 +142,9 @@ html, body { margin:0; padding:0; overflow:hidden }
 .block-picture-led-on {
   fill: #FF0033;
 }
+.block-bot-connecting {
+  fill: #BA68C8;
+}
 .block-bot-connected {
   fill: #4CAF50;
 }
