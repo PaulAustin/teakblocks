@@ -92,18 +92,31 @@ bleConnnection.stopObserving = function () {
   }
 };
 
-bleConnnection.beaconReceived = function(bleBeaconInfo) {
-  if (bleBeaconInfo.name !== undefined) {
-    if (bleBeaconInfo.name.startsWith('BBC micro:bit [')) {
-      var botName = bleBeaconInfo.name.split('[', 2)[1].split(']',1)[0];
+bleConnnection.findDeviceByMac = function(mac) {
+  for (var deviceName in bleConnnection.visibleDevices) {
+    var device = bleConnnection.visibleDevices[deviceName];
+    if (mac === device.mac) {
+      return device;
+    }
+  }
+  return null;
+};
+
+bleConnnection.beaconReceived = function(beaconInfo) {
+  if (beaconInfo.name !== undefined) {
+    if (beaconInfo.name.startsWith('BBC micro:bit [')) {
+      var botName = beaconInfo.name.split('[', 2)[1].split(']',1)[0];
 
       // Merge into list
       if (!this.visibleDevices.hasOwnProperty(botName)) {
-        this.visibleDevices[botName] = { mac:bleBeaconInfo.mac, status:1 };
+        this.visibleDevices[botName] = { mac:beaconInfo.id, status:1 };
       }
 
-      // Update last-seen time stamp
+      // Update last-seen time stamp, signal strength
       this.visibleDevices[botName].ts = Date.now();
+      if (Number.isInteger(beaconInfo.rssi)) {
+        this.visibleDevices[botName].rssi = beaconInfo.rssi;
+      }
       this.cullList();
     }
   }
@@ -115,7 +128,7 @@ bleConnnection.cullList = function() {
     var botInfo = bleConnnection.visibleDevices[botName];
     // Per ECMAScript 5.1 standard section 12.6.4 it is OK to delete while
     // iterating through a an object.
-    if ((now - botInfo.ts) > 4000) {
+    if ((botInfo.status === 1) && (now - botInfo.ts) > 4000) {
       delete bleConnnection.visibleDevices[botName];
     }
   }
@@ -139,7 +152,7 @@ bleConnnection.startObserving = function () {
         bleConnnection.beaconReceived(device);
       },
       function(errorCode) {
-        console.log('error:' + errorCode);
+        console.log('error1:' + errorCode);
       });
   }
 };
@@ -160,14 +173,14 @@ bleConnnection.disconnect = function(mac) {
 };
 
 bleConnnection.connect = function(name) {
-  console.log('ble connect', name);
   if (this.visibleDevices.hasOwnProperty(name)) {
     var mac = this.visibleDevices[name].mac;
 
-    if (bleConnnection.bleApl === undefined) {
-      bleConnnection.visibleDevices[name].status = 2;
+    if (bleConnnection.bleApi === null) {
+      bleConnnection.visibleDevices[name].status = 3;
     } else {
-      bleConnnection.ble.connect(mac, bleConnnection.onConnect,
+      bleConnnection.visibleDevices[name].status = 2;
+      bleConnnection.bleApi.connect(mac, bleConnnection.onConnect,
         bleConnnection.onDisconnect, bleConnnection.onError);
     }
   }
@@ -176,13 +189,16 @@ bleConnnection.connect = function(name) {
 bleConnnection.onConnect = function(info) {
   console.log('On Connected:', info.name, info);
   // If connection works, then start listening for incomming messages.
-  bleConnnection.bleApl.startNotification(info.mac,
+  bleConnnection.bleApi.startNotification(info.id,
      nordicUARTservice.serviceUUID,
      nordicUARTservice.rxCharacteristic,
      bleConnnection.onData,
      bleConnnection.onError);
 
-  bleConnnection.visibleDevices[info.name].status = 2;
+  var dev = bleConnnection.findDeviceByMac(info.id);
+  if (dev !== null) {
+    dev.status = 3;
+  }
 };
 
 bleConnnection.onDisconnect = function(info) {
@@ -195,7 +211,7 @@ bleConnnection.onData = function(data) {
 };
 
 bleConnnection.onError = function(reason) {
-  console.log('Error:', reason);
+  console.log('Error2:', reason);
 };
 
 bleConnnection.write = function(mac, message) {
