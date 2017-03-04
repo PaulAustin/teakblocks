@@ -40,12 +40,12 @@ module.exports = function () {
 
   conductor.attachToScoreEditor = function(tbe) {
     conductor.tbe = tbe;
-    conductor.hbTimer = setTimeout(function() { conductor.linkHeartBeat(); }, 3000);
+    conductor.linkHeartBeat();
     conductor.ble.startObserving();
   };
 
   conductor.linkHeartBeat = function() {
-    console.log('heart beat');
+    conductor.hbTimer = 0;
 
     // See what replies we have seen in last window
     // Visit all chains and see if any have chained connection state
@@ -93,6 +93,12 @@ module.exports = function () {
 
   conductor.playOne = function(block) {
     console.log('play single block', block.name);
+    var first = block.first;
+    if (first.name === 'identity') {
+      var botName = first.controllerSettings.data.deviceName;
+      conductor.ble.write(botName, 'P:');
+      console.log('run', botName);
+    }
     // Single step, find target and head of chain and run the single block.
   };
 
