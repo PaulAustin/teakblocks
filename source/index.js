@@ -134,7 +134,10 @@ function deviceReady() {
    {'alignment': 'R', 'position': 1, 'label': fastr.undo, 'command': 'undo'}
  ];
 
+ tbe.actionButtons = actionButtons;
+
  tbe.deleteRay = tbe.addActionButtons(actionButtons);
+ document.body.onresize = tbe.updateScreenSizes; // Buttons/screen resizing
 }
 isRegularBrowser =
   document.URL.indexOf('http://') >= 0 ||
