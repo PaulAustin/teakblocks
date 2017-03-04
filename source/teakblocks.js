@@ -1101,7 +1101,7 @@ tbe.initPaletteBox = function initPaletteBox() {
 tbe.updateScreenSizes = function() {
   // First resize pallette and background then resize the action buttons
   tbe.sizePaletteToWindow();
-  tbe.addActionButtons(tbe.actionButtons);
+  tbe.deleteRay = tbe.addActionButtons(tbe.actionButtons);
 };
 
 tbe.addActionButtons = function(buttons) {
