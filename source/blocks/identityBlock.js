@@ -30,27 +30,8 @@ module.exports = function () {
 
   // Items for selecting a device from a list.
   identityBlock.devices = ko.observableArray([]);
-  identityBlock.selectedDevice = null;
-  //identityBlock.selectedDevice = ko.observable();
-  identityBlock.deviceName = {};
-  identityBlock.cullTimer = null;
 
-  identityBlock.stopMessage = function() {
-    /*
-    identityBlock.write('(stop):');
-    */
-  };
-
-  identityBlock.sendMessage = function() {
-/*    console.log('connect', identityBlock.selectedDevice);
-    // connect to the selected item.
-    identityBlock.connect(identityBlock.selectedDevice);
-
-    // TODO set hwType icon, connecting status as well.
-    console.log('BT send message', message);
-  */
-  };
-
+/*
   identityBlock.connect = function(device) {
 
     if (device === null)
@@ -64,56 +45,32 @@ module.exports = function () {
     // then it may stay in the list but be 'greyed out'
     device.ts = 0;
 
-    /*
-    if (identityBlock.ble === undefined)
-      return;
-
-    console.log('calling connect', device.hwDescription);
-
-    identityBlock.ble.connect(device.hwDescription.id,
-      function(connectInfo) {
-        console.log('Connected to BLE device ' + connectInfo.name);
-
-        identityBlock.ble.startNotification(device.hwDescription.id,
-           nordicUARTservice.serviceUUID,
-           nordicUARTservice.rxCharacteristic,
-           identityBlock.onData,
-           identityBlock.onError);
-      },
-      function(connectInfo) {
-        console.log('Disconnected from BLE device: ' + connectInfo.name);
-      },
-      function(errorCode) {
-        console.log('Failed to connect to BLE device: ' + errorCode);
-      }
-    );
-    */
   };
+*/
 
   identityBlock.onDeviceClick = function() {
     // Ah JavaScript... 'this' is NOT identityBlock.
     // It is the knockout item in the observable array.
 
-    var name = this.name;
+    var newBotName = this.name;
+
     if (typeof name === 'string') {
-      identityBlock.selectedDevice = this;
 
-      // Find the current item and make sure it is unselected.
       var block = identityBlock.activeBlock;
-      var currentName = block.controllerSettings.data.deviceName;
-
-      // Look for an item in the list that matches the blocks name.
-      // If it is there then mark the item as selected. This selection
-      // is UX only. BT selection happens (XXXXXX else where)
-      var match = ko.utils.arrayFirst(identityBlock.devices(), function(item) {
-        return (item().name === currentName);
-      });
-      if (match) {
-        match().selected(false);
+      var currentBotName = block.controllerSettings.data.deviceName;
+      if (currentBotName !== newBotName) {
+        // Find the current item, and mark it as unslelected.
+        var match = ko.utils.arrayFirst(identityBlock.devices(), function(item) {
+          return (item().name === currentBotName);
+        });
+        if (match) {
+          match().selected(false);
+        }
+        // select the itme that was clicked on.
+        this.selected(true);
       }
-
       // Move the selected name into the object
-      block.controllerSettings.data.deviceName = name;
+      block.controllerSettings.data.deviceName = newBotName;
       block.updateSvg();
     }
   };
@@ -140,6 +97,7 @@ module.exports = function () {
       },
       // Indicate what controller is active. This may affect the data format.
       controller:'target-bt',
+      status:0,
     };
   };
 
@@ -157,19 +115,24 @@ module.exports = function () {
     // Connect the dataBinding.
     ko.applyBindings(identityBlock, div);
 
-    // Need to be smart about aging out old items.
-    // and filtering
+    bleCon.observeDevices(identityBlock.refreshList);
+  };
+
+  identityBlock.refreshList = function (bots) {
+    // TODO, might be able to use data binding to do this as well.
     identityBlock.devices.removeAll();
-    bleCon.startObserving(identityBlock.foundDevice);
-    identityBlock.cullDevices();
+    for (var key in bots) {
+      if (bots.hasOwnProperty(key)) {
+        identityBlock.addItem(key);
+      }
+    }
+    if (identityBlock.activeBlock) {
+      identityBlock.activeBlock.updateSvg();
+    }
   };
 
   identityBlock.configuratorClose = function(div) {
-    if (identityBlock.cullTimer !== null) {
-      clearTimeout(identityBlock.cullTimer);
-      identityBlock.cullTimer = null;
-    }
-    bleCon.stopObserving();
+    bleCon.observeDevices(null);
     identityBlock.activeBlock = null;
     ko.cleanNode(div);
   };
@@ -187,12 +150,25 @@ module.exports = function () {
     root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 49, 20, 2));
 
     // Add identity name
-    var name = block.controllerSettings.data.deviceName;
-    var text = svgb.createText('block-identity-text svg-clear', 40, 50, name);
+    var botName = block.controllerSettings.data.deviceName;
+    var text = svgb.createText('block-identity-text svg-clear', 40, 50, botName);
     text.setAttribute('text-anchor', 'middle');
     root.appendChild(text);
-  };
 
+    if (botName !== '-?-') {
+      // Connection status dot
+      var statusClass = 'block-bot-not-found';
+      if (block.controllerSettings.status > 0 ) {
+        statusClass = 'block-bot-connected';
+      } else if (block.controllerSettings.status < 0 ) {
+        // Connected but with protocol errors. Might be wrong FW
+        // or not really a teakblocks device.
+        statusClass = 'block-bot-connection-error';
+      }
+      root.appendChild(svgb.createCircle('svg-clear ' + statusClass, 40, 65, 5));
+    }
+  };
+/*
   identityBlock.foundDevice = function (bleDeviceInfo) {
 
     // It the item found matches the block name mark the UX as selected.
@@ -224,36 +200,18 @@ module.exports = function () {
       }
     }
   };
-
-  identityBlock.addItem = function (hwDescription, timeStamp) {
+*/
+  identityBlock.addItem = function (botName) {
 
     var block = identityBlock.activeBlock;
     if (block !== null) {
       var targetName = block.controllerSettings.data.deviceName;
       var item = ko.observable({
-        name: hwDescription.name,
-        hwDescription: hwDescription,
-        selected: ko.observable(name === targetName),
-        ts: timeStamp
+        name: botName,
+        selected: ko.observable(botName === targetName)
       });
       identityBlock.devices.unshift(item);
     }
-  };
-
-  identityBlock.cullDevices = function () {
-    var now = Date.now();
-    identityBlock.devices.remove(function(item) {
-      // ts of 0 means it never is culled.
-      if (item().ts === 0) {
-        return false;
-      }
-      // If no communicationin 3 sec it gone.
-      // A. Items should be seen in pbroadcast.
-      // Commected items will update the time stamp in their
-      // heart beat.
-      return ((now - item().ts) > 3000);
-    });
-    identityBlock.cullTimer = setTimeout(identityBlock.cullDevices, 1000);
   };
 
   return identityBlock;
