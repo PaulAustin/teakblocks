@@ -45,7 +45,7 @@ module.exports = function () {
   };
 
   conductor.linkHeartBeat = function() {
-    console.log('heartBeat');
+    console.log('heart beat');
 
     // See what replies we have seen in last window
     // Visit all chains and see if any have chained connection state
@@ -53,16 +53,15 @@ module.exports = function () {
     // May look at async notifications from the target that let the editor indicate
     // what part of the score the targets are at.
     conductor.checkAllIdentityBlocks();
-
     conductor.hbTimer = setTimeout(function() { conductor.linkHeartBeat(); }, 3000);
   };
 
   conductor.checkAllIdentityBlocks = function() {
-    // var currentDocText = teakText.blocksToText(tbe.forEachDiagramChain);
+
     var blockChainIterator  = conductor.tbe.forEachDiagramChain;
     blockChainIterator(function(chainStart) {
-      // Ignore chains that dont start with an identity block.
-
+      var botsToConnect = [];
+      // Ignore chains that don't start with an identity block.
       if (chainStart.name === 'identity') {
         var botName = chainStart.controllerSettings.data.deviceName;
         var status = conductor.ble.checkDeviceStatus(botName);
@@ -70,6 +69,15 @@ module.exports = function () {
           chainStart.controllerSettings.status = status;
           chainStart.updateSvg();
         }
+        if (status === 1) {
+          botsToConnect.push(botName);
+        }
+      }
+      // If any found that are not yet connected, connected
+      // if connected ones exists that are not still needed, disconnect.
+      for (var i = 0; i < botsToConnect.length; i++) {
+        console.log(' bot to try and connect to', botsToConnect[i]);
+        conductor.ble.connect(botsToConnect[i]);
       }
     });
   };
