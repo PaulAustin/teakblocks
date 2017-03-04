@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2016 Paul Austin - SDG
+Copyright (c) 2017 Paul Austin - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -67,7 +67,7 @@ var pseudoBeacons = [
  {name:'BBC micro:bit [zorgav]', mac:'000000FF', delay:500}
 ];
 
-bleConnnection.visibleDevices = {};
+bleConnnection.devices = {};
 bleConnnection.scanning = false;
 bleConnnection.psedoScan = function () {
   if (pbi >= pseudoBeacons.length) {
@@ -93,8 +93,8 @@ bleConnnection.stopObserving = function () {
 };
 
 bleConnnection.findDeviceByMac = function(mac) {
-  for (var deviceName in bleConnnection.visibleDevices) {
-    var device = bleConnnection.visibleDevices[deviceName];
+  for (var deviceName in bleConnnection.devices) {
+    var device = bleConnnection.devices[deviceName];
     if (mac === device.mac) {
       return device;
     }
@@ -108,14 +108,14 @@ bleConnnection.beaconReceived = function(beaconInfo) {
       var botName = beaconInfo.name.split('[', 2)[1].split(']',1)[0];
 
       // Merge into list
-      if (!this.visibleDevices.hasOwnProperty(botName)) {
-        this.visibleDevices[botName] = { mac:beaconInfo.id, status:1 };
+      if (!this.devices.hasOwnProperty(botName)) {
+        this.devices[botName] = { mac:beaconInfo.id, status:1 };
       }
 
       // Update last-seen time stamp, signal strength
-      this.visibleDevices[botName].ts = Date.now();
+      this.devices[botName].ts = Date.now();
       if (Number.isInteger(beaconInfo.rssi)) {
-        this.visibleDevices[botName].rssi = beaconInfo.rssi;
+        this.devices[botName].rssi = beaconInfo.rssi;
       }
       this.cullList();
     }
@@ -124,22 +124,20 @@ bleConnnection.beaconReceived = function(beaconInfo) {
 
 bleConnnection.cullList = function() {
   var now = Date.now();
-  for (var botName in bleConnnection.visibleDevices) {
-    var botInfo = bleConnnection.visibleDevices[botName];
+  for (var botName in bleConnnection.devices) {
+    var botInfo = bleConnnection.devices[botName];
     // Per ECMAScript 5.1 standard section 12.6.4 it is OK to delete while
     // iterating through a an object.
     if ((botInfo.status === 1) && (now - botInfo.ts) > 4000) {
-      delete bleConnnection.visibleDevices[botName];
+      delete bleConnnection.devices[botName];
     }
   }
   if ((this.observerCallback !== null) && bleConnnection.scanning) {
-    this.observerCallback(bleConnnection.visibleDevices);
+    this.observerCallback(bleConnnection.devices);
   }
 };
 
 bleConnnection.startObserving = function () {
-  // Put empty  rows so the cell don't stretch to fill the table.
-  //identityBlock.devices.removeAll();
   bleConnnection.scanning = true;
   if (this.bleApi === null) {
     bleConnnection.psedoScan();
@@ -160,8 +158,8 @@ bleConnnection.startObserving = function () {
 bleConnnection.checkDeviceStatus = function (name) {
   if (name === '-?-') {
     return 0;  // TODO a bit hard coded.
-  } else if (bleConnnection.visibleDevices.hasOwnProperty(name)) {
-    return bleConnnection.visibleDevices[name].status;
+  } else if (bleConnnection.devices.hasOwnProperty(name)) {
+    return bleConnnection.devices[name].status;
   }
   return 0;
 };
@@ -173,13 +171,13 @@ bleConnnection.disconnect = function(mac) {
 };
 
 bleConnnection.connect = function(name) {
-  if (this.visibleDevices.hasOwnProperty(name)) {
-    var mac = this.visibleDevices[name].mac;
+  if (this.devices.hasOwnProperty(name)) {
+    var mac = this.devices[name].mac;
 
     if (bleConnnection.bleApi === null) {
-      bleConnnection.visibleDevices[name].status = 3;
+      bleConnnection.devices[name].status = 3;
     } else {
-      bleConnnection.visibleDevices[name].status = 2;
+      bleConnnection.devices[name].status = 2;
       bleConnnection.bleApi.connect(mac, bleConnnection.onConnect,
         bleConnnection.onDisconnect, bleConnnection.onError);
     }

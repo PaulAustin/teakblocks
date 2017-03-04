@@ -115,7 +115,7 @@ module.exports = function () {
     // Connect the dataBinding.
     ko.applyBindings(identityBlock, div);
 
-    identityBlock.refreshList(ble.visibleDevices);
+    identityBlock.refreshList(ble.devices);
     ble.observeDevices(identityBlock.refreshList);
   };
 
