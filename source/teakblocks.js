@@ -43,6 +43,7 @@ tbe.currentDoc = 'docA';
 tbe.undoArray = [];
 tbe.currentUndoIndex = 0;
 tbe.stopUndo = false;
+tbe.actionButtons = null;
 
 tbe.forEachDiagramBlock = function (callBack) {
   for (var key in tbe.diagramBlocks) {
@@ -1009,24 +1010,39 @@ tbe.diagramChanged = function diagramChanged() {
     this.teakCode.value = teakText.blocksToText(tbe.forEachDiagramChain);
   }
   var text = teakText.blocksToText(tbe.forEachDiagramChain);
-  if(tbe.undoArray[tbe.currentUndoIndex] !== text){
+
+  // Checks if the text to be added is the same as the last one added
+  if (tbe.undoArray[tbe.currentUndoIndex] !== text) {
+    // console.log(tbe.undoArray[tbe.currentUndoIndex], text);
     tbe.currentUndoIndex += 1;
     tbe.undoArray[tbe.currentUndoIndex] = text;
+    // Truncates the rest of the array if change is made before the end of the array
+    if(tbe.currentUndoIndex < tbe.undoArray.length - 1){
+      // console.log(tbe.undoArray[tbe.currentUndoIndex] + "\n<\n" + text + ">");
+
+      var temp = [];
+      for(var i = 0; i <= tbe.currentUndoIndex; i++){
+        temp[i] = tbe.undoArray[i];
+        // console.log(temp[i], i);
+      }
+      tbe.undoArray = temp;
+    }
+
   }
+
+  // as long as the index is more than 0
   if(tbe.currentUndoIndex < 0){
     tbe.currentUndoIndex = 0;
   }
-  if(tbe.currentUndoIndex < tbe.undoArray.length - 1){
-    //console.log("inside if");
-    tbe.undoArray.splice(tbe.currentUndoIndex, tbe.undoArray.length);
-  }
+
   //console.log(tbe.currentUndoIndex, tbe.undoArray, tbe.undoArray.length - 1);
 };
 
 tbe.undoAction = function() {
-  tbe.clearStates();
-  tbe.internalClearDiagramBlocks();
+  tbe.clearStates(undefined, false);
+
   if(tbe.currentUndoIndex > 0){
+    tbe.internalClearDiagramBlocks();
     tbe.currentUndoIndex -= 1;
   }
 
@@ -1040,7 +1056,7 @@ tbe.undoAction = function() {
 tbe.redoAction = function() {
 
   if(tbe.currentUndoIndex < tbe.undoArray.length - 1){
-    tbe.clearStates();
+    //tbe.clearStates();
     tbe.internalClearDiagramBlocks();
     tbe.currentUndoIndex += 1;
     if(tbe.undoArray[tbe.currentUndoIndex] !== undefined){
@@ -1082,6 +1098,12 @@ tbe.initPaletteBox = function initPaletteBox() {
   this.sizePaletteToWindow();
 };
 
+tbe.updateScreenSizes = function() {
+  // First resize pallette and background then resize the action buttons
+  tbe.sizePaletteToWindow();
+  tbe.addActionButtons(tbe.actionButtons);
+};
+
 tbe.addActionButtons = function(buttons) {
   var position = null;
   var alignment = null;
@@ -1095,6 +1117,14 @@ tbe.addActionButtons = function(buttons) {
   var svgCircle = null;
   var svgText = null;
   var svgText2 = null;
+  var existing = document.getElementsByClassName('buttonGroup');
+
+  // If action buttons exist, delete them
+  if(existing[0] !== undefined){
+    while(existing.length > 0){
+        existing[0].parentNode.removeChild(existing[0]);
+    }
+  }
 
   // Determine how many buttons are inthe middle
   for (var k = 0; k < buttons.length; k++) {
@@ -1127,7 +1157,8 @@ tbe.addActionButtons = function(buttons) {
 
     group = svgb.createGroup('buttonGroup', 0, 0);
     svgCircle = svgb.createCircle('action-dot', x, 40, 33);
-    //console.log(label.length, label);
+
+    //Check if chatacter strings are more than one character to create a label on top of the usual label
     if(label.length > 1){
       svgText = svgb.createText('action-dot-text', x + tweakx, 53, label.substring(0, 1));
       svgText2 = svgb.createText('action-dot-doc-label', x + tweakx, 53, label.substring(1));
@@ -1147,7 +1178,8 @@ tbe.addActionButtons = function(buttons) {
 
     if (buttons[i].command === 'copyToClipboard') {
       // TODO, abstract it
-      group.setAttribute('class', 'copy-button');
+      var curr = group.getAttribute('class');
+      group.setAttribute('class', curr + ' copy-button');
     }
     if(buttons[i].command === 'trashFirst'){
       // TODO, abstract it

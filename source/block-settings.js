@@ -118,7 +118,9 @@ module.exports = function () {
     //blockSettings.controllersDiv = document.getElementById('block-controller-tabs');//TABS - uncomment
   };
 
-  blockSettings.hide = function(exceptBlock) {
+  blockSettings.hide = function(exceptBlock, diagram) {
+
+    var diagramChanger = true;
     // If the form is actally associated with a block, hide it.
     if (this.activeBlock !== null && this.activeBlock !== exceptBlock) {
       if (this.activeBlock.funcs.configuratorClose !== undefined) {
@@ -140,7 +142,15 @@ module.exports = function () {
       this.tabNames = [];
       this.tabButtons = [];
     }
-    tbe.diagramChanged();
+    // Catch the clear states from the redo button
+    if(diagram !== undefined){
+      diagramChanger = diagram;
+    }
+
+    if(diagramChanger){
+      tbe.diagramChanged();
+    }
+
   };
 
   // A block has been  tapped on, the gesture for the config page.
