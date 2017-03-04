@@ -25,7 +25,7 @@ module.exports = function (){
 /* global ble  */
 
 var bleConnnection = {};
-bleConnnection.devs = {};
+bleConnnection.observerCallback = null;
 
 // this is Nordic's UART service
 var nordicUARTservice = {
@@ -53,7 +53,45 @@ if (typeof ble !== 'undefined') {
   bleConnnection.bleApi = null;
 }
 
+var pbi = 0;
+var pseudoBots = [
+  {aragorn:1},
+  {aragorn:1, frodo:2},
+  {aragorn:1, frodo:2},
+  {aragorn:1, frodo:2},
+  {frodo:2},
+  {frodo:2},
+  {},
+  {},
+];
+
+bleConnnection.visibleDevices = {};
+bleConnnection.scanning = false;
+bleConnnection.psedoScan = function () {
+  if (pbi >= pseudoBots.length) {
+    pbi = 0;
+  }
+
+  bleConnnection.visibleDevices = pseudoBots[pbi];
+  if (bleConnnection.observerCallback !== null) {
+    bleConnnection.observerCallback(bleConnnection.visibleDevices);
+  }
+
+  pbi += 1;
+  if (bleConnnection.scanning) {
+    setTimeout(function() { bleConnnection.psedoScan(); }, 3000);
+  }
+};
+
+bleConnnection.observeDevices = function(callback) {
+  this.observerCallback = callback;
+  if (callback!== null) {
+    this.observerCallback(bleConnnection.visibleDevices);
+  }
+};
+
 bleConnnection.stopObserving = function () {
+  bleConnnection.scanning = true;
   if (bleConnnection.bleApi !== null) {
     this.bleApi.stopScan();
   }
@@ -62,12 +100,9 @@ bleConnnection.stopObserving = function () {
 bleConnnection.startObserving = function (callback) {
   // Put empty  rows so the cell don't stretch to fill the table.
   //identityBlock.devices.removeAll();
-
+  bleConnnection.scanning = true;
   if (this.bleApi === null) {
-    setTimeout(function() {
-      callback({name:'Aragorn'});
-      },
-      1000);
+    bleConnnection.psedoScan();
   } else {
     // TODO identityBlock.ble.stopScan();
     console.log('starting scan');
@@ -83,8 +118,19 @@ bleConnnection.startObserving = function (callback) {
   }
 };
 
+bleConnnection.checkDeviceStatus = function (name) {
+  if (name === '-?-') {
+    // TODO a bit hard coded.
+    return 0;
+  } else if (bleConnnection.visibleDevices.hasOwnProperty(name)) {
+    return 1;
+  }
+  return 0;
+};
+
 bleConnnection.addFoundDevice = function (device) {
-  var existing = bleConnnection.devs[device.name];
+  // TODO
+  // TODO var existing = bleConnnection.devs[device.name];
 };
 
 bleConnnection.disconnect = function(mac) {
@@ -153,5 +199,22 @@ bleConnnection.onWriteFail = function (data) {
   console.log('write fail', data);
 };
 
+/*
+identityBlock.cullDevices = function () {
+  var now = Date.now();
+  identityBlock.devices.remove(function(item) {
+    // ts of 0 means it never is culled.
+    if (item().ts === 0) {
+      return false;
+    }
+    // If no communicationin 3 sec it gone.
+    // A. Items should be seen in pbroadcast.
+    // Commected items will update the time stamp in their
+    // heart beat.
+    return ((now - item().ts) > 3000);
+  });
+  identityBlock.cullTimer = setTimeout(identityBlock.cullDevices, 1000);
+};
+*/
 return bleConnnection;
 }();

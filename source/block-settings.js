@@ -22,8 +22,9 @@ SOFTWARE.
 
 module.exports = function () {
   var ko = require('knockout');
-  var tbe = require('./teakblocks.js');
   var interact = require('interact.js');
+  var tbe = require('./teakblocks.js');
+  var conductor = require('./conductor.js');
 
   // Set of propoerties that can be bound to.
   var blockSettings = {
@@ -51,7 +52,7 @@ module.exports = function () {
 
     // Add step/run button handler.
     document.getElementById('block-run').onclick = function() {
-      console.log('step');
+      conductor.playOne(blockSettings.activeBlock);
     };
 
     // Add delete button handler.

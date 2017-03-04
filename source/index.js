@@ -30,6 +30,7 @@ function deviceReady() {
   var ko = require('knockout');
   var Clipboard = require('clipboard');
   var tt = require('./teaktext.js');
+  var conductor = require('./conductor.js')
 
   /* font awesome strings */
   var fastr = {
@@ -82,8 +83,8 @@ function deviceReady() {
   tbe.deleteRay = null;
   tbe.commands = {
     'settings': function() { tf.showHide(tbe.components.appSettings); },
-    'play': function() { tbe.fblocks.identityBlock.sendMessage(); },
-    'stop': function() { tbe.fblocks.identityBlock.stopMessage(); },
+    'play': function() { conductor.playAll(); },
+    'stop': function() { conductor.stopAll(); },
     'trashFirst': function() { tbe.stage1deletion(fastr); },
     'trashSecond': function() {  tbe.stage2deletion(fastr); },
     'loadDocA': function(){ tbe.loadDoc('docA'); },
@@ -138,7 +139,12 @@ function deviceReady() {
 
  tbe.deleteRay = tbe.addActionButtons(actionButtons);
  document.body.onresize = tbe.updateScreenSizes; // Buttons/screen resizing
+
+ // The conductor coordinates the score managed by the editor and the collection
+ // of bots that make up the orchestra.
+ conductor.attachToScoreEditor(tbe);
 }
+
 isRegularBrowser =
   document.URL.indexOf('http://') >= 0 ||
   document.URL.indexOf('https://') >= -0;
