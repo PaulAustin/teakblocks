@@ -54,29 +54,27 @@ if (typeof ble !== 'undefined') {
 }
 
 var pbi = 0;
-var pseudoBots = [
-  {aragorn:1},
-  {aragorn:1, frodo:2},
-  {aragorn:1, frodo:2},
-  {aragorn:1, frodo:2},
-  {frodo:2},
-  {frodo:2},
-  {},
-  {},
+var pseudoBeacons = [
+ {name:'BBC micro:bit [aragorn]', mac:'0000000A', delay:500},
+ {name:'puck.js 4e75', mac:'00004e75', delay:1000},
+ {name:'BBC micro:bit [frodo]', mac:'0000000F', delay:1000},
+ {name:'BBC micro:bit [aragorn]', mac:'0000000A', delay:1000},
+ {name:'BBC micro:bit [frodo]', mac:'0000000F', delay:500},
+ {name:'BBC micro:bit [aslan]', mac:'000000AA', delay:100},
+ {name:'puck.js 4e75', mac:'0000000A', delay:1000},
+ {name:'BBC micro:bit [aragorn]', mac:'0000000A', delay:1000},
+ {name:'BBC micro:bit [aragorn]', mac:'0000000A', delay:200},
+ {name:'BBC micro:bit [zorgav]', mac:'000000FF', delay:500}
 ];
 
 bleConnnection.visibleDevices = {};
 bleConnnection.scanning = false;
 bleConnnection.psedoScan = function () {
-  if (pbi >= pseudoBots.length) {
+  if (pbi >= pseudoBeacons.length) {
     pbi = 0;
   }
 
-  bleConnnection.visibleDevices = pseudoBots[pbi];
-  if (bleConnnection.observerCallback !== null) {
-    bleConnnection.observerCallback(bleConnnection.visibleDevices);
-  }
-
+  bleConnnection.beaconReceived(pseudoBeacons[pbi]);
   pbi += 1;
   if (bleConnnection.scanning) {
     setTimeout(function() { bleConnnection.psedoScan(); }, 3000);
@@ -85,9 +83,11 @@ bleConnnection.psedoScan = function () {
 
 bleConnnection.observeDevices = function(callback) {
   this.observerCallback = callback;
+  /*
   if (callback!== null) {
     this.observerCallback(bleConnnection.visibleDevices);
   }
+  */
 };
 
 bleConnnection.stopObserving = function () {
@@ -97,7 +97,39 @@ bleConnnection.stopObserving = function () {
   }
 };
 
-bleConnnection.startObserving = function (callback) {
+bleConnnection.beaconReceived = function(bleBeaconInfo) {
+  if (bleBeaconInfo.name !== undefined) {
+    if (bleBeaconInfo.name.startsWith('BBC micro:bit [')) {
+      var botName = bleBeaconInfo.name.split('[', 2)[1].split(']',1)[0];
+
+      // Merge into list
+      if (!bleConnnection.visibleDevices.hasOwnProperty(botName)) {
+        bleConnnection.visibleDevices[botName] = { mac:bleBeaconInfo.mac };
+      }
+
+      // Update last-seen time stamp
+      bleConnnection.visibleDevices[botName].ts = Date.now();
+      bleConnnection.cullList();
+    }
+  }
+};
+
+bleConnnection.cullList = function() {
+  var now = Date.now();
+  for (var botName in bleConnnection.visibleDevices) {
+    var botInfo = bleConnnection.visibleDevices[botName];
+    // Per ECMAScript 5.1 standard section 12.6.4 it is OK to delete while
+    // iterating through a an object.
+    if ((now - botInfo.ts) > 4000) {
+      delete bleConnnection.visibleDevices[botName];
+    }
+  }
+  if ((this.observerCallback !== null) && bleConnnection.scanning) {
+    this.observerCallback(bleConnnection.visibleDevices);
+  }
+};
+
+bleConnnection.startObserving = function () {
   // Put empty  rows so the cell don't stretch to fill the table.
   //identityBlock.devices.removeAll();
   bleConnnection.scanning = true;
@@ -109,8 +141,7 @@ bleConnnection.startObserving = function (callback) {
     this.bleApi.startScanWithOptions(
       [/*nordicUARTservice.serviceUUID*/], { reportDuplicates: true },
       function(device) {
-        bleConnnection.addFoundDevice(device);
-        callback(device);
+        bleConnnection.beaconReceived(device);
       },
       function(errorCode) {
         console.log('error:' + errorCode);
@@ -128,11 +159,6 @@ bleConnnection.checkDeviceStatus = function (name) {
   return 0;
 };
 
-bleConnnection.addFoundDevice = function (device) {
-  // TODO
-  // TODO var existing = bleConnnection.devs[device.name];
-};
-
 bleConnnection.disconnect = function(mac) {
   if (bleConnnection.bleApi !== null) {
     this.bleApi.disconnect(mac);
@@ -142,14 +168,6 @@ bleConnnection.disconnect = function(mac) {
 bleConnnection.connect = function(mac) {
   if (bleConnnection.bleApl === undefined)
     return;
-
-  // Mark selected, so data-binding will select the item.
-  device.selected(true);
-  // Mark time stamp 0 so it wont be removed from the list.
-  // TODO, once connected the ts will be updated after
-  // each communication with the target. If it stop responding
-  // then it may stay in the list but be 'greyed out'
-  device.ts = 0;
 
   bleConnnection.ble.connect(mac,
     function(connectInfo) {
@@ -199,22 +217,5 @@ bleConnnection.onWriteFail = function (data) {
   console.log('write fail', data);
 };
 
-/*
-identityBlock.cullDevices = function () {
-  var now = Date.now();
-  identityBlock.devices.remove(function(item) {
-    // ts of 0 means it never is culled.
-    if (item().ts === 0) {
-      return false;
-    }
-    // If no communicationin 3 sec it gone.
-    // A. Items should be seen in pbroadcast.
-    // Commected items will update the time stamp in their
-    // heart beat.
-    return ((now - item().ts) > 3000);
-  });
-  identityBlock.cullTimer = setTimeout(identityBlock.cullDevices, 1000);
-};
-*/
 return bleConnnection;
 }();
