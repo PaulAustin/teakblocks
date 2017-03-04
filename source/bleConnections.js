@@ -25,7 +25,7 @@ module.exports = function (){
 /* global ble  */
 
 var bleConnnection = {};
-bleConnnection.devs = {};
+bleConnnection.observerCallback = null;
 
 // this is Nordic's UART service
 var nordicUARTservice = {
@@ -71,11 +71,22 @@ bleConnnection.psedoScan = function () {
   if (pbi >= pseudoBots.length) {
     pbi = 0;
   }
+
   bleConnnection.visibleDevices = pseudoBots[pbi];
-  console.log(bleConnnection.visibleDevices);
+  if (bleConnnection.observerCallback !== null) {
+    bleConnnection.observerCallback(bleConnnection.visibleDevices);
+  }
+
   pbi += 1;
   if (bleConnnection.scanning) {
     setTimeout(function() { bleConnnection.psedoScan(); }, 3000);
+  }
+};
+
+bleConnnection.observeDevices = function(callback) {
+  this.observerCallback = callback;
+  if (callback!== null) {
+    this.observerCallback(bleConnnection.visibleDevices);
   }
 };
 
@@ -119,7 +130,7 @@ bleConnnection.checkDeviceStatus = function (name) {
 
 bleConnnection.addFoundDevice = function (device) {
   // TODO
-  var existing = bleConnnection.devs[device.name];
+  // TODO var existing = bleConnnection.devs[device.name];
 };
 
 bleConnnection.disconnect = function(mac) {

@@ -30,8 +30,6 @@ module.exports = function () {
 
   // Items for selecting a device from a list.
   identityBlock.devices = ko.observableArray([]);
-  identityBlock.selectedDevice = null;
-  identityBlock.deviceName = {};
 
 /*
   identityBlock.connect = function(device) {
@@ -54,26 +52,25 @@ module.exports = function () {
     // Ah JavaScript... 'this' is NOT identityBlock.
     // It is the knockout item in the observable array.
 
-    var name = this.name;
+    var newBotName = this.name;
+
     if (typeof name === 'string') {
-      identityBlock.selectedDevice = this;
 
-      // Find the current item and make sure it is unselected.
       var block = identityBlock.activeBlock;
-      var currentName = block.controllerSettings.data.deviceName;
-
-      // Look for an item in the list that matches the blocks name.
-      // If it is there then mark the item as selected. This selection
-      // is UX only. BT selection happens (XXXXXX else where)
-      var match = ko.utils.arrayFirst(identityBlock.devices(), function(item) {
-        return (item().name === currentName);
-      });
-      if (match) {
-        match().selected(false);
+      var currentBotName = block.controllerSettings.data.deviceName;
+      if (currentBotName !== newBotName) {
+        // Find the current item, and mark it as unslelected.
+        var match = ko.utils.arrayFirst(identityBlock.devices(), function(item) {
+          return (item().name === currentBotName);
+        });
+        if (match) {
+          match().selected(false);
+        }
+        // select the itme that was clicked on.
+        this.selected(true);
       }
-
       // Move the selected name into the object
-      block.controllerSettings.data.deviceName = name;
+      block.controllerSettings.data.deviceName = newBotName;
       block.updateSvg();
     }
   };
@@ -118,18 +115,24 @@ module.exports = function () {
     // Connect the dataBinding.
     ko.applyBindings(identityBlock, div);
 
+    bleCon.observeDevices(identityBlock.refreshList);
+  };
+
+  identityBlock.refreshList = function (bots) {
+    // TODO, might be able to use data binding to do this as well.
     identityBlock.devices.removeAll();
-    var bots = bleCon.visibleDevices;
     for (var key in bots) {
       if (bots.hasOwnProperty(key)) {
         identityBlock.addItem(key);
       }
     }
-//    bleCon.startObserving(identityBlock.foundDevice);
+    if (identityBlock.activeBlock) {
+      identityBlock.activeBlock.updateSvg();
+    }
   };
 
   identityBlock.configuratorClose = function(div) {
-    bleCon.stopObserving();
+    bleCon.observeDevices(null);
     identityBlock.activeBlock = null;
     ko.cleanNode(div);
   };
@@ -205,7 +208,7 @@ module.exports = function () {
       var targetName = block.controllerSettings.data.deviceName;
       var item = ko.observable({
         name: botName,
-        selected: ko.observable(name === targetName)
+        selected: ko.observable(botName === targetName)
       });
       identityBlock.devices.unshift(item);
     }
