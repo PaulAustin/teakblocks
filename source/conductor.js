@@ -26,6 +26,7 @@ module.exports = function () {
   conductor.ble = require('./bleConnections.js');
   conductor.tbe = null;
   conductor.hbTimer = 0;
+  conductor.runningBlocks = [];
 
   // Once the conductor system is connected to editor, it will ping the target
   // device to determine its current state.
@@ -53,7 +54,26 @@ module.exports = function () {
     // May look at async notifications from the target that let the editor indicate
     // what part of the score the targets are at.
     conductor.checkAllIdentityBlocks();
-    conductor.hbTimer = setTimeout(function() { conductor.linkHeartBeat(); }, 3000);
+
+    if (conductor.runningBlocks.length > 0) {
+      for (var i = 0; i < conductor.runningBlocks.length; i++) {
+        var block = conductor.runningBlocks[i];
+        if (block !== null) {
+          if (block.name === 'tail') {
+            block = block.flowHead;
+          }
+          if (block !== null && block.name === 'loop') {
+            block = block.next;
+          }
+          if (block !== null) {
+            console.log(block.name);
+            conductor.playOne(block);
+            conductor.runningBlocks[i] = block.next;
+          }
+        }
+      }
+    }
+    conductor.hbTimer = setTimeout(function() { conductor.linkHeartBeat(); }, 2000);
   };
 
   conductor.checkAllIdentityBlocks = function() {
@@ -82,26 +102,26 @@ module.exports = function () {
   };
 
   conductor.playAll = function() {
+    conductor.runningBlocks = [];
     console.log('play all');
     var blockChainIterator  = conductor.tbe.forEachDiagramChain;
-    var chains = [];
     blockChainIterator(function(chainStart) {
       // Ignore chains that don't start with an identity block.
       if (chainStart.name === 'identity') {
-        chains.push(chainStart);
+        conductor.runningBlocks.push(chainStart.next);
       }
     });
-    // more todo.
-    return chains;
+
+    console.log('blocks to run', conductor.runningBlocks);
   };
 
   conductor.stopAll = function() {
+    conductor.runningBlocks = [];
     console.log('stop all');
     // Single step, find target and head of chain and run the single block.
   };
 
   conductor.playOne = function(block) {
-    console.log('play single block', block.name);
     var first = block.first;
     // Ah the SXSWedu mega hack. Ti took longer to get BLE working
     // due to terminaology mixup with the ubit. os no on device execution system
@@ -118,7 +138,6 @@ module.exports = function () {
         console.log ('picture message', message);
         conductor.ble.write(botName, message);
       }
-      console.log('run', botName);
     }
     // Single step, find target and head of chain and run the single block.
   };
