@@ -83,7 +83,16 @@ module.exports = function () {
 
   conductor.playAll = function() {
     console.log('play all');
-    // The conductor starts the whole band on the whole score
+    var blockChainIterator  = conductor.tbe.forEachDiagramChain;
+    var chains = [];
+    blockChainIterator(function(chainStart) {
+      // Ignore chains that don't start with an identity block.
+      if (chainStart.name === 'identity') {
+        chains.push(chainStart);
+      }
+    });
+    // more todo.
+    return chains;
   };
 
   conductor.stopAll = function() {
@@ -94,9 +103,21 @@ module.exports = function () {
   conductor.playOne = function(block) {
     console.log('play single block', block.name);
     var first = block.first;
+    // Ah the SXSWedu mega hack. Ti took longer to get BLE working
+    // due to terminaology mixup with the ubit. os no on device execution system
+    // so execution it in the app.
+
     if (first.name === 'identity') {
       var botName = first.controllerSettings.data.deviceName;
-      conductor.ble.write(botName, 'P:');
+
+      if (block.name === 'picture') {
+        var imageData = block.controllerSettings.data.pix;
+        var pixStr = conductor.packPix(imageData);
+        var message = 'P' + pixStr + ':';
+
+        console.log ('picture message', message);
+        conductor.ble.write(botName, message);
+      }
       console.log('run', botName);
     }
     // Single step, find target and head of chain and run the single block.
@@ -107,6 +128,24 @@ module.exports = function () {
     // The conductor starts one chain (part of the score)
   };
 
-
+  conductor.packPix = function(imageData) {
+    var pixStr = '';
+    for (var i = 0; i < 5; i++) {
+      var value = 0;
+      for(var j = 0; j < 5; j++) {
+        value *= 2;
+        if (imageData[(i*5) + j] !== 0) {
+          value += 1;
+        }
+      }
+      var str = value.toString(16);
+      if (str.length===1) {
+        str = '0' + str;
+      }
+      pixStr = pixStr + str;
+    //  console.log('image in hex',value,str);
+    }
+    return pixStr;
+  };
   return conductor;
 }();
