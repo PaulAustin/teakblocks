@@ -24,8 +24,8 @@ module.exports = function (){
 
 /* global ble  */
 
-var bleConnnection = {};
-bleConnnection.observerCallback = null;
+var bleConnection = {};
+bleConnection.observerCallback = null;
 
 // this is Nordic's UART service
 var nordicUARTservice = {
@@ -48,9 +48,9 @@ function bufferToString(buffer) {
 
 if (typeof ble !== 'undefined') {
   console.log('found ble', ble);
-  bleConnnection.bleApi = ble;
+  bleConnection.bleApi = ble;
 } else {
-  bleConnnection.bleApi = null;
+  bleConnection.bleApi = null;
 }
 
 var pbi = 0;
@@ -67,34 +67,34 @@ var pseudoBeacons = [
  {name:'BBC micro:bit [zorgav]', mac:'000000FF', delay:500}
 ];
 
-bleConnnection.devices = {};
-bleConnnection.scanning = false;
-bleConnnection.psedoScan = function () {
+bleConnection.devices = {};
+bleConnection.scanning = false;
+bleConnection.psedoScan = function () {
   if (pbi >= pseudoBeacons.length) {
     pbi = 0;
   }
   var beaconInfo = pseudoBeacons[pbi];
-  bleConnnection.beaconReceived(beaconInfo);
+  bleConnection.beaconReceived(beaconInfo);
   pbi += 1;
-  if (bleConnnection.scanning) {
-    setTimeout(function() { bleConnnection.psedoScan(); }, beaconInfo.delay);
+  if (bleConnection.scanning) {
+    setTimeout(function() { bleConnection.psedoScan(); }, beaconInfo.delay);
   }
 };
 
-bleConnnection.observeDevices = function(callback) {
+bleConnection.observeDevices = function(callback) {
   this.observerCallback = callback;
 };
 
-bleConnnection.stopObserving = function () {
-  bleConnnection.scanning = true;
-  if (bleConnnection.bleApi !== null) {
+bleConnection.stopObserving = function () {
+  bleConnection.scanning = true;
+  if (bleConnection.bleApi !== null) {
     this.bleApi.stopScan();
   }
 };
 
-bleConnnection.findDeviceByMac = function(mac) {
-  for (var deviceName in bleConnnection.devices) {
-    var device = bleConnnection.devices[deviceName];
+bleConnection.findDeviceByMac = function(mac) {
+  for (var deviceName in bleConnection.devices) {
+    var device = bleConnection.devices[deviceName];
     if (mac === device.mac) {
       return device;
     }
@@ -102,7 +102,7 @@ bleConnnection.findDeviceByMac = function(mac) {
   return null;
 };
 
-bleConnnection.beaconReceived = function(beaconInfo) {
+bleConnection.beaconReceived = function(beaconInfo) {
   if (beaconInfo.name !== undefined) {
     if (beaconInfo.name.startsWith('BBC micro:bit [')) {
       var botName = beaconInfo.name.split('[', 2)[1].split(']',1)[0];
@@ -122,32 +122,32 @@ bleConnnection.beaconReceived = function(beaconInfo) {
   }
 };
 
-bleConnnection.cullList = function() {
+bleConnection.cullList = function() {
   var now = Date.now();
-  for (var botName in bleConnnection.devices) {
-    var botInfo = bleConnnection.devices[botName];
+  for (var botName in bleConnection.devices) {
+    var botInfo = bleConnection.devices[botName];
     // Per ECMAScript 5.1 standard section 12.6.4 it is OK to delete while
     // iterating through a an object.
     if ((botInfo.status === 1) && (now - botInfo.ts) > 4000) {
-      delete bleConnnection.devices[botName];
+      delete bleConnection.devices[botName];
     }
   }
-  if ((this.observerCallback !== null) && bleConnnection.scanning) {
-    this.observerCallback(bleConnnection.devices);
+  if ((this.observerCallback !== null) && bleConnection.scanning) {
+    this.observerCallback(bleConnection.devices);
   }
 };
 
-bleConnnection.startObserving = function () {
-  bleConnnection.scanning = true;
+bleConnection.startObserving = function () {
+  bleConnection.scanning = true;
   if (this.bleApi === null) {
-    bleConnnection.psedoScan();
+    bleConnection.psedoScan();
   } else {
     // TODO identityBlock.ble.stopScan();
     console.log('starting scan');
     this.bleApi.startScanWithOptions(
       [/*nordicUARTservice.serviceUUID*/], { reportDuplicates: true },
       function(device) {
-        bleConnnection.beaconReceived(device);
+        bleConnection.beaconReceived(device);
       },
       function(errorCode) {
         console.log('error1:' + errorCode);
@@ -155,88 +155,88 @@ bleConnnection.startObserving = function () {
   }
 };
 
-bleConnnection.checkDeviceStatus = function (name) {
+bleConnection.checkDeviceStatus = function (name) {
   if (name === '-?-') {
     return 0;  // TODO a bit hard coded.
-  } else if (bleConnnection.devices.hasOwnProperty(name)) {
-    return bleConnnection.devices[name].status;
+  } else if (bleConnection.devices.hasOwnProperty(name)) {
+    return bleConnection.devices[name].status;
   }
   return 0;
 };
 
-bleConnnection.disconnect = function(mac) {
-  if (bleConnnection.bleApi !== null) {
+bleConnection.disconnect = function(mac) {
+  if (bleConnection.bleApi !== null) {
     this.bleApi.disconnect(mac);
   }
 };
 
-bleConnnection.connect = function(name) {
+bleConnection.connect = function(name) {
   if (this.devices.hasOwnProperty(name)) {
     var mac = this.devices[name].mac;
 
-    if (bleConnnection.bleApi === null) {
-      bleConnnection.devices[name].status = 3;
+    if (bleConnection.bleApi === null) {
+      bleConnection.devices[name].status = 3;
     } else {
-      bleConnnection.devices[name].status = 2;
-      bleConnnection.bleApi.connect(mac, bleConnnection.onConnect,
-        bleConnnection.onDisconnect, bleConnnection.onError);
+      bleConnection.devices[name].status = 2;
+      bleConnection.bleApi.connect(mac, bleConnection.onConnect,
+        bleConnection.onDisconnect, bleConnection.onError);
     }
   }
 };
 
-bleConnnection.onConnect = function(info) {
+bleConnection.onConnect = function(info) {
   console.log('On Connected:', info.name, info);
   // If connection works, then start listening for incomming messages.
-  bleConnnection.bleApi.startNotification(info.id,
+  bleConnection.bleApi.startNotification(info.id,
      nordicUARTservice.serviceUUID,
      nordicUARTservice.rxCharacteristic,
-     function (data) { bleConnnection.onData(info.name, data); },
-     bleConnnection.onError);
+     function (data) { bleConnection.onData(info.name, data); },
+     bleConnection.onError);
 
-  var dev = bleConnnection.findDeviceByMac(info.id);
+  var dev = bleConnection.findDeviceByMac(info.id);
   if (dev !== null) {
     dev.status = 3;
   }
 };
 
-bleConnnection.onDisconnect = function(info) {
+bleConnection.onDisconnect = function(info) {
   console.log('On Disconnect:' + info.name);
 };
 
-bleConnnection.onData = function(name, data) {
+bleConnection.onData = function(name, data) {
   var str = bufferToString(data);
   console.log('On Data:', name, str);
 };
 
-bleConnnection.onError = function(reason) {
+bleConnection.onError = function(reason) {
   console.log('Error2:', reason);
 };
 
-bleConnnection.write = function(name, message) {
+bleConnection.write = function(name, message) {
   if (this.devices.hasOwnProperty(name)) {
     var mac = this.devices[name].mac;
 
     console.log('ble write', name, mac, message);
-    if (bleConnnection.bleApi !== null) {
+    if (bleConnection.bleApi !== null) {
       var buffer = stringToBuffer(message);
 
       // Break the message into smaller sections.
-      bleConnnection.bleApi.write(mac,
+      bleConnection.bleApi.write(mac,
         nordicUARTservice.serviceUUID,
         nordicUARTservice.txCharacteristic,
         buffer,
-        bleConnnection.onWriteOK,
-        bleConnnection.onWriteFail);
+        bleConnection.onWriteOK,
+        bleConnection.onWriteFail);
     }
   }
 };
 
-bleConnnection.onWriteOK = function (data) {
+bleConnection.onWriteOK = function (data) {
   console.log('write ok', data);
 };
-bleConnnection.onWriteFail = function (data) {
+bleConnection.onWriteFail = function (data) {
   console.log('write fail', data);
 };
 
-return bleConnnection;
+return bleConnection;
 }();
