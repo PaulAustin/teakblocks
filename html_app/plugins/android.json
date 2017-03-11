@@ -21,5 +21,6 @@
         "cordova-plugin-compat": {
             "PACKAGE_NAME": "io.hld.teakblocks"
         }
-    }
+    },
+    "dependent_plugins": {}
 }

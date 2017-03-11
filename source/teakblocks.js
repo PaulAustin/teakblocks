@@ -44,6 +44,7 @@ tbe.undoArray = [];
 tbe.currentUndoIndex = 0;
 tbe.stopUndo = false;
 tbe.actionButtons = null;
+tbe.draggingSelectionArea = null;
 
 tbe.forEachDiagramBlock = function (callBack) {
   for (var key in tbe.diagramBlocks) {
@@ -827,6 +828,7 @@ tbe.findChunkStart = function findChunkStart(clickedBlock) {
   return chunkStart;
 };
 
+
 // Attach these interactions properties based on the class property of the DOM elements
 tbe.configInteractions = function configInteractions() {
   var thisTbe = tbe;
@@ -861,8 +863,51 @@ tbe.configInteractions = function configInteractions() {
   interact('.editor-background')
     .on('down', function () {
       thisTbe.clearStates();
+    })
+    .on('down', function (event) {
+      var selectionRectangle = svgb.createRect('selectionArea', event.pageX, event.pageY, 10, 10, 0);
+      selectionRectangle.setAttribute('class', 'selectorArea');
+      tbe.svg.appendChild(selectionRectangle);
+      var interaction = event.interaction;
+      interaction.start({ name: 'resize'},
+                          event.interactable,
+                          selectionRectangle);
+      //tbe.draggingSelectionArea = true;
     });
+    //.on('move', function() {
+    //})
+    //.on('up', function() {
+        //tbe.draggingSelectionArea = false;
+    //});
 
+  interact(".selectorArea")
+  .draggable({
+    onmove: window.dragMoveListener,
+    manualStart: true
+  })
+  .resizable({
+    preserveAspectRatio: false,
+    edges: { left: true, right: true, bottom: true, top: true }
+  })
+  .on('resizemove', function (event) {
+    var target = event.target,
+        x = (parseFloat(target.getAttribute('data-x')) || 0),
+        y = (parseFloat(target.getAttribute('data-y')) || 0);
+
+    // update the element's style
+    target.style.width  = event.rect.width + 'px';
+    target.style.height = event.rect.height + 'px';
+
+    // translate when resizing from top or left edges
+    x += event.deltaRect.left;
+    y += event.deltaRect.top;
+
+    target.style.webkitTransform = target.style.transform =
+        'translate(' + x + 'px,' + y + 'px)';
+
+    target.setAttribute('data-x', x);
+    target.setAttribute('data-y', y);
+  });
   // Event directed to function blocks (SVG objects with class 'drag-group')
   // There come in two main types. Pointer events(mouse, track, and touch) and
   // drag events. Drag events start manually, if the semantics of the pointer
