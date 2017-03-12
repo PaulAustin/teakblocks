@@ -524,6 +524,10 @@ tbe.FunctionBlock.prototype.setDraggingState = function (state) {
   }
 };
 
+tbe.FunctionBlock.prototype.isSelected = function() {
+  return this.svgRect.classList.contains('selectedBlock');
+};
+
 // Change the element class to trigger CSS changes.
 tbe.FunctionBlock.prototype.hilite = function(state) {
   if (state) {
@@ -811,9 +815,16 @@ tbe.internalClearDiagramBlocks = function clearDiagramBlocks() {
 // But for flow blocks it more subtle.
 tbe.findChunkStart = function findChunkStart(clickedBlock) {
 
-  // Scan to end see if a flow tail is found.
   var chunkStart = clickedBlock;
-  var b = clickedBlock;
+  while(chunkStart.isSelected) {
+    if (chunkStart.prev !== null && chunkStart.prev.isSelected()){
+      chunkStart = chunkStart.prev;
+    } else {
+      break;
+    }
+  }
+  // Scan to end see if a flow tail is found.
+  var b = chunkStart;
   while (b !== null) {
     // If tail found inlcude the whole flow block.
     if (b.flowHead !== null) {
@@ -831,7 +842,7 @@ tbe.findChunkStart = function findChunkStart(clickedBlock) {
 // Adds and removes the class for a selected block based on position
 tbe.checkForSelectedBlocks = function(e) {
   tbe.forEachDiagramBlock( function(block) {
-    if(block.rect.top < e.rect.bottom && block.rect.left < e.rect.right) {
+    if(tbe.intersectingArea(block.rect, e.rect) > 0) {
       block.svgRect.classList.add('selectedBlock');
     } else {
       block.svgRect.classList.remove('selectedBlock');
@@ -873,8 +884,7 @@ tbe.configInteractions = function configInteractions() {
   interact('.editor-background')
     .on('down', function (event) {
       thisTbe.clearStates();
-      var selectionRectangle = svgb.createRect('selectionArea', event.pageX, event.pageY, 10, 10, 0);
-      selectionRectangle.setAttribute('class', 'selectorArea');
+      var selectionRectangle = svgb.createRect('selectorArea', event.pageX, event.pageY, 10, 10, 0);
       tbe.svg.appendChild(selectionRectangle);
       var interaction = event.interaction;
       interaction.start({ name: 'resize'},
@@ -959,28 +969,6 @@ tbe.configInteractions = function configInteractions() {
           block = tbe.findChunkStart(block);
           var targetToDrag = block.svgGroup;
 
-          /*if(block.svgRect.classList.contains('selectedBlock')){ // Check if the block is selected
-            var tempBlock = null;
-            // TODO finish drag all selected blocks
-            tbe.forEachDiagramBlock( function(blockEach) {
-              if(blockEach.svgRect.classList.contains('selectedBlock')){
-                blockEach.setDraggingState(true);
-                if(tempBlock !== null){
-                  tempBlock.next = blockEach;
-                  tempBlock = blockEach;
-                } else {
-                  tempBlock = blockEach;
-                }
-
-                tbe.clearStates();
-
-                interaction.start({ name: 'drag' },
-                                  event.interactable,
-                                  targetToDrag);
-              }
-            });
-
-          } else{*/
             // If coming from pallette, or if coming from shift drag
             if (block.isPaletteBlock || event.shiftKey) {
               block = thisTbe.replicateChunk(block);
