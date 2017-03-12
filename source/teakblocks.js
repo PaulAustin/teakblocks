@@ -828,6 +828,16 @@ tbe.findChunkStart = function findChunkStart(clickedBlock) {
   return chunkStart;
 };
 
+// Adds and removes the class for a selected block based on position
+tbe.checkForSelectedBlocks = function(e) {
+  tbe.forEachDiagramBlock( function(block) {
+    if(block.rect.top < e.rect.bottom && block.rect.left < e.rect.right) {
+      block.svgRect.classList.add('selectedBlock');
+    } else {
+      block.svgRect.classList.remove('selectedBlock');
+    }
+  });
+};
 
 // Attach these interactions properties based on the class property of the DOM elements
 tbe.configInteractions = function configInteractions() {
@@ -861,10 +871,8 @@ tbe.configInteractions = function configInteractions() {
   // Pointer events to the background go here. Might make sure the even is not
   // right next to a block, e.g. allow some safe zones.
   interact('.editor-background')
-    .on('down', function () {
-      thisTbe.clearStates();
-    })
     .on('down', function (event) {
+      thisTbe.clearStates();
       var selectionRectangle = svgb.createRect('selectionArea', event.pageX, event.pageY, 10, 10, 0);
       selectionRectangle.setAttribute('class', 'selectorArea');
       tbe.svg.appendChild(selectionRectangle);
@@ -872,42 +880,41 @@ tbe.configInteractions = function configInteractions() {
       interaction.start({ name: 'resize'},
                           event.interactable,
                           selectionRectangle);
-      //tbe.draggingSelectionArea = true;
     });
-    //.on('move', function() {
-    //})
-    //.on('up', function() {
-        //tbe.draggingSelectionArea = false;
-    //});
 
   interact(".selectorArea")
-  .draggable({
-    onmove: window.dragMoveListener,
-    manualStart: true
-  })
-  .resizable({
-    preserveAspectRatio: false,
-    edges: { left: true, right: true, bottom: true, top: true }
-  })
-  .on('resizemove', function (event) {
-    var target = event.target,
-        x = (parseFloat(target.getAttribute('data-x')) || 0),
-        y = (parseFloat(target.getAttribute('data-y')) || 0);
+    .draggable({
+      onmove: window.dragMoveListener,
+      manualStart: true
+    })
+    .resizable({
+      preserveAspectRatio: false,
+      edges: { left: true, right: true, bottom: true, top: true }
+    })
+    .on('resizemove', function (event) {
+      var target = event.target,
+          x = (parseFloat(target.getAttribute('data-x')) || 0),
+          y = (parseFloat(target.getAttribute('data-y')) || 0);
 
-    // update the element's style
-    target.style.width  = event.rect.width + 'px';
-    target.style.height = event.rect.height + 'px';
+      // update the element's style
+      target.style.width  = event.rect.width + 'px';
+      target.style.height = event.rect.height + 'px';
 
-    // translate when resizing from top or left edges
-    x += event.deltaRect.left;
-    y += event.deltaRect.top;
+      // translate when resizing from top or left edges
+      x += event.deltaRect.left;
+      y += event.deltaRect.top;
 
-    target.style.webkitTransform = target.style.transform =
-        'translate(' + x + 'px,' + y + 'px)';
+      target.style.webkitTransform = target.style.transform =
+          'translate(' + x + 'px,' + y + 'px)';
 
-    target.setAttribute('data-x', x);
-    target.setAttribute('data-y', y);
-  });
+      target.setAttribute('data-x', x);
+      target.setAttribute('data-y', y);
+      tbe.checkForSelectedBlocks(event);
+    })
+    .on('up', function() { // When released, delete the selection area
+      var curr = document.getElementsByClassName('selectorArea');
+      curr[0].parentNode.removeChild(curr[0]);
+    });
   // Event directed to function blocks (SVG objects with class 'drag-group')
   // There come in two main types. Pointer events(mouse, track, and touch) and
   // drag events. Drag events start manually, if the semantics of the pointer
@@ -952,18 +959,43 @@ tbe.configInteractions = function configInteractions() {
           block = tbe.findChunkStart(block);
           var targetToDrag = block.svgGroup;
 
-          tbe.clearStates();
-          // If coming from pallette, or if coming from shift drag
-          if (block.isPaletteBlock || event.shiftKey) {
-            block = thisTbe.replicateChunk(block);
-            targetToDrag = block.svgGroup;
-          }
+          /*if(block.svgRect.classList.contains('selectedBlock')){ // Check if the block is selected
+            var tempBlock = null;
+            // TODO finish drag all selected blocks
+            tbe.forEachDiagramBlock( function(blockEach) {
+              if(blockEach.svgRect.classList.contains('selectedBlock')){
+                blockEach.setDraggingState(true);
+                if(tempBlock !== null){
+                  tempBlock.next = blockEach;
+                  tempBlock = blockEach;
+                } else {
+                  tempBlock = blockEach;
+                }
 
-          // Start a drag interaction targeting the clone
-          block.setDraggingState(true);
-          interaction.start({ name: 'drag' },
-                            event.interactable,
-                            targetToDrag);
+                tbe.clearStates();
+
+                interaction.start({ name: 'drag' },
+                                  event.interactable,
+                                  targetToDrag);
+              }
+            });
+
+          } else{*/
+            // If coming from pallette, or if coming from shift drag
+            if (block.isPaletteBlock || event.shiftKey) {
+              block = thisTbe.replicateChunk(block);
+              targetToDrag = block.svgGroup;
+            }
+
+            // Start a drag interaction targeting the clone
+            block.setDraggingState(true);
+
+            tbe.clearStates();
+            interaction.start({ name: 'drag' },
+                              event.interactable,
+                              targetToDrag);
+          //}
+
         }
       } else {
         tbe.pointerDownObject = null;
@@ -1011,7 +1043,6 @@ tbe.configInteractions = function configInteractions() {
         var block = thisTbe.elementToBlock(event.target);
         if (block === null)
           return;
-
         if (!block.dragging) {
           // If snap happens in coasting-move
           // the chain will no longer be dragging.

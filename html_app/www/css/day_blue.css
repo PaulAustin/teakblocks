@@ -24,3 +24,8 @@
 .shadow-block-leave {
   fill:#43A047;
 }
+.selectedBlock {
+  fill: #795548;
+  stroke-width: 4;
+  stroke: #0037ff;
+}
