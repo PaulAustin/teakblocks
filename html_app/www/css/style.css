@@ -457,3 +457,10 @@ label input[type="checkbox"]:disabled + .label-text:before {
   border-radius: 12.5px;
   background-color: green;
 }
+.selectorArea {
+  stroke: #0000ff;
+  stroke-width:1;
+  stroke-opacity:1;
+  fill: #0061ff;
+  opacity: .2;
+}
