@@ -32,13 +32,13 @@ tbSelecton.init = function(tbe) {
     .draggable({
       manualStart: true,  // Drag wont start until initiated by code.
       max: Infinity,
-      onstart: function() {
+      onstart: function(event) {
         // Move the selection rectangle to its initial location.
         tbSelecton.x0 = event.clientX;
         tbSelecton.y0 = event.clientY;
         svgb.translateXY(tbSelecton.selectionSvg, event.clientX, event.clientY);
       },
-      onend: function(event) {
+      onend: function() {
         // Remove the selection rectangle
         tbe.svg.removeChild(tbSelecton.selectionSvg);
         tbSelecton.selectionSvg = null;
