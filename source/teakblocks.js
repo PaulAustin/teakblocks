@@ -888,14 +888,17 @@ tbe.configInteractions = function configInteractions() {
   interact('.editor-background')
     .on('down', function (event) {
       thisTbe.clearStates();
+      teakselection.startSelectionBoxDrag(event);
+      /*
       var selectionRectangle = svgb.createRect('selectorArea', event.pageX, event.pageY, 10, 10, 0);
       tbe.svg.appendChild(selectionRectangle);
       var interaction = event.interaction;
       interaction.start({ name: 'resize'},
                           event.interactable,
                           selectionRectangle);
+      */
     });
-
+/*
   interact(".selectorArea")
     .draggable({
       onmove: window.dragMoveListener,
@@ -929,6 +932,8 @@ tbe.configInteractions = function configInteractions() {
       var curr = document.getElementsByClassName('selectorArea');
       curr[0].parentNode.removeChild(curr[0]);
     });
+*/
+
   // Event directed to function blocks (SVG objects with class 'drag-group')
   // There come in two main types. Pointer events(mouse, track, and touch) and
   // drag events. Drag events start manually, if the semantics of the pointer
