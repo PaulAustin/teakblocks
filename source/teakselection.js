@@ -27,31 +27,18 @@ var svgb = require('./svgbuilder.js');
 var tbSelecton = {};
 
 tbSelecton.init = function(tbe) {
-  tbSelecton.selectionSvg = svgb.createRect('selection-rect', 0, 0, 20, 20, 5);
-  tbe.svg.appendChild(tbSelecton.selectionSvg);
-
+  tbSelecton.tbe = tbe;
   tbSelecton.interactable = interact(".selection-rect")
     .draggable({
       manualStart: true,  // Drag wont start until initiated by code.
-      restrict: {
-          restriction: tbe.svg,
-          endOnly: true,
-          // Restrictions, by default, are for the point not the whole object
-          // so R and B are 1.x to inlcude the width and height of the object.
-          // 'Coordinates' are percent of width and height.
-          elementRect: { left: -0.2, top: -0.2, right: 1.2, bottom: 1.2 },
-        },
-      inertia: {
-        resistance: 20,
-        minSpeed: 50,
-        endSpeed: 1
-      },
       max: Infinity,
       onstart: function() {
         console.log('selection-rect onstart', event.clientX, event.clientY);
         svgb.translateXY(tbSelecton.selectionSvg, event.clientX, event.clientY);
       },
       onend: function(event) {
+        tbe.svg.removeChild(tbSelecton.selectionSvg);
+        tbSelecton.selectionSvg = null;
         console.log('selection-rect onend', event.clientX, event.clientY);
       },
       onmove: function (event) {
@@ -64,6 +51,9 @@ tbSelecton.init = function(tbe) {
 };
 
 tbSelecton.startSelectionBoxDrag = function(event) {
+  tbSelecton.selectionSvg = svgb.createRect('selection-rect', -8, -8, 16, 16, 5);
+  tbSelecton.tbe.svg.appendChild(tbSelecton.selectionSvg);
+
    console.log('start selection box drag operation');
    event.interaction.start({ name: 'drag'}, tbSelecton.interactable,
         tbSelecton.selectionSvg);
