@@ -32,6 +32,7 @@ var svglog = require('./svglog.js');
 var trashBlocks = require('./physics.js');
 var fblocks = require('./fblock-settings.js');
 var save = require('./save.js');
+var teakselection = require('./teakselection');
 
 var tbe = {};
 
@@ -91,6 +92,9 @@ tbe.init = function init(svg, text) {
   this.configInteractions();
   interact.maxInteractions(Infinity);
   this.initPaletteBox();
+
+  teakselection.init(tbe);
+
   return this;
 };
 
@@ -997,7 +1001,8 @@ tbe.configInteractions = function configInteractions() {
           // Restrictions, by default, are for the point not the whole object
           // so R and B are 1.x to inlcude the width and height of the object.
           // 'Coordinates' are percent of width and height.
-          elementRect: { left: -0.2, top: -0.2, right: 1.2, bottom: 1.2 },
+          elementRect: { left: -0.2, top: -0.2, right: 1.2, bottom: 2.4 },
+          // TODO bottom needs to exclude the palette.
         },
       inertia: {
         resistance: 20,
@@ -1098,8 +1103,6 @@ tbe.diagramChanged = function diagramChanged() {
   if(tbe.currentUndoIndex < 0){
     tbe.currentUndoIndex = 0;
   }
-
-  //console.log(tbe.currentUndoIndex, tbe.undoArray, tbe.undoArray.length - 1);
 };
 
 tbe.undoAction = function() {

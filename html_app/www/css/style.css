@@ -77,6 +77,11 @@ html, body { margin:0; padding:0; overflow:hidden }
   pointer-events: none;
   z-index: 501;
 }
+.selection-rect {
+  fill: #B3E5FC;
+  stroke-width: 4;
+  stroke: #4FC3F7;
+}
 .function-block {
 /*  fill:#90CAF9; */
   fill: #3372FF;
