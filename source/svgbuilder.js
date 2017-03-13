@@ -58,8 +58,12 @@ svgBuilder.createUse = function createSymbolUse(elementClass, symbolName) {
 };
 
 svgBuilder.resizeRect = function resizeRect(elt, w, h) {
-    elt.setAttribute('width', String(w) + 'px');
-    elt.setAttribute('height', String(h) + 'px');
+  elt.setAttribute('width', String(w) + 'px');
+  elt.setAttribute('height', String(h) + 'px');
+};
+
+svgBuilder.translateXY = function translateXY(elt, x, y) {
+  elt.setAttribute('transform', 'translate (' +  String(x) + ' ' + String(y) + ')');
 };
 
 svgBuilder.createRect = function createRect(elementClass, x, y, w, h, rxy) {
