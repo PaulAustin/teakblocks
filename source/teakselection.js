@@ -27,10 +27,10 @@ var svgb = require('./svgbuilder.js');
 var tbSelecton = {};
 
 tbSelecton.init = function(tbe) {
-  tbSelecton.selectionSvg = svgb.createRect('selection-rect', 300, 200, 20, 20, 5);
+  tbSelecton.selectionSvg = svgb.createRect('selection-rect', 0, 0, 20, 20, 5);
   tbe.svg.appendChild(tbSelecton.selectionSvg);
 
-  tbe.selectionInteractable = interact(".selection-rect")
+  tbSelecton.interactable = interact(".selection-rect")
     .draggable({
       manualStart: true,  // Drag wont start until initiated by code.
       restrict: {
@@ -48,66 +48,26 @@ tbSelecton.init = function(tbe) {
       },
       max: Infinity,
       onstart: function() {
-        console.log('selection-rect onstart', event);
+        console.log('selection-rect onstart', event.clientX, event.clientY);
+        svgb.translateXY(tbSelecton.selectionSvg, event.clientX, event.clientY);
       },
       onend: function(event) {
-        console.log('selection-rect onend', event);
+        console.log('selection-rect onend', event.clientX, event.clientY);
       },
       onmove: function (event) {
-        console.log('selection-rect move', event);
-        //var block = thisTbe.elementToBlock(event.target);
-        //if (block === null)
-        //  return;
-
-        // Move the chain to the new location based on deltas.
-        // block.dmove(event.dx, event.dy, true);
+        // clientX, clientY reflect the current location
+        // clientX0, clientY0 reflect the initial location at start.
+        console.log('selection-rect move', event.clientX, event.clientY);
+        svgb.translateXY(tbSelecton.selectionSvg, event.clientX, event.clientY);
       }
     });
-
- tbSelecton.startSelectionBoxDrag = function(event) {
-   console.log('start selection box drag operation', tbSelecton.selectionSvg);
-   console.log('interaction', event.interaction);
-   console.log('interactable', tbe.selectionInteractable);
-   event.interaction.start({ name: 'drag'},
-                       tbe.selectionInteractable,
-                       tbSelecton.selectionSvg);
- };
 };
 
-/*
-  interact(".selection-rect")
-  .draggable({
-     range: Infinity,
-     onmove: function (event) {
-       console.log('onmove', event.dx, event.dy);
-     }
-     manualStart: true
-    // ,
-    // onmove: window.dragMoveListener
-  })
-  .on('dragmove', function (event) {
-    console.log ('selection drag move', event.target);
-    /*
-    var target = event.target,
-        x = (parseFloat(target.getAttribute('data-x')) || 0),
-        y = (parseFloat(target.getAttribute('data-y')) || 0);
-
-    // update the element's style
-    target.style.width  = event.rect.width + 'px';
-    target.style.height = event.rect.height + 'px';
-
-    // translate when resizing from top or left edges
-    x += event.deltaRect.left;
-    y += event.deltaRect.top;
-
-    target.style.webkitTransform = target.style.transform =
-        'translate(' + x + 'px,' + y + 'px)';
-
-    target.setAttribute('data-x', x);
-    target.setAttribute('data-y', y);
-    * /
-  });
-*/
+tbSelecton.startSelectionBoxDrag = function(event) {
+   console.log('start selection box drag operation');
+   event.interaction.start({ name: 'drag'}, tbSelecton.interactable,
+        tbSelecton.selectionSvg);
+ };
 
 return tbSelecton;
 }();

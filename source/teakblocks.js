@@ -568,7 +568,7 @@ tbe.FunctionBlock.prototype.dmove = function (dx, dy, snapToInt, endBlock) {
     }
 
     if (block.svgGroup) {
-      block.svgGroup.setAttribute ('transform', 'translate (' +  r.left + ' ' + r.top + ')');
+      svgb.translateXY(block.svgGroup, r.left, r.top);
     }
 
     if (block === endBlock) {
@@ -1147,7 +1147,7 @@ tbe.sizePaletteToWindow = function sizePaletteToWindow () {
   var w = window.innerWidth;
   var h = window.innerHeight;
 
-  tbe.dropAreaGroup.setAttribute ('transform', 'translate (' +  0 + ' ' + (h - 100) + ')');
+  svgb.translateXY(tbe.dropAreaGroup, 0, (h - 100));
   svgb.resizeRect(tbe.dropArea, w, 100);
   svgb.resizeRect(tbe.background, w, h);
 
