@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2016 Paul Austin - SDG
+Copyright (c) 2017 Paul Austin - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,29 +33,56 @@ tbSelecton.init = function(tbe) {
       manualStart: true,  // Drag wont start until initiated by code.
       max: Infinity,
       onstart: function() {
-        console.log('selection-rect onstart', event.clientX, event.clientY);
+        // Move the selection rectangle to its initial location.
+        tbSelecton.x0 = event.clientX;
+        tbSelecton.y0 = event.clientY;
         svgb.translateXY(tbSelecton.selectionSvg, event.clientX, event.clientY);
       },
       onend: function(event) {
+        // Remove the selection rectangle
         tbe.svg.removeChild(tbSelecton.selectionSvg);
         tbSelecton.selectionSvg = null;
-        console.log('selection-rect onend', event.clientX, event.clientY);
       },
       onmove: function (event) {
+        // Determine the top left and the width height basd on the pointer
+        // location.
+        var left = 0;
+        var top = 0;
+        var width = 0;
+        var height = 0;
+        if (event.clientX < tbSelecton.x0) {
+          left = event.clientX;
+          width = tbSelecton.x0 - event.clientX;
+        } else {
+          left = tbSelecton.x0;
+          width = event.clientX - tbSelecton.x0;
+        }
+        if (event.clientY < tbSelecton.y0) {
+          top = event.clientY;
+          height = tbSelecton.y0 - event.clientY;
+        } else {
+          top = tbSelecton.y0;
+          height = event.clientY - tbSelecton.y0;
+        }
+        width += 16;
+        height += 16;
         // clientX, clientY reflect the current location
         // clientX0, clientY0 reflect the initial location at start.
-        console.log('selection-rect move', event.clientX, event.clientY);
-        svgb.translateXY(tbSelecton.selectionSvg, event.clientX, event.clientY);
+        svgb.translateXY(tbSelecton.selectionSvg, left, top);
+        svgb.resizeRect(tbSelecton.selectionSvg, width, height);
       }
     });
 };
 
 tbSelecton.startSelectionBoxDrag = function(event) {
+  // Create a selction rectangle and give it a monimum width.
+  // place it right on top of the back ground so it is behind all blocks.
   tbSelecton.selectionSvg = svgb.createRect('selection-rect', -8, -8, 16, 16, 5);
-  tbSelecton.tbe.svg.appendChild(tbSelecton.selectionSvg);
+  tbSelecton.tbe.svg.insertBefore(tbSelecton.selectionSvg, tbSelecton.tbe.background.nextSibling);
 
-   console.log('start selection box drag operation');
-   event.interaction.start({ name: 'drag'}, tbSelecton.interactable,
+  // start interacting wiht the rectangle. This give the rectangel the focus
+  // for all events until the pointer is let up.
+  event.interaction.start({ name: 'drag'}, tbSelecton.interactable,
         tbSelecton.selectionSvg);
  };
 
