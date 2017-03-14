@@ -80,6 +80,7 @@ tbe.forEachDiagramChain = function (callBack) {
 tbe.clearStates = function clearStates(block) {
   // clear any showing forms or multi step state.
   // If the user has interacted with a general part of the editor.
+  tbe.forEachDiagramBlock( function(deleteBlock) {  deleteBlock.svgRect.classList.remove('selectedBlock'); });
   tf.hideOpenForm();
   this.components.blockSettings.hide(block);
 };
