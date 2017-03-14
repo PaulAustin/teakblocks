@@ -936,6 +936,21 @@ tbe.configInteractions = function configInteractions() {
           block = tbe.findChunkStart(block);
           var targetToDrag = block.svgGroup;
 
+          var temp = block;
+          if(block.isSelected()){
+            //console.log(block);
+            while(temp !== null){
+              if(temp.isSelected()){
+                temp = temp.next;
+              } else {
+                temp.prev.next = null;
+                temp.prev = null;
+                break;
+                //console.log("hi");
+              }
+            }
+          }
+
             // If coming from pallette, or if coming from shift drag
             if (block.isPaletteBlock || event.shiftKey) {
               block = thisTbe.replicateChunk(block);
