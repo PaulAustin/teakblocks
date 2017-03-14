@@ -80,7 +80,12 @@ html, body { margin:0; padding:0; overflow:hidden }
 .selection-rect {
   fill: #B3E5FC;
   stroke-width: 4;
-  stroke: #4FC3F7;
+  stroke: #1E88E5;
+}
+.selectedBlock {
+  transition: stroke 0.4s ease;
+  stroke-width: 4;
+  stroke: #1E88E5;
 }
 .function-block {
 /*  fill:#90CAF9; */
@@ -88,6 +93,7 @@ html, body { margin:0; padding:0; overflow:hidden }
 /*  transition: fill 0.3s ease; */
   stroke-width: 4;
   stroke: #5A33FF;
+  transition: stroke 0.4s ease;
 }
 .function-block-dragging {
   fill: green;
@@ -145,7 +151,7 @@ html, body { margin:0; padding:0; overflow:hidden }
   fill: #641E16;
 }
 .block-picture-led-on {
-  fill: #FF0033;
+  fill: #FF3333;
 }
 .block-bot-connecting {
   fill: #BA68C8;
@@ -422,7 +428,8 @@ label input[type="checkbox"]:disabled + .label-text:before {
   fill: #F6DDCC;
 }
 .action-dot.switch-bg {
-  fill: #4DD0E1;
+  /*fill: #4DD0E1; */
+  fill: #B3E5FC;
 }
 .action-dot-text {
   fill: #FF7043;
@@ -461,11 +468,4 @@ label input[type="checkbox"]:disabled + .label-text:before {
   height: 25px;
   border-radius: 12.5px;
   background-color: green;
-}
-.selectorArea {
-  stroke: #0000ff;
-  stroke-width:1;
-  stroke-opacity:1;
-  fill: #0061ff;
-  opacity: .2;
 }
