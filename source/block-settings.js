@@ -35,6 +35,7 @@ module.exports = function () {
   blockSettings.insert = function(domRoot) {
     // Create a div shell that will be positioned and scaled as needed.
     var commonDiv = document.createElement("div");
+    var groupDiv = document.createElement("div");
     commonDiv.innerHTML =
     `<div id="block-settings" class="block-config-form blockform">
         <div class="block-settings-editops"><button id="block-run">
@@ -47,8 +48,20 @@ module.exports = function () {
         <div id="block-settings-custom"></div>
         <!--div id="block-controller-tabs"></div-->
     </div>`;//TABS - uncomment html
+    groupDiv.innerHTML =
+    `<div id="block-settings" class="block-config-form blockform">
+        <div class="block-settings-editops"><button id="block-run">
+            <i class="fa fa-step-forward" aria-hidden="true"></i>
+          </button><button id="block-clone">
+            <i class="fa fa-clone" aria-hidden="true"></i>
+          </button><button id="block-clear">
+            <i class="fa fa-trash-o" aria-hidden="true"></i>
+          </button></div>
+    </div>`;
     domRoot.appendChild(commonDiv);
+    domRoot.appendChild(groupDiv);
     blockSettings.commonDiv = commonDiv;
+    blockSettings.groupDiv = groupDiv;
 
     // Add step/run button handler.
     document.getElementById('block-run').onclick = function() {
@@ -122,6 +135,12 @@ module.exports = function () {
   blockSettings.hide = function(exceptBlock, diagram) {
 
     var diagramChanger = true;
+    var isSelectedBlock = false;
+
+    if(this.activeBlock !== null && this.activeBlock.isSelected()){
+      isSelectedBlock = true;
+    }
+
     // If the form is actally associated with a block, hide it.
     if (this.activeBlock !== null && this.activeBlock !== exceptBlock) {
       if (this.activeBlock.funcs.configuratorClose !== undefined) {
@@ -130,8 +149,14 @@ module.exports = function () {
       }
       this.activeBlock = null;
 
+      var div = null;
+
       // Start animation to hide the form.
-      var div = this.commonDiv;
+      if(isSelectedBlock){
+        div = this.groupDiv;
+      } else{
+        div = this.commonDiv;
+      }
       div.style.transition = 'all 0.2s ease';
       div.style.position = 'absolute';
       div.style.transform = 'scale(0.33, 0.0)';
@@ -266,6 +291,11 @@ module.exports = function () {
 
   // Internal method to show the form.
   blockSettings.showActive = function (event) {
+    var isSelectedBlock = false;
+
+    if(this.activeBlock !== null && this.activeBlock.isSelected()){
+      isSelectedBlock = true;
+    }
     if (event !== null) {
     //  this.removeEventListener('transitionend', this.showActive);
     }
@@ -279,7 +309,12 @@ module.exports = function () {
     // Start animation to show settings form.
     var x = this.activeBlock.rect.left;
     var y = this.activeBlock.rect.bottom;
-    var div = blockSettings.commonDiv;
+    var div = null;
+    if(isSelectedBlock){
+      div = blockSettings.groupDiv;
+    } else{
+      div = blockSettings.commonDiv;
+    }
     div.style.transition = 'all 0.0s ease';
     div.style.left = (x-80) + 'px';
     div.style.right = (x+80) + 'px';
