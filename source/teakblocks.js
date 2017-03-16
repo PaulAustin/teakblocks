@@ -80,9 +80,9 @@ tbe.forEachDiagramChain = function (callBack) {
 tbe.clearStates = function clearStates(block) {
   // clear any showing forms or multi step state.
   // If the user has interacted with a general part of the editor.
-  tbe.forEachDiagramBlock( function(deleteBlock) {  deleteBlock.svgRect.classList.remove('selectedBlock'); });
   tf.hideOpenForm();
   this.components.blockSettings.hide(block);
+  tbe.forEachDiagramBlock( function(deleteBlock) {  deleteBlock.svgRect.classList.remove('selectedBlock'); });
 };
 
 tbe.init = function init(svg, text) {
@@ -531,6 +531,21 @@ tbe.FunctionBlock.prototype.setDraggingState = function (state) {
 
 tbe.FunctionBlock.prototype.isSelected = function() {
   return this.svgRect.classList.contains('selectedBlock');
+};
+
+tbe.FunctionBlock.prototype.isGroupSelected = function() {
+  var before = false;
+  var after = false;
+  if(this.next !== null){
+    before = this.next.svgRect.classList.contains('selectedBlock');
+  }
+  if(this.prev !== null){
+    after = this.prev.svgRect.classList.contains('selectedBlock');
+  }
+  if(this.svgRect.classList.contains('selectedBlock') && (before || after)){
+    return true;
+  }
+  return false;
 };
 
 // Change the element class to trigger CSS changes.

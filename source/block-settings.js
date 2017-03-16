@@ -135,10 +135,10 @@ module.exports = function () {
   blockSettings.hide = function(exceptBlock, diagram) {
 
     var diagramChanger = true;
-    var isSelectedBlock = false;
+    var isSelectedGroup = false;
 
-    if(this.activeBlock !== null && this.activeBlock.isSelected()){
-      isSelectedBlock = true;
+    if(this.activeBlock !== null && this.activeBlock.isGroupSelected()){
+      isSelectedGroup = true;
     }
 
     // If the form is actally associated with a block, hide it.
@@ -152,7 +152,7 @@ module.exports = function () {
       var div = null;
 
       // Start animation to hide the form.
-      if(isSelectedBlock){
+      if(isSelectedGroup){
         div = this.groupDiv;
       } else{
         div = this.commonDiv;
@@ -291,10 +291,10 @@ module.exports = function () {
 
   // Internal method to show the form.
   blockSettings.showActive = function (event) {
-    var isSelectedBlock = false;
+    var isSelectedGroup = false;
 
-    if(this.activeBlock !== null && this.activeBlock.isSelected()){
-      isSelectedBlock = true;
+    if(this.activeBlock !== null && this.activeBlock.isGroupSelected()){
+      isSelectedGroup = true;
     }
     if (event !== null) {
     //  this.removeEventListener('transitionend', this.showActive);
@@ -310,7 +310,7 @@ module.exports = function () {
     var x = this.activeBlock.rect.left;
     var y = this.activeBlock.rect.bottom;
     var div = null;
-    if(isSelectedBlock){
+    if(isSelectedGroup){
       div = blockSettings.groupDiv;
     } else{
       div = blockSettings.commonDiv;
