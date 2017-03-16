@@ -26,6 +26,10 @@ var interact = require('interact.js');
 var svgb = require('./svgbuilder.js');
 var tbSelecton = {};
 
+// The selection region has a minimum dimension so it can be seen when it is
+// first created, espicially on a touch based device.
+var minDim = 20;
+
 tbSelecton.init = function(tbe) {
   tbSelecton.tbe = tbe;
   tbSelecton.interactable = interact(".selection-rect")
@@ -64,8 +68,8 @@ tbSelecton.init = function(tbe) {
           top = tbSelecton.y0;
           height = event.clientY - tbSelecton.y0;
         }
-        width += 16;
-        height += 16;
+        width += minDim;
+        height += minDim;
         // clientX, clientY reflect the current location
         // clientX0, clientY0 reflect the initial location at start.
         svgb.translateXY(tbSelecton.selectionSvg, left, top);
@@ -79,7 +83,8 @@ tbSelecton.init = function(tbe) {
 tbSelecton.startSelectionBoxDrag = function(event) {
   // Create a selction rectangle and give it a monimum width.
   // place it right on top of the back ground so it is behind all blocks.
-  tbSelecton.selectionSvg = svgb.createRect('selection-rect', -8, -8, 16, 16, 5);
+  var offset = -minDim/2;
+  tbSelecton.selectionSvg = svgb.createRect('selection-rect', offset, offset, minDim, minDim, 5);
   tbSelecton.tbe.svg.insertBefore(tbSelecton.selectionSvg, tbSelecton.tbe.background.nextSibling);
 
   // start interacting wiht the rectangle. This give the rectangel the focus
