@@ -6,7 +6,7 @@
   fill: #795548;
   stroke-width: 4;
   stroke: #873600;
-  transition: stroke 0.4s ease;
+  transition: stroke 0.3s ease;
 }
 .function-block-dragging {
   fill: #795548;
@@ -26,7 +26,7 @@
   fill:#43A047;
 }
 .selectedBlock {
-  transition: stroke 0.4s ease;
+  transition: stroke 0.3s ease;
   stroke-width: 4;
   stroke: #1E88E5;
 }

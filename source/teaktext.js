@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2016 Paul Austin - SDG
+Copyright (c) 2017 Paul Austin - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,29 +25,36 @@ var teakText = {};
 
 teakText.blocksToText = function(blockChainIterator) {
   var text = '(\n';
-  blockChainIterator(function(chainStart) {
-    var block = chainStart;
-    text += '  (chain\n';
-    while (block !== null) {
-      text += '    (' + block.name;
-      if (block.prev === null) {
-        text += ' x:' + block.rect.left + ' y:' +  block.rect.top;
-      }
-      if (block.controllerSettings !== null) {
-        text += ' ' + teakText.blockParamsToText(block.controllerSettings.data);
-      }
-      if (block.targetShadow !== null) {
-        // For debugging, this ocassionally happens since
-        // compile is asynchronous. TODO fixit.
-        //text += ' shadow:true'; //COMMENTED
-      }
-      text += ')\n';
-      block = block.next;
-    }
-    text += '  )\n';
+  var indentText = '  ';
+  blockChainIterator(function(block) {
+    text += indentText + '(chain';
+    text += ' x:' + block.rect.left + ' y:' +  block.rect.top + ' (\n';
+    text += teakText.chunkToText(block, null, indentText + '  ');
+    text += indentText + '))\n';
   });
 
   text += ')\n';
+  return text;
+};
+
+teakText.chunkToText = function(chunkStart, chunkEnd, indentText) {
+  var block = chunkStart;
+  var text = '';
+  while (block !== chunkEnd) {
+    text += indentText + '(' + block.name;
+    if (block.controllerSettings !== null) {
+      text += ' ' + teakText.blockParamsToText(block.controllerSettings.data);
+    }
+    if (block.flowTail !== null) {
+      // If it is nesting, then recurse with a bit of indentation.
+      text += ' (\n';
+      text += teakText.chunkToText(block.next, block.flowTail, indentText + '  ');
+      block = block.flowTail;
+      text += indentText + ')';
+    }
+    text += ')\n';
+    block = block.next;
+  }
   return text;
 };
 

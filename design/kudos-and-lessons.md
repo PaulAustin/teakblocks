@@ -427,3 +427,40 @@ on knockouts css binding feature. Much of it come down to this:
 ```
 
 Now back on to establishing connecting...
+
+## Mid December
+Added music not block, tested out abilty to generate sound programmatically in
+the browser. clipping behavies differently based on broswer, adding notes and getting value
+over 1.0 can sound quite harsh
+
+
+## January not much.
+Look at logs if you wish.
+
+## February
+Sorted out BLE issues with MicroBit Serial Mode RX/TX were swapped.
+
+## March  
+SXSWedu went well demoed simple connection and execution. Now too much is going
+on in the background, the app eats power.
+
+Selection taking shape
+
+Adding Loops, conditions etc. one key part here is automatic variables. These
+change over time as sensors do. They can be used as iterators as well. In a
+a very psuedocode form it looks like this.
+
+For example:
+c:count(5)
+while(c.count()) {
+  print(c.value());
+}
+
+Its a bit mutch for simple counters, but is well suited for many othet cases.
+basically variables are give an atonomous nature. it may be simple but it is
+atonomous, like nature it self.
+
+makeing a var that takes on sine value, plays a waveform, etc is now more direct.
+a simple variable does nothing on its own, but can be set. Well the do
+initialize themselves. They are never uninitialized, as nature never is.
+There is quite likely a hint of smalltalk here.

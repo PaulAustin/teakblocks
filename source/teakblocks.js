@@ -147,21 +147,23 @@ tbe.loadDoc = function(docName) {
       var state = {};
       // Visitor pattern may be better, a lot better.
       var teakJSO = teak.parse(loadedDocText, state, function(name) { return name; });
-      tbe.loadTeakJSO(teakJSO);
+      tbe.loadJsoTeak(teakJSO);
     }
   }
 };
 
-tbe.loadTeakJSO = function(teakJSO) {
-  if (Array.isArray(teakJSO)) {
+tbe.loadJsoTeak = function(jsoTeak) {
+  console.log(' loadJSO', jsoTeak);
+  if (Array.isArray(jsoTeak)) {
     let i = 0;
-    for (i = 0; i < teakJSO.length; i++) {
-      var chain = teakJSO[i];
-      if (chain[0] !== 'chain') {
+    for (i = 0; i < jsoTeak.length; i++) {
+      var jsoChain = jsoTeak[i];
+      console.log(' chain?', jsoChain._0);
+      if (jsoChain._0 !== 'chain') {
         console.log(' unrecognized chain section');
         return;
       } else {
-        tbe.loadTeakJSOChain(chain);
+        tbe.loadJsoTeakChain(jsoChain, null);
       }
     }
   } else {
@@ -170,20 +172,17 @@ tbe.loadTeakJSO = function(teakJSO) {
   }
 };
 
-tbe.loadTeakJSOChain = function(chain) {
+tbe.loadJsoTeakChain = function(jsoChain, prev) {
   let i = 1;
-  let x = 0;
-  let y = 0;
   let blockName = '';
   let block = null;
-  let prev = null;
-  console.log(' TJDO', chain);
-  for (i = 1; i < chain.length; i++) {
-    blockName = chain[i]._0;
-    if (i === 1) {
-      x = chain[i].x;
-      y = chain[i].y;
-    }
+  let x = jsoChain.x;
+  let y = jsoChain.y;
+  console.log(' TJDO', jsoChain, x, y);
+  let jsoChainBlocks = jsoChain._3;
+  console.log(' cblocks', jsoChainBlocks);
+  for (i = 0; i < jsoChainBlocks.length; i++) {
+    blockName = jsoChainBlocks[i]._0;
     block = tbe.addBlock(x, y, blockName);
     x += block.blockWidth;
     if (prev !== null) {
@@ -191,18 +190,26 @@ tbe.loadTeakJSOChain = function(chain) {
       block.prev = prev;
     }
     // Load block specific settings, and refresh visual.
-    this.loadProperties(block, chain[i]);
+    this.loadProperties(block, jsoChainBlocks[i]);
     block.updateSvg();
     prev = block;
-
   }
+  return block;
 };
 
 tbe.loadProperties = function (block, loadedBlock) {
   for (var key in loadedBlock) {
     if (loadedBlock.hasOwnProperty(key)) {
-      if ( key === '_0' || key === 'x' || key === 'y') {
-        // ignore these
+      if (key === '_0') {
+        if (loadedBlock[key] === 'loop') {
+          const count = loadedBlock.count;
+          const jsoChainBlocks = loadedBlock._2;
+          console.log('need to load loop', count, jsoChainBlocks);
+          // The parent block will be the 'prev' in the chain.
+          let subChunkEnd = tbe.loadJsoTeakChain(jsoChainBlocks, block);
+          // Create tail and connect it up.
+        }
+        // Ignore the name property
       } else {
         block.controllerSettings.data[key] = loadedBlock[key];
       }
@@ -1110,7 +1117,7 @@ tbe.undoAction = function() {
   if(tbe.undoArray[tbe.currentUndoIndex] !== undefined){
     var state = {};
     var content = teak.parse(tbe.undoArray[tbe.currentUndoIndex].toString(), state, function(name) { return name; });
-    tbe.loadTeakJSO(content);
+    tbe.loadJsoTeak(content);
   }
 };
 
@@ -1123,7 +1130,7 @@ tbe.redoAction = function() {
     if(tbe.undoArray[tbe.currentUndoIndex] !== undefined){
       var state = {};
       var content = teak.parse(tbe.undoArray[tbe.currentUndoIndex].toString(), state, function(name) { return name; });
-      tbe.loadTeakJSO(content);
+      tbe.loadJsoTeak(content);
     }
   }
 

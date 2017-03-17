@@ -29,6 +29,7 @@ var tbSelecton = {};
 // The selection region has a minimum dimension so it can be seen when it is
 // first created, espicially on a touch based device.
 var minDim = 20;
+tbSelecton.selectionSvg = null;
 
 tbSelecton.init = function(tbe) {
   tbSelecton.tbe = tbe;
@@ -81,13 +82,19 @@ tbSelecton.init = function(tbe) {
 };
 
 tbSelecton.startSelectionBoxDrag = function(event) {
-  // Create a selction rectangle and give it a monimum width.
-  // place it right on top of the back ground so it is behind all blocks.
+
+  // If a selection is already under way, ignore a second one. This can happen
+  // on touch devices.
+  if (tbSelecton.selectionSvg !== null)
+    return;
+
+  // Create a selection rectangle and give it a minimum width.
+  // place it just above the background so it is behind all blocks.
   var offset = -minDim/2;
   tbSelecton.selectionSvg = svgb.createRect('selection-rect', offset, offset, minDim, minDim, 5);
   tbSelecton.tbe.svg.insertBefore(tbSelecton.selectionSvg, tbSelecton.tbe.background.nextSibling);
 
-  // start interacting wiht the rectangle. This give the rectangel the focus
+  // Start interacting wiht the rectangle. This give the rectangel the focus
   // for all events until the pointer is let up.
   event.interaction.start({ name: 'drag'}, tbSelecton.interactable,
         tbSelecton.selectionSvg);
