@@ -252,10 +252,11 @@ tbe.deleteChunk = function(block, endBlock){
 
   // Now that the chunk has been disconnected, measure it.
   var deleteWidth = block.chainWidth;
+  var tempBlock = null;
 
   // Delete the chunk.
   while(block !== null){
-
+    tempBlock = block.next; // Make a copy of block.next before it becomes null
     // remove map entry for the block.
     delete tbe.diagramBlocks[block.interactId];
 
@@ -265,7 +266,7 @@ tbe.deleteChunk = function(block, endBlock){
     block.next = null;
     block.prev = null;
 
-    block = block.next;
+    block = tempBlock;
   }
 
   // Slide any remaining blocks over to the left
