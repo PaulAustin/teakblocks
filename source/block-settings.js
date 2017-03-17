@@ -38,11 +38,11 @@ module.exports = function () {
     var groupDiv = document.createElement("div");
     commonDiv.innerHTML =
     `<div id="block-settings" class="block-config-form blockform">
-        <div class="block-settings-editops"><button id="block-run">
+        <div class="block-settings-editops"><button class="block-run">
             <i class="fa fa-step-forward" aria-hidden="true"></i>
-          </button><button id="block-clone">
+          </button><button class="block-clone">
             <i class="fa fa-clone" aria-hidden="true"></i>
-          </button><button id="block-clear">
+          </button><button class="block-clear">
             <i class="fa fa-trash-o" aria-hidden="true"></i>
           </button></div>
         <div id="block-settings-custom"></div>
@@ -50,11 +50,11 @@ module.exports = function () {
     </div>`;//TABS - uncomment html
     groupDiv.innerHTML =
     `<div id="block-settings" class="block-config-form blockform">
-        <div class="block-settings-editops"><button id="block-run">
+        <div class="block-settings-editops"><button class="block-run">
             <i class="fa fa-step-forward" aria-hidden="true"></i>
-          </button><button id="block-clone">
+          </button><button class="block-clone">
             <i class="fa fa-clone" aria-hidden="true"></i>
-          </button><button id="block-clear">
+          </button><button class="block-clear">
             <i class="fa fa-trash-o" aria-hidden="true"></i>
           </button></div>
     </div>`;
@@ -63,67 +63,82 @@ module.exports = function () {
     blockSettings.commonDiv = commonDiv;
     blockSettings.groupDiv = groupDiv;
 
-    // Add step/run button handler.
-    document.getElementById('block-run').onclick = function() {
-      conductor.playOne(blockSettings.activeBlock);
-    };
 
-    // Add delete button handler.
-    document.getElementById('block-clone').onclick = function() {
-      // TODO grab whole loop if necessary
-      if (blockSettings.activeBlock !== null) {
-        // Back up start if necessary for clone to be logical.
-        var startBlock = blockSettings.activeBlock;
-        if (startBlock.flowHead !== null) {
-          startBlock = startBlock.flowHead;
-        }
-        // Extend end if necessary for clone to be logical.
-        var endBlock = startBlock;
-        if (endBlock.flowTail !== null) {
-          endBlock = endBlock.flowTail;
-        }
-        var clone = tbe.replicateChunk(startBlock, endBlock);
+    for(var i = 0; i < 2; i++){ // To process through commonDiv and groupDiv
+      // Add step/run button handler.
+      document.getElementsByClassName('block-run')[i].onclick = function() {
+        conductor.playOne(blockSettings.activeBlock);
+      };
 
-        // move it to some open space
-        // TODO use more logic to find a good place to put the block.
-        var dy = -140;
-        if (clone.rect.top < 140) {
-          dy = 140;
-        }
-        var animateClone = {
-          frame: 20,
-          adx: 0,
-          ady: dy / 20,
-          chunkStart: clone,
-          chunkEnd: clone.last
-        };
-        tbe.animateMove(animateClone);
-        //clone.dmove(0, -140, true);
-      }
-    };
+      // Add delete button handler.
+      document.getElementsByClassName('block-clone')[i].onclick = function() {
+        // TODO grab whole loop if necessary
+        if (blockSettings.activeBlock !== null) {
+          // Back up start if necessary for clone to be logical.
+          var startBlock = tbe.findChunkStart(blockSettings.activeBlock);
+          if (startBlock.flowHead !== null) {
+            startBlock = startBlock.flowHead;
+          }
+          // Extend end if necessary for clone to be logical.
+          var endBlock = startBlock;
+          if (endBlock.flowTail !== null) {
+            endBlock = endBlock.flowTail;
+          }
+          if(startBlock.isGroupSelected()){
+            while(endBlock.next !== null && endBlock.next.isSelected()){
+              endBlock = endBlock.next;
+            }
+          }
+          var clone = tbe.replicateChunk(startBlock, endBlock);
 
-    // Add delete button handler.
-    document.getElementById('block-clear').onclick = function() {
-      // TODO grab whole loop if necessary
-      if (blockSettings.activeBlock !== null) {
-        // Delete the block.
-        var block1 = blockSettings.activeBlock;
-        var block2 = null;
+          // move it to some open space
+          // TODO use more logic to find a good place to put the block.
+          var dy = -140;
+          if (clone.rect.top < 140) {
+            dy = 140;
+          }
+          var animateClone = {
+            frame: 20,
+            adx: 0,
+            ady: dy / 20,
+            chunkStart: clone,
+            chunkEnd: clone.last
+          };
+          tbe.animateMove(animateClone);
+          //clone.dmove(0, -140, true);
+        }
+      };
 
-        // If ends of a flow block remove both parts,
-        // delete the tail first, since it owns the graphics.
-        if (block1.flowHead !== null) {
-          block2 = block1.flowHead;
-        } else if (block1.flowTail !== null) {
-          block2 = block1;
-          block1 = block1.flowTail;
+      // Add delete button handler.
+      document.getElementsByClassName('block-clear')[i].onclick = function() {
+        // TODO grab whole loop if necessary
+        if (blockSettings.activeBlock !== null) {
+          // Delete the block.
+          var block1 = tbe.findChunkStart(blockSettings.activeBlock);
+          var block2 = null;
+          var endBlock = block1;
+
+          // If the block is part of a selected chain, find the last block in the chain
+          while(endBlock.next !== null && endBlock.next.isSelected()){
+            endBlock = endBlock.next;
+          }
+
+          // If ends of a flow block remove both parts,
+          // delete the tail first, since it owns the graphics.
+          if (block1.flowHead !== null) {
+            block2 = block1.flowHead;
+          } else if (block1.flowTail !== null) {
+            block2 = block1;
+            block1 = block1.flowTail;
+          }
+          tbe.deleteChunk(block1, endBlock);
+
+          if (block2 !== null) {
+            tbe.deleteChunk(block2, block2);
+          }
         }
-        tbe.deleteChunk(block1, block1);
-        if (block2 !== null) {
-          tbe.deleteChunk(block2, block2);
-        }
-      }
-    };
+      };
+    }
 
     // Get a reference to the div that is customized for each block.
     blockSettings.customDiv = document.getElementById('block-settings-custom');
@@ -195,6 +210,7 @@ module.exports = function () {
     } else {
       // Nothing showing, make it popop up.
       this.activeBlock = block;
+      this.activeBlock.svgRect.classList.add('selectedBlock');
       this.showActive(null);
     }
   };
