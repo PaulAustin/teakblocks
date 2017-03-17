@@ -85,10 +85,10 @@ html, body { margin:0; padding:0; overflow:hidden }
   fill: #B3E5FC;
   stroke-width: 4;
   stroke: #1E88E5;
-  animation: selectionFadeIn 0.4s ease;
+  animation: selectionFadeIn 0.3s ease;
 }
 .selectedBlock {
-  transition: stroke 0.4s ease;
+  transition: stroke 0.3s ease;
   stroke-width: 4;
   stroke: #1E88E5;
 }
@@ -98,7 +98,7 @@ html, body { margin:0; padding:0; overflow:hidden }
 /*  transition: fill 0.3s ease; */
   stroke-width: 4;
   stroke: #5A33FF;
-  transition: stroke 0.4s ease;
+  transition: stroke 0.3s ease;
 }
 .function-block-dragging {
   fill: green;
