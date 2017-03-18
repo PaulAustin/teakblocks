@@ -158,12 +158,23 @@ tbe.loadJsoTeak = function(jsoTeak) {
     let i = 0;
     for (i = 0; i < jsoTeak.length; i++) {
       var jsoChain = jsoTeak[i];
-      console.log(' chain?', jsoChain._0);
       if (jsoChain._0 !== 'chain') {
         console.log(' unrecognized chain section');
         return;
       } else {
-        tbe.loadJsoTeakChain(jsoChain, null);
+        var x = jsoChain.x;
+        var y = jsoChain.y;
+        let jsoChainBlocks = jsoChain._3;
+        console.log(' TJDO', jsoChain, x, y);
+        var chain = tbe.loadJsoTeakBlocks(jsoChainBlocks, x, y, null);
+
+        // Refresh the graphics in each block in the chain.
+        var block = chain;
+        while (block !== null) {
+          block.updateSvg();
+          block = block.next;
+        }
+        chain.fixupChainCrossBlockSvg();
       }
     }
   } else {
@@ -172,46 +183,61 @@ tbe.loadJsoTeak = function(jsoTeak) {
   }
 };
 
-tbe.loadJsoTeakChain = function(jsoChain, prev) {
+tbe.loadJsoTeakBlocks = function(jsoBlocks, x, y, prev) {
   let i = 1;
-  let blockName = '';
-  let block = null;
-  let x = jsoChain.x;
-  let y = jsoChain.y;
-  console.log(' TJDO', jsoChain, x, y);
-  let jsoChainBlocks = jsoChain._3;
-  console.log(' cblocks', jsoChainBlocks);
-  for (i = 0; i < jsoChainBlocks.length; i++) {
-    blockName = jsoChainBlocks[i]._0;
-    block = tbe.addBlock(x, y, blockName);
-    x += block.blockWidth;
+  let firstBlock = null;
+  for (i = 0; i < jsoBlocks.length; i++) {
+    const blockName = jsoBlocks[i]._0;
+    const block = tbe.addBlock(x, y, blockName);
+    // console.log('adding block', x, y, blockName, prev);
+    if (firstBlock === null) {
+      firstBlock = block;
+    }
     if (prev !== null) {
       prev.next = block;
       block.prev = prev;
     }
-    // Load block specific settings, and refresh visual.
-    this.loadProperties(block, jsoChainBlocks[i]);
-    block.updateSvg();
-    prev = block;
+    // Load block specific settings, including sub blocks.
+    if (blockName === 'loop') {
+      prev = this.loadLoop(block, jsoBlocks[i]);
+    } else {
+      this.loadBlockDetails(block, jsoBlocks[i]);
+      prev = block;
+    }
+    x = prev.blockRight;
   }
-  return block;
+  return firstBlock;
 };
 
-tbe.loadProperties = function (block, loadedBlock) {
-  for (var key in loadedBlock) {
-    if (loadedBlock.hasOwnProperty(key)) {
-      if (key === '_0') {
-        if (loadedBlock[key] === 'loop') {
-          const count = loadedBlock.count;
-          const jsoChainBlocks = loadedBlock._2;
-          console.log('need to load loop', count, jsoChainBlocks);
-          // The parent block will be the 'prev' in the chain.
-          let subChunkEnd = tbe.loadJsoTeakChain(jsoChainBlocks, block);
-          // Create tail and connect it up.
-        }
-        // Ignore the name property
-      } else {
-        block.controllerSettings.data[key] = loadedBlock[key];
+// Load a loop, TODO needs to be less hardcoded.
+tbe.loadLoop = function (block, jsoBlock) {
+  // Load the sub chunk of blocks
+  const jsoChainBlocks = jsoBlock._2;
+  var x = block.blockRight;
+  const y = block.blockTop;
+  var subChunk = tbe.loadJsoTeakBlocks(jsoChainBlocks, x, y, block);
+  var preTail = null;
+  if (subChunk !== null) {
+    var subChunkEnd = subChunk.last;
+    preTail = subChunkEnd;
+  } else {
+    preTail = block;
+  }
+  // The tail is not serialized, so if must be created and stiched into the list.
+  x = preTail.blockRight;
+  var tail = tbe.addBlock(x, y, 'tail');
+  preTail.next = tail;
+  tail.prev = preTail;
+  block.flowTail = tail;
+  tail.flowHead = block;
+  return tail;
+};
+
+tbe.loadBlockDetails = function (block, jsoBlock) {
+  for (var key in jsoBlock) {
+    if (jsoBlock.hasOwnProperty(key)) {
+      if (key !== '_0') {
+        block.controllerSettings.data[key] = jsoBlock[key];
       }
     }
   }
@@ -492,6 +518,16 @@ Object.defineProperty(tbe.FunctionBlock.prototype, 'chainWidth', {
 Object.defineProperty(tbe.FunctionBlock.prototype, 'blockWidth', {
   get: function() {
     return this.rect.right - this.rect.left;
+  }});
+
+Object.defineProperty(tbe.FunctionBlock.prototype, 'blockRight', {
+  get: function() {
+    return this.rect.right;
+  }});
+
+Object.defineProperty(tbe.FunctionBlock.prototype, 'blockTop', {
+  get: function() {
+    return this.rect.top;
   }});
 
 Object.defineProperty(tbe.FunctionBlock.prototype, 'blockHeight', {
