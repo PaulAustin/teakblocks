@@ -94,7 +94,7 @@ module.exports = function () {
           // move it to some open space
           // TODO use more logic to find a good place to put the block.
           var dy = -140;
-          if (clone.rect.top < 140) {
+          if (clone.top < 140) {
             dy = 140;
           }
           var animateClone = {
@@ -323,12 +323,12 @@ module.exports = function () {
     this.buildControllerTabs();
 
     // Start animation to show settings form.
-    var x = this.activeBlock.rect.left;
-    var y = this.activeBlock.rect.bottom;
+    var x = this.activeBlock.left;
+    var y = this.activeBlock.bottom;
     var div = null;
     if(isSelectedGroup){
       div = blockSettings.groupDiv;
-    } else{
+    } else {
       div = blockSettings.commonDiv;
     }
     div.style.transition = 'all 0.0s ease';

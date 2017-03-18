@@ -30,7 +30,7 @@ teakText.blocksToText = function(blockChainIterator) {
   var indentText = '  ';
   blockChainIterator(function(block) {
     text += indentText + '(chain';
-    text += ' x:' + block.rect.left + ' y:' +  block.rect.top + ' (\n';
+    text += ' x:' + block.left + ' y:' +  block.top + ' (\n';
     text += teakText.chunkToText(block, null, indentText + '  ');
     text += indentText + '))\n';
   });
@@ -151,7 +151,7 @@ teakText.loadJsoTeakBlocks = function(tbe, jsoBlocks, x, y, prev) {
       this.loadBlockDetails(block, jsoBlocks[i]);
       prev = block;
     }
-    x = prev.blockRight;
+    x = prev.right;
   }
   return firstBlock;
 };
@@ -160,8 +160,8 @@ teakText.loadJsoTeakBlocks = function(tbe, jsoBlocks, x, y, prev) {
 teakText.loadLoop = function (tbe, block, jsoBlock) {
   // Load the sub chunk of blocks
   const jsoChainBlocks = jsoBlock._2;
-  var x = block.blockRight;
-  const y = block.blockTop;
+  var x = block.right;
+  const y = block.top;
   var subChunk = teakText.loadJsoTeakBlocks(tbe, jsoChainBlocks, x, y, block);
   var preTail = null;
   if (subChunk !== null) {
@@ -171,7 +171,7 @@ teakText.loadLoop = function (tbe, block, jsoBlock) {
     preTail = block;
   }
   // The tail is not serialized, so if must be created and stiched into the list.
-  x = preTail.blockRight;
+  x = preTail.right;
   var tail = tbe.addBlock(x, y, 'tail');
   preTail.next = tail;
   tail.prev = preTail;

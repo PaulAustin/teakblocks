@@ -242,7 +242,7 @@ tbe.replicateChunk = function(chain, endBlock) {
   // Copy the chain of blocks and set the newBlock field.
   b = chain;
   while (b !== stopPoint) {
-    newBlock = new this.FunctionBlock(b.rect.left, b.rect.top, b.name);
+    newBlock = new this.FunctionBlock(b.left, b.top, b.name);
     b.newBlock = newBlock;
     if (newChain === null) {
       newChain = newBlock;
@@ -421,25 +421,23 @@ Object.defineProperty(tbe.FunctionBlock.prototype, 'chainWidth', {
     return width;
   }});
 
-Object.defineProperty(tbe.FunctionBlock.prototype, 'blockWidth', {
-  get: function() {
-    return this.rect.right - this.rect.left;
-  }});
+Object.defineProperty(tbe.FunctionBlock.prototype, 'top', {
+  get: function() { return this.rect.top; }});
 
-Object.defineProperty(tbe.FunctionBlock.prototype, 'blockRight', {
-  get: function() {
-    return this.rect.right;
-  }});
+Object.defineProperty(tbe.FunctionBlock.prototype, 'left', {
+  get: function() { return this.rect.left; }});
 
-Object.defineProperty(tbe.FunctionBlock.prototype, 'blockTop', {
-  get: function() {
-    return this.rect.top;
-  }});
+Object.defineProperty(tbe.FunctionBlock.prototype, 'bottom', {
+  get: function() { return this.rect.bottom; }});
 
-Object.defineProperty(tbe.FunctionBlock.prototype, 'blockHeight', {
-  get: function() {
-    return this.rect.bottom - this.rect.top;
-  }});
+Object.defineProperty(tbe.FunctionBlock.prototype, 'right', {
+  get: function() { return this.rect.right; }});
+
+Object.defineProperty(tbe.FunctionBlock.prototype, 'width', {
+  get: function() { return this.rect.right - this.rect.left; }});
+
+Object.defineProperty(tbe.FunctionBlock.prototype, 'height', {
+  get: function() { return this.rect.bottom - this.rect.top; }});
 
 // Example of an object property added with defineProperty with an accessor property descriptor
 Object.defineProperty(tbe.FunctionBlock.prototype, 'interactId', {
@@ -565,17 +563,17 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
   var bestRect = null;
   var action = null;
   var rect = null;
-  var thisWidth = this.blockWidth;
+  var thisWidth = this.width;
 
   // Look at every diagram block taking into consideration
   // weather or not it is in the chain.
   tbe.forEachDiagramBlock(function (entry) {
     if (entry !== self  && !entry.dragging) {
       rect = {
-        top:    entry.rect.top,
-        bottom: entry.rect.bottom,
-        left:   entry.rect.left - (thisWidth * 0.5),
-        right:  entry.rect.right - (thisWidth * 0.5),
+        top:    entry.top,
+        bottom: entry.bottom,
+        left:   entry.left - (thisWidth * 0.5),
+        right:  entry.right - (thisWidth * 0.5),
       };
       if (entry.prev === null) {
         // For left edge, increase gravity field
@@ -597,7 +595,7 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
 
   // Refine the action based on geometery.
   if (target !== null) {
-    if (self.rect.left <= (target.rect.left)) {
+    if (self.left <= (target.left)) {
       if (target.prev !== null) {
         action = 'insert';
       } else {
@@ -630,18 +628,18 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
 tbe.FunctionBlock.prototype.insertTargetShadows = function(target, action) {
   var block = this;
   var x = 0;
-  var y = target.rect.top;
+  var y = target.top;
   if (action === 'prepend') {
-    x = target.rect.left - this.chainWidth;
+    x = target.left - this.chainWidth;
   } else if (action === 'insert') {
     // The shadows will be covered up, and not going to move the
     // down stream blocks until the move is committed.
     // so offset them a bit.
     // TODO show abovw OR based on wherr draggin block are coming from.
-    x = target.rect.left - 20;
+    x = target.left - 20;
     y -= 25;
   } else if (action === 'append') {
-    x = target.rect.right;
+    x = target.right;
   } else {
     return;
   }
@@ -650,7 +648,7 @@ tbe.FunctionBlock.prototype.insertTargetShadows = function(target, action) {
     shadow = svgb.createRect('shadow-block', x, y, 80, 80, 10);
     tbe.svg.insertBefore(shadow, tbe.background.nextSibling);
     block.targetShadow = shadow;
-    x += block.blockWidth;
+    x += block.width;
     block = block.next;
   }
 };
@@ -689,19 +687,19 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
     // Append/Prepend the block(chain) to the list
     if(this.snapAction === 'prepend') {
       assert(this.snapTarget.prev === null);
-      targx =  this.snapTarget.rect.left - this.chainWidth;
+      targx =  this.snapTarget.left - this.chainWidth;
       thisLast.next = this.snapTarget;
       this.snapTarget.prev = thisLast;
     } else if (this.snapAction === 'append') {
       assert(this.snapTarget.next === null);
-      targx =  this.snapTarget.rect.right;
+      targx =  this.snapTarget.right;
       this.prev = this.snapTarget;
       this.snapTarget.next = this;
       // slide down post blocks if insert
       // logically here, in annimation bellow
     } else if (this.snapAction === 'insert') {
       assert(this.snapTarget.prev !== null);
-      targx =  this.snapTarget.rect.left;
+      targx =  this.snapTarget.left;
       // Determin space needed for new segment
       // before its spliced in.
       var width = this.chainWidth;
@@ -723,8 +721,8 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
     }
 
     // Set up an animation to move the dragging blocks to new location.
-    var dx = targx - this.rect.left;
-    var dy = this.snapTarget.rect.top - this.rect.top;
+    var dx = targx - this.left;
+    var dy = this.snapTarget.top - this.top;
 
       // TODO:base frame count on distance to final location.
       // The model snaps directly to the target location
@@ -1087,7 +1085,7 @@ tbe.sizePaletteToWindow = function sizePaletteToWindow () {
   var top = h - 90;
 
   tbe.forEachPalette(function(block) {
-    block.dmove(0, top - block.rect.top, true);
+    block.dmove(0, top - block.top, true);
   });
 };
 
@@ -1205,7 +1203,7 @@ tbe.addPalette = function addPalette(palette) {
     if (blocks.hasOwnProperty(key)) {
       var block = this.addPaletteBlock(indent, blockTop, key);
       if (key === 'loop') {
-        var blockTail = this.addPaletteBlock(block.rect.right, blockTop, 'tail');
+        var blockTail = this.addPaletteBlock(block.right, blockTop, 'tail');
         block.next = blockTail;
         blockTail.prev = block;
         // A flow block set has direct pointers between the two end points.
