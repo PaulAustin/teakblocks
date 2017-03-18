@@ -144,101 +144,7 @@ tbe.loadDoc = function(docName) {
     var loadedDocText = save.loadFile(docName);
 
     if (loadedDocText !== null) {
-      var state = {};
-      // Visitor pattern may be better, a lot better.
-      var teakJSO = teak.parse(loadedDocText, state, function(name) { return name; });
-      tbe.loadJsoTeak(teakJSO);
-    }
-  }
-};
-
-tbe.loadJsoTeak = function(jsoTeak) {
-  console.log(' loadJSO', jsoTeak);
-  if (Array.isArray(jsoTeak)) {
-    let i = 0;
-    for (i = 0; i < jsoTeak.length; i++) {
-      var jsoChain = jsoTeak[i];
-      if (jsoChain._0 !== 'chain') {
-        console.log(' unrecognized chain section');
-        return;
-      } else {
-        var x = jsoChain.x;
-        var y = jsoChain.y;
-        let jsoChainBlocks = jsoChain._3;
-        console.log(' TJDO', jsoChain, x, y);
-        var chain = tbe.loadJsoTeakBlocks(jsoChainBlocks, x, y, null);
-
-        // Refresh the graphics in each block in the chain.
-        var block = chain;
-        while (block !== null) {
-          block.updateSvg();
-          block = block.next;
-        }
-        chain.fixupChainCrossBlockSvg();
-      }
-    }
-  } else {
-    console.log(' unrecognized teak file');
-    return;
-  }
-};
-
-tbe.loadJsoTeakBlocks = function(jsoBlocks, x, y, prev) {
-  let i = 1;
-  let firstBlock = null;
-  for (i = 0; i < jsoBlocks.length; i++) {
-    const blockName = jsoBlocks[i]._0;
-    const block = tbe.addBlock(x, y, blockName);
-    // console.log('adding block', x, y, blockName, prev);
-    if (firstBlock === null) {
-      firstBlock = block;
-    }
-    if (prev !== null) {
-      prev.next = block;
-      block.prev = prev;
-    }
-    // Load block specific settings, including sub blocks.
-    if (blockName === 'loop') {
-      prev = this.loadLoop(block, jsoBlocks[i]);
-    } else {
-      this.loadBlockDetails(block, jsoBlocks[i]);
-      prev = block;
-    }
-    x = prev.blockRight;
-  }
-  return firstBlock;
-};
-
-// Load a loop, TODO needs to be less hardcoded.
-tbe.loadLoop = function (block, jsoBlock) {
-  // Load the sub chunk of blocks
-  const jsoChainBlocks = jsoBlock._2;
-  var x = block.blockRight;
-  const y = block.blockTop;
-  var subChunk = tbe.loadJsoTeakBlocks(jsoChainBlocks, x, y, block);
-  var preTail = null;
-  if (subChunk !== null) {
-    var subChunkEnd = subChunk.last;
-    preTail = subChunkEnd;
-  } else {
-    preTail = block;
-  }
-  // The tail is not serialized, so if must be created and stiched into the list.
-  x = preTail.blockRight;
-  var tail = tbe.addBlock(x, y, 'tail');
-  preTail.next = tail;
-  tail.prev = preTail;
-  block.flowTail = tail;
-  tail.flowHead = block;
-  return tail;
-};
-
-tbe.loadBlockDetails = function (block, jsoBlock) {
-  for (var key in jsoBlock) {
-    if (jsoBlock.hasOwnProperty(key)) {
-      if (key !== '_0') {
-        block.controllerSettings.data[key] = jsoBlock[key];
-      }
+      teakText.textToBlocks(tbe, loadedDocText);
     }
   }
 };
@@ -1150,26 +1056,20 @@ tbe.undoAction = function() {
     tbe.currentUndoIndex -= 1;
   }
 
-  if(tbe.undoArray[tbe.currentUndoIndex] !== undefined){
-    var state = {};
-    var content = teak.parse(tbe.undoArray[tbe.currentUndoIndex].toString(), state, function(name) { return name; });
-    tbe.loadJsoTeak(content);
+  if(tbe.undoArray[tbe.currentUndoIndex] !== undefined) {
+    teakText.textToBlocks(tbe, tbe.undoArray[tbe.currentUndoIndex].toString());
   }
 };
 
 tbe.redoAction = function() {
-
-  if(tbe.currentUndoIndex < tbe.undoArray.length - 1){
+  if(tbe.currentUndoIndex < tbe.undoArray.length - 1) {
     //tbe.clearStates();
     tbe.internalClearDiagramBlocks();
     tbe.currentUndoIndex += 1;
-    if(tbe.undoArray[tbe.currentUndoIndex] !== undefined){
-      var state = {};
-      var content = teak.parse(tbe.undoArray[tbe.currentUndoIndex].toString(), state, function(name) { return name; });
-      tbe.loadJsoTeak(content);
+    if(tbe.undoArray[tbe.currentUndoIndex] !== undefined) {
+      teakText.textToBlocks(tbe, tbe.undoArray[tbe.currentUndoIndex].toString());
     }
   }
-
 };
 
 tbe.buildSvgTabs = function buildSvgTabs() {
