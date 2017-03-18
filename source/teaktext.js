@@ -22,7 +22,9 @@ SOFTWARE.
 
 module.exports = function (){
 var teakText = {};
+var teak = require('teak');
 
+//------------------------------------------------------------------------------
 teakText.blocksToText = function(blockChainIterator) {
   var text = '(\n';
   var indentText = '  ';
@@ -86,6 +88,106 @@ teakText.valueToText = function(value) {
     text = String(value);
   }
   return text;
+};
+
+//------------------------------------------------------------------------------
+teakText.textToBlocks = function(tbe, text) {
+  console.log('new loader');
+  var state = {};
+  // Visitor pattern may be better, a lot better.
+  var teakJSO = teak.parse(text, state, function(name) { return name; });
+  teakText.loadJsoTeak(tbe, teakJSO);
+};
+
+teakText.loadJsoTeak = function(tbe, jsoTeak) {
+  console.log(' loadJSO', jsoTeak);
+  if (Array.isArray(jsoTeak)) {
+    let i = 0;
+    for (i = 0; i < jsoTeak.length; i++) {
+      var jsoChain = jsoTeak[i];
+      if (jsoChain._0 !== 'chain') {
+        console.log(' unrecognized chain section');
+        return;
+      } else {
+        var x = jsoChain.x;
+        var y = jsoChain.y;
+        let jsoChainBlocks = jsoChain._3;
+        console.log(' TJDO', jsoChain, x, y);
+        var chain = teakText.loadJsoTeakBlocks(tbe, jsoChainBlocks, x, y, null);
+
+        // Refresh the graphics in each block in the chain.
+        var block = chain;
+        while (block !== null) {
+          block.updateSvg();
+          block = block.next;
+        }
+        chain.fixupChainCrossBlockSvg();
+      }
+    }
+  } else {
+    console.log(' unrecognized teak file');
+    return;
+  }
+};
+
+teakText.loadJsoTeakBlocks = function(tbe, jsoBlocks, x, y, prev) {
+  let i = 1;
+  let firstBlock = null;
+  for (i = 0; i < jsoBlocks.length; i++) {
+    const blockName = jsoBlocks[i]._0;
+    const block = tbe.addBlock(x, y, blockName);
+    // console.log('adding block', x, y, blockName, prev);
+    if (firstBlock === null) {
+      firstBlock = block;
+    }
+    if (prev !== null) {
+      prev.next = block;
+      block.prev = prev;
+    }
+    // Load block specific settings, including sub blocks.
+    if (blockName === 'loop') {
+      prev = this.loadLoop(tbe, block, jsoBlocks[i]);
+    } else {
+      this.loadBlockDetails(block, jsoBlocks[i]);
+      prev = block;
+    }
+    x = prev.blockRight;
+  }
+  return firstBlock;
+};
+
+// Load a loop, TODO needs to be less hardcoded.
+teakText.loadLoop = function (tbe, block, jsoBlock) {
+  // Load the sub chunk of blocks
+  const jsoChainBlocks = jsoBlock._2;
+  var x = block.blockRight;
+  const y = block.blockTop;
+  var subChunk = teakText.loadJsoTeakBlocks(tbe, jsoChainBlocks, x, y, block);
+  var preTail = null;
+  if (subChunk !== null) {
+    var subChunkEnd = subChunk.last;
+    preTail = subChunkEnd;
+  } else {
+    preTail = block;
+  }
+  // The tail is not serialized, so if must be created and stiched into the list.
+  x = preTail.blockRight;
+  var tail = tbe.addBlock(x, y, 'tail');
+  preTail.next = tail;
+  tail.prev = preTail;
+  block.flowTail = tail;
+  tail.flowHead = block;
+  return tail;
+};
+
+teakText.loadBlockDetails = function (block, jsoBlock) {
+  for (var key in jsoBlock) {
+    if (jsoBlock.hasOwnProperty(key)) {
+      if (key !== '_0') {
+        block.controllerSettings.data[key] = jsoBlock[key];
+      }
+    }
+  }
 };
 
 return teakText;
