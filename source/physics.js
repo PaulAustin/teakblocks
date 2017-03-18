@@ -26,8 +26,8 @@ function trashBlocks(editor) {
     //if (true || editor.diagramBlocks.length > 0 ) {
         editor.forEachDiagramBlock(function(block) {
         var frameCount = 100;
-        var xPos = block.rect.left - (window.innerWidth/2);
-        var yPos = block.rect.top - (window.innerHeight/2);
+        var xPos = block.left - (window.innerWidth/2);
+        var yPos = block.top - (window.innerHeight/2);
         //need to find the hyp then divide the xPos and yPos by it
         var hyp = Math.sqrt((xPos * xPos) + (yPos * yPos));
         var getX = (xPos/hyp) * 8;

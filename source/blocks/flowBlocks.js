@@ -85,8 +85,8 @@ module.exports = function () {
     // Make a new one.
     var depth = this.calculateEnclosedScopeDepth(block) + 1;
     // The tail of the flow block does the flow-bar rendering.
-    var left = 40 - (block.rect.left - block.flowHead.rect.left);
-    var width = block.rect.right - block.flowHead.rect.left - 80;
+    var left = 40 - (block.left - block.flowHead.left);
+    var width = block.right - block.flowHead.left - 80;
     var hieght = (8 * depth);
     var dxBar = 4 * depth;
     var radius = 8;

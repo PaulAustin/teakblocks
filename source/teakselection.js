@@ -107,7 +107,7 @@ tbSelecton.startSelectionBoxDrag = function(event) {
      var right = left + width;
      var bottom = top + height;
      //tbe.intersectingArea(block.rect, e.rect) > 0 doesn't work b/c e.rect does not exist
-     if(tbSelecton.selectionIntersectingArea(right, left, top, bottom, block.rect.right, block.rect.left, block.rect.top, block.rect.bottom) > 0) {
+     if(tbSelecton.selectionIntersectingArea(right, left, top, bottom, block.right, block.left, block.top, block.bottom) > 0) {
         block.svgRect.classList.add('selectedBlock');
      } else {
        block.svgRect.classList.remove('selectedBlock');
