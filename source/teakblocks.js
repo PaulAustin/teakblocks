@@ -298,15 +298,8 @@ tbe.replicateChunk = function(chain, endBlock) {
 //        *--- [svgCrossBlock] option behind block region graphics
 //
 tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
-  // Make a editor modle object that holds onto JS object and wraps
-  // the SVG object
-  this.rect  = {
-      left:   0,
-      top:    0,
-      right:  80,
-      bottom: 80,
-  };
 
+  // Connect the generic block class to the behaviour definition class.
   this.name = blockName;
   this.funcs = fblocks.bind(blockName);
   if (typeof this.funcs.defaultSettings === 'function' ) {
@@ -320,7 +313,8 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   this.next = null;
   this.flowHead = null;
   this.flowTail = null;
-  // Blocks at the top leve have a nesting of 0
+
+  // Blocks at the top level have a nesting of 0
   this.nesting = 0;
   this.newBlock = null;
 
@@ -330,16 +324,26 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   this.snapAction = null;   // append, prepend, replace, ...
   this.targetShadow = null; // Svg element to hilite target location
 
-  this.svgGroup = svgb.createGroup('drag-group', 0, 0);
-
   // Create the actual SVG object. Its a group of two pieces:
   // a rounded rect and a group that holds the custom graphics for the block.
-  this.svgRect = svgb.createRect('function-block', 0, 0, 80, 80, 10);
+  let width = this.controllerSettings.width;
+  if (width === undefined) {
+    width = 80;
+  }
+  this.rect  = {
+      left:   0,
+      top:    0,
+      right:  width,
+      bottom: 80,
+  };
+  this.svgGroup = svgb.createGroup('drag-group', 0, 0);
+  this.svgRect = svgb.createRect('function-block', 0, 0, width, 80, 10);
   this.svgGroup.appendChild(this.svgRect);
   this.svgCustomGroup = null; // see updateSvg()
-
-  this.dmove(x, y, true);
   this.updateSvg();
+
+  // Position block, relative to it initila location at 0, 0
+  this.dmove(x, y, true);
 
   // Add block to the editor tree. This makes it visible.
   tbe.svg.appendChild(this.svgGroup);
@@ -645,7 +649,7 @@ tbe.FunctionBlock.prototype.insertTargetShadows = function(target, action) {
   }
   var shadow = null;
   while (block !== null) {
-    shadow = svgb.createRect('shadow-block', x, y, 80, 80, 10);
+    shadow = svgb.createRect('shadow-block', x, y, block.width, block.height, 10);
     tbe.svg.insertBefore(shadow, tbe.background.nextSibling);
     block.targetShadow = shadow;
     x += block.width;

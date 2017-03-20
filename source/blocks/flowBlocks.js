@@ -25,6 +25,7 @@ module.exports = function () {
   var svgb = require('./../svgbuilder.js');
   var flowBlockHead = {};
   var flowBlockTail = {};
+  var flowBlockWidth = 50;
 
   // List of HTML snippets used for controller tabs.
   // flow block uses text labels for now.
@@ -44,7 +45,9 @@ module.exports = function () {
       // And the data that goes with that editor.
       data: {count:5},
       // Indicate what controller is active. This may affect the data format.
-      controller: 'forLoop'
+      controller: 'forLoop',
+      // Width of the block
+      width: flowBlockWidth
     };
   };
   flowBlockTail.defaultSettings = flowBlockHead.defaultSettings;
@@ -85,8 +88,8 @@ module.exports = function () {
     // Make a new one.
     var depth = this.calculateEnclosedScopeDepth(block) + 1;
     // The tail of the flow block does the flow-bar rendering.
-    var left = 40 - (block.left - block.flowHead.left);
-    var width = block.right - block.flowHead.left - 80;
+    var left = (flowBlockWidth / 2) - (block.left - block.flowHead.left);
+    var width = block.right - block.flowHead.left - flowBlockWidth;
     var hieght = (8 * depth);
     var dxBar = 4 * depth;
     var radius = 8;
