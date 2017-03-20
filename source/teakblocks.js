@@ -811,17 +811,6 @@ tbe.findChunkStart = function findChunkStart(clickedBlock) {
   return chunkStart;
 };
 
-// Adds and removes the class for a selected block based on position
-tbe.checkForSelectedBlocks = function(e) {
-  tbe.forEachDiagramBlock( function(block) {
-    if(tbe.intersectingArea(block.rect, e.rect) > 0) {
-      block.svgRect.classList.add('selectedBlock');
-    } else {
-      block.svgRect.classList.remove('selectedBlock');
-    }
-  });
-};
-
 // Attach these interactions properties based on the class property of the DOM elements
 tbe.configInteractions = function configInteractions() {
   var thisTbe = tbe;

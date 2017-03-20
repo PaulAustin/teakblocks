@@ -75,8 +75,14 @@ tbSelecton.init = function(tbe) {
         // clientX0, clientY0 reflect the initial location at start.
         svgb.translateXY(tbSelecton.selectionSvg, left, top);
         svgb.resizeRect(tbSelecton.selectionSvg, width, height);
+        let rect = {
+          left: left,
+          top: top,
+          right: left + width,
+          bottom: top + height,
+        };
         //console.log(left, top, width, height, tbe);
-        tbSelecton.checkForSelectedBlocks(left, top, width, height, tbe);
+        tbSelecton.checkForSelectedBlocks(rect, tbe);
       }
     });
 };
@@ -101,29 +107,17 @@ tbSelecton.startSelectionBoxDrag = function(event) {
  };
 
  // Adds and removes the class for a selected block based on position
- tbSelecton.checkForSelectedBlocks = function(left, top, width, height, tbe) {
+ tbSelecton.checkForSelectedBlocks = function(rect, tbe) {
    tbe.forEachDiagramBlock( function(block) {
-     //console.log(e);
-     var right = left + width;
-     var bottom = top + height;
-     //tbe.intersectingArea(block.rect, e.rect) > 0 doesn't work b/c e.rect does not exist
-     if(tbSelecton.selectionIntersectingArea(right, left, top, bottom, block.right, block.left, block.top, block.bottom) > 0) {
-        block.svgRect.classList.add('selectedBlock');
+     if (tbe.intersectingArea(rect, block.rect) > 0) {
+       // TODO moving to the front interrupts (prevents) the animations.
+       tbe.svg.removeChild(block.svgGroup);
+       tbe.svg.appendChild(block.svgGroup);
+       block.svgRect.classList.add('selectedBlock');
      } else {
        block.svgRect.classList.remove('selectedBlock');
      }
    });
- };
- tbSelecton.selectionIntersectingArea = function selectionIntersectingArea(right1, left1, top1, bottom1, right2, left2, top2, bottom2) {
-     var x = Math.min(right1, right2) - Math.max(left1, left2);
-     if (x < 0 ){
-       return 0;
-     }
-     var y = Math.min(bottom1, bottom2) - Math.max(top1, top2);
-     if (y < 0) {
-       return 0;
-     }
-     return x * y;
  };
 
 return tbSelecton;
