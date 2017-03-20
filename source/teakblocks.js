@@ -24,7 +24,6 @@ module.exports = function (){
 
 var assert = require('assert');
 var interact = require('interact.js');
-var teak = require('teak');
 var tf = require('./teak-forms.js');
 var teakText = require('./teaktext.js');
 var svgb = require('./svgbuilder.js');
