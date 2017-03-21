@@ -208,9 +208,9 @@ module.exports = function () {
       setTimeout(function() { blockSettings.showActive(); }, 400);
 //      this.addEventListener(this.showActive, 500);
     } else {
-      // Nothing showing, make it popop up.
+      // Nothing showing, make it pop-up.
+      block.markSelected(true);
       this.activeBlock = block;
-      this.activeBlock.svgRect.classList.add('selectedBlock');
       this.showActive(null);
     }
   };

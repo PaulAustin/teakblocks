@@ -109,14 +109,7 @@ tbSelecton.startSelectionBoxDrag = function(event) {
  // Adds and removes the class for a selected block based on position
  tbSelecton.checkForSelectedBlocks = function(rect, tbe) {
    tbe.forEachDiagramBlock( function(block) {
-     if (tbe.intersectingArea(rect, block.rect) > 0) {
-       // TODO moving to the front interrupts (prevents) the animations.
-       tbe.svg.removeChild(block.svgGroup);
-       tbe.svg.appendChild(block.svgGroup);
-       block.svgRect.classList.add('selectedBlock');
-     } else {
-       block.svgRect.classList.remove('selectedBlock');
-     }
+     block.markSelected(tbe.intersectingArea(rect, block.rect) > 0);
    });
  };
 
