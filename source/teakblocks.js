@@ -81,7 +81,7 @@ tbe.clearStates = function clearStates(block) {
   // If the user has interacted with a general part of the editor.
   tf.hideOpenForm();
   this.components.blockSettings.hide(block);
-  tbe.forEachDiagramBlock( function(deleteBlock) {  deleteBlock.svgRect.classList.remove('selectedBlock'); });
+  tbe.forEachDiagramBlock( function(b) { b.markSelected(false); });
 };
 
 tbe.init = function init(svg, text) {
@@ -480,6 +480,17 @@ tbe.FunctionBlock.prototype.setDraggingState = function (state) {
   }
 };
 
+tbe.FunctionBlock.prototype.markSelected = function(state) {
+  if (state) {
+    // TODO moving to the front interrupts (prevents) the animations.
+    tbe.svg.removeChild(this.svgGroup);
+    tbe.svg.appendChild(this.svgGroup);
+    this.svgRect.classList.add('selectedBlock');
+  } else {
+    this.svgRect.classList.remove('selectedBlock');
+  }
+};
+
 tbe.FunctionBlock.prototype.isSelected = function() {
   return this.svgRect.classList.contains('selectedBlock');
 };
@@ -488,12 +499,12 @@ tbe.FunctionBlock.prototype.isGroupSelected = function() {
   var before = false;
   var after = false;
   if(this.next !== null){
-    before = this.next.svgRect.classList.contains('selectedBlock');
+    before = this.next.isSelected();
   }
   if(this.prev !== null){
-    after = this.prev.svgRect.classList.contains('selectedBlock');
+    after = this.prev.isSelected();
   }
-  if(this.svgRect.classList.contains('selectedBlock') && (before || after)){
+  if(this.isSelected() && (before || after)){
     return true;
   }
   return false;
