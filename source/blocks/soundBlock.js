@@ -32,7 +32,7 @@ module.exports = function () {
   };
 
   // Initial setting for blocks of this type.
-  soundBlock.defaultSettings= function() {
+  soundBlock.defaultSettings = function() {
     // return a new object with settings for the controller.
     return {
       // And the data that goes with that editor.
@@ -60,7 +60,7 @@ module.exports = function () {
     { name:'A#4', f:466.1, keyShift:4  }
   ];
 
-  soundBlock.configurator= function(div, block) {
+  soundBlock.configuratorOpen = function(div, block) {
     soundBlock.activeBlock = block;
     div.innerHTML =
         `<div id='pictureEditorDiv'>

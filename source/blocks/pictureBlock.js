@@ -61,7 +61,7 @@ module.exports = function () {
   };
 
   // Initial setting for blocks of this type.
-  pictureBlock.defaultSettings= function() {
+  pictureBlock.defaultSettings = function() {
     // return a new object with settings for the controller.
     return {
       // And the data that goes with that editor.
@@ -94,11 +94,11 @@ module.exports = function () {
 
   // Inject the HTML for the controllers editor.
   // TODO: pass in the controller. That might all move our of this class.
-  pictureBlock.configuratorClose= function(div, block) {
+  pictureBlock.configuratorClose = function(div, block) {
     console.log('configurator closing', block);
   };
 
-  pictureBlock.configurator= function(div, block) {
+  pictureBlock.configuratorOpen = function(div, block) {
     div.innerHTML =
         `<div id='pictureEditorDiv'>
           <svg id='pictureEditor' width=175px height=175px xmlns='http://www.w3.org/2000/svg'>

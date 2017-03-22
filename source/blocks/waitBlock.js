@@ -27,7 +27,7 @@ module.exports = function () {
   var waitBlock = {};
 
   // Initial setting for blocks of this type.
-  waitBlock.defaultSettings= function() {
+  waitBlock.defaultSettings = function() {
     // return a new object with settings for the controller.
     return {
       // And the data that goes with that editor.
@@ -51,7 +51,7 @@ module.exports = function () {
     return root;
   };
 
-  waitBlock.configurator= function(div) {
+  waitBlock.configuratorOpen = function(div) {
     div.innerHTML =
         `<div id='pictureEditorDiv'>
           <br>

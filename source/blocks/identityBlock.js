@@ -84,7 +84,7 @@ module.exports = function () {
     };
   };
 
-  identityBlock.configurator = function(div, block) {
+  identityBlock.configuratorOpen = function(div, block) {
     identityBlock.activeBlock = block;
     div.innerHTML =
       `<div class='list-box-shell'>
