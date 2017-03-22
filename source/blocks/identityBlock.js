@@ -31,23 +31,6 @@ module.exports = function () {
   // Items for selecting a device from a list.
   identityBlock.devices = ko.observableArray([]);
 
-/*
-  identityBlock.connect = function(device) {
-
-    if (device === null)
-      return;
-
-    // Mark selected, so data-binding will select the item.
-    device.selected(true);
-    // Mark time stamp 0 so it wont be removed from the list.
-    // TODO, once connected the ts will be updated after
-    // each communication with the target. If it stop responding
-    // then it may stay in the list but be 'greyed out'
-    device.ts = 0;
-
-  };
-*/
-
   identityBlock.onDeviceClick = function() {
     // Ah JavaScript... 'this' is NOT identityBlock.
     // It is the knockout item in the observable array.
@@ -117,6 +100,7 @@ module.exports = function () {
 
     identityBlock.refreshList(ble.devices);
     ble.observeDevices(identityBlock.refreshList);
+    ble.startObserving();
   };
 
   identityBlock.refreshList = function (bots) {
@@ -134,6 +118,7 @@ module.exports = function () {
 
   identityBlock.configuratorClose = function(div) {
     ble.observeDevices(null);
+    ble.stopObserving();
     identityBlock.activeBlock = null;
     ko.cleanNode(div);
   };
@@ -175,39 +160,7 @@ module.exports = function () {
       root.appendChild(svgb.createCircle('svg-clear ' + statusClass, 40, 65, 5));
     }
   };
-/*
-  identityBlock.foundDevice = function (bleDeviceInfo) {
 
-    // It the item found matches the block name mark the UX as selected.
-    // until that that happens the block should indicate that it is not connected.
-
-    // Does it look like real device?
-    if (bleDeviceInfo.name !== undefined) {
-      var hwType = '';
-      if (bleDeviceInfo.name.startsWith('BBC micro:bit [')) {
-        var str = bleDeviceInfo.name.split('[', 2)[1].split(']',1)[0];
-        // Over writing name, not a good idea.
-        bleDeviceInfo.name = str;
-        hwType = 'micro:bit';
-      } else {
-        // arduino, other...
-        hwType = 'unknown';
-      }
-
-      var now = Date.now();
-
-      // See if that item already exists, if not, add it.
-      var match = ko.utils.arrayFirst(identityBlock.devices(), function(item) {
-        return (item().name === bleDeviceInfo.name);
-      });
-      if (!match) {
-        identityBlock.addItem(bleDeviceInfo, Date.now(), hwType);
-      } else {
-        match().ts = now;
-      }
-    }
-  };
-*/
   identityBlock.addItem = function (botName) {
 
     var block = identityBlock.activeBlock;
