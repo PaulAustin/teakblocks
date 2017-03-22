@@ -42,7 +42,6 @@ module.exports = function () {
   conductor.attachToScoreEditor = function(tbe) {
     conductor.tbe = tbe;
     conductor.linkHeartBeat();
-    conductor.ble.startObserving();
   };
 
   conductor.linkHeartBeat = function() {
