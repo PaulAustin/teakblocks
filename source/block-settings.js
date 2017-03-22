@@ -292,9 +292,9 @@ module.exports = function () {
   // Build the middle from part, the controllers editor.
   blockSettings.buildController = function() {
     // Allow block to customize bottom part of form.
-    var congfigurator = this.activeBlock.funcs.configurator;
-    if (typeof congfigurator === "function") {
-      congfigurator(blockSettings.customDiv, this.activeBlock);
+    var congfiguratorOpen = this.activeBlock.funcs.configuratorOpen;
+    if (typeof congfiguratorOpen === "function") {
+      congfiguratorOpen(blockSettings.customDiv, this.activeBlock);
     } else {
       blockSettings.customDiv.innerHTML =
       `<div>
