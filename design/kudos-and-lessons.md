@@ -472,3 +472,9 @@ There is quite likely a hint of smalltalk here.
  var.write  // passively write value, may be ignored
  var.subscribe  // trigger on new value?
  var.state  // => static, idle, time-dependent, world-dependent,...
+
+### signign an alpha app.
+
+[stackoverflow discussion](http://stackoverflow.com/questions/26449512/how-to-create-a-signed-apk-file-using-cordova-command-line-interface)
+
+ keytool -genkey -v -keystore teakblocks.keystore -alias teakblocks -keyalg RSA -keysize 2048 -validity 10000
