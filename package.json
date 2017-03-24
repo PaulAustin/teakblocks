@@ -10,6 +10,7 @@
     "wify": "watchify source/index.js -o html_app/www/bundled_tbe.js -v",
     "azap": "npm run bifyu; npm run abuild; npm run adeploy",
     "abuild": "cd html_app; cordova build android",
+    "abuildr": "cd html_app; cordova build android --release -- --keystore=./teakblocks.keystore --alias=teakblocks",
     "ibuild": "cd html_app; cordova build iOS",
     "irun": "cd html_app; cordova run iOS",
     "cpfonts": "cp -R node_modules/font-awesome/  html_app/www/font-awesome/",
