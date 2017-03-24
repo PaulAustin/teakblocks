@@ -72,7 +72,7 @@ module.exports = function () {
         }
       }
     }
-    conductor.hbTimer = setTimeout(function() { conductor.linkHeartBeat(); }, 2000);
+    conductor.hbTimer = setTimeout(function() { conductor.linkHeartBeat(); }, 1000);
   };
 
   conductor.checkAllIdentityBlocks = function() {
