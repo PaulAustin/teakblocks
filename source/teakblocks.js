@@ -353,7 +353,22 @@ tbe.FunctionBlock.prototype.updateSvg = function() {
   // Remove the old custom image if they exist.
   if (this.svgCustomGroup !== null) {
     this.svgGroup.removeChild(this.svgCustomGroup);
+}
+// Checks if block passed in is in the same chain as this.
+tbe.FunctionBlock.prototype.chainContainsBlock = function(other){
+  // Block is the first block of the chain.
+  var block = this.first;
+  // Go through the whole chain and look for if any blocks same as other.
+  while(block !== null){
+    // If a similarity is found, return true.
+    if(block === other){
+      return true;
+    }
+    block = block.next;
   }
+  //If none found, return false.
+  return false;
+};
 
   // Build custom image for this block.
   this.svgCustomGroup = svgb.createGroup('', 0, 0);

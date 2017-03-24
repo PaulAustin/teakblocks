@@ -30,6 +30,7 @@ var tbSelecton = {};
 // first created, espicially on a touch based device.
 var minDim = 20;
 tbSelecton.selectionSvg = null;
+tbSelecton.currentChain = null;
 
 tbSelecton.init = function(tbe) {
   tbSelecton.tbe = tbe;
@@ -42,11 +43,13 @@ tbSelecton.init = function(tbe) {
         tbSelecton.x0 = event.clientX;
         tbSelecton.y0 = event.clientY;
         svgb.translateXY(tbSelecton.selectionSvg, event.clientX, event.clientY);
+        tbSelecton.currentChain = null;
       },
       onend: function() {
         // Remove the selection rectangle
         tbe.svg.removeChild(tbSelecton.selectionSvg);
         tbSelecton.selectionSvg = null;
+        tbSelecton.currentChain = null;
       },
       onmove: function (event) {
         // Determine the top left and the width height basd on the pointer
@@ -106,11 +109,30 @@ tbSelecton.startSelectionBoxDrag = function(event) {
         tbSelecton.selectionSvg);
  };
 
- // Adds and removes the class for a selected block based on position
+ // Adds and removes the class for a selected block based on position and order of selection.
  tbSelecton.checkForSelectedBlocks = function(rect, tbe) {
-   tbe.forEachDiagramBlock( function(block) {
-     block.markSelected(tbe.intersectingArea(rect, block.rect) > 0);
-   });
+   var intersecting = [];
+      // Take all of the blocks int the selection area and push it to the array.
+     tbe.forEachDiagramBlock( function(block) {
+       if(tbe.intersectingArea(rect, block.rect) > 0){
+         intersecting.push(block);
+       }
+     });
+     // If nothing is in the selection area, then clear the intersecting array.
+     if(intersecting.length === 0){
+       tbSelecton.currentChain = null;
+       intersecting = [];
+     } else if(tbSelecton.currentChain === null){ // If nothing is in currentChain, then put in the first selected block.
+       tbSelecton.currentChain = tbe.findChunkStart(intersecting[0]);
+     }
+     // If the block is in intersecting array and it is in the currentChain, select it. Otherwise, deselect it.
+     tbe.forEachDiagramBlock(function(block) {
+       if(intersecting.includes(block) && tbSelecton.currentChain.chainContainsBlock(block)){
+         block.markSelected(tbe.intersectingArea(rect, block.rect) > 0);
+       } else{
+         block.markSelected(false);
+       }
+     });
  };
 
 return tbSelecton;
