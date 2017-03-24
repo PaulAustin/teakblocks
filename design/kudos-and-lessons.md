@@ -456,11 +456,19 @@ while(c.count()) {
   print(c.value());
 }
 
-Its a bit mutch for simple counters, but is well suited for many othet cases.
-basically variables are give an atonomous nature. it may be simple but it is
-atonomous, like nature it self.
+Its a bit much for simple counters, but is well suited for many othet cases.
+basically variables are give an autonomous nature. it may be simple but it is
+autonomous, like nature it self.
 
-makeing a var that takes on sine value, plays a waveform, etc is now more direct.
+making a var that takes on sine value, plays a waveform, etc is now more direct.
 a simple variable does nothing on its own, but can be set. Well the do
 initialize themselves. They are never uninitialized, as nature never is.
 There is quite likely a hint of smalltalk here.
+
+ var.next   // used on Loops
+ var.record // add a new value to the stat ( average, max, min, ....)
+ var.reset  // type specific
+ var.read   // passively read current value
+ var.write  // passively write value, may be ignored
+ var.subscribe  // trigger on new value?
+ var.state  // => static, idle, time-dependent, world-dependent,...
