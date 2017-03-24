@@ -12,3 +12,7 @@ html_app/www/bundled_tbe.js
 npm-debug.log
 
 html_app/res/mipmap-mdpi/icon.png
+
+*.keystore
+
+html_app/.DS_Store

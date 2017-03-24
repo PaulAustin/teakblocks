@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="io.hld.teakblocks" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="org.trashbots.teakblocks" version="0.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Teak Blocks</name>
     <description>
-        A block editor for teak programs.
+        A block editor for Trasbots.
     </description>
-    <author email="paul.austin@hld.io" href="http://hld.io">
+    <author email="paul@trashbots.org" href="http://trashbots.org">
         Paul Austin
     </author>
     <icon src="res/app-icon.png" />
