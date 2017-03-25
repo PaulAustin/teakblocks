@@ -84,9 +84,8 @@ tbe.clearStates = function clearStates(block) {
   tbe.forEachDiagramBlock( function(b) { b.markSelected(false); });
 };
 
-tbe.init = function init(svg, text) {
+tbe.init = function init(svg) {
   this.svg = svg;
-  this.teakCode = text;
   this.background = svgb.createRect('editor-background', 0, 0, 20, 20, 0);
   this.svg.appendChild(this.background);
   this.configInteractions();
@@ -133,7 +132,7 @@ tbe.loadDoc = function(docName) {
   // First, save the current document.
   var currentDocText = teakText.blocksToText(tbe.forEachDiagramChain);
   console.log('doc is', docName, ' save text is', currentDocText);
-  save.saveFile(tbe.currentDoc, currentDocText);//document.getElementById('teakCode').innerHTML);
+  save.saveFile(tbe.currentDoc, currentDocText);
 
   // Second if they are actully switching then load the new one.
   if (tbe.currentDoc !== docName) {
@@ -1034,9 +1033,6 @@ tbe.stage2deletion = function(fastr){
 tbe.undoArray[0] = teakText.blocksToText(tbe.forEachDiagramChain);
 
 tbe.diagramChanged = function diagramChanged() {
-  if (teakText) {
-    this.teakCode.value = teakText.blocksToText(tbe.forEachDiagramChain);
-  }
   var text = teakText.blocksToText(tbe.forEachDiagramChain);
 
   // Checks if the text to be added is the same as the last one added

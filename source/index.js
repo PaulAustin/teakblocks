@@ -76,9 +76,7 @@ function deviceReady() {
   tbe.audio.shortClick.preload = 'true';
   tbe.audio.poof.preload = 'true';
 
-  tbe.init(
-    document.getElementById('editorCanvas'),
-    document.getElementById('teakCode'));
+  tbe.init(document.getElementById('editorCanvas'));
 
   tbe.deleteRay = null;
   tbe.commands = {
