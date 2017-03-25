@@ -1232,3 +1232,4 @@ tbe.addPalette = function addPalette(palette) {
 
 return tbe;
 }();
+// comment
