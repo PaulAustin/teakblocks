@@ -199,12 +199,15 @@ module.exports = function () {
   blockSettings.tap = function(block) {
     if (this.activeBlock === block) {
       // Clicked on the same block make it go away.
-      this.hide();
+      //this.hide();
+      tbe.clearStates();
     } else if (this.activeBlock !== null) {
       // Clicked on another block, but one is showing, make it go away.
       // Then show the new one once the hide transition is done.
-      this.hide();
+      //this.hide();
+      tbe.clearStates();
       this.activeBlock = block;
+      block.markSelected(true);
       setTimeout(function() { blockSettings.showActive(); }, 400);
 //      this.addEventListener(this.showActive, 500);
     } else {
