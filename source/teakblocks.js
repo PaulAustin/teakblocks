@@ -893,7 +893,6 @@ tbe.configInteractions = function configInteractions() {
       if (block.isPaletteBlock) {
         return;
       }
-      tbe.clearStates();
       thisTbe.components.blockSettings.tap(block);
     })
     .on('hold', function(event) {
