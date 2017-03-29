@@ -311,6 +311,8 @@ module.exports = function () {
   // Internal method to show the form.
   blockSettings.showActive = function (event) {
     var isSelectedGroup = false;
+    var tweakx = 0;
+    var tweaky = 0;
 
     if(this.activeBlock !== null && this.activeBlock.isGroupSelected()){
       isSelectedGroup = true;
@@ -334,10 +336,19 @@ module.exports = function () {
     } else {
       div = blockSettings.commonDiv;
     }
+    // TODO make the config panel height NOT hardcoded
+    if(x-80 < 0){
+      tweakx = 85-x;
+    } else if(x+160 > window.innerWidth){
+      tweakx = window.innerWidth - (x+165);
+    }
+    if(y+220 > window.innerHeight){
+      tweaky = -230 - this.activeBlock.height;
+    }
     div.style.transition = 'all 0.0s ease';
-    div.style.left = (x-80) + 'px';
-    div.style.right = (x+80) + 'px';
-    div.style.top = (y+5) + 'px';
+    div.style.left = ((x-80) + tweakx) + 'px';
+    div.style.right = ((x+80) + tweakx) + 'px';
+    div.style.top = ((y+5) + tweaky) + 'px';
     // Second step has to be done in callback in order to allow
     // animation to work.
     setTimeout(function() {
