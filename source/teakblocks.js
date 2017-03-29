@@ -834,6 +834,22 @@ tbe.findChunkStart = function findChunkStart(clickedBlock) {
   }
   return chunkStart;
 };
+document.body.addEventListener("keydown",function(e){
+    e = e || window.event;
+    var key = e.which || e.keyCode; // keyCode detection
+    var ctrl = e.ctrlKey ? e.ctrlKey : ((key === 17) ? true : false); // ctrl detection
+
+    if ( key === 86 && ctrl ) {
+        console.log("Ctrl + V Pressed !");
+    } else if ( key === 67 && ctrl ) {
+        console.log("Ctrl + C Pressed !");
+    } else if ( key === 90 && ctrl) {
+        tbe.undoAction();
+    } else if ( key === 89 && ctrl) {
+      tbe.redoAction();
+    }
+
+},false);
 
 // Attach these interactions properties based on the class property of the DOM elements
 tbe.configInteractions = function configInteractions() {
