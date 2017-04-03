@@ -812,7 +812,7 @@ tbe.internalClearDiagramBlocks = function clearDiagramBlocks() {
 tbe.findChunkStart = function findChunkStart(clickedBlock) {
 
   var chunkStart = clickedBlock;
-  while(chunkStart.isSelected) {
+  while(chunkStart.isSelected()) {
     if (chunkStart.prev !== null && chunkStart.prev.isSelected()){
       chunkStart = chunkStart.prev;
     } else {
@@ -843,6 +843,38 @@ document.body.addEventListener("keydown",function(e){
         console.log("Ctrl + V Pressed !");
     } else if ( key === 67 && ctrl ) {
         console.log("Ctrl + C Pressed !");
+        var array = [];
+        tbe.forEachDiagramBlock( function(block){
+          if(block.isSelected()){
+            array.push(block);
+          }
+        });
+        var textArea = document.createElement("textarea");
+
+        textArea.style.position = 'fixed';
+        textArea.style.top = 0;
+        textArea.style.left = 0;
+        textArea.style.width = '2em';
+        textArea.style.height = '2em';
+        textArea.style.padding = 0;
+        textArea.style.border = 'none';
+        textArea.style.outline = 'none';
+        textArea.style.boxShadow = 'none';
+        textArea.style.background = 'transparent';
+
+        textArea.value = teakText.chunkToText(tbe.findChunkStart(array[0]), null, '');
+        document.body.appendChild(textArea);
+        textArea.select();
+
+        try {
+          var successful = document.execCommand('copy');
+          var msg = successful ? 'successful' : 'unsuccessful';
+          console.log('Copying text command was ' + msg);
+        } catch (err) {
+          console.log('Oops, unable to copy');
+        }
+
+        document.body.removeChild(textArea);
     } else if ( key === 90 && ctrl) {
         tbe.undoAction();
     } else if ( key === 89 && ctrl) {

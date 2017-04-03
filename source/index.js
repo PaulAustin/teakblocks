@@ -30,7 +30,7 @@ function deviceReady() {
   var ko = require('knockout');
   var Clipboard = require('clipboard');
   var tt = require('./teaktext.js');
-  var conductor = require('./conductor.js')
+  var conductor = require('./conductor.js');
 
   /* font awesome strings */
   var fastr = {
