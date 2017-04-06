@@ -861,17 +861,19 @@ document.body.addEventListener("keydown",function(e){
         textArea.style.outline = 'none';
         textArea.style.boxShadow = 'none';
         textArea.style.background = 'transparent';
+        if(array.length >= 0){
+          textArea.value = teakText.chunkToText(tbe.findChunkStart(array[0]), null, '');
+          console.log(textArea);
+          document.body.appendChild(textArea);
+          textArea.select();
 
-        textArea.value = teakText.chunkToText(tbe.findChunkStart(array[0]), null, '');
-        document.body.appendChild(textArea);
-        textArea.select();
-
-        try {
-          var successful = document.execCommand('copy');
-          var msg = successful ? 'successful' : 'unsuccessful';
-          console.log('Copying text command was ' + msg);
-        } catch (err) {
-          console.log('Oops, unable to copy');
+          try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Copying text command was ' + msg);
+          } catch (err) {
+            console.log('Oops, unable to copy');
+          }
         }
 
         document.body.removeChild(textArea);
