@@ -45,6 +45,7 @@ tbe.currentUndoIndex = 0;
 tbe.stopUndo = false;
 tbe.actionButtons = null;
 tbe.draggingSelectionArea = null;
+tbe.defaultBlockLoc = [window.innerWidth * 0.1, window.innerHeight * 0.3];
 
 tbe.forEachDiagramBlock = function (callBack) {
   for (var key in tbe.diagramBlocks) {
@@ -834,6 +835,47 @@ tbe.findChunkStart = function findChunkStart(clickedBlock) {
   }
   return chunkStart;
 };
+// Finds the block before where a block can be placed (end of chain)
+// Used when block is dropped by tapping on palette
+tbe.findInsertionPoint = function findInsertionPoint(){
+  var foundBlock = null;
+  var defaultX = Math.round(tbe.defaultBlockLoc[0]);
+  var defaultY = Math.round(tbe.defaultBlockLoc[1]);
+
+  // Find the block at the default location
+  tbe.forEachDiagramBlock( function(block){
+    var top = block.top;
+    var left = block.left;
+    if(top === defaultY && left === defaultX){
+      foundBlock = block;
+    }
+  });
+  // Go find the end of the chain with foundBlock as the start
+  while(foundBlock !== null && foundBlock.next !== null){
+    foundBlock = foundBlock.next;
+  }
+  return foundBlock;
+};
+// Places variable block after the the insertion point
+tbe.autoPlace = function autoPlace(block){
+  var foundBlock = tbe.findInsertionPoint();
+  block = tbe.replicateChunk(block);
+  var x = tbe.defaultBlockLoc[0];
+  var y = tbe.defaultBlockLoc[1];
+  var dx = Math.round(x-block.left);
+  var dy = Math.round(y-block.top);
+
+  // Check if a chain currently exists
+  // If one exists, move the block next to it
+  if(foundBlock === null){
+    block.dmove(dx, dy);
+  } else{
+    block.dmove(dx + foundBlock.right - x, dy);
+    foundBlock.next = block;
+    block.prev = foundBlock;
+  }
+};
+
 document.body.addEventListener("keydown",function(e){
     e = e || window.event;
     var key = e.which || e.keyCode; // keyCode detection
@@ -941,9 +983,10 @@ tbe.configInteractions = function configInteractions() {
     .on('tap', function(event) {
       var block = thisTbe.elementToBlock(event.target);
       if (block.isPaletteBlock) {
-        return;
+        tbe.autoPlace(block);
+      }  else {
+        thisTbe.components.blockSettings.tap(block);
       }
-      thisTbe.components.blockSettings.tap(block);
     })
     .on('hold', function(event) {
        var block = thisTbe.elementToBlock(event.target);
@@ -976,7 +1019,6 @@ tbe.configInteractions = function configInteractions() {
                 temp.prev.next = null;
                 temp.prev = null;
                 break;
-                //console.log("hi");
               }
             }
           }
