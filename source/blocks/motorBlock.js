@@ -118,7 +118,7 @@ module.exports = function () {
           } else if(num === "0" && strNum !== "+/-"){
             display.removeAttribute("class", "error");
             num = strNum;
-          } else if((num.includes("-") && num.length < 4) || (num.length < 2 && strNum !== "+/-")){
+          } else if((num.includes("-") && num.length < 3) || (num.length < 2 && strNum !== "+/-")){
             display.removeAttribute("class", "error");
             num += strNum;
           } else if(strNum !== "+/-"){
