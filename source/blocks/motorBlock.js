@@ -83,8 +83,8 @@ module.exports = function () {
       for (var ix = 0; ix < 3; ix++) {
         // Create each LED and initialize its lit state.
         var button = svgb.createGroup('', 0, 0);
-        var box = svgb.createRect('calcButtons', 10+((ix)*70), 22.5+(iy*30), 65, 25, 6);
-        var text = svgb.createText('svg-clear', 37.5+((ix)*70), 42.5+(iy*30), motorBlock.numArray[((iy)*3) + ix]);
+        var box = svgb.createRect('calcButtons', 2.5+((ix)*75), 5+(iy*35), 70, 30, 6);
+        var text = svgb.createText('svg-clear', 32.5+((ix)*75), 27.5+(iy*35), motorBlock.numArray[((iy)*3) + ix]);
 
         // add setAttribute to the seperate blocks
         button.appendChild(box);
