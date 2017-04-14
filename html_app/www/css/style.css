@@ -474,3 +474,6 @@ label input[type="checkbox"]:disabled + .label-text:before {
   border-radius: 12.5px;
   background-color: green;
 }
+.error {
+  color: red;
+}
