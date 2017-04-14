@@ -426,6 +426,8 @@ label input[type="checkbox"]:disabled + .label-text:before {
 }
 .calcButtons{
   fill: #81C784;
+  stroke: #1B5E20;
+  stroke-width:2;
 }
 /* actton dot are 'bottons' along the top of the canvas */
 .action-dot {
@@ -476,4 +478,11 @@ label input[type="checkbox"]:disabled + .label-text:before {
 }
 .error {
   color: red;
+}
+#numeric-display{
+  width: 230px;
+  height: 30px;
+  border-radius: 8px;
+  background-color: #c4c4c4;
+  font-size: 24px;
 }

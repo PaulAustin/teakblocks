@@ -60,9 +60,9 @@ module.exports = function () {
   motorBlock.configuratorOpen = function(div) {
     div.innerHTML =
         `<div id='motorEditorDiv'>
-            <span id="numeric-display" width='100px' height='50px' data-bind='text: keyPadValue'>
+            <div id="numeric-display" width='80px' height='80px' data-bind='text: keyPadValue'>
 
-            </span>
+            </div>
             <svg id="calc" class='area' width='225px' height='167.5px' xmlns='http://www.w3.org/2000/svg'></svg>
             </svg>
         </div>`;
@@ -72,7 +72,7 @@ module.exports = function () {
     var svg = document.getElementById('pictureEditor');
     var display = document.getElementById("numeric-display");
     var calcArea = document.getElementById('calc');
-    var num = "50";
+    var num = "0";
     var strNum = "";
     //var textToDisplay = svgb.createText('', 10, 80, num);
 
@@ -83,8 +83,8 @@ module.exports = function () {
       for (var ix = 0; ix < 3; ix++) {
         // Create each LED and initialize its lit state.
         var button = svgb.createGroup('', 0, 0);
-        var box = svgb.createRect('calcButtons', ((ix)*70), 22.5+(iy*30), 60, 25, 6);
-        var text = svgb.createText('svg-clear', 25+((ix)*70), 42.5+(iy*30), motorBlock.numArray[((iy)*3) + ix]);
+        var box = svgb.createRect('calcButtons', 10+((ix)*70), 22.5+(iy*30), 65, 25, 6);
+        var text = svgb.createText('svg-clear', 37.5+((ix)*70), 42.5+(iy*30), motorBlock.numArray[((iy)*3) + ix]);
 
         // add setAttribute to the seperate blocks
         button.appendChild(box);
