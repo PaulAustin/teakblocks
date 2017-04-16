@@ -59,7 +59,7 @@ module.exports = function () {
 
   motorBlock.configuratorOpen = function(div) {
     div.innerHTML =
-        `<div id='motorEditorDiv'>
+        `<div id='motorEditorDiv' class='editorDiv'>
             <div id="motor-numeric-display" class = "numeric-display" width='80px' height='80px' data-bind='text: keyPadValue'>
 
             </div>

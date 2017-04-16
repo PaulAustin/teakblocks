@@ -35,10 +35,9 @@ module.exports = function () {
     return {
       // And the data that goes with that editor.
       data:{
-        pos:90
+        'pos':90
       },
       // Indicate what controller is active. This may affect the data format.
-      //controller:'pos',
     };
   };
 
@@ -92,7 +91,7 @@ module.exports = function () {
 
   servoBlock.configuratorOpen = function(div) {
     div.innerHTML =
-        `<div id='servoEditorDiv'>
+        `<div id='servoEditorDiv' class='editorDiv'>
             <div id="servo-numeric-display" class = "numeric-display" width='80px' height='80px' data-bind='text: keyPadValueServo'>
 
             </div>

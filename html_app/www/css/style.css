@@ -238,13 +238,7 @@ html, body { margin:0; padding:0; overflow:hidden }
   /* All editors should be the same height */
   height: 175px;
 }
-#pictureEditorDiv {
-  text-align:center;
-}
-#motorEditorDiv {
-  text-align:center;
-}
-#servoEditorDiv {
+.editorDiv{
   text-align:center;
 }
 /* Block controllers is a row of tab-like buttons on the edge of the config panel */

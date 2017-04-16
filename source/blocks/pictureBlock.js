@@ -100,7 +100,7 @@ module.exports = function () {
 
   pictureBlock.configuratorOpen = function(div, block) {
     div.innerHTML =
-        `<div id='pictureEditorDiv'>
+        `<div id='pictureEditorDiv' class='editorDiv'>
           <svg id='pictureEditor' width=175px height=175px xmlns='http://www.w3.org/2000/svg'>
             <rect id='pictureRect' width=175px height=175px rx=10 ry=10 class='pix-editor block-picture-board'/>
           </svg>
