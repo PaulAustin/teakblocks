@@ -60,7 +60,7 @@ module.exports = function () {
   motorBlock.configuratorOpen = function(div) {
     div.innerHTML =
         `<div id='motorEditorDiv'>
-            <div id="numeric-display" width='80px' height='80px' data-bind='text: keyPadValue'>
+            <div id="motor-numeric-display" class = "numeric-display" width='80px' height='80px' data-bind='text: keyPadValue'>
 
             </div>
             <svg id="calc" class='area' width='225px' height='167.5px' xmlns='http://www.w3.org/2000/svg'></svg>
@@ -70,7 +70,7 @@ module.exports = function () {
 
     ko.applyBindings(motorBlock, div);
     var svg = document.getElementById('pictureEditor');
-    var display = document.getElementById("numeric-display");
+    var display = document.getElementById("motor-numeric-display");
     var calcArea = document.getElementById('calc');
     var num = "0";
     var strNum = "";
@@ -83,7 +83,7 @@ module.exports = function () {
       for (var ix = 0; ix < 3; ix++) {
         // Create each LED and initialize its lit state.
         var button = svgb.createGroup('', 0, 0);
-        var box = svgb.createRect('calcButtons', 2.5+((ix)*75), 5+(iy*35), 70, 30, 6);
+        var box = svgb.createRect('calcButtonsMotor calcButtons', 2.5+((ix)*75), 5+(iy*35), 70, 30, 6);
         var text = svgb.createText('svg-clear', 32.5+((ix)*75), 27.5+(iy*35), motorBlock.numArray[((iy)*3) + ix]);
 
         // add setAttribute to the seperate blocks
@@ -101,28 +101,28 @@ module.exports = function () {
     // Take event, make event.target
     // get characteristic of dom element
 
-    interact('.calcButtons', {context:svg})
+    interact('.calcButtonsMotor', {context:svg})
       .on('tap', function (event) {
 
           strNum = event.target.getAttribute('name');
           if(strNum === "<-"){
             num = "0";
-            display.removeAttribute("class", "error");
+            display.classList.remove("error");
           } else if(strNum === "+/-" && num !== "0"){
-            display.removeAttribute("class", "error");
+            display.classList.remove("error");
             if(num.substring(0, 1) === "-"){
               num = num.substring(1);
             } else{
               num = "-" + num;
             }
           } else if(num === "0" && strNum !== "+/-"){
-            display.removeAttribute("class", "error");
+            display.classList.remove("error");
             num = strNum;
           } else if((num.includes("-") && num.length < 3) || (num.length < 2 && strNum !== "+/-")){
-            display.removeAttribute("class", "error");
+            display.classList.remove("error");
             num += strNum;
           } else if(strNum !== "+/-"){
-            display.setAttribute("class", display.getAttribute + " error");
+            display.classList.add("error");
           }
 
           motorBlock.keyPadValue(num.toString());

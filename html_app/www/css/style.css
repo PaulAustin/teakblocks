@@ -244,6 +244,9 @@ html, body { margin:0; padding:0; overflow:hidden }
 #motorEditorDiv {
   text-align:center;
 }
+#servoEditorDiv {
+  text-align:center;
+}
 /* Block controllers is a row of tab-like buttons on the edge of the config panel */
 .block-settings-tab {
   text-align: center;
@@ -479,7 +482,7 @@ label input[type="checkbox"]:disabled + .label-text:before {
 .error {
   color: red;
 }
-#numeric-display{
+.numeric-display{
   width: 230px;
   height: 30px;
   border-radius: 8px;
