@@ -31,7 +31,7 @@ module.exports = function () {
     'speed': '<i class="fa fa-tachometer" aria-hidden="true"></i>',
     'duration': '<i class="fa fa-clock-o" aria-hidden="true"></i>',
   };
-  motorBlock.keyPadValue = ko.observable(50);
+  motorBlock.keyPadValue = ko.observable(50 + "%");
   // Initial setting for blocks of this type.
   motorBlock.defaultSettings = function() {
     // Return a new object with settings for the controller.
@@ -57,7 +57,7 @@ module.exports = function () {
     return root;
   };
 
-  motorBlock.configuratorOpen = function(div) {
+  motorBlock.configuratorOpen = function(div, block) {
     div.innerHTML =
         `<div id='motorEditorDiv' class='editorDiv'>
             <div id="motor-numeric-display" class = "numeric-display" width='80px' height='80px' data-bind='text: keyPadValue'>
@@ -70,9 +70,11 @@ module.exports = function () {
 
     ko.applyBindings(motorBlock, div);
     var svg = document.getElementById('pictureEditor');
+    var data = block.controllerSettings.data.speed;
     var display = document.getElementById("motor-numeric-display");
     var calcArea = document.getElementById('calc');
-    var num = "0";
+    var num = block.controllerSettings.data.speed.toString();
+    motorBlock.keyPadValue(num.toString() + "%");
     var strNum = "";
     //var textToDisplay = svgb.createText('', 10, 80, num);
 
@@ -125,7 +127,10 @@ module.exports = function () {
             display.classList.add("error");
           }
 
-          motorBlock.keyPadValue(num.toString());
+          motorBlock.keyPadValue(num.toString() + "%");
+          //console.log();
+          block.controllerSettings.data.speed = num.parseInt();
+          block.updateSvg();
 
 
       });

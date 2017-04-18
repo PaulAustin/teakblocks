@@ -28,7 +28,7 @@ module.exports = function () {
   var interact = require('interact.js');
   var ko = require('knockout');
 
-  servoBlock.keyPadValueServo = ko.observable(90);
+  servoBlock.keyPadValueServo = ko.observable(90+"˚");
   // Initial setting for blocks of this type.
   servoBlock.defaultSettings = function() {
     // return a new object with settings for the controller.
@@ -89,7 +89,7 @@ module.exports = function () {
     return root;
   };
 
-  servoBlock.configuratorOpen = function(div) {
+  servoBlock.configuratorOpen = function(div, block) {
     div.innerHTML =
         `<div id='servoEditorDiv' class='editorDiv'>
             <div id="servo-numeric-display" class = "numeric-display" width='80px' height='80px' data-bind='text: keyPadValueServo'>
@@ -104,7 +104,8 @@ module.exports = function () {
     var svg = document.getElementById('pictureEditor');
     var display = document.getElementById("servo-numeric-display");
     var calcArea = document.getElementById('servo-calc');
-    var num = "0";
+    var num = block.controllerSettings.data.speed.toString();
+    servoBlock.keyPadValue(num.toString() + "%");
     var strNum = "";
 
     // Create a editor state object for the interactions to work with.
@@ -155,7 +156,7 @@ module.exports = function () {
             display.classList.add("error");
           }
 
-          servoBlock.keyPadValueServo(num.toString());
+          servoBlock.keyPadValueServo(num.toString() + "˚");
 
 
       });
