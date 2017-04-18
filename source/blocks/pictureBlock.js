@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2016 Paul Austin - SDG
+Copyright (c) 2017 Paul Austin - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -73,14 +73,14 @@ module.exports = function () {
 
   // Generate and SVG based image for a specific block.
   pictureBlock.svg= function(svg, block) {
-    var data = block.controllerSettings.data.pix;
+    var pix = block.controllerSettings.data.pix;
     var group = svgb.createGroup('svg-clear', 24, 15);
     var box = svgb.createRect('svg-clear block-picture-board', -8, -8, 48, 48, 4);
     group.appendChild(box);
     for (var iy = 0; iy < 5; iy++) {
       for (var ix = 0; ix < 5; ix++) {
         var style = '';
-        if (data[ix + (iy * 5)] === 0) {
+        if (pix[ix + (iy * 5)] === 0) {
           style = 'svg-clear block-picture-led-off';
         } else {
           style = 'svg-clear block-picture-led-on';
@@ -108,14 +108,14 @@ module.exports = function () {
 
     // Create a editor state object for the interactions to work with.
     var svg = document.getElementById('pictureEditor');
-    var data = block.controllerSettings.data.pix;
+    var pix = block.controllerSettings.data.pix;
     var pixOn = 0;
     var dindex = 0;
     for (var iy = 0; iy < 5; iy++) {
       for (var ix = 0; ix < 5; ix++) {
         // Create each LED and initialize its lit state.
         var led = svgb.createCircle('', 17.5+(ix*35), 17.5+(iy*35), 13);
-        setPicturePixel(led, data[dindex]);
+        setPicturePixel(led, pix[dindex]);
         svg.appendChild(led);
         dindex += 1;
       }
@@ -126,14 +126,14 @@ module.exports = function () {
         // Flip brush state based on pixel clicked on, then paint.
         var i = pictureEventToIndex(event);
         if (i >= 0) {
-          if (data[i] === 0) {
+          if (pix[i] === 0) {
             pixOn = 1;
           } else {
             pixOn = 0;
           }
         }
-        data[i] = pixOn;
-        setPicturePixel(event.target.parentNode.children[i+1], data[i]);
+        pix[i] = pixOn;
+        setPicturePixel(event.target.parentNode.children[i+1], pix[i]);
         block.updateSvg();
       })
       .on('move', function(event) {
@@ -141,9 +141,9 @@ module.exports = function () {
         if (event.interaction.pointerIsDown) {
           //If it's in range and there was an actualy change then paint.
           var i = pictureEventToIndex(event);
-          if ((i >= 0) &&  (data[i] !== pixOn)) {
-            data[i] = pixOn;
-            setPicturePixel(event.target.parentNode.children[i+1], data[i]);
+          if ((i >= 0) &&  (pix[i] !== pixOn)) {
+            pix[i] = pixOn;
+            setPicturePixel(event.target.parentNode.children[i+1], pix[i]);
             block.updateSvg();
           }
         }
