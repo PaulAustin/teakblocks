@@ -23,19 +23,20 @@ SOFTWARE.
 module.exports = function () {
   //var interact = require('interact.js');
   var svgb = require('./../svgbuilder.js');
+  var keypad = require('./keypadTab.js');
   var pb = svgb.pathBuilder;
   var servoBlock = {};
   var interact = require('interact.js');
   var ko = require('knockout');
 
-  servoBlock.keyPadValueServo = ko.observable(90+"˚");
+  servoBlock.keyPadValue = ko.observable(0+"%");
   // Initial setting for blocks of this type.
   servoBlock.defaultSettings = function() {
     // return a new object with settings for the controller.
     return {
       // And the data that goes with that editor.
       data:{
-        'pos':90
+        'pos':0
       },
       // Indicate what controller is active. This may affect the data format.
     };
@@ -90,82 +91,22 @@ module.exports = function () {
   };
 
   servoBlock.configuratorOpen = function(div, block) {
-    div.innerHTML =
-        `<div id='servoEditorDiv' class='editorDiv'>
-            <div id="servo-numeric-display" class = "numeric-display" width='80px' height='80px' data-bind='text: keyPadValueServo'>
-
-            </div>
-            <svg id="servo-calc" class='area' width='225px' height='167.5px' xmlns='http://www.w3.org/2000/svg'></svg>
-            </svg>
-        </div>`;
-
-
-    ko.applyBindings(servoBlock, div);
-    var svg = document.getElementById('pictureEditor');
-    var display = document.getElementById("servo-numeric-display");
-    var calcArea = document.getElementById('servo-calc');
-    var num = block.controllerSettings.data.speed.toString();
-    servoBlock.keyPadValue(num.toString() + "%");
-    var strNum = "";
-
-    // Create a editor state object for the interactions to work with.
-
-    for (var iy = 0; iy < 4; iy++) {
-      for (var ix = 0; ix < 3; ix++) {
-        // Create each LED and initialize its lit state.
-        var button = svgb.createGroup('', 0, 0);
-        var box = svgb.createRect('calcButtonsServo calcButtons', 2.5+((ix)*75), 5+(iy*35), 70, 30, 6);
-        var text = svgb.createText('svg-clear', 32.5+((ix)*75), 27.5+(iy*35), servoBlock.numArray[((iy)*3) + ix]);
-
-        // add setAttribute to the seperate blocks
-        button.appendChild(box);
-        button.appendChild(text);
-
-        box.setAttribute('name', servoBlock.numArray[((iy)*3) + ix]);
-
-        calcArea.appendChild(button);
-      }
-    }
-
-    // Interact on calcButtons
-    // do on tap
-    // Take event, make event.target
-    // get characteristic of dom element
-
-    interact('.calcButtonsServo', {context:svg})
-      .on('tap', function (event) {
-
-          strNum = event.target.getAttribute('name');
-          if(strNum === "<-"){
-            num = "0";
-            display.classList.remove("error");
-          } else if(strNum === "+/-" && num !== "0"){
-            display.classList.remove("error");
-            if(num.substring(0, 1) === "-"){
-              num = num.substring(1);
-            } else{
-              num = "-" + num;
-            }
-          } else if(num === "0" && strNum !== "+/-"){
-            display.classList.remove("error");
-            num = strNum;
-          } else if((num.includes("-") && num.length < 3) || (num.length < 2 && strNum !== "+/-")){
-            display.classList.remove("error");
-            num += strNum;
-          } else if(strNum !== "+/-"){
-            display.classList.add("error");
-          }
-
-          servoBlock.keyPadValueServo(num.toString() + "˚");
-
-
-      });
-
-    return;
-
+    keypad.openTabs({
+      'getValue': function() { return block.controllerSettings.data.pos; },
+      'setValue': function(position) { block.controllerSettings.data.pos = position; },
+      'type':servoBlock,
+      'div': div,
+      'block': block,
+      'min':-100,
+      'max':100,
+      'suffix':"%"
+    });
   };
   servoBlock.configuratorClose = function(div) {
-    ko.cleanNode(div);
+    keypad.closeTabs({'div': div});
+  };
+  servoBlock.getData = function(block){
+    return block.controllerSettings.data.pos;
   };
 
   return servoBlock;
