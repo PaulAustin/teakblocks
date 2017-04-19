@@ -42,8 +42,6 @@ module.exports = function () {
     };
   };
 
-  servoBlock.numArray = ["1", "2", "3", "4", "5","6", "7", "8", "9", "+/-", "0", "<-"];
-
   servoBlock.svg = function (root) {
     // servo body
     var box = svgb.createRect('svg-clear block-micro-servo-body', 18, 20, 44, 24, 2.5);
@@ -99,7 +97,8 @@ module.exports = function () {
       'block': block,
       'min':-100,
       'max':100,
-      'suffix':"%"
+      'suffix':"%",
+      'numArray': ["1", "2", "3", "4", "5","6", "7", "8", "9", "+/-", "0", "<-"]
     });
   };
   servoBlock.configuratorClose = function(div) {

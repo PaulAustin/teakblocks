@@ -35,20 +35,20 @@ module.exports = function () {
       var blockType = object.type;
       var setValue = object.setValue;
       var getValue = object.getValue;
+      var numArray = object.numArray;
       div.innerHTML =
-          `<div id='editorDiv' class='editorDiv'>
+          `<div id='keypadDiv' class='editorDiv'>
               <div id="numeric-display" class = "numeric-display" width='80px' height='80px' data-bind='text: keyPadValue'>
 
               </div>
-              <svg id="calc" class='area' width='225px' height='167.5px' xmlns='http://www.w3.org/2000/svg'></svg>
+              <svg id="keypadSvg" class='area' width='225px' height='167.5px' xmlns='http://www.w3.org/2000/svg'></svg>
               </svg>
           </div>`;
 
 
       ko.applyBindings(blockType, div);
-      var svg = document.getElementById('pictureEditor');
       var display = document.getElementById("numeric-display");
-      var calcArea = document.getElementById('calc');
+      var keypadSvg = document.getElementById('keypadSvg');
       //console.log(block);
       //var num = blockType.getData(block).toString();
       console.log(block);
@@ -64,15 +64,15 @@ module.exports = function () {
           // Create each LED and initialize its lit state.
           var button = svgb.createGroup('', 0, 0);
           var box = svgb.createRect('calcButtons', 2.5+((ix)*75), 5+(iy*35), 70, 30, 6);
-          var text = svgb.createText('svg-clear', 32.5+((ix)*75), 27.5+(iy*35), blockType.numArray[((iy)*3) + ix]);
+          var text = svgb.createText('svg-clear', 32.5+((ix)*75), 27.5+(iy*35), numArray[((iy)*3) + ix]);
 
           // add setAttribute to the seperate blocks
           button.appendChild(box);
           button.appendChild(text);
 
-          box.setAttribute('name', blockType.numArray[((iy)*3) + ix]);
+          box.setAttribute('name', numArray[((iy)*3) + ix]);
 
-          calcArea.appendChild(button);
+          keypadSvg.appendChild(button);
         }
       }
 
@@ -81,7 +81,7 @@ module.exports = function () {
       // Take event, make event.target
       // get characteristic of dom element
 
-      interact('.calcButtons', {context:svg})
+      interact('.calcButtons', {context:keypadSvg})
         .on('tap', function (event) {
 
             strNum = event.target.getAttribute('name');

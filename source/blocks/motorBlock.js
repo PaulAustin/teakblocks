@@ -45,7 +45,6 @@ module.exports = function () {
       controller:'speed',
     };
   };
-  motorBlock.numArray = ["1", "2", "3", "4", "5","6", "7", "8", "9", "+/-", "0", "<-"];
   // Wait block - Wait until something happens, it can wait for things other
   // than time, but it is given that time pasing is part of the function.
   motorBlock.svg = function(root) {
@@ -66,7 +65,8 @@ module.exports = function () {
       'block': block,
       'min':-100,
       'max':100,
-      'suffix':"%"
+      'suffix':"%",
+      'numArray': ["1", "2", "3", "4", "5","6", "7", "8", "9", "+/-", "0", "<-"]
     });
   };
   motorBlock.configuratorClose = function(div) {
