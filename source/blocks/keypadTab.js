@@ -33,8 +33,10 @@ module.exports = function () {
       var max = object.max;
       var suffix = object.suffix;
       var blockType = object.type;
+      var setValue = object.setValue;
+      var getValue = object.getValue;
       div.innerHTML =
-          `<div id='servoEditorDiv' class='editorDiv'>
+          `<div id='editorDiv' class='editorDiv'>
               <div id="numeric-display" class = "numeric-display" width='80px' height='80px' data-bind='text: keyPadValue'>
 
               </div>
@@ -50,7 +52,7 @@ module.exports = function () {
       //console.log(block);
       //var num = blockType.getData(block).toString();
       console.log(block);
-      var num = object.getValue().toString();
+      var num = getValue().toString();
       console.log(num);
       blockType.keyPadValue(num.toString() + suffix);
       var strNum = "";
@@ -104,8 +106,10 @@ module.exports = function () {
             }
 
             blockType.keyPadValue(num.toString() + suffix);
-            object.setValue(num);
-            //block.updateSvg();
+            setValue(num);
+            //block.controllerSettings.data.pos = num;
+            //console.log(block.controllerSettings.data.pos);
+            block.updateSvg();
 
 
         });

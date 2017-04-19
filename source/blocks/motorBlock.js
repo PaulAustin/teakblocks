@@ -22,6 +22,7 @@ SOFTWARE.
 
 module.exports = function () {
   var svgb = require('./../svgbuilder.js');
+  var keypad = require('./keypadTab.js');
   var interact = require('interact.js');
   var ko = require('knockout');
   //var formTools = require('./../block-settings.js');
@@ -56,8 +57,23 @@ module.exports = function () {
     root.appendChild(shaft);
     return root;
   };
-
   motorBlock.configuratorOpen = function(div, block) {
+    keypad.openTabs({
+      'getValue': function() { return block.controllerSettings.data.speed; },
+      'setValue': function(speed) { block.controllerSettings.data.speed = speed; },
+      'type':motorBlock,
+      'div': div,
+      'block': block,
+      'min':-100,
+      'max':100,
+      'suffix':"%"
+    });
+  };
+  motorBlock.configuratorClose = function(div) {
+    keypad.closeTabs({'div': div});
+  };
+
+  /*motorBlock.configuratorOpen = function(div, block) {
     div.innerHTML =
         `<div id='motorEditorDiv' class='editorDiv'>
             <div id="motor-numeric-display" class = "numeric-display" width='80px' height='80px' data-bind='text: keyPadValue'>
@@ -140,7 +156,7 @@ module.exports = function () {
   };
   motorBlock.configuratorClose = function(div) {
     ko.cleanNode(div);
-  };
+  };*/
 
   return motorBlock;
 }();

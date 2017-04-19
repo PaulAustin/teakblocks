@@ -105,9 +105,6 @@ module.exports = function () {
   servoBlock.configuratorClose = function(div) {
     keypad.closeTabs({'div': div});
   };
-  servoBlock.getData = function(block){
-    return block.controllerSettings.data.pos;
-  };
 
   return servoBlock;
 }();
