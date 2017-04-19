@@ -483,3 +483,8 @@ label input[type="checkbox"]:disabled + .label-text:before {
   background-color: #c4c4c4;
   font-size: 24px;
 }
+.block-motor-text{
+  font-family: "helvetica";
+  font-size:20px;
+  stroke-width:0;
+}

@@ -47,13 +47,17 @@ module.exports = function () {
   };
   // Wait block - Wait until something happens, it can wait for things other
   // than time, but it is given that time pasing is part of the function.
-  motorBlock.svg = function(root) {
+  motorBlock.svg = function(root, block) {
     // The graphic is a composite concept of a motor/wheel. In many cases
     // students might only see the wheel.
     var motor = svgb.createCircle('svg-clear block-motor-body', 40, 30, 20);
     root.appendChild(motor);
     var shaft = svgb.createCircle('svg-clear block-motor-shaft', 40, 30, 4);
     root.appendChild(shaft);
+    var data = block.controllerSettings.data.speed;
+    var speed = svgb.createText('svg-clear block-motor-text block-stencil-fill', 40, 70, data + "%");
+    speed.setAttribute('text-anchor', 'middle');
+    root.appendChild(speed);
     return root;
   };
   motorBlock.configuratorOpen = function(div, block) {
