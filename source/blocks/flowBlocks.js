@@ -42,6 +42,17 @@ module.exports = function () {
 
   flowBlockHead.keyPadValue = ko.observable(0+" times");
 
+  flowBlockHead.svg = function (root, block) {
+    var loop = svgb.createText('svg-clear block-flowhead-loop', 10, 40, '\uf021');
+    root.appendChild(loop);
+    var data = block.controllerSettings.data.count;
+    var count = svgb.createText('svg-clears block-flowhead-count block-stencil-fill', 25, 65, data); //
+    count.setAttribute('text-anchor', 'middle');
+    root.appendChild(count);
+    return root;
+  };
+
+
   // Initial setting for blocks of this type.
   flowBlockHead.defaultSettings= function() {
     // return a new object with settings for the controller.
@@ -117,10 +128,10 @@ module.exports = function () {
       'type':flowBlockHead,
       'div': div,
       'block': block,
-      'min':-100,
+      'min':0,
       'max':100,
       'suffix':" times",
-      'numArray': ["1", "2", "3", "4", "5","6", "7", "8", "9", "+/-", "0", "<-"]
+      'numArray': ["1", "2", "3", "4", "5","6", "7", "8", "9", "0", "<-"]
     });
   };
   flowBlockHead.configuratorClose = function(div) {
