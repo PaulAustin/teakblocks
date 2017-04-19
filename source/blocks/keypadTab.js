@@ -27,6 +27,7 @@ module.exports = function () {
     var keypad = {};
 
     keypad.openTabs = function(object){
+      // Get all the data from the parameter
       var div = object.div;
       var block = object.block;
       var min = object.min;
@@ -49,11 +50,9 @@ module.exports = function () {
       ko.applyBindings(blockType, div);
       var display = document.getElementById("numeric-display");
       var keypadSvg = document.getElementById('keypadSvg');
-      //console.log(block);
-      //var num = blockType.getData(block).toString();
-      console.log(block);
+
+      // Show the current data on the config panel
       var num = getValue().toString();
-      console.log(num);
       blockType.keyPadValue(num.toString() + suffix);
       var strNum = "";
 
@@ -67,7 +66,6 @@ module.exports = function () {
             var box = svgb.createRect('calcButtons', 2.5+((ix)*75), 5+(iy*35), 70, 30, 6);
             var text = svgb.createText('svg-clear', 32.5+((ix)*75), 27.5+(iy*35), numArray[((iy)*3) + ix]);
 
-            // add setAttribute to the seperate blocks
             button.appendChild(box);
             button.appendChild(text);
 
@@ -85,32 +83,36 @@ module.exports = function () {
 
       interact('.calcButtons', {context:keypadSvg})
         .on('tap', function (event) {
-
+            // Get the clicked on button name
             strNum = event.target.getAttribute('name');
+
             var isNegate = strNum === "+/-";
+
+            // If it is "<-", then delete current number
             if(strNum === "<-"){
               num = "0";
               display.classList.remove("error");
-            } else if(isNegate && num !== "0"){
+            } else if(isNegate && num !== "0"){ // Negate the number
               display.classList.remove("error");
               if(num.substring(0, 1) === "-"){
                 num = num.substring(1);
               } else{
                 num = "-" + num;
               }
-            } else if(num === "0" && !isNegate){
+            } else if(num === "0" && !isNegate){ // If the number is 0, replace it
               display.classList.remove("error");
               num = strNum;
+              // If the number is going to be within the max and min, then add the new number on.
             } else if(parseInt(num + strNum, 10) <= max && parseInt(num + strNum, 10) >= min && !isNegate){
               num += strNum;
-            } else if(!isNegate){
+            } else if(!isNegate){ // If the number doesn't satisfy the conditions above, then it is an error
               display.classList.add("error");
             }
 
+            // Now show the number on the config panel
             blockType.keyPadValue(num.toString() + suffix);
+            // And update the block data
             setValue(num);
-            //block.controllerSettings.data.pos = num;
-            //console.log(block.controllerSettings.data.pos);
             block.updateSvg();
 
 

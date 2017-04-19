@@ -56,6 +56,7 @@ module.exports = function () {
     pathd += pb.arc(3.0, 180, 1, 1, -6, 0);
     pathd +=  pb.close();
     var path = svgb.createPath('svg-clear block-stencil-fill', pathd);
+    // Rotate it according to the block data
     var data = block.controllerSettings.data.pos;
     path.setAttribute('transform', "rotate(" + data + " 48 32)");
     root.appendChild(path);
