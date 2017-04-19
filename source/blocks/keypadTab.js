@@ -87,23 +87,23 @@ module.exports = function () {
         .on('tap', function (event) {
 
             strNum = event.target.getAttribute('name');
+            var isNegate = strNum === "+/-";
             if(strNum === "<-"){
               num = "0";
               display.classList.remove("error");
-            } else if(strNum === "+/-" && num !== "0"){
+            } else if(isNegate && num !== "0"){
               display.classList.remove("error");
               if(num.substring(0, 1) === "-"){
                 num = num.substring(1);
               } else{
                 num = "-" + num;
               }
-            } else if(num === "0" && strNum !== "+/-"){
+            } else if(num === "0" && !isNegate){
               display.classList.remove("error");
               num = strNum;
-            } else if(parseInt(num + strNum, 10) < max && parseInt(num + strNum, 10) > min){ //(num.includes("-") && num.length < 3) || (num.length < 2 && strNum !== "+/-")){
-              display.classList.remove("error");
+            } else if(parseInt(num + strNum, 10) <= max && parseInt(num + strNum, 10) >= min && !isNegate){
               num += strNum;
-            } else if(strNum !== "+/-"){
+            } else if(!isNegate){
               display.classList.add("error");
             }
 
