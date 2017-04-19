@@ -61,18 +61,20 @@ module.exports = function () {
 
       for (var iy = 0; iy < 4; iy++) {
         for (var ix = 0; ix < 3; ix++) {
-          // Create each LED and initialize its lit state.
-          var button = svgb.createGroup('', 0, 0);
-          var box = svgb.createRect('calcButtons', 2.5+((ix)*75), 5+(iy*35), 70, 30, 6);
-          var text = svgb.createText('svg-clear', 32.5+((ix)*75), 27.5+(iy*35), numArray[((iy)*3) + ix]);
+          // Create each button
+          if(numArray[((iy)*3) + ix] !== undefined){
+            var button = svgb.createGroup('', 0, 0);
+            var box = svgb.createRect('calcButtons', 2.5+((ix)*75), 5+(iy*35), 70, 30, 6);
+            var text = svgb.createText('svg-clear', 32.5+((ix)*75), 27.5+(iy*35), numArray[((iy)*3) + ix]);
 
-          // add setAttribute to the seperate blocks
-          button.appendChild(box);
-          button.appendChild(text);
+            // add setAttribute to the seperate blocks
+            button.appendChild(box);
+            button.appendChild(text);
 
-          box.setAttribute('name', numArray[((iy)*3) + ix]);
+            box.setAttribute('name', numArray[((iy)*3) + ix]);
 
-          keypadSvg.appendChild(button);
+            keypadSvg.appendChild(button);
+          }
         }
       }
 

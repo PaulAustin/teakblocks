@@ -23,6 +23,8 @@ SOFTWARE.
 module.exports = function () {
   // var interact = require('interact.js');
   var svgb = require('./../svgbuilder.js');
+  var keypad = require('./keypadTab.js');
+  var ko = require('knockout');
   var flowBlockHead = {};
   var flowBlockTail = {};
   var flowBlockWidth = 50;
@@ -33,10 +35,12 @@ module.exports = function () {
     // Simple interation count based for loop
     'forLoop' : 'for',
     // Loop while something is true
-    'whileLoop'  : 'while',
+    //'whileLoop'  : 'while',
     // Skip body if condition not true
     'ifThen'   : 'if'
   };
+
+  flowBlockHead.keyPadValue = ko.observable(0+" times");
 
   // Initial setting for blocks of this type.
   flowBlockHead.defaultSettings= function() {
@@ -105,6 +109,22 @@ module.exports = function () {
     scb = svgb.createPath('flow-path svg-clear', pathd);
     block.svgGroup.insertBefore(scb, block.svgRect);
     block.svgCrossBlock = scb;
+  };
+  flowBlockHead.configuratorOpen = function(div, block) {
+    keypad.openTabs({
+      'getValue': function() { return block.controllerSettings.data.count; },
+      'setValue': function(count) { block.controllerSettings.data.count = count; },
+      'type':flowBlockHead,
+      'div': div,
+      'block': block,
+      'min':-100,
+      'max':100,
+      'suffix':" times",
+      'numArray': ["1", "2", "3", "4", "5","6", "7", "8", "9", "+/-", "0", "<-"]
+    });
+  };
+  flowBlockHead.configuratorClose = function(div) {
+    keypad.closeTabs({'div': div});
   };
 
   return {flowBlockHead:flowBlockHead, flowBlockTail:flowBlockTail};
