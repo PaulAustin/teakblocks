@@ -42,7 +42,7 @@ module.exports = function () {
     };
   };
 
-  servoBlock.svg = function (root) {
+  servoBlock.svg = function (root, block) {
     // servo body
     var box = svgb.createRect('svg-clear block-micro-servo-body', 18, 20, 44, 24, 2.5);
     root.appendChild(box);
@@ -56,6 +56,8 @@ module.exports = function () {
     pathd += pb.arc(3.0, 180, 1, 1, -6, 0);
     pathd +=  pb.close();
     var path = svgb.createPath('svg-clear block-stencil-fill', pathd);
+    var data = block.controllerSettings.data.pos;
+    path.setAttribute('transform', "rotate(" + data + " 48 32)");
     root.appendChild(path);
 
     servoBlock.testExpression(root);
@@ -95,10 +97,10 @@ module.exports = function () {
       'type':servoBlock,
       'div': div,
       'block': block,
-      'min':-100,
-      'max':100,
-      'suffix':"%",
-      'numArray': ["1", "2", "3", "4", "5","6", "7", "8", "9", "+/-", "0", "<-"]
+      'min':0,
+      'max':180,
+      'suffix':"˚",
+      'numArray': ["1", "2", "3", "4", "5","6", "7", "8", "9", "<-", "0"]
     });
   };
   servoBlock.configuratorClose = function(div) {
