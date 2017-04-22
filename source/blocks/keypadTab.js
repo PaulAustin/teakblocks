@@ -91,22 +91,26 @@ module.exports = function () {
               var increment = "";
               display.classList.remove("error");
 
+              // Check if you want to change the value
+              // Store if we are going up or down and the number that follows
               if(strNum.substring(0,1) === "+" ||strNum.substring(0,1) === "-"){
                 increment = strNum.substring(0,1);
                 strNum = strNum.substring(1);
               }
+
               // If it is "<-", then delete current number
               if(strNum === "<-"){
                 num = "0";
               }
 
+              // If we are subtracting, subtract the number from variable num
               if(increment === "-"){
                 if(parseInt(num, 10)-parseInt(strNum, 10) >= min){
                   num = (parseInt(num, 10)-parseInt(strNum, 10)).toString();
                 } else{
                   display.classList.add("error");
                 }
-              } else if(increment === "+"){
+              } else if(increment === "+"){ //Otherwise, add
                 if(parseInt(num, 10)+parseInt(strNum, 10) <= max){
                   num = (parseInt(num, 10)+parseInt(strNum, 10)).toString();
                 } else{
