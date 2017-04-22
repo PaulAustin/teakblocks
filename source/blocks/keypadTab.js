@@ -139,6 +139,8 @@ module.exports = function () {
               } else if(!isNegate){ // If the number doesn't satisfy the conditions above, then it is an error
                 display.classList.add("error");
               }
+            } else if(calcLayout === "defined"){ // If the layout is a defined layout
+              num = strNum; // Set num to strNum
             }
 
             // Now show the number on the config panel
