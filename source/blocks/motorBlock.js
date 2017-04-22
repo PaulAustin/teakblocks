@@ -70,7 +70,8 @@ module.exports = function () {
       'min':-100,
       'max':100,
       'suffix':"%",
-      'numArray': ["1", "2", "3", "4", "5","6", "7", "8", "9", "+/-", "0", "<-"]
+      'numArray': ["1", "2", "3", "4", "5","6", "7", "8", "9", "+/-", "0", "<-"],
+      'calcLayout': 'complex'
     });
   };
   motorBlock.configuratorClose = function(div) {

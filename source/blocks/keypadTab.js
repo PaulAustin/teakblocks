@@ -37,6 +37,7 @@ module.exports = function () {
       var setValue = object.setValue;
       var getValue = object.getValue;
       var numArray = object.numArray;
+      var calcLayout = object.calcLayout;
       div.innerHTML =
           `<div id='keypadDiv' class='editorDiv'>
               <div id="numeric-display" class = "numeric-display" width='80px' height='80px' data-bind='text: keyPadValue'>
@@ -86,27 +87,54 @@ module.exports = function () {
             // Get the clicked on button name
             strNum = event.target.getAttribute('name');
 
-            var isNegate = strNum === "+/-";
+            if(calcLayout === "simple"){ // If the layout is a simple layout
+              var increment = "";
+              display.classList.remove("error");
 
-            // If it is "<-", then delete current number
-            if(strNum === "<-"){
-              num = "0";
-              display.classList.remove("error");
-            } else if(isNegate && num !== "0"){ // Negate the number
-              display.classList.remove("error");
-              if(num.substring(0, 1) === "-"){
-                num = num.substring(1);
-              } else{
-                num = "-" + num;
+              if(strNum.substring(0,1) === "+" ||strNum.substring(0,1) === "-"){
+                increment = strNum.substring(0,1);
+                strNum = strNum.substring(1);
               }
-            } else if(num === "0" && !isNegate){ // If the number is 0, replace it
-              display.classList.remove("error");
-              num = strNum;
-              // If the number is going to be within the max and min, then add the new number on.
-            } else if(parseInt(num + strNum, 10) <= max && parseInt(num + strNum, 10) >= min && !isNegate){
-              num += strNum;
-            } else if(!isNegate){ // If the number doesn't satisfy the conditions above, then it is an error
-              display.classList.add("error");
+              // If it is "<-", then delete current number
+              if(strNum === "<-"){
+                num = "0";
+              }
+
+              if(increment === "-"){
+                if(parseInt(num, 10)-parseInt(strNum, 10) >= min){
+                  num = (parseInt(num, 10)-parseInt(strNum, 10)).toString();
+                } else{
+                  display.classList.add("error");
+                }
+              } else if(increment === "+"){
+                if(parseInt(num, 10)+parseInt(strNum, 10) <= max){
+                  num = (parseInt(num, 10)+parseInt(strNum, 10)).toString();
+                } else{
+                  display.classList.add("error");
+                }
+              }
+            } else if(calcLayout === "complex"){ // If the layout is a complex layout
+              var isNegate = strNum === "+/-";
+              // If it is "<-", then delete current number
+              if(strNum === "<-"){
+                num = "0";
+                display.classList.remove("error");
+              } else if(isNegate && num !== "0"){ // Negate the number
+                display.classList.remove("error");
+                if(num.substring(0, 1) === "-"){
+                  num = num.substring(1);
+                } else{
+                  num = "-" + num;
+                }
+              } else if(num === "0" && !isNegate){ // If the number is 0, replace it
+                display.classList.remove("error");
+                num = strNum;
+                // If the number is going to be within the max and min, then add the new number on.
+              } else if(parseInt(num + strNum, 10) <= max && parseInt(num + strNum, 10) >= min && !isNegate){
+                num += strNum;
+              } else if(!isNegate){ // If the number doesn't satisfy the conditions above, then it is an error
+                display.classList.add("error");
+              }
             }
 
             // Now show the number on the config panel

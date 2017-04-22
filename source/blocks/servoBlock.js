@@ -101,7 +101,8 @@ module.exports = function () {
       'min':0,
       'max':180,
       'suffix':"˚",
-      'numArray': ["1", "2", "3", "4", "5","6", "7", "8", "9", "<-", "0"]
+      'numArray': ["+50", "+10", "+1", "-50", "-10", "-1", undefined, "<-"], //["1", "2", "3", "4", "5","6", "7", "8", "9", "<-", "0"],
+      'calcLayout': 'simple'
     });
   };
   servoBlock.configuratorClose = function(div) {
