@@ -26,7 +26,6 @@ module.exports = function () {
   var keypad = require('./keypadTab.js');
   var pb = svgb.pathBuilder;
   var servoBlock = {};
-  var interact = require('interact.js');
   var ko = require('knockout');
 
   servoBlock.keyPadValue = ko.observable(0+"%");

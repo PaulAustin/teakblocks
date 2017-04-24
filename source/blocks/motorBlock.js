@@ -23,7 +23,6 @@ SOFTWARE.
 module.exports = function () {
   var svgb = require('./../svgbuilder.js');
   var keypad = require('./keypadTab.js');
-  var interact = require('interact.js');
   var ko = require('knockout');
   //var formTools = require('./../block-settings.js');
   //var pb = svgb.pathBuilder;

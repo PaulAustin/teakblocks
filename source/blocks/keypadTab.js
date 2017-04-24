@@ -65,7 +65,8 @@ module.exports = function () {
           if(numArray[((iy)*3) + ix] !== undefined){
             var button = svgb.createGroup('', 0, 0);
             var box = svgb.createRect('calcButtons', 2.5+((ix)*75), 5+(iy*35), 70, 30, 6);
-            var text = svgb.createText('svg-clear', 32.5+((ix)*75), 27.5+(iy*35), numArray[((iy)*3) + ix]);
+            var text = svgb.createText('svg-clear', 37.5+((ix)*75), 27.5+(iy*35), numArray[((iy)*3) + ix]);
+            text.setAttribute('text-anchor', 'middle');
 
             button.appendChild(box);
             button.appendChild(text);
