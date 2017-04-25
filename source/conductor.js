@@ -128,15 +128,22 @@ module.exports = function () {
 
     if (first.name === 'identity') {
       var botName = first.controllerSettings.data.deviceName;
-
+      var message = '';
       if (block.name === 'picture') {
         var imageData = block.controllerSettings.data.pix;
         var pixStr = conductor.packPix(imageData);
-        var message = 'P' + pixStr + ':';
+        message = '(px:' + pixStr + ');';
+      } else if (block.name === 'servo') {
+        message = '(sr' + 50 + ');';
+      } else if (block.name === 'motor') {
+        message = '(mo' + 45 + ');';
+      }
 
+      if (message !== '') {
         console.log ('picture message', message);
         conductor.ble.write(botName, message);
       }
+
     }
     // Single step, find target and head of chain and run the single block.
   };
