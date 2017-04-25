@@ -259,6 +259,8 @@ html, body { margin:0; padding:0; overflow:hidden }
 /* Use this class for SVG elements that do not directly interact with the pointer */
 .svg-clear {
   pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none; /* Chrome/Safari */
 }
 .function-text {
   width: 80px;

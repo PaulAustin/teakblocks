@@ -46,7 +46,7 @@ module.exports = function () {
     var loop = svgb.createText('svg-clear block-flowhead-loop', 10, 40, '\uf021');
     root.appendChild(loop);
     var data = block.controllerSettings.data.count;
-    var count = svgb.createText('svg-clears block-flowhead-count block-stencil-fill', 25, 65, data); //
+    var count = svgb.createText('svg-clear block-flowhead-count block-stencil-fill', 25, 65, data); //
     count.setAttribute('text-anchor', 'middle');
     root.appendChild(count);
     return root;
@@ -131,8 +131,8 @@ module.exports = function () {
       'min':0,
       'max':100,
       'suffix':" times",
-      'numArray': ["1", "2", "3", "4", "5","6", "7", "8", "9", "0", "<-"],
-      'calcLayout': 'complex'
+      'numArray': ["+1", "<-", "+10", "-1", undefined, "-10"],//["1", "2", "3", "4", "5","6", "7", "8", "9", "0", "<-"],
+      'calcLayout': 'simple'//'complex'
     });
   };
   flowBlockHead.configuratorClose = function(div) {

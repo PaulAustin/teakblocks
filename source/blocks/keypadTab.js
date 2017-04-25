@@ -40,7 +40,7 @@ module.exports = function () {
       var calcLayout = object.calcLayout;
       div.innerHTML =
           `<div id='keypadDiv' class='editorDiv'>
-              <div id="numeric-display" class = "numeric-display" width='80px' height='80px' data-bind='text: keyPadValue'>
+              <div id="numeric-display" class = "numeric-display svg-clear" width='80px' height='80px' data-bind='text: keyPadValue'>
 
               </div>
               <svg id="keypadSvg" class='area' width='225px' height='167.5px' xmlns='http://www.w3.org/2000/svg'></svg>
