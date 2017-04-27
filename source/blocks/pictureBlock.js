@@ -74,8 +74,8 @@ module.exports = function () {
   // Generate and SVG based image for a specific block.
   pictureBlock.svg= function(svg, block) {
     var pix = block.controllerSettings.data.pix;
-    var group = svgb.createGroup('svg-clear', 24, 15);
-    var box = svgb.createRect('svg-clear block-picture-board', -8, -8, 48, 48, 4);
+    var group = svgb.createGroup('svg-clear', 26, 15);
+    var box = svgb.createRect('svg-clear block-picture-board', -7, -7, 42, 42, 4);
     group.appendChild(box);
     for (var iy = 0; iy < 5; iy++) {
       for (var ix = 0; ix < 5; ix++) {
@@ -85,7 +85,7 @@ module.exports = function () {
         } else {
           style = 'svg-clear block-picture-led-on';
         }
-        var led = svgb.createCircle(style, (ix*8), (iy*8), 3);
+        var led = svgb.createCircle(style, (ix*7), (iy*7), 3);
         group.appendChild(led);
       }
     }
