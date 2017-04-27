@@ -57,34 +57,7 @@ var flowBlocks = require('./blocks/flowBlocks.js');
 b.loopBlock = flowBlocks.flowBlockHead;  // TODO name change
 b.tailBlock = flowBlocks.flowBlockTail;  // TODO name change
 b.motorBlock = require('./blocks/motorBlock.js');
-
-
-// Two motors. Sometimes its just better to control two at once.
-b.twoMotorBlock = {
-  svg: function(root) {
-    // Motor 1
-    var motor = svgb.createCircle('svg-clear block-motor-body', 27, 30, 20);
-    root.appendChild(motor);
-    var shaft = svgb.createCircle('svg-clear block-motor-shaft', 27, 30, 4);
-    root.appendChild(shaft);
-    motor = svgb.createCircle('svg-clear block-motor-body', 53, 30, 20);
-    root.appendChild(motor);
-    shaft = svgb.createCircle('svg-clear block-motor-shaft', 53, 30, 4);
-    root.appendChild(shaft);
-    return root;
-  },
-  defaultSettings : function() {
-    // Return a new object with settings for the controller.
-    return {
-      data:{
-        speed: 50,
-        duration: 0,
-      },
-      // Indicate what controller is active. This may affect the data format.
-      controller:'speed',
-    };
-  },
-};
+b.twoMotorBlock = require('./blocks/twoMotorBlock.js');
 
 b.digitalWriteBlock = {
   svg: function(root) {

@@ -26,50 +26,51 @@ module.exports = function () {
   var keypad = require('./keypadTab.js');
   var ko = require('knockout');
   var pb = svgb.pathBuilder;
-  var waitBlock = {};
+  var twoMotorBlock = {};
 
-  waitBlock.keyPadValue = ko.observable(50);
+  twoMotorBlock.keyPadValue = ko.observable(50);
 
   // Initial setting for blocks of this type.
-  waitBlock.defaultSettings = function() {
-    // return a new object with settings for the controller.
+  twoMotorBlock.defaultSettings = function() {
+    // Return a new object with settings for the controller.
     return {
-      // And the data that goes with that editor.
-      data:{ 'duration':1.0 },
+      data:{
+        speed: 50,
+        duration: 0,
+      },
       // Indicate what controller is active. This may affect the data format.
+      controller:'speed',
     };
   };
   // Wait block - Wait until something happens, it can wait for things other
   // than time, but it is given that time pasing is part of the function.
-  waitBlock.svg = function(root) {
-    var pathd = '';
-    pathd =  pb.move(40, 19);
-    pathd += pb.vline(-7);
-    pathd += pb.arc(19, 340, 1, 1, -12, 4);
-    pathd += pb.move(10.6, 16.5);
-    pathd += pb.arc(1.3, 300, 0, 0, 2.2, -0.8);
-    pathd += pb.line(-7.8, -10.5);
-    pathd += pb.close();
-    var path = svgb.createPath('svg-clear block-stencil', pathd);
-    root.appendChild(path);
+  twoMotorBlock.svg = function(root) {
+    // Motor 1
+    var motor = svgb.createCircle('svg-clear block-motor-body', 27, 30, 20);
+    root.appendChild(motor);
+    var shaft = svgb.createCircle('svg-clear block-motor-shaft', 27, 30, 4);
+    root.appendChild(shaft);
+    motor = svgb.createCircle('svg-clear block-motor-body', 53, 30, 20);
+    root.appendChild(motor);
+    shaft = svgb.createCircle('svg-clear block-motor-shaft', 53, 30, 4);
+    root.appendChild(shaft);
     return root;
   };
 
-  waitBlock.configuratorOpen = function(div, block) {
+  twoMotorBlock.configuratorOpen = function(div, block) {
     keypad.openTabs({
-      'getValue': function() { return block.controllerSettings.data.duration; },
-      'setValue': function(duration) { block.controllerSettings.data.duration = duration; },
-      'type':waitBlock,
+      'getValue': function() { return block.controllerSettings.data.speed; },
+      'setValue': function(speed) { block.controllerSettings.data.speed = speed; },
+      'type':twoMotorBlock,
       'div': div,
       'block': block,
       'min':-100,
       'max':100,
-      'suffix':"",
+      'suffix':"%",
       'numArray': ["+50", "+10", "+1", "-50", "-10", "-1", undefined, "<-"],
       'calcLayout': 'simple'
     });
-  //  formTools.sliderInteract(div);
-    };
+  };
 
-  return waitBlock;
+  return twoMotorBlock;
 }();

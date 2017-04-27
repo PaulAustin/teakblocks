@@ -60,7 +60,7 @@ module.exports = function () {
     path.setAttribute('transform', "rotate(" + data + " 48 32)");
     root.appendChild(path);
 
-    servoBlock.testExpression(root);
+    //servoBlock.testExpression(root);
     return root;
   };
 
