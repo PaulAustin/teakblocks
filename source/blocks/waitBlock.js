@@ -59,7 +59,7 @@ module.exports = function () {
           <br>
           <i class="fa fa-clock-o" aria-hidden="true"></i><div class="slider"></div>
         </div>`;
-    formTools.sliderInteract(div);
+  //  formTools.sliderInteract(div);
     };
 
   return waitBlock;

@@ -46,7 +46,7 @@ module.exports = function () {
     var loop = svgb.createText('svg-clear block-flowhead-loop', 10, 40, '\uf021');
     root.appendChild(loop);
     var data = block.controllerSettings.data.count;
-    var count = svgb.createText('svg-clear block-flowhead-count block-stencil-fill', 25, 65, data); //
+    var count = svgb.createText('svg-clear block-flowhead-count block-stencil-fill', 25, 70, data); //
     count.setAttribute('text-anchor', 'middle');
     root.appendChild(count);
     return root;
