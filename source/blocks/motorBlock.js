@@ -69,8 +69,8 @@ module.exports = function () {
       'min':-100,
       'max':100,
       'suffix':"%",
-      'numArray': ["0", "25", "50", "75", "100"],//["1", "2", "3", "4", "5","6", "7", "8", "9", "+/-", "0", "<-"],
-      'calcLayout': 'defined'
+      'numArray': ["+50", "+10", "+1", "-50", "-10", "-1", undefined, "<-"],
+      'calcLayout': 'simple'
     });
   };
   motorBlock.configuratorClose = function(div) {
