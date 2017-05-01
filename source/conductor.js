@@ -134,13 +134,13 @@ module.exports = function () {
         var pixStr = conductor.packPix(imageData);
         message = '(px:' + pixStr + ');';
       } else if (block.name === 'servo') {
-        message = '(sr' + 50 + ');';
+        message = '(sr:' + 50 + ');';
       } else if (block.name === 'motor') {
-        message = '(mo' + 45 + ');';
+        message = '(mo:' + 45 + ');';
       }
 
       if (message !== '') {
-        console.log ('picture message', message);
+        console.log ('block message', message);
         conductor.ble.write(botName, message);
       }
 
