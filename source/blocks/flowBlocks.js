@@ -138,6 +138,12 @@ module.exports = function () {
   flowBlockHead.configuratorClose = function(div) {
     keypad.closeTabs({'div': div});
   };
+  flowBlockTail.configuratorOpen = function(div, block) {
+    flowBlockHead.configuratorOpen(div, block.flowHead);
+  };
+  flowBlockTail.configuratorClose = function(div) {
+    flowBlockHead.configuratorClose(div);
+  };
 
   return {flowBlockHead:flowBlockHead, flowBlockTail:flowBlockTail};
 }();

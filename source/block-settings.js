@@ -151,15 +151,18 @@ module.exports = function () {
 
     var diagramChanger = true;
     var isSelectedGroup = false;
+    var block = this.activeBlock;
 
-    if(this.activeBlock !== null && this.activeBlock.isGroupSelected()){
-      isSelectedGroup = true;
+    if(block !== null && block.isGroupSelected()){
+      if(block.name !== 'tail' && block.name !== 'loop'){
+        isSelectedGroup = true;
+      }
     }
 
     // If the form is actally associated with a block, hide it.
-    if (this.activeBlock !== null && this.activeBlock !== exceptBlock) {
-      if (this.activeBlock.funcs.configuratorClose !== undefined) {
-        this.activeBlock.funcs.configuratorClose(this.customDiv, this.activeBlock);
+    if (block !== null && block !== exceptBlock) {
+      if (block.funcs.configuratorClose !== undefined) {
+        block.funcs.configuratorClose(this.customDiv, block);
         // TODO too aggresive, but works
       }
       this.activeBlock = null;
@@ -207,12 +210,31 @@ module.exports = function () {
       //this.hide();
       tbe.clearStates();
       this.activeBlock = block;
-      block.markSelected(true);
+      console.log(block);
+      if(block.name === 'tail'){
+        block.markSelected(true);
+        block.flowHead.markSelected(true);
+      } else if(block.name === 'loop'){
+        block.markSelected(true);
+        block.flowTail.markSelected(true);
+      } else{
+        block.markSelected(true);
+      }
       setTimeout(function() { blockSettings.showActive(); }, 400);
 //      this.addEventListener(this.showActive, 500);
     } else {
       // Nothing showing, make it pop-up.
-      block.markSelected(true);
+      //block.markSelected(true);
+      console.log(block);
+      if(block.name === 'tail'){
+        block.markSelected(true);
+        block.flowHead.markSelected(true);
+      } else if(block.name === 'loop'){
+        block.markSelected(true);
+        block.flowTail.markSelected(true);
+      } else{
+        block.markSelected(true);
+      }
       this.activeBlock = block;
       this.showActive(null);
     }
@@ -313,14 +335,17 @@ module.exports = function () {
     var isSelectedGroup = false;
     var tweakx = 0;
     var tweaky = 0;
+    var block = this.activeBlock;
 
-    if(this.activeBlock !== null && this.activeBlock.isGroupSelected()){
-      isSelectedGroup = true;
+    if(block !== null && block.isGroupSelected()){
+      if(block.name !== 'tail' && block.name !== 'loop'){
+        isSelectedGroup = true;
+      }
     }
     if (event !== null) {
     //  this.removeEventListener('transitionend', this.showActive);
     }
-    if (this.activeBlock === null) {
+    if (block === null) {
       return; // Nothing to show.
     }
 
@@ -328,8 +353,8 @@ module.exports = function () {
     this.buildControllerTabs();
 
     // Start animation to show settings form.
-    var x = this.activeBlock.left;
-    var y = this.activeBlock.bottom;
+    var x = block.left;
+    var y = block.bottom;
     var div = null;
     if(isSelectedGroup){
       div = blockSettings.groupDiv;
@@ -343,7 +368,7 @@ module.exports = function () {
       tweakx = window.innerWidth - (x+165);
     }
     if(y+220 > window.innerHeight){
-      tweaky = -230 - this.activeBlock.height;
+      tweaky = -230 - block.height;
     }
     div.style.transition = 'all 0.0s ease';
     div.style.left = ((x-80) + tweakx) + 'px';
