@@ -1037,6 +1037,7 @@ tbe.configInteractions = function configInteractions() {
     })
     .on('move', function(event) {
       var interaction = event.interaction;
+      console.log("hii");
       // If the pointer was moved while being held down
       // and an interaction hasn't started yet
       if (interaction.pointerIsDown && !interaction.interacting()) {
@@ -1044,18 +1045,50 @@ tbe.configInteractions = function configInteractions() {
           var block = thisTbe.elementToBlock(event.target);
           block = tbe.findChunkStart(block);
           var targetToDrag = block.svgGroup;
-
-          var temp = block;
-          if(block.isSelected()){
-            //console.log(block);
-            while(temp !== null){
-              if(temp.isSelected()){
-                temp = temp.next;
-              } else {
-                temp.prev.next = null;
-                temp.prev = null;
-                break;
-              }
+          var notIsolated = (block.next !== null && block.prev !== null);
+          var next = block;
+          var prev = block;
+          var frameCount = 10;
+          var animationState = {};
+          if(block.nesting > 0 && notIsolated && !block.isGroupSelected()){
+            next = block.next;
+            prev = block.prev;
+            block.next.prev = prev;
+            block.prev.next = next;
+            block.next = null;
+            block.prev = null;
+            if (next !== null) {
+              frameCount = 10;
+              animationState = {
+                  adx: -block.width / frameCount,
+                  ady: 0,
+                  frame: frameCount,
+                  chunkStart: next,
+                  chunkEnd: next.last,
+                };
+              tbe.animateMove(animationState);
+            }
+          } else if(block.nesting > 0 && notIsolated && block.isGroupSelected()){
+            next = block;
+            prev = block.prev;
+            while(next.next !== null && next.next.isSelected()){
+              next = next.next;
+            }
+            var nextCopy = next.next;
+            next.next.prev = prev;
+            prev.next = next.next;
+            next.next = null;
+            block.prev = null;
+            if (next !== null) {
+              frameCount = 10;
+              animationState = {
+                  adx: -block.chainWidth / frameCount,
+                  ady: 0,
+                  frame: frameCount,
+                  chunkStart: nextCopy,
+                  chunkEnd: nextCopy.last,
+                };
+              tbe.animateMove(animationState);
             }
           }
 
@@ -1069,6 +1102,7 @@ tbe.configInteractions = function configInteractions() {
             block.setDraggingState(true);
 
             tbe.clearStates();
+            console.log(block);
             interaction.start({ name: 'drag' },
                               event.interactable,
                               targetToDrag);
