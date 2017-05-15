@@ -24,8 +24,6 @@ module.exports = function () {
 
 var svgb = require('./svgbuilder.js');
 var b = {};
-var interact = require('interact.js');
-var ko = require('knockout');
 
 b.bind = function(style){
   var key = style + 'Block';

@@ -131,10 +131,12 @@ module.exports = function () {
             block2 = block1;
             block1 = block1.flowTail;
           }
-          tbe.deleteChunk(block1, endBlock);
+
 
           if (block2 !== null) {
-            tbe.deleteChunk(block2, block2);
+            tbe.deleteChunk(block2, block1);
+          } else{
+            tbe.deleteChunk(block1, endBlock);
           }
         }
       };

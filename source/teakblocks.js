@@ -811,7 +811,6 @@ tbe.internalClearDiagramBlocks = function clearDiagramBlocks() {
 // should be selected, typically that is the selected block to the end.
 // But for flow blocks it more subtle.
 tbe.findChunkStart = function findChunkStart(clickedBlock) {
-
   var chunkStart = clickedBlock;
   while(chunkStart.isSelected()) {
     if (chunkStart.prev !== null && chunkStart.prev.isSelected()){
@@ -821,7 +820,7 @@ tbe.findChunkStart = function findChunkStart(clickedBlock) {
     }
   }
   // Scan to end see if a flow tail is found.
-  var b = chunkStart;
+  /*var b = chunkStart;
   while (b !== null) {
     // If tail found inlcude the whole flow block.
     if (b.flowHead !== null) {
@@ -832,7 +831,7 @@ tbe.findChunkStart = function findChunkStart(clickedBlock) {
       break;
     }
     b = b.next;
-  }
+  }*/
   return chunkStart;
 };
 // Finds the block before where a block can be placed (end of chain)
