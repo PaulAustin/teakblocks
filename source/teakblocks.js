@@ -192,10 +192,12 @@ tbe.deleteChunk = function(block, endBlock){
   var deleteWidth = block.chainWidth;
   var tempBlock = null;
 
-  // Delete the chunk.
-  while(block !== null){
-    tempBlock = block.next; // Make a copy of block.next before it becomes null
-    // remove map entry for the block.
+  if(block.flowTail === endBlock){
+    block.next.prev = block.prev;
+    block.next = null;
+    endBlock.prev.next = endBlock.next;
+    endBlock.prev = null;
+
     delete tbe.diagramBlocks[block.interactId];
 
     tbe.svg.removeChild(block.svgGroup);
@@ -204,7 +206,28 @@ tbe.deleteChunk = function(block, endBlock){
     block.next = null;
     block.prev = null;
 
-    block = tempBlock;
+    delete tbe.diagramBlocks[endBlock.interactId];
+
+    tbe.svg.removeChild(endBlock.svgGroup);
+    endBlock.svgGroup = null;
+    endBlock.svgRect = null;
+    endBlock.next = null;
+    endBlock.prev = null;
+  } else{
+    // Delete the chunk.
+    while(block !== null){
+      tempBlock = block.next; // Make a copy of block.next before it becomes null
+      // remove map entry for the block.
+      delete tbe.diagramBlocks[block.interactId];
+
+      tbe.svg.removeChild(block.svgGroup);
+      block.svgGroup = null;
+      block.svgRect = null;
+      block.next = null;
+      block.prev = null;
+
+      block = tempBlock;
+    }
   }
 
   // Slide any remaining blocks over to the left

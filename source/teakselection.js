@@ -116,8 +116,21 @@ tbSelecton.startSelectionBoxDrag = function(event) {
      tbe.forEachDiagramBlock( function(block) {
        if(tbe.intersectingArea(rect, block.rect) > 0){
          intersecting.push(block);
+         var tempBlock = block;
+         if(block.isLoopHead()){
+           while(tempBlock !== null && !tempBlock.isLoopTail()){
+             intersecting.push(tempBlock);
+             tempBlock = tempBlock.next;
+           }
+         } else if(block.isLoopTail()){
+           while(tempBlock !== null && !tempBlock.isLoopHead()){
+             intersecting.push(tempBlock);
+             tempBlock = tempBlock.prev;
+           }
+         }
        }
      });
+
      // If nothing is in the selection area, then clear the intersecting array.
      if(intersecting.length === 0){
        tbSelecton.currentChain = null;
@@ -128,7 +141,7 @@ tbSelecton.startSelectionBoxDrag = function(event) {
      // If the block is in intersecting array and it is in the currentChain, select it. Otherwise, deselect it.
      tbe.forEachDiagramBlock(function(block) {
        if(intersecting.includes(block) && tbSelecton.currentChain.chainContainsBlock(block)){
-         block.markSelected(tbe.intersectingArea(rect, block.rect) > 0);
+         block.markSelected(true); //tbe.intersectingArea(rect, block.rect) > 0
        } else if(block.flowHead !== null && !intersecting.includes(block.flowHead)){
          block.markSelected(false);
        } else if(block.flowHead === null){

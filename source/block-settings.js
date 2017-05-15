@@ -125,9 +125,9 @@ module.exports = function () {
 
           // If ends of a flow block remove both parts,
           // delete the tail first, since it owns the graphics.
-          if (block1.flowHead !== null) {
+          if (block1.isLoopTail()) {
             block2 = block1.flowHead;
-          } else if (block1.flowTail !== null) {
+          } else if (block1.isLoopHead()) {
             block2 = block1;
             block1 = block1.flowTail;
           }
