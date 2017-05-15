@@ -516,6 +516,14 @@ tbe.FunctionBlock.prototype.isSelected = function() {
   return this.svgRect.classList.contains('selectedBlock');
 };
 
+tbe.FunctionBlock.prototype.isLoopHead = function() {
+  return (this.flowTail !== null);
+};
+
+tbe.FunctionBlock.prototype.isLoopTail = function() {
+  return (this.flowHead !== null);
+};
+
 tbe.FunctionBlock.prototype.isGroupSelected = function() {
   var before = false;
   var after = false;

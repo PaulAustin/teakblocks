@@ -76,12 +76,12 @@ module.exports = function () {
         if (blockSettings.activeBlock !== null) {
           // Back up start if necessary for clone to be logical.
           var startBlock = tbe.findChunkStart(blockSettings.activeBlock);
-          if (startBlock.flowHead !== null) {
+          if (startBlock.isLoopTail()) {
             startBlock = startBlock.flowHead;
           }
           // Extend end if necessary for clone to be logical.
           var endBlock = startBlock;
-          if (endBlock.flowTail !== null) {
+          if (endBlock.isLoopHead()) {
             endBlock = endBlock.flowTail;
           }
           if(startBlock.isGroupSelected()){
