@@ -71,6 +71,9 @@ module.exports = function () {
       'calcLayout': 'simple'
     });
   };
+  twoMotorBlock.configuratorClose = function(div) {
+    keypad.closeTabs({'div': div});
+  };
 
   return twoMotorBlock;
 }();

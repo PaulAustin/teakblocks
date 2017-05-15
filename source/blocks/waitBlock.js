@@ -70,6 +70,9 @@ module.exports = function () {
     });
   //  formTools.sliderInteract(div);
     };
+    waitBlock.configuratorClose = function(div) {
+      keypad.closeTabs({'div': div});
+    };
 
   return waitBlock;
 }();
