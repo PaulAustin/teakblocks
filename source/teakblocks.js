@@ -501,6 +501,12 @@ tbe.FunctionBlock.prototype.markSelected = function(state) {
     tbe.svg.removeChild(this.svgGroup);
     tbe.svg.appendChild(this.svgGroup);
     this.svgRect.classList.add('selectedBlock');
+    if(this.flowHead !== null){
+      this.flowHead.svgRect.classList.add('selectedBlock');
+    }
+    if(this.flowTail !== null){
+      this.flowTail.svgRect.classList.add('selectedBlock');
+    }
   } else {
     this.svgRect.classList.remove('selectedBlock');
   }

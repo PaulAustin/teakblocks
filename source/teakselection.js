@@ -129,7 +129,9 @@ tbSelecton.startSelectionBoxDrag = function(event) {
      tbe.forEachDiagramBlock(function(block) {
        if(intersecting.includes(block) && tbSelecton.currentChain.chainContainsBlock(block)){
          block.markSelected(tbe.intersectingArea(rect, block.rect) > 0);
-       } else{
+       } else if(block.flowHead !== null && !intersecting.includes(block.flowHead)){
+         block.markSelected(false);
+       } else if(block.flowHead === null){
          block.markSelected(false);
        }
      });
