@@ -44,7 +44,7 @@ module.exports = function () {
   };
   // Wait block - Wait until something happens, it can wait for things other
   // than time, but it is given that time pasing is part of the function.
-  twoMotorBlock.svg = function(root) {
+  twoMotorBlock.svg = function(root, block) {
     // Motor 1
     var motor = svgb.createCircle('svg-clear block-motor-body', 27, 30, 20);
     root.appendChild(motor);
@@ -54,6 +54,10 @@ module.exports = function () {
     root.appendChild(motor);
     shaft = svgb.createCircle('svg-clear block-motor-shaft', 53, 30, 4);
     root.appendChild(shaft);
+    var data = block.controllerSettings.data.speed;
+    var speed = svgb.createText('svg-clear block-motor-text block-stencil-fill', 40, 70, data + "%");
+    speed.setAttribute('text-anchor', 'middle');
+    root.appendChild(speed);
     return root;
   };
 

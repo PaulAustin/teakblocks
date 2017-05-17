@@ -490,6 +490,16 @@ label input[type="checkbox"]:disabled + .label-text:before {
   font-size:20px;
   stroke-width:0;
 }
+.block-wait-text{
+  font-family: "helvetica";
+  font-size:20px;
+  stroke-width:0;
+}
+.block-twomotor-text{
+  font-family: "helvetica";
+  font-size:20px;
+  stroke-width:0;
+}
 .block-flowhead-loop{
   font-family: FontAwesome;
   font-size: 35px;
