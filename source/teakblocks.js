@@ -173,7 +173,6 @@ tbe.addPaletteBlock = function(x, y, name) {
 // delete -- delete a chunk of blocs (typically one)
 tbe.deleteChunk = function(block, endBlock){
 
-  this.clearStates();
 
   //Remember any tail so it can be slid over.
   var tail = endBlock.next;
@@ -192,7 +191,10 @@ tbe.deleteChunk = function(block, endBlock){
   var deleteWidth = block.chainWidth;
   var tempBlock = null;
 
-  if(block.flowTail === endBlock){
+  //console.log(block.next.svgRect.classList);
+  if((block.flowTail === endBlock) && (!block.isGroupSelected())){
+    tbe.clearStates();
+
     block.next.prev = block.prev;
     block.next = null;
     endBlock.prev.next = endBlock.next;
@@ -215,6 +217,8 @@ tbe.deleteChunk = function(block, endBlock){
     endBlock.prev = null;
   } else{
     // Delete the chunk.
+    tbe.clearStates();
+
     while(block !== null){
       tempBlock = block.next; // Make a copy of block.next before it becomes null
       // remove map entry for the block.
@@ -1037,7 +1041,6 @@ tbe.configInteractions = function configInteractions() {
     })
     .on('move', function(event) {
       var interaction = event.interaction;
-      console.log("hii");
       // If the pointer was moved while being held down
       // and an interaction hasn't started yet
       if (interaction.pointerIsDown && !interaction.interacting()) {
