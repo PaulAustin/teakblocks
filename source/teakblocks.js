@@ -1105,7 +1105,6 @@ tbe.configInteractions = function configInteractions() {
             block.setDraggingState(true);
 
             tbe.clearStates();
-            console.log(block);
             interaction.start({ name: 'drag' },
                               event.interactable,
                               targetToDrag);

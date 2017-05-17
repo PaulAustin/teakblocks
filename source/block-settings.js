@@ -212,7 +212,6 @@ module.exports = function () {
       //this.hide();
       tbe.clearStates();
       this.activeBlock = block;
-      console.log(block);
       if(block.name === 'tail'){
         block.markSelected(true);
         block.flowHead.markSelected(true);
@@ -227,7 +226,6 @@ module.exports = function () {
     } else {
       // Nothing showing, make it pop-up.
       //block.markSelected(true);
-      console.log(block);
       if(block.name === 'tail'){
         block.markSelected(true);
         block.flowHead.markSelected(true);

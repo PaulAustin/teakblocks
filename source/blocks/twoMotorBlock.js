@@ -55,7 +55,7 @@ module.exports = function () {
     shaft = svgb.createCircle('svg-clear block-motor-shaft', 53, 30, 4);
     root.appendChild(shaft);
     var data = block.controllerSettings.data.speed;
-    var speed = svgb.createText('svg-clear block-motor-text block-stencil-fill', 40, 70, data + "%");
+    var speed = svgb.createText('svg-clear block-twomotor-text block-stencil-fill', 40, 70, data + "%");
     speed.setAttribute('text-anchor', 'middle');
     root.appendChild(speed);
     return root;

@@ -60,6 +60,10 @@ module.exports = function () {
     path.setAttribute('transform', "rotate(" + data + " 48 32)");
     root.appendChild(path);
 
+    var pos = svgb.createText('svg-clear block-servo-text block-stencil-fill', 40, 70, data + "˚");
+    pos.setAttribute('text-anchor', 'middle');
+    root.appendChild(pos);
+
     //servoBlock.testExpression(root);
     return root;
   };
