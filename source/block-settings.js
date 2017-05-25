@@ -127,7 +127,7 @@ module.exports = function () {
           // delete the tail first, since it owns the graphics.
           if (block1.isLoopTail()) {
             block2 = block1.flowHead;
-          } else if (block1.isLoopHead() && !block1.flowTail.next.isSelected()) {
+          } else if (block1.isLoopHead() && block1.flowTail.next !== null && !block1.flowTail.next.isSelected()) {
             block2 = block1;
             block1 = block1.flowTail;
           }
