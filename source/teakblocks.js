@@ -1041,11 +1041,14 @@ tbe.configInteractions = function configInteractions() {
     })
     .on('move', function(event) {
       var interaction = event.interaction;
+      var block = thisTbe.elementToBlock(event.target);
+      if(block.name === 'tail'){
+        block = block.flowHead;
+      }
       // If the pointer was moved while being held down
       // and an interaction hasn't started yet
       if (interaction.pointerIsDown && !interaction.interacting()) {
         if (tbe.pointerDownObject === event.target) {
-          var block = thisTbe.elementToBlock(event.target);
           block = tbe.findChunkStart(block);
           var targetToDrag = block.svgGroup;
           var notIsolated = (block.next !== null && block.prev !== null);
