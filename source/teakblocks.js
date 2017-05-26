@@ -92,6 +92,10 @@ tbe.init = function init(svg) {
   this.configInteractions();
   interact.maxInteractions(Infinity);
   this.initPaletteBox();
+  var loadedDocText = save.loadFile('docA');
+  if (loadedDocText !== null) {
+    teakText.textToBlocks(tbe, loadedDocText);
+  }
 
   teakselection.init(tbe);
 
