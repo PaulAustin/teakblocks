@@ -31,6 +31,7 @@ function deviceReady() {
   var Clipboard = require('clipboard');
   var tt = require('./teaktext.js');
   var conductor = require('./conductor.js');
+  var actionButtons = require('./actionButtons.js');
 
   /* font awesome strings */
   var fastr = {
@@ -122,7 +123,7 @@ function deviceReady() {
   };
 
  tbe.addPalette(package1);
- var actionButtons = [
+ var actionButtonObj = [
    {'alignment': 'L', 'position': 1, 'label': fastr.play, 'command': 'play', 'tweakx': 4},
    {'alignment': 'L', 'position': 2, 'label': fastr.stop, 'command': 'stop'},
    {'alignment': 'M', 'position': 1, 'label': fastr.file+"A", 'command': 'loadDocA'},
@@ -135,7 +136,7 @@ function deviceReady() {
 
  tbe.actionButtons = actionButtons;
 
- tbe.deleteRay = tbe.addActionButtons(actionButtons);
+ tbe.deleteRay = actionButtons.addActionButtons(actionButtonObj, tbe);
  document.body.onresize = tbe.updateScreenSizes; // Buttons/screen resizing
 
  // The conductor coordinates the score managed by the editor and the collection
