@@ -31,7 +31,7 @@ module.exports = function () {
     var tweakx = 0;
     var label = '';
     var numMiddle = 0;
-    var toReturn = null;
+    var toReturn = [];
 
     var group = null;
     var svgCircle = null;
@@ -100,15 +100,90 @@ module.exports = function () {
         // TODO, abstract it
         var curr = group.getAttribute('class');
         group.setAttribute('class', curr + ' copy-button');
-      }
-      if(buttons[i].command === 'trashFirst'){
+      } else if (buttons[i].command === 'dropdown') {
         // TODO, abstract it
-        toReturn = [svgCircle, svgText];
+        group.setAttribute('id', 'dropdown');
       }
+
+      toReturn[buttons.length - i - 1] = [svgCircle, svgText];
+
     }
 
     return toReturn;
   };
+
+  actionButtons.createDropdown = function(buttons, tbe, changeText){
+    var droppoint = document.getElementById('dropdown').childNodes;
+    var x = droppoint[0].getAttribute('cx');
+    var y = droppoint[0].getAttribute('cy');
+
+    this.addButton(changeText, x, y, tbe, 'pullUp', 'pullUp');
+    droppoint[0].parentNode.parentNode.removeChild(droppoint[0].parentNode);
+    var newButtons = [];
+
+    for(var i = 0; i < buttons.length; i++){
+      newButtons[i] = this.addButton(buttons[i].label, x, y, tbe);
+    }
+
+    for(var k = 0; k < newButtons.length; k++){
+      var animateSlideDown = {
+        frame: 20,
+        adx: 0,
+        ady: (80 * (k+1))/20,
+      };
+      this.slideButton(animateSlideDown, newButtons[k]);
+    }
+
+    return newButtons;
+  };
+  actionButtons.deleteDropdown = function(buttons, tbe, changeText){
+    for(var i = 0; i < buttons.length; i++){
+      var animateSlideDown = {
+        frame: 20,
+        adx: 0,
+        ady: -((80 * (i+1))/20)
+      };
+      this.slideButton(animateSlideDown, buttons[i]);
+    }
+    var droppoint = document.getElementById('pullUp').childNodes;
+    var x = droppoint[0].getAttribute('cx');
+    var y = droppoint[0].getAttribute('cy');
+    this.addButton(changeText, x, y, tbe, 'dropdown', 'dropdown');
+    droppoint[0].parentNode.parentNode.removeChild(droppoint[0].parentNode);
+  };
+
+  actionButtons.addButton = function(label, x, y, tbe, command, id){
+    var group = svgb.createGroup('buttonGroup', 0, 0);
+    var svgCircle = svgb.createCircle('action-dot', x, 40, 33);
+    var svgText = svgb.createText('action-dot-text', x, 53, label);
+    if(command !== undefined){
+      svgCircle.setAttribute('command', command);
+    }
+    if(id !== undefined){
+      group.setAttribute('id', id);
+    }
+    group.appendChild(svgCircle);
+    group.appendChild(svgText);
+    tbe.svg.appendChild(group);
+    return group;
+  };
+
+  actionButtons.slideButton = function slideButton(state, button, option){
+    var frame = state.frame;
+    var currentAttribute = button.getAttribute('transform');
+    var parenPos = currentAttribute.lastIndexOf(')');
+    var commaPos = currentAttribute.lastIndexOf(' ');
+    var currentY = parseInt(currentAttribute.substring(commaPos, parenPos), 10);
+    button.setAttribute('transform', 'translate(' + state.adx + ' ' + (currentY + state.ady) + ')');
+
+    if (frame > 1) {
+      state.frame = frame - 1;
+      requestAnimationFrame(function() { slideButton(state, button); });
+    } else if(option === "delete"){
+      button.parentNode.removeChild(button);
+    }
+  };
+
   return actionButtons;
 
 }();

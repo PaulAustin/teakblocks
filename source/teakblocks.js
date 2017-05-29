@@ -824,6 +824,7 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
 // links should already be set up for the final location.
 // TODO, need ease in/out
 tbe.animateMove = function animateMove(state) {
+  //console.log("hi");
   var frame = state.frame;
   state.chunkStart.dmove(state.adx, state.ady, (frame === 1), state.chunkEnd);
   state.chunkStart.fixupChainCrossBlockSvg();
@@ -1289,7 +1290,14 @@ tbe.initPaletteBox = function initPaletteBox() {
 tbe.updateScreenSizes = function() {
   // First resize pallette and background then resize the action buttons
   tbe.sizePaletteToWindow();
-  tbe.deleteRay = actionButtons.addActionButtons(tbe.actionButtons, tbe);
+  var buttons = actionButtons.addActionButtons(tbe.actionButtons, tbe);
+  for(var i = 0; i < buttons.length; i++){
+    if(buttons[i][0].getAttribute('command') === "trashFirst"){
+      tbe.deleteRay = buttons[i];
+    } else if(buttons[i][0].getAttribute('command') === "dropdown"){
+      tbe.dropRay = buttons[i];
+    }
+  }
 };
 
 tbe.addPalette = function addPalette(palette) {

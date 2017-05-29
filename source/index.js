@@ -46,6 +46,8 @@ function deviceReady() {
     settings: '\uf013',
     trashFull: '\uf1f8',
     copyToClipboard: '\uf0ea',
+    downArrow: '\uf063',
+    upArrow: '\uf062',
   };
 
   // A few things are sensitive to diffs from running in tablet vs.
@@ -79,6 +81,16 @@ function deviceReady() {
 
   tbe.init(document.getElementById('editorCanvas'));
 
+  var dropdownButtons = [
+    {'label': 'A'},
+    {'label': 'B'},
+    {'label': 'C'},
+    {'label': 'D'},
+    {'label': 'E'},
+  ];
+
+  var newButtons = [];
+
   tbe.deleteRay = null;
   tbe.commands = {
     'settings': function() { tf.showHide(tbe.components.appSettings); },
@@ -86,10 +98,12 @@ function deviceReady() {
     'stop': function() { conductor.stopAll(); },
     'trashFirst': function() { tbe.stage1deletion(fastr); },
     'trashSecond': function() {  tbe.stage2deletion(fastr); },
+    'dropdown': function() { newButtons = actionButtons.createDropdown(dropdownButtons, tbe, fastr.upArrow); },
     'loadDocA': function(){ tbe.loadDoc('docA'); },
     'loadDocB': function(){ tbe.loadDoc('docB'); },
     'undo': function(){ tbe.undoAction(); },
     'redo': function(){ tbe.redoAction(); },
+    'pullUp': function(){ actionButtons.deleteDropdown(newButtons, tbe, fastr.downArrow); }
   };
 
 
@@ -126,17 +140,25 @@ function deviceReady() {
  var actionButtonObj = [
    {'alignment': 'L', 'position': 1, 'label': fastr.play, 'command': 'play', 'tweakx': 4},
    {'alignment': 'L', 'position': 2, 'label': fastr.stop, 'command': 'stop'},
-   {'alignment': 'M', 'position': 1, 'label': fastr.file+"A", 'command': 'loadDocA'},
-   {'alignment': 'M', 'position': 2, 'label': fastr.file+"B", 'command': 'loadDocB'}, //check char count and based on that add new text
+   {'alignment': 'M', 'position': 1, 'label': fastr.downArrow, 'command': 'dropdown'},
+   //{'alignment': 'M', 'position': 1, 'label': fastr.file+"A", 'command': 'loadDocA'},
+   //{'alignment': 'M', 'position': 2, 'label': fastr.file+"B", 'command': 'loadDocB'}, //check char count and based on that add new text
    {'alignment': 'M', 'position': 3, 'label': fastr.trashEmpty, 'command': 'trashFirst'},
    {'alignment': 'R', 'position': 3, 'label': fastr.copyToClipboard, 'command': 'copyToClipboard'},
    {'alignment': 'R', 'position': 2, 'label': fastr.redo, 'command': 'redo'},
    {'alignment': 'R', 'position': 1, 'label': fastr.undo, 'command': 'undo'}
  ];
 
- tbe.actionButtons = actionButtons;
+ tbe.actionButtons = actionButtonObj;
 
- tbe.deleteRay = actionButtons.addActionButtons(actionButtonObj, tbe);
+ var buttons = actionButtons.addActionButtons(actionButtonObj, tbe);
+ for(var i = 0; i < buttons.length; i++){
+   if(buttons[i][0].getAttribute('command') === "trashFirst"){
+     tbe.deleteRay = buttons[i];
+   } else if(buttons[i][0].getAttribute('command') === "dropdown"){
+     tbe.dropRay = buttons[i];
+   }
+ }
  document.body.onresize = tbe.updateScreenSizes; // Buttons/screen resizing
 
  // The conductor coordinates the score managed by the editor and the collection
