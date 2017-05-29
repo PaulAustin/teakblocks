@@ -99,8 +99,8 @@ function deviceReady() {
     'trashFirst': function() { tbe.stage1deletion(fastr); },
     'trashSecond': function() {  tbe.stage2deletion(fastr); },
     'dropdown': function() { newButtons = actionButtons.createDropdown(dropdownButtons, tbe, fastr.upArrow); },
-    'loadDocA': function(){ tbe.loadDoc('docA'); },
-    'loadDocB': function(){ tbe.loadDoc('docB'); },
+    'loadDocA': function(){ tbe.loadDoc('docA'); actionButtons.addActionButtons(tbe.actionButtons, tbe); },
+    'loadDocB': function(){ tbe.loadDoc('docB'); actionButtons.addActionButtons(tbe.actionButtons, tbe); },
     'undo': function(){ tbe.undoAction(); },
     'redo': function(){ tbe.redoAction(); },
     'pullUp': function(){ actionButtons.deleteDropdown(newButtons, tbe, fastr.downArrow); }
@@ -151,14 +151,8 @@ function deviceReady() {
 
  tbe.actionButtons = actionButtonObj;
 
- var buttons = actionButtons.addActionButtons(actionButtonObj, tbe);
- for(var i = 0; i < buttons.length; i++){
-   if(buttons[i][0].getAttribute('command') === "trashFirst"){
-     tbe.deleteRay = buttons[i];
-   } else if(buttons[i][0].getAttribute('command') === "dropdown"){
-     tbe.dropRay = buttons[i];
-   }
- }
+ actionButtons.addActionButtons(actionButtonObj, tbe);
+
  document.body.onresize = tbe.updateScreenSizes; // Buttons/screen resizing
 
  // The conductor coordinates the score managed by the editor and the collection

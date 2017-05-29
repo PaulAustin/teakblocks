@@ -108,7 +108,11 @@ module.exports = function () {
       toReturn[buttons.length - i - 1] = [svgCircle, svgText];
 
     }
-
+    for(var j = 0; j < toReturn.length; j++){
+      if(toReturn[j][0].getAttribute('command') === "trashFirst"){
+        tbe.deleteRay = toReturn[j];
+      }
+    }
     return toReturn;
   };
 
@@ -121,8 +125,10 @@ module.exports = function () {
     droppoint[0].parentNode.parentNode.removeChild(droppoint[0].parentNode);
     var newButtons = [];
 
+
     for(var i = 0; i < buttons.length; i++){
-      newButtons[i] = this.addButton(buttons[i].label, x, y, tbe);
+      var label = buttons[i].label;
+      newButtons[i] = this.addButton(label, x, y, tbe, "loadDoc" + label);
     }
 
     for(var k = 0; k < newButtons.length; k++){
@@ -143,7 +149,7 @@ module.exports = function () {
         adx: 0,
         ady: -((80 * (i+1))/20)
       };
-      this.slideButton(animateSlideDown, buttons[i]);
+      this.slideButton(animateSlideDown, buttons[i], "delete");
     }
     var droppoint = document.getElementById('pullUp').childNodes;
     var x = droppoint[0].getAttribute('cx');

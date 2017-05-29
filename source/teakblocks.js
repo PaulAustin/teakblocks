@@ -1290,14 +1290,7 @@ tbe.initPaletteBox = function initPaletteBox() {
 tbe.updateScreenSizes = function() {
   // First resize pallette and background then resize the action buttons
   tbe.sizePaletteToWindow();
-  var buttons = actionButtons.addActionButtons(tbe.actionButtons, tbe);
-  for(var i = 0; i < buttons.length; i++){
-    if(buttons[i][0].getAttribute('command') === "trashFirst"){
-      tbe.deleteRay = buttons[i];
-    } else if(buttons[i][0].getAttribute('command') === "dropdown"){
-      tbe.dropRay = buttons[i];
-    }
-  }
+  actionButtons.addActionButtons(tbe.actionButtons, tbe);
 };
 
 tbe.addPalette = function addPalette(palette) {
