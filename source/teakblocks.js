@@ -33,6 +33,7 @@ var fblocks = require('./fblock-settings.js');
 var save = require('./save.js');
 var teakselection = require('./teakselection');
 var actionButtons = require('./actionButtons.js');
+var defaultFiles = require('./defaultFiles.js');
 
 var tbe = {};
 
@@ -93,6 +94,8 @@ tbe.init = function init(svg) {
   this.configInteractions();
   interact.maxInteractions(Infinity);
   this.initPaletteBox();
+  var files = ['docA', 'docB', 'docC', 'docD', 'docE'];
+  defaultFiles.default(files);
   var loadedDocText = save.loadFile('docA');
   if (loadedDocText !== null) {
     teakText.textToBlocks(tbe, loadedDocText);

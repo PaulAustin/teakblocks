@@ -114,10 +114,7 @@ module.exports = function () {
       }
     }
     var underlay = document.getElementsByClassName('action-dot-underlay');
-    console.log(underlay);
     if(underlay[0] !== undefined){
-      //console.log(underlay[0]);
-      //console.log(underlay[1]);
       underlay[0].setAttribute('transform', 'translate (0 0)');
       var animateSlide = {
         frame: 20,
