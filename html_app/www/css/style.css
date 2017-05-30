@@ -433,6 +433,50 @@ label input[type="checkbox"]:disabled + .label-text:before {
   transition: fill 0.2s ease;
   fill: #F6DDCC;
 }
+.action-dot-underlay{
+  transition: fill 0.2s ease;
+  fill: #F2CDB5;
+}
+.action-dot-rect{
+  fill: #F2CDB5;
+  height: 400px;
+  -webkit-animation-name: example; /* Safari 4.0 - 8.0 */
+  -webkit-animation-duration: 4s; /* Safari 4.0 - 8.0 */
+  -webkit-animation-delay: 2s; /* Safari 4.0 - 8.0 */
+  animation-name: out;
+  animation-duration: .4s;
+  animation-delay: 0s;
+}
+@-webkit-keyframes out {
+  0%   {height:0px;}
+  100% {height:400px;}
+}
+
+/* Standard syntax */
+@keyframes out {
+  0%   {height:0px;}
+  100% {height:400px;}
+}
+.action-dot-rect-remove{
+  fill: #F2CDB5;
+  height: 0px;
+  -webkit-animation-name: example; /* Safari 4.0 - 8.0 */
+  -webkit-animation-duration: 4s; /* Safari 4.0 - 8.0 */
+  -webkit-animation-delay: 2s; /* Safari 4.0 - 8.0 */
+  animation-name: in;
+  animation-duration: .4s;
+  animation-delay: 0s;
+}
+@-webkit-keyframes in {
+  0%   {height:400px;}
+  100% {height:0px;}
+}
+
+/* Standard syntax */
+@keyframes in {
+  0%   {height:400px;}
+  100% {height:0px;}
+}
 .action-dot.switch-bg {
   /*fill: #4DD0E1; */
   fill: #B3E5FC;

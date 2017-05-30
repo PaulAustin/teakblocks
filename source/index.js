@@ -101,6 +101,9 @@ function deviceReady() {
     'dropdown': function() { newButtons = actionButtons.createDropdown(dropdownButtons, tbe, fastr.upArrow); },
     'loadDocA': function(){ tbe.loadDoc('docA'); actionButtons.addActionButtons(tbe.actionButtons, tbe); },
     'loadDocB': function(){ tbe.loadDoc('docB'); actionButtons.addActionButtons(tbe.actionButtons, tbe); },
+    'loadDocC': function(){ tbe.loadDoc('docC'); actionButtons.addActionButtons(tbe.actionButtons, tbe); },
+    'loadDocD': function(){ tbe.loadDoc('docD'); actionButtons.addActionButtons(tbe.actionButtons, tbe); },
+    'loadDocE': function(){ tbe.loadDoc('docE'); actionButtons.addActionButtons(tbe.actionButtons, tbe); },
     'undo': function(){ tbe.undoAction(); },
     'redo': function(){ tbe.redoAction(); },
     'pullUp': function(){ actionButtons.deleteDropdown(newButtons, tbe, fastr.downArrow); }

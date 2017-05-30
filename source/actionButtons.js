@@ -113,6 +113,32 @@ module.exports = function () {
         tbe.deleteRay = toReturn[j];
       }
     }
+    var underlay = document.getElementsByClassName('action-dot-underlay');
+    console.log(underlay);
+    if(underlay[0] !== undefined){
+      //console.log(underlay[0]);
+      //console.log(underlay[1]);
+      underlay[0].setAttribute('transform', 'translate (0 0)');
+      var animateSlide = {
+        frame: 20,
+        adx: 0,
+        ady: 0
+      };
+      this.slideButton(animateSlide, underlay[0], "delete");
+      /*underlay[1].setAttribute('transform', 'translate (0 0)');
+      animateSlide = {
+        frame: 20,
+        adx: 0,
+        ady: 0
+      };
+      this.slideButton(animateSlide, underlay[1], "delete");*/
+    }
+
+    underlay = document.getElementsByClassName('action-dot-rect');
+    if(underlay[0] !== undefined){
+      underlay[0].setAttribute('class', 'action-dot-rect-remove');
+    }
+
     return toReturn;
   };
 
@@ -121,6 +147,21 @@ module.exports = function () {
     var x = droppoint[0].getAttribute('cx');
     var y = droppoint[0].getAttribute('cy');
 
+    var group = svgb.createGroup('buttonGroup', 0, 0);
+    var svgCircle = svgb.createCircle('action-dot-underlay', x, 40, 40);
+    group.appendChild(svgCircle);
+    //group.appendChild(svgRect);
+    tbe.svg.appendChild(group);
+    var animateSlideDown = {
+      frame: 20,
+      adx: 0,
+      ady: (400)/20,
+    };
+    this.slideButton(animateSlideDown, group);
+    var svgRect = svgb.createRect('action-dot-rect', x-40, 40, 80, 400);
+    svgCircle = svgb.createCircle('action-dot-underlay', x, 40, 40);
+    tbe.svg.appendChild(svgCircle);
+    tbe.svg.appendChild(svgRect);
     this.addButton(changeText, x, y, tbe, 'pullUp', 'pullUp');
     droppoint[0].parentNode.parentNode.removeChild(droppoint[0].parentNode);
     var newButtons = [];
@@ -132,10 +173,10 @@ module.exports = function () {
     }
 
     for(var k = 0; k < newButtons.length; k++){
-      var animateSlideDown = {
+      animateSlideDown = {
         frame: 20,
         adx: 0,
-        ady: (80 * (k+1))/20,
+        ady: ((80 * (k+1)))/20,
       };
       this.slideButton(animateSlideDown, newButtons[k]);
     }
@@ -156,12 +197,30 @@ module.exports = function () {
     var y = droppoint[0].getAttribute('cy');
     this.addButton(changeText, x, y, tbe, 'dropdown', 'dropdown');
     droppoint[0].parentNode.parentNode.removeChild(droppoint[0].parentNode);
+    var underlay = document.getElementsByClassName('action-dot-underlay');
+    underlay[0].setAttribute('transform', 'translate (0 0)');
+    var animateSlide = {
+      frame: 20,
+      adx: 0,
+      ady: -(400)/20
+    };
+    this.slideButton(animateSlide, underlay[0], "delete");
+    underlay[1].setAttribute('transform', 'translate (0 0)');
+    animateSlide = {
+      frame: 20,
+      adx: 0,
+      ady: 0
+    };
+    this.slideButton(animateSlide, underlay[1], "delete");
+
+    underlay = document.getElementsByClassName('action-dot-rect');
+    underlay[0].setAttribute('class', 'action-dot-rect-remove');
   };
 
   actionButtons.addButton = function(label, x, y, tbe, command, id){
     var group = svgb.createGroup('buttonGroup', 0, 0);
-    var svgCircle = svgb.createCircle('action-dot', x, 40, 33);
-    var svgText = svgb.createText('action-dot-text', x, 53, label);
+    var svgCircle = svgb.createCircle('action-dot', x, y, 33);
+    var svgText = svgb.createText('action-dot-text', x, parseInt(y, 10)+13, label);
     if(command !== undefined){
       svgCircle.setAttribute('command', command);
     }
@@ -181,10 +240,9 @@ module.exports = function () {
     var commaPos = currentAttribute.lastIndexOf(' ');
     var currentY = parseInt(currentAttribute.substring(commaPos, parenPos), 10);
     button.setAttribute('transform', 'translate(' + state.adx + ' ' + (currentY + state.ady) + ')');
-
     if (frame > 1) {
       state.frame = frame - 1;
-      requestAnimationFrame(function() { slideButton(state, button); });
+      requestAnimationFrame(function() { slideButton(state, button, option); });
     } else if(option === "delete"){
       button.parentNode.removeChild(button);
     }
