@@ -85,10 +85,6 @@ tbe.clearStates = function clearStates(block) {
   tf.hideOpenForm();
   this.components.blockSettings.hide(block);
   tbe.forEachDiagramBlock( function(b) { b.markSelected(false); });
-  var slideButtons = document.getElementsByClassName('dropdown-buttons');
-  if(slideButtons[0] !== undefined){
-    actionButtons.deleteDropdown(tbe.dropdownButtons, tbe, '\uf063');
-  }
 };
 
 tbe.init = function init(svg) {
