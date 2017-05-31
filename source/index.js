@@ -89,7 +89,7 @@ function deviceReady() {
     {'label': 'E'},
   ];
 
-  var newButtons = [];
+  //var newButtons = [];
 
   tbe.deleteRay = null;
   tbe.commands = {
@@ -98,7 +98,7 @@ function deviceReady() {
     'stop': function() { conductor.stopAll(); },
     'trashFirst': function() { tbe.stage1deletion(fastr); },
     'trashSecond': function() {  tbe.stage2deletion(fastr); },
-    'dropdown': function() { newButtons = actionButtons.createDropdown(dropdownButtons, tbe, fastr.upArrow); },
+    'dropdown': function() { tbe.dropdownButtons = actionButtons.createDropdown(dropdownButtons, tbe, fastr.upArrow); },
     'loadDocA': function(){ tbe.loadDoc('docA'); actionButtons.addActionButtons(tbe.actionButtons, tbe); },
     'loadDocB': function(){ tbe.loadDoc('docB'); actionButtons.addActionButtons(tbe.actionButtons, tbe); },
     'loadDocC': function(){ tbe.loadDoc('docC'); actionButtons.addActionButtons(tbe.actionButtons, tbe); },
@@ -106,7 +106,7 @@ function deviceReady() {
     'loadDocE': function(){ tbe.loadDoc('docE'); actionButtons.addActionButtons(tbe.actionButtons, tbe); },
     'undo': function(){ tbe.undoAction(); },
     'redo': function(){ tbe.redoAction(); },
-    'pullUp': function(){ actionButtons.deleteDropdown(newButtons, tbe, fastr.downArrow); }
+    'pullUp': function(){ actionButtons.deleteDropdown(tbe.dropdownButtons, tbe, fastr.downArrow); }
   };
 
 

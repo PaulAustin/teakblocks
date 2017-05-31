@@ -23,6 +23,9 @@ SOFTWARE.
 module.exports = function () {
   var actionButtons = {};
   var svgb = require('./svgbuilder.js');
+  var interact = require('interact.js');
+  var save = require('./save.js');
+  var defaultFiles = require('./defaultFiles.js');
 
   actionButtons.addActionButtons = function(buttons, tbe) {
     var position = null;
@@ -166,7 +169,7 @@ module.exports = function () {
 
     for(var i = 0; i < buttons.length; i++){
       var label = buttons[i].label;
-      newButtons[i] = this.addButton(label, x, y, tbe, "loadDoc" + label);
+      newButtons[i] = this.addButton(label, x, y, tbe, "loadDoc" + label, undefined, 'dropdown-buttons');
     }
 
     for(var k = 0; k < newButtons.length; k++){
@@ -214,7 +217,7 @@ module.exports = function () {
     underlay[0].setAttribute('class', 'action-dot-rect-remove');
   };
 
-  actionButtons.addButton = function(label, x, y, tbe, command, id){
+  actionButtons.addButton = function(label, x, y, tbe, command, id, eltClass){
     var group = svgb.createGroup('buttonGroup', 0, 0);
     var svgCircle = svgb.createCircle('action-dot', x, y, 33);
     var svgText = svgb.createText('action-dot-text', x, parseInt(y, 10)+13, label);
@@ -223,6 +226,9 @@ module.exports = function () {
     }
     if(id !== undefined){
       group.setAttribute('id', id);
+    }
+    if(eltClass !== undefined){
+      group.setAttribute('class', 'buttonGroup ' + eltClass);
     }
     group.appendChild(svgCircle);
     group.appendChild(svgText);

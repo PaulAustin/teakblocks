@@ -68,7 +68,7 @@ var defaultDocE = `(
 
  // check if contains file (file name)
  defaultFiles.containsFile = function(fileName){
-   if(save.loadFile(fileName) === null){
+   if(save.loadFile(fileName) === null || save.loadFile(fileName) === `null`){
      return false;
    }
    return true;

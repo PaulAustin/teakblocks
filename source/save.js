@@ -14,7 +14,7 @@ module.exports = function (){
   save.saveFile = function(fileName, content){
     if (typeof (Storage) !== "undefined") {
       // Store
-      console.log('saved to local storage');
+      console.log('saved to local storage to ' + fileName);
       localStorage.setItem(fileName, content);
     } else {
       console.log('no local storage');

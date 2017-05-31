@@ -1005,6 +1005,41 @@ tbe.configInteractions = function configInteractions() {
     event.currentTarget.classList.toggle('switch-bg');
   });
 
+  interact('.dropdown-buttons')
+    .on('hold', function (event){
+      var block = event.target;
+      var command = block.getAttribute('command');
+      var doc = '';
+      switch (command) {
+        case 'loadDocA':
+          doc = 'docA';
+          break;
+        case 'loadDocB':
+          doc = 'docB';
+          break;
+        case 'loadDocC':
+           doc = 'docC';
+          break;
+        case 'loadDocD':
+          doc = 'docD';
+          break;
+        case 'loadDocE':
+          doc = 'docE';
+          break;
+        default:
+          doc = 'docA';
+          break;
+
+      }
+      console.log(doc);
+      save.saveFile(doc, null);
+      defaultFiles.default([doc]);
+      tbe.loadDoc(doc, true);
+      //console.log(save.loadFile(doc));
+      tbe.clearDiagramBlocks();
+      teakText.textToBlocks(tbe, save.loadFile(doc));
+    });
+
   // Pointer events to the background go here. Might make sure the even is not
   // right next to a block, e.g. allow some safe zones.
   interact('.editor-background')
