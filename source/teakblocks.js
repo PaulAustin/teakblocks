@@ -1031,13 +1031,14 @@ tbe.configInteractions = function configInteractions() {
           break;
 
       }
-      console.log(doc);
       save.saveFile(doc, null);
       defaultFiles.default([doc]);
-      tbe.loadDoc(doc, true);
-      //console.log(save.loadFile(doc));
       tbe.clearDiagramBlocks();
-      teakText.textToBlocks(tbe, save.loadFile(doc));
+      tbe.currentDoc = doc;
+      var loadedDocText = save.loadFile(doc);
+      if (loadedDocText !== null) {
+        teakText.textToBlocks(tbe, loadedDocText);
+      }
     });
 
   // Pointer events to the background go here. Might make sure the even is not
