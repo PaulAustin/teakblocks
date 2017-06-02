@@ -137,13 +137,16 @@ module.exports = function () {
         message = '(sr:' + 50 + ');';
       } else if (block.name === 'motor') {
         message = '(mo:' + 45 + ');';
+      } else if (block.name === 'sound') {
+        let intf = Math.round(block.controllerSettings.data.f);
+        message = '(nt:' + intf + ');';
+        console.log('msg ', message);
       }
 
       if (message !== '') {
         console.log ('block message', message);
         conductor.ble.write(botName, message);
       }
-
     }
     // Single step, find target and head of chain and run the single block.
   };
