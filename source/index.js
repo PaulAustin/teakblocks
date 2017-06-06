@@ -133,8 +133,8 @@ function deviceReady() {
       'sound':{},
       'motor':{},
       'twoMotor':{},
-      'servo':{},
-      'wait':{},
+      //'servo':{},
+      //'wait':{},
       'loop':{}
     }
   };
