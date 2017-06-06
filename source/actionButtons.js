@@ -83,13 +83,13 @@ module.exports = function () {
 
       //Check if chatacter strings are more than one character to create a label on top of the usual label
       if(label.length > 1){
-        svgText = svgb.createText('action-dot-text', x + tweakx, 53, label.substring(0, 1));
+        svgText = svgb.createText('fa action-dot-text', x + tweakx, 53, label.substring(0, 1));
         svgText2 = svgb.createText('action-dot-doc-label', x + tweakx, 53, label.substring(1));
         group.appendChild(svgCircle);
         group.appendChild(svgText);
         group.appendChild(svgText2);
       } else{
-        svgText = svgb.createText('action-dot-text', x + tweakx, 53, label);
+        svgText = svgb.createText('fa action-dot-text', x + tweakx, 53, label);
         group.appendChild(svgCircle);
         group.appendChild(svgText);
       }
@@ -220,7 +220,7 @@ module.exports = function () {
   actionButtons.addButton = function(label, x, y, tbe, command, id, eltClass){
     var group = svgb.createGroup('buttonGroup', 0, 0);
     var svgCircle = svgb.createCircle('action-dot', x, y, 33);
-    var svgText = svgb.createText('action-dot-text', x, parseInt(y, 10)+13, label);
+    var svgText = svgb.createText('fa action-dot-text', x, parseInt(y, 10)+13, label);
     if(command !== undefined){
       svgCircle.setAttribute('command', command);
     }
