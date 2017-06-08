@@ -136,10 +136,11 @@ module.exports = function () {
       } else if (block.name === 'servo') {
         message = '(sr:' + 50 + ');';
       } else if (block.name === 'motor') {
-        message = '(mo:' + 45 + ');';
+        message = '(mo:' + block.controllerSettings.data.speed + ');';
+      } else if (block.name === 'twoMotor') {
+        message = '(m2:' + block.controllerSettings.data.speed + ');';
       } else if (block.name === 'sound') {
-        let intf = Math.round(block.controllerSettings.data.f);
-        message = '(nt:' + intf + ');';
+        message = '(nt:' + block.controllerSettings.data.description + ');';
         console.log('msg ', message);
       }
 
@@ -170,7 +171,7 @@ module.exports = function () {
       if (str.length===1) {
         str = '0' + str;
       }
-      pixStr = pixStr + str;
+      pixStr += str;
     //  console.log('image in hex',value,str);
     }
     return pixStr;
