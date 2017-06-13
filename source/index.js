@@ -32,6 +32,7 @@ function deviceReady() {
   var tt = require('./teaktext.js');
   var conductor = require('./conductor.js');
   var actionButtons = require('./actionButtons.js');
+  var teaktext = require('./teaktext.js');
 
   /* font awesome strings */
   var fastr = {
@@ -45,7 +46,8 @@ function deviceReady() {
     redo: '\uf01e',
     settings: '\uf013',
     trashFull: '\uf1f8',
-    copyToClipboard: '\uf0ea',
+    copy: '\uf24d',
+    paste:'\uf0ea',
     downArrow: '\uf063',
     upArrow: '\uf062',
   };
@@ -106,7 +108,9 @@ function deviceReady() {
     'loadDocE': function(){ tbe.loadDoc('docE'); actionButtons.addActionButtons(tbe.actionButtons, tbe); },
     'undo': function(){ tbe.undoAction(); },
     'redo': function(){ tbe.redoAction(); },
-    'pullUp': function(){ actionButtons.deleteDropdown(tbe.dropdownButtons, tbe, fastr.downArrow); }
+    'pullUp': function(){ actionButtons.deleteDropdown(tbe.dropdownButtons, tbe, fastr.downArrow); },
+    'copyToClipboard': function(){ tbe.copyText = teaktext.blocksToText(tbe.forEachDiagramChain); console.log(tbe.copyText); },
+    'paste': function(){ teaktext.textToBlocks(tbe, tbe.copyText); }
   };
 
 
@@ -143,11 +147,11 @@ function deviceReady() {
  var actionButtonObj = [
    {'alignment': 'L', 'position': 1, 'label': fastr.play, 'command': 'play', 'tweakx': 4},
    {'alignment': 'L', 'position': 2, 'label': fastr.stop, 'command': 'stop'},
-   {'alignment': 'M', 'position': 1, 'label': fastr.downArrow, 'command': 'dropdown'},
+   {'alignment': 'L', 'position': 3, 'label': fastr.downArrow, 'command': 'dropdown'},
    //{'alignment': 'M', 'position': 1, 'label': fastr.file+"A", 'command': 'loadDocA'},
-   //{'alignment': 'M', 'position': 2, 'label': fastr.file+"B", 'command': 'loadDocB'}, //check char count and based on that add new text
-   {'alignment': 'M', 'position': 3, 'label': fastr.trashEmpty, 'command': 'trashFirst'},
-   {'alignment': 'R', 'position': 3, 'label': fastr.copyToClipboard, 'command': 'copyToClipboard'},
+   {'alignment': 'M', 'position': 1, 'label': fastr.trashEmpty, 'command': 'trashFirst'}, //check char count and based on that add new text
+   {'alignment': 'M', 'position': 2, 'label': fastr.paste, 'command': 'paste'},
+   {'alignment': 'M', 'position': 3, 'label': fastr.copy, 'command': 'copyToClipboard'},
    {'alignment': 'R', 'position': 2, 'label': fastr.redo, 'command': 'redo'},
    {'alignment': 'R', 'position': 1, 'label': fastr.undo, 'command': 'undo'}
  ];
