@@ -355,6 +355,10 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   // Dragging state information.
   this.dragging = false;
   this.snapTarget = null;   // Object to append, prepend, replace
+  this.snapOpen = {         // Object for snapping to the grid
+    top: null,
+    left: null
+  };
   this.snapAction = null;   // append, prepend, replace, ...
   this.targetShadow = null; // Svg element to hilite target location
 
@@ -685,18 +689,44 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
     if (tbe.components.appSettings.editorXRay()) {
       svglog.logRect(tbe.svg, bestRect, action + ' ' + target.name);
     }
+  } else {
+      action = 'outsnap';
+      //target = 0;  //?
   }
+  var shadowX = Math.round(this.rect.top/80)*80;
+  var shadowY = Math.round(this.rect.left/80)*80;
 
   // Update shadows as needed.
-  if (this.snapTarget !== target || this.snapAction !== action) {
+  console.log(action === 'outsnap', (this.snapOpen.top !== shadowX || this.snapOpen.left !== shadowY), this.snapAction !== action);
+  //console.log(this.snapAction, action);
+  if ((this.snapTarget !== target || this.snapAction !== action)) {
     if (this.snapTarget !== null) {
       this.removeTargetShadows();
     }
     this.snapTarget = target;
     this.snapAction = action;
+    //console.log("this.snapTarget");
     if (target !== null) {
       this.insertTargetShadows(target, action);
     }
+  } else if(action === 'outsnap' && ((this.snapOpen.top !== shadowX || this.snapOpen.left !== shadowY) || this.snapAction !== action)){
+    //console.log(target, action);
+    //console.log(target);
+    console.log("this");
+    //if (this.snapOpen !== null) {
+      this.removeTargetShadows();
+    //}
+    this.snapAction = action;
+    //this.snapTarget = this;
+    this.snapOpen = {
+      top: shadowX,
+      left: shadowY
+    };
+    //console.log(this.snapTarget);
+
+    this.insertTargetShadows(this.snapOpen, action);
+  } else if(this.snapAction !== action && this.snapOpen !== null){
+    this.removeTargetShadows();
   }
   return target;
 };
@@ -705,8 +735,8 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
 // in the current location.
 tbe.FunctionBlock.prototype.insertTargetShadows = function(target, action) {
   var block = this;
-  var x = 0;
   var y = target.top;
+  var x = 0;
   if (action === 'prepend') {
     x = target.left - this.chainWidth;
   } else if (action === 'insert') {
@@ -718,6 +748,11 @@ tbe.FunctionBlock.prototype.insertTargetShadows = function(target, action) {
     y -= 25;
   } else if (action === 'append') {
     x = target.right;
+  } else if(action === 'outsnap'){
+    var gridsize = 80;
+    //console.log(this.rect.left);
+    x = gridsize*(Math.round(this.rect.left/gridsize));
+    y = gridsize*(Math.round(this.rect.top/gridsize));
   } else {
     return;
   }
@@ -750,12 +785,18 @@ tbe.FunctionBlock.prototype.removeTargetShadows = function() {
       });
     },
     1000);
+    var shadows = document.getElementsByClassName('shadow-block');
+    for(var i = shadows.length - 1; i >= 0; i--){
+      shadows[i].parentNode.removeChild(shadows[i]);
+    }
 };
 
 tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
   var thisLast = this.last;
   var targx = 0;
   var frameCount = 10;
+  var dx = 0;
+  var dy = 0;
 
   assert(this.prev === null);
   assert(thisLast.next === null);
@@ -799,8 +840,13 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
     }
 
     // Set up an animation to move the dragging blocks to new location.
-    var dx = targx - this.left;
-    var dy = this.snapTarget.top - this.top;
+    dx = targx - this.left;
+    dy = this.snapTarget.top - this.top;
+    if(this.snapTarget === this){
+      dx = (80*(Math.round(this.rect.left/80))) - this.rect.left;
+      dy = (80*(Math.round(this.rect.top/80))) - this.rect.top;
+    }
+    //console.log(dx, dy);
 
       // TODO:base frame count on distance to final location.
       // The model snaps directly to the target location
@@ -813,6 +859,17 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
       chunkEnd: thisLast
     };
     tbe.animateMove(animateSlideDown);
+  } else if(this.snapOpen !== null) {
+    dx = Math.round(this.snapOpen.left - this.rect.left);
+    dy = Math.round(this.snapOpen.top - this.rect.top);
+    var animationSlide = {
+      frame: frameCount,
+      adx: dx / frameCount,
+      ady: dy / frameCount,
+      chunkStart: this,
+      chunkEnd: thisLast
+    };
+    tbe.animateMove(animationSlide);
   } else {
     // Nothing to snap to so leave it where is ended up.
     // still need sound though
@@ -821,6 +878,10 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
   this.hilite(false);
   this.snapTarget = null;
   this.snapAction = null;
+  this.snapOpen = {
+    top: null,
+    left: null
+  };
 };
 
 // animateMove -- move a chunk of block to its new location. The prev and next
