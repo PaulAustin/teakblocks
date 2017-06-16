@@ -693,40 +693,29 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
       action = 'outsnap';
       //target = 0;  //?
   }
-  var shadowX = Math.round(this.rect.top/80)*80;
-  var shadowY = Math.round(this.rect.left/80)*80;
+  var gridsize = 40;
+  var shadowX = Math.round(this.rect.top/gridsize)*gridsize;
+  var shadowY = Math.round(this.rect.left/gridsize)*gridsize;
 
   // Update shadows as needed.
-  console.log(action === 'outsnap', (this.snapOpen.top !== shadowX || this.snapOpen.left !== shadowY), this.snapAction !== action);
-  //console.log(this.snapAction, action);
   if ((this.snapTarget !== target || this.snapAction !== action)) {
     if (this.snapTarget !== null) {
       this.removeTargetShadows();
     }
     this.snapTarget = target;
     this.snapAction = action;
-    //console.log("this.snapTarget");
     if (target !== null) {
       this.insertTargetShadows(target, action);
     }
   } else if(action === 'outsnap' && ((this.snapOpen.top !== shadowX || this.snapOpen.left !== shadowY) || this.snapAction !== action)){
-    //console.log(target, action);
-    //console.log(target);
-    console.log("this");
-    //if (this.snapOpen !== null) {
-      this.removeTargetShadows();
-    //}
+    this.removeTargetShadows();
     this.snapAction = action;
-    //this.snapTarget = this;
     this.snapOpen = {
       top: shadowX,
       left: shadowY
     };
-    //console.log(this.snapTarget);
 
     this.insertTargetShadows(this.snapOpen, action);
-  } else if(this.snapAction !== action && this.snapOpen !== null){
-    this.removeTargetShadows();
   }
   return target;
 };
@@ -749,8 +738,7 @@ tbe.FunctionBlock.prototype.insertTargetShadows = function(target, action) {
   } else if (action === 'append') {
     x = target.right;
   } else if(action === 'outsnap'){
-    var gridsize = 80;
-    //console.log(this.rect.left);
+    var gridsize = 40;
     x = gridsize*(Math.round(this.rect.left/gridsize));
     y = gridsize*(Math.round(this.rect.top/gridsize));
   } else {
@@ -842,11 +830,7 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
     // Set up an animation to move the dragging blocks to new location.
     dx = targx - this.left;
     dy = this.snapTarget.top - this.top;
-    if(this.snapTarget === this){
-      dx = (80*(Math.round(this.rect.left/80))) - this.rect.left;
-      dy = (80*(Math.round(this.rect.top/80))) - this.rect.top;
-    }
-    //console.log(dx, dy);
+
 
       // TODO:base frame count on distance to final location.
       // The model snaps directly to the target location
