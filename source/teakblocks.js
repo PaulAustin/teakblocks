@@ -47,7 +47,7 @@ tbe.currentUndoIndex = 0;
 tbe.stopUndo = false;
 tbe.actionButtons = null;
 tbe.draggingSelectionArea = null;
-tbe.defaultBlockLoc = [window.innerWidth * 0.1, window.innerHeight * 0.3];
+tbe.defaultBlockLoc = [80, 240];
 
 tbe.forEachDiagramBlock = function (callBack) {
   for (var key in tbe.diagramBlocks) {
