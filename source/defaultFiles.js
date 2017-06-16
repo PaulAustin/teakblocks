@@ -24,7 +24,7 @@ module.exports = function () {
   var save = require('./save.js');
   var defaultDocA = '()';
   var defaultDocB = `(
-  (chain x:112 y:212 (
+  (chain x:80 y:240 (
     (identity start:'click' deviceName:'-?-' bus:'ble')
     (picture pix:(0 0 0 0 0 0 1 0 1 0 0 0 0 0 0 1 0 0 0 1 0 1 1 1 0))
     (picture pix:(0 0 0 0 0 0 1 0 1 0 0 0 0 0 0 0 1 1 1 0 1 0 0 0 1))
@@ -33,7 +33,7 @@ module.exports = function () {
   ))
 )`;
 var defaultDocC = `(
-  (chain x:112 y:212 (
+  (chain x:80 y:240 (
     (identity start:'click' deviceName:'-?-' bus:'ble')
     (loop count:'25' (
       (picture pix:(1 1 1 1 1 1 0 0 0 1 1 0 0 0 1 1 0 0 0 1 1 1 1 1 1))
@@ -44,7 +44,7 @@ var defaultDocC = `(
 )
 )`;
 var defaultDocD = `(
-  (chain x:112 y:212 (
+  (chain x:80 y:240 (
     (identity start:'click' deviceName:'-?-' bus:'ble')
     (sound description:'C4' period:'1/4')
     (sound description:'E4' period:'1/4')
@@ -54,7 +54,7 @@ var defaultDocD = `(
   ))
 )`;
 var defaultDocE = `(
-  (chain x:112 y:212 (
+  (chain x:80 y:240 (
     (identity start:'click' deviceName:'-?-' bus:'ble')
     (motor speed:50 duration:0)
     (motor speed:'100' duration:0)
