@@ -23,9 +23,9 @@ SOFTWARE.
 module.exports = function () {
   var actionButtons = {};
   var svgb = require('./svgbuilder.js');
-  var interact = require('interact.js');
-  var save = require('./save.js');
-  var defaultFiles = require('./defaultFiles.js');
+  // var interact = require('interact.js');
+  // var save = require('./save.js');
+  // var defaultFiles = require('./defaultFiles.js');
 
   actionButtons.addActionButtons = function(buttons, tbe) {
     var position = null;
@@ -41,6 +41,7 @@ module.exports = function () {
     var svgText = null;
     var svgText2 = null;
     var existing = document.getElementsByClassName('buttonGroup');
+    var dropLength = document.getElementsByClassName('dropdown-buttons').length;
 
     // If action buttons exist, delete them
     if(existing[0] !== undefined){
@@ -103,73 +104,77 @@ module.exports = function () {
         // TODO, abstract it
         var curr = group.getAttribute('class');
         group.setAttribute('class', curr + ' copy-button');
-      } else if (buttons[i].command === 'dropdown') {
-        // TODO, abstract it
-        group.setAttribute('id', 'dropdown');
       }
+      group.setAttribute('id', buttons[i].command);
 
       toReturn[buttons.length - i - 1] = [svgCircle, svgText];
 
     }
-    for(var j = 0; j < toReturn.length; j++){
-      if(toReturn[j][0].getAttribute('command') === "trashFirst"){
-        tbe.deleteRay = toReturn[j];
-      }
-    }
-    var underlay = document.getElementsByClassName('action-dot-underlay');
+    var underlay = document.getElementsByClassName('buttonGroupUnderlay');
     if(underlay[0] !== undefined){
-      underlay[0].setAttribute('transform', 'translate (0 0)');
+      if(underlay[0].getAttribute('transform') === null){
+        underlay[0].setAttribute('transform', 'translate (0 0)');
+      }
       var animateSlide = {
         frame: 20,
         adx: 0,
-        ady: 0
+        ady: -(dropLength*80)/20
       };
       this.slideButton(animateSlide, underlay[0], "delete");
-      /*underlay[1].setAttribute('transform', 'translate (0 0)');
+      if(underlay[1].getAttribute('transform') === null){
+        underlay[1].setAttribute('transform', 'translate (0 0)');
+      }
       animateSlide = {
         frame: 20,
         adx: 0,
         ady: 0
       };
-      this.slideButton(animateSlide, underlay[1], "delete");*/
+      this.slideButton(animateSlide, underlay[1], "delete");
     }
 
-    underlay = document.getElementsByClassName('action-dot-rect');
+    underlay = document.getElementsByClassName('action-dot-rect-pages');
     if(underlay[0] !== undefined){
-      underlay[0].setAttribute('class', 'action-dot-rect-remove');
+      underlay[0].setAttribute('class', 'action-dot-rect-remove-pages');
+    }
+    underlay = document.getElementsByClassName('action-dot-rect-edit');
+    if(underlay[0] !== undefined){
+      underlay[0].setAttribute('class', 'action-dot-rect-remove-edit');
     }
 
     return toReturn;
   };
 
-  actionButtons.createDropdown = function(buttons, tbe, changeText){
-    var droppoint = document.getElementById('dropdown').childNodes;
+  actionButtons.createDropdown = function(buttons, tbe, changeText, id){
+    var droppoint = document.getElementById(id).childNodes;
     var x = droppoint[0].getAttribute('cx');
     var y = droppoint[0].getAttribute('cy');
 
-    var group = svgb.createGroup('buttonGroup', 0, 0);
+    var group = svgb.createGroup('buttonGroupUnderlay', 0, 0);
     var svgCircle = svgb.createCircle('action-dot-underlay', x, 40, 40);
+    svgCircle.setAttribute('transform', 'translate (0 0)');
     group.appendChild(svgCircle);
-    //group.appendChild(svgRect);
     tbe.svg.appendChild(group);
     var animateSlideDown = {
       frame: 20,
       adx: 0,
-      ady: (400)/20,
+      ady: (buttons.length*80)/20,
     };
     this.slideButton(animateSlideDown, group);
-    var svgRect = svgb.createRect('action-dot-rect', x-40, 40, 80, 400);
+    var svgRect = svgb.createRect('action-dot-rect-' + id, x-40, 40, 80, buttons.length*80);
+    group = svgb.createGroup('buttonGroupUnderlay', 0, 0);
     svgCircle = svgb.createCircle('action-dot-underlay', x, 40, 40);
-    tbe.svg.appendChild(svgCircle);
+    svgCircle.setAttribute('transform', 'translate (0 0)');
+    group.appendChild(svgCircle);
+    tbe.svg.appendChild(group);
     tbe.svg.appendChild(svgRect);
-    this.addButton(changeText, x, y, tbe, 'pullUp', 'pullUp');
+    this.addButton(changeText, x, y, tbe, 'pullUp' + id, 'pullUp' + id);
     droppoint[0].parentNode.parentNode.removeChild(droppoint[0].parentNode);
     var newButtons = [];
 
 
     for(var i = 0; i < buttons.length; i++){
       var label = buttons[i].label;
-      newButtons[i] = this.addButton(label, x, y, tbe, "loadDoc" + label, undefined, 'dropdown-buttons');
+      newButtons[i] = this.addButton(label, x, y, tbe, buttons[i].command, undefined, 'dropdown-buttons');
     }
 
     for(var k = 0; k < newButtons.length; k++){
@@ -183,7 +188,7 @@ module.exports = function () {
 
     return newButtons;
   };
-  actionButtons.deleteDropdown = function(buttons, tbe, changeText){
+  actionButtons.deleteDropdown = function(buttons, tbe, changeText, id){
     for(var i = 0; i < buttons.length; i++){
       var animateSlideDown = {
         frame: 20,
@@ -192,20 +197,18 @@ module.exports = function () {
       };
       this.slideButton(animateSlideDown, buttons[i], "delete");
     }
-    var droppoint = document.getElementById('pullUp').childNodes;
+    var droppoint = document.getElementById('pullUp' + id).childNodes;
     var x = droppoint[0].getAttribute('cx');
     var y = droppoint[0].getAttribute('cy');
-    this.addButton(changeText, x, y, tbe, 'dropdown', 'dropdown');
+    this.addButton(changeText, x, y, tbe, id, id);
     droppoint[0].parentNode.parentNode.removeChild(droppoint[0].parentNode);
-    var underlay = document.getElementsByClassName('action-dot-underlay');
-    underlay[0].setAttribute('transform', 'translate (0 0)');
+    var underlay = document.getElementsByClassName('buttonGroupUnderlay');
     var animateSlide = {
       frame: 20,
       adx: 0,
-      ady: -(400)/20
+      ady: -(buttons.length*80)/20
     };
     this.slideButton(animateSlide, underlay[0], "delete");
-    underlay[1].setAttribute('transform', 'translate (0 0)');
     animateSlide = {
       frame: 20,
       adx: 0,
@@ -213,8 +216,8 @@ module.exports = function () {
     };
     this.slideButton(animateSlide, underlay[1], "delete");
 
-    underlay = document.getElementsByClassName('action-dot-rect');
-    underlay[0].setAttribute('class', 'action-dot-rect-remove');
+    underlay = document.getElementsByClassName('action-dot-rect-' + id);
+    underlay[0].setAttribute('class', 'action-dot-rect-remove-' + id);
   };
 
   actionButtons.addButton = function(label, x, y, tbe, command, id, eltClass){
@@ -240,8 +243,8 @@ module.exports = function () {
     var frame = state.frame;
     var currentAttribute = button.getAttribute('transform');
     var parenPos = currentAttribute.lastIndexOf(')');
-    var commaPos = currentAttribute.lastIndexOf(' ');
-    var currentY = parseInt(currentAttribute.substring(commaPos, parenPos), 10);
+    var spacePos = currentAttribute.lastIndexOf(' ');
+    var currentY = parseInt(currentAttribute.substring(spacePos, parenPos), 10);
     button.setAttribute('transform', 'translate(' + state.adx + ' ' + (currentY + state.ady) + ')');
     if (frame > 1) {
       state.frame = frame - 1;

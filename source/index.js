@@ -40,16 +40,15 @@ function deviceReady() {
     pause: '\uf04c',
     stop: '\uf04D',
     file: '\uf016',
-    trashEmpty: '\uf014',
+    trash: '\uf014',
     folder: '\uf115',
     undo: '\uf0e2',
     redo: '\uf01e',
     settings: '\uf013',
-    trashFull: '\uf1f8',
     copy: '\uf24d',
     paste:'\uf0ea',
-    downArrow: '\uf063',
-    upArrow: '\uf062',
+    page: '\uf0f6',
+    edit: '\uf044'
   };
 
   // A few things are sensitive to diffs from running in tablet vs.
@@ -83,12 +82,17 @@ function deviceReady() {
 
   tbe.init(document.getElementById('editorCanvas'));
 
-  var dropdownButtons = [
-    {'label': 'A'},
-    {'label': 'B'},
-    {'label': 'C'},
-    {'label': 'D'},
-    {'label': 'E'},
+  var buttonsPages = [
+    {'label': 'A', 'command': 'loadDocA'},
+    {'label': 'B', 'command': 'loadDocB'},
+    {'label': 'C', 'command': 'loadDocC'},
+    {'label': 'D', 'command': 'loadDocD'},
+    {'label': 'E', 'command': 'loadDocE'},
+  ];
+  var buttonsEdit = [
+    {'label': fastr.trash, 'command': 'trash'},
+    {'label': fastr.copy, 'command': 'copy'},
+    {'label': fastr.paste, 'command': 'paste'}
   ];
 
   //var newButtons = [];
@@ -98,19 +102,20 @@ function deviceReady() {
     'settings': function() { tf.showHide(tbe.components.appSettings); },
     'play': function() { conductor.playAll(); },
     'stop': function() { conductor.stopAll(); },
-    'trashFirst': function() { tbe.stage1deletion(fastr); },
-    'trashSecond': function() {  tbe.stage2deletion(fastr); },
-    'dropdown': function() { tbe.dropdownButtons = actionButtons.createDropdown(dropdownButtons, tbe, fastr.upArrow); },
-    'loadDocA': function(){ tbe.loadDoc('docA'); actionButtons.addActionButtons(tbe.actionButtons, tbe); },
-    'loadDocB': function(){ tbe.loadDoc('docB'); actionButtons.addActionButtons(tbe.actionButtons, tbe); },
-    'loadDocC': function(){ tbe.loadDoc('docC'); actionButtons.addActionButtons(tbe.actionButtons, tbe); },
-    'loadDocD': function(){ tbe.loadDoc('docD'); actionButtons.addActionButtons(tbe.actionButtons, tbe); },
-    'loadDocE': function(){ tbe.loadDoc('docE'); actionButtons.addActionButtons(tbe.actionButtons, tbe); },
+    'trash': function() { tbe.clearAllBlocks(); },
+    'pages': function() { tbe.clearStates(); tbe.dropdownButtons = actionButtons.createDropdown(buttonsPages, tbe, fastr.page, 'pages'); },
+    'edit': function() { tbe.clearStates(); tbe.dropdownButtons = actionButtons.createDropdown(buttonsEdit, tbe, fastr.edit, 'edit'); },
+    'loadDocA': function(){ tbe.loadDoc('docA'); },
+    'loadDocB': function(){ tbe.loadDoc('docB'); },
+    'loadDocC': function(){ tbe.loadDoc('docC'); },
+    'loadDocD': function(){ tbe.loadDoc('docD'); },
+    'loadDocE': function(){ tbe.loadDoc('docE'); },
     'undo': function(){ tbe.undoAction(); },
     'redo': function(){ tbe.redoAction(); },
-    'pullUp': function(){ actionButtons.deleteDropdown(tbe.dropdownButtons, tbe, fastr.downArrow); },
-    'copyToClipboard': function(){ tbe.copyText = teaktext.blocksToText(tbe.forEachDiagramChain); console.log(tbe.copyText); },
-    'paste': function(){ teaktext.textToBlocks(tbe, tbe.copyText); }
+    'pullUppages': function(){ actionButtons.deleteDropdown(tbe.dropdownButtons, tbe, fastr.page, 'pages'); },
+    'pullUpedit': function(){ actionButtons.deleteDropdown(tbe.dropdownButtons, tbe, fastr.edit, 'edit'); },
+    'copy': function(){ tbe.copyText = teaktext.blocksToText(tbe.forEachDiagramChain); },
+    'paste': function(){ if(tbe.copyTest !== null) { teaktext.textToBlocks(tbe, tbe.copyText); } }
   };
 
 
@@ -147,11 +152,8 @@ function deviceReady() {
  var actionButtonObj = [
    {'alignment': 'L', 'position': 1, 'label': fastr.play, 'command': 'play', 'tweakx': 4},
    {'alignment': 'L', 'position': 2, 'label': fastr.stop, 'command': 'stop'},
-   {'alignment': 'L', 'position': 3, 'label': fastr.downArrow, 'command': 'dropdown'},
-   //{'alignment': 'M', 'position': 1, 'label': fastr.file+"A", 'command': 'loadDocA'},
-   {'alignment': 'M', 'position': 1, 'label': fastr.trashEmpty, 'command': 'trashFirst'}, //check char count and based on that add new text
-   {'alignment': 'M', 'position': 2, 'label': fastr.paste, 'command': 'paste'},
-   {'alignment': 'M', 'position': 3, 'label': fastr.copy, 'command': 'copyToClipboard'},
+   {'alignment': 'M', 'position': 1, 'label': fastr.page, 'command': 'pages'},
+   {'alignment': 'M', 'position': 2, 'label': fastr.edit, 'command': 'edit'},
    {'alignment': 'R', 'position': 2, 'label': fastr.redo, 'command': 'redo'},
    {'alignment': 'R', 'position': 1, 'label': fastr.undo, 'command': 'undo'}
  ];

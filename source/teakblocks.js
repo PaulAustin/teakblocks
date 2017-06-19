@@ -85,6 +85,7 @@ tbe.clearStates = function clearStates(block) {
   tf.hideOpenForm();
   this.components.blockSettings.hide(block);
   tbe.forEachDiagramBlock( function(b) { b.markSelected(false); });
+  actionButtons.addActionButtons(tbe.actionButtons, tbe);
 };
 
 tbe.init = function init(svg) {
@@ -1278,7 +1279,7 @@ tbe.configInteractions = function configInteractions() {
     });
 };
 
-tbe.stage1deletion = function(fastr){
+/*tbe.stage1deletion = function(fastr){
   tbe.deleteRay[0].setAttribute('command', 'trashSecond');
   tbe.deleteRay[1].innerHTML = fastr.trashFull;
 };
@@ -1286,7 +1287,7 @@ tbe.stage2deletion = function(fastr){
   tbe.clearAllBlocks();
   tbe.deleteRay[0].setAttribute('command', 'trashFirst');
   tbe.deleteRay[1].innerHTML = fastr.trashEmpty;
-};
+};*/
 tbe.undoArray[0] = teakText.blocksToText(tbe.forEachDiagramChain);
 
 tbe.diagramChanged = function diagramChanged() {
