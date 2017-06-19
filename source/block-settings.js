@@ -367,7 +367,7 @@ module.exports = function () {
     } else if(x+160 > window.innerWidth){
       tweakx = window.innerWidth - (x+165);
     }
-    if(y+220 > window.innerHeight){
+    if(y+220 > window.innerHeight && !block.isGroupSelected()){
       tweaky = -230 - block.height;
     }
     div.style.transition = 'all 0.0s ease';
