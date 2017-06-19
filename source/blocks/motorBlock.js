@@ -69,7 +69,7 @@ module.exports = function () {
       'min':-100,
       'max':100,
       'suffix':"%",
-      'numArray': ["+50", "+10", "+1", "-50", "-10", "-1", undefined, "<-"],
+      'numArray': ["+10", "<-", "-10", "+50", undefined, "-50"],
       'calcLayout': 'simple'
     });
   };
