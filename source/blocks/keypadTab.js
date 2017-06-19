@@ -109,12 +109,14 @@ module.exports = function () {
                 if(parseInt(num, 10)-parseInt(strNum, 10) >= min){
                   num = (parseInt(num, 10)-parseInt(strNum, 10)).toString();
                 } else{
+                  num = min;
                   display.classList.add("error");
                 }
               } else if(increment === "+"){ //Otherwise, add
                 if(parseInt(num, 10)+parseInt(strNum, 10) <= max){
                   num = (parseInt(num, 10)+parseInt(strNum, 10)).toString();
                 } else{
+                  num = max;
                   display.classList.add("error");
                 }
               }
