@@ -1034,6 +1034,14 @@ document.body.addEventListener("keydown",function(e){
         tbe.undoAction();
     } else if ( key === 89 && ctrl) {
       tbe.redoAction();
+    } else if( key === 8) {
+      var todelete = [];
+      tbe.forEachDiagramBlock( function(block){
+        if(block.isSelected()){
+          todelete.push(block);
+        }
+      });
+      tbe.deleteChunk(todelete[0], todelete[todelete.length - 1]);
     }
 
 },false);
