@@ -100,11 +100,6 @@ module.exports = function () {
       buttons[i].svgCircle = svgCircle;
       svgCircle.setAttribute('command', command);
 
-      if (buttons[i].command === 'copyToClipboard') {
-        // TODO, abstract it
-        var curr = group.getAttribute('class');
-        group.setAttribute('class', curr + ' copy-button');
-      }
       group.setAttribute('id', buttons[i].command);
 
       toReturn[buttons.length - i - 1] = [svgCircle, svgText];
@@ -232,6 +227,10 @@ module.exports = function () {
     }
     if(eltClass !== undefined){
       group.setAttribute('class', 'buttonGroup ' + eltClass);
+      if (command === 'copy') {
+        var curr = group.getAttribute('class');
+        group.setAttribute('class', curr + ' copy-button');
+      }
     }
     group.appendChild(svgCircle);
     group.appendChild(svgText);
