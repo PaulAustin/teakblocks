@@ -34,6 +34,7 @@ var save = require('./save.js');
 var teakselection = require('./teakselection');
 var actionButtons = require('./actionButtons.js');
 var defaultFiles = require('./defaultFiles.js');
+var conductor = require('./conductor.js');
 
 var tbe = {};
 
@@ -1041,7 +1042,9 @@ document.body.addEventListener("keydown",function(e){
           todelete.push(block);
         }
       });
-      tbe.deleteChunk(todelete[0], todelete[todelete.length - 1]);
+      if(todelete.length !== 0){
+        tbe.deleteChunk(todelete[0], todelete[todelete.length - 1]);
+      }
     } else if( key === 49 ){
       tbe.loadDoc('docA');
     } else if( key === 50 ){
@@ -1052,6 +1055,54 @@ document.body.addEventListener("keydown",function(e){
       tbe.loadDoc('docD');
     } else if( key === 53 ){
       tbe.loadDoc('docE');
+    } else if( key === 80 ){
+      conductor.playAll();
+    } else if( key === 83 ){
+      conductor.stopAll();
+    } else if( key === 88 ){
+      var cloneBlocks = [];
+      tbe.forEachDiagramBlock( function(block){
+        if(block.isSelected()){
+          cloneBlocks.push(block);
+        }
+      });
+      if(cloneBlocks.length !== 0){
+        var clone = tbe.replicateChunk(cloneBlocks[0], cloneBlocks[cloneBlocks.length - 1]);
+
+        // TODO put it in a non-hardcoded place
+        var dy = -140;
+        if (clone.top < 140) {
+          dy = 140;
+        }
+        var animateClone = {
+          frame: 20,
+          adx: 0,
+          ady: dy / 20,
+          chunkStart: clone,
+          chunkEnd: clone.last
+        };
+        tbe.animateMove(animateClone);
+      }
+    } else if( key === 32 ){
+      tbe.clearAllBlocks();
+    } else if(ctrl && key === 65){
+      var selected = null;
+      tbe.forEachDiagramBlock( function(block){
+        if(block.isSelected()){
+          selected = block;
+        }
+      });
+
+      tbe.clearStates();
+
+      while(selected.next !== null){
+        selected.markSelected(true);
+        selected = selected.next;
+      }
+      while(selected !== null){
+        selected.markSelected(true);
+        selected = selected.prev;
+      }
     }
 
 },false);
