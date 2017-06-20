@@ -458,83 +458,67 @@ label input[type="checkbox"]:disabled + .label-text:before {
 .action-dot-rect-pages{
   fill: #F2CDB5;
   height: 400px;
-  -webkit-animation-name: outpages; /* Safari 4.0 - 8.0 */
-  -webkit-animation-duration: 4s; /* Safari 4.0 - 8.0 */
-  -webkit-animation-delay: 2s; /* Safari 4.0 - 8.0 */
-  animation-name: outpages;
-  animation-duration: .4s;
-  animation-delay: 0s;
+  -webkit-animation: outpages 0.4s ease; /* Safari 4.0 - 8.0 */
+  animation: outpages 0.4s ease;
 }
 @-webkit-keyframes outpages {
-  0%   {height:0px;}
-  100% {height:400px;}
+  from   {height:0px;}
+  to {height:400px;}
 }
 
 /* Standard syntax */
 @keyframes outpages {
-  0%   {height:0px;}
-  100% {height:400px;}
+  from   {height:0px;}
+  to {height:400px;}
 }
 .action-dot-rect-remove-pages{
   fill: #F2CDB5;
   height: 0px;
-  -webkit-animation-name: inpages; /* Safari 4.0 - 8.0 */
-  -webkit-animation-duration: 4s; /* Safari 4.0 - 8.0 */
-  -webkit-animation-delay: 0s; /* Safari 4.0 - 8.0 */
-  animation-name: inpages;
-  animation-duration: .4s;
-  animation-delay: 0s;
+  -webkit-animation: inpages 0.45s ease; /* Safari 4.0 - 8.0 */
+  animation: inpages 0.45s ease;
 }
 @-webkit-keyframes inpages {
-  0%   {height:400px;}
-  100% {height:0px;}
+  from  {height:400px;}
+  to {height:0px;}
 }
 
 /* Standard syntax */
 @keyframes inpages {
-  0%   {height:400px;}
-  100% {height:0px;}
+  from   {height:400px;}
+  to {height:0px;}
 }
 
 .action-dot-rect-edit{
   fill: #F2CDB5;
   height: 240px;
-  -webkit-animation-name: outedit; /* Safari 4.0 - 8.0 */
-  -webkit-animation-duration: 4s; /* Safari 4.0 - 8.0 */
-  -webkit-animation-delay: 0s; /* Safari 4.0 - 8.0 */
-  animation-name: outedit;
-  animation-duration: .4s;
-  animation-delay: 0s;
+  -webkit-animation: outedit 0.45s ease; /* Safari 4.0 - 8.0 */
+  animation: outedit 0.45s ease;
 }
 @-webkit-keyframes outedit {
-  0%   {height:0px;}
-  100% {height:240px;}
+  from   {height:0px;}
+  to {height:240px;}
 }
 
 /* Standard syntax */
 @keyframes outedit {
-  0%   {height:0px;}
-  100% {height:240px;}
+  from   {height:0px;}
+  to {height:240px;}
 }
 .action-dot-rect-remove-edit{
   fill: #F2CDB5;
   height: 0px;
-  -webkit-animation-name: inedit; /* Safari 4.0 - 8.0 */
-  -webkit-animation-duration: 4s; /* Safari 4.0 - 8.0 */
-  -webkit-animation-delay: 0s; /* Safari 4.0 - 8.0 */
-  animation-name: inedit;
-  animation-duration: .4s;
-  animation-delay: 0s;
+  -webkit-animation: inedit 0.45s ease; /* Safari 4.0 - 8.0 */
+  animation: inedit 0.45s ease;
 }
 @-webkit-keyframes inedit {
-  0%   {height:240px;}
-  100% {height:0px;}
+  from   {height:240px;}
+  to {height:0px;}
 }
 
 /* Standard syntax */
 @keyframes inedit {
-  0%   {height:240px;}
-  100% {height:0px;}
+  from {height:240px;}
+  to   {height:0px;}
 }
 .action-dot.switch-bg {
   /*fill: #4DD0E1; */
