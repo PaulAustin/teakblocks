@@ -41,7 +41,7 @@ module.exports = function () {
       data:{
         speed: 50,
         duration: 0,
-        motor: 1
+        motor: '1'
       },
       // Indicate what controller is active. This may affect the data format.
       controller:'speed',
