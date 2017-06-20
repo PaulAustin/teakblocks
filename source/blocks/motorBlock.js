@@ -63,6 +63,12 @@ module.exports = function () {
     return root;
   };
   motorBlock.configuratorOpen = function(div, block) {
+    var tabs = document.getElementsByClassName('block-settings-tab');
+    for(var i = 0; i < tabs.length; i++){
+      if(tabs[i].textContent === block.controllerSettings.data.motor){
+        tabs[i].classList.add('tab-selected');
+      }
+    }
     keypad.openTabs({
       'getValue': function() { return block.controllerSettings.data.speed; },
       'setValue': function(speed) { block.controllerSettings.data.speed = speed; },
@@ -78,7 +84,6 @@ module.exports = function () {
   };
   motorBlock.configuratorClose = function(div, block) {
     var tabs = document.getElementsByClassName('block-settings-tab');
-    //console.log(document.getElementsByClassName('block-settings-tab'));
     for(var i = 0; i < tabs.length; i++){
       if(tabs[i].classList.contains('tab-selected')){
         block.controllerSettings.data.motor = tabs[i].textContent;

@@ -317,9 +317,9 @@ module.exports = function () {
   // Build the middle from part, the controllers editor.
   blockSettings.buildController = function() {
     // Allow block to customize bottom part of form.
-    var congfiguratorOpen = this.activeBlock.funcs.configuratorOpen;
-    if (typeof congfiguratorOpen === "function") {
-      congfiguratorOpen(blockSettings.customDiv, this.activeBlock);
+    var configuratorOpen = this.activeBlock.funcs.configuratorOpen;
+    if (typeof configuratorOpen === "function") {
+      configuratorOpen(blockSettings.customDiv, this.activeBlock);
     } else {
       blockSettings.customDiv.innerHTML =
       `<div>
@@ -349,8 +349,8 @@ module.exports = function () {
       return; // Nothing to show.
     }
 
-    this.buildController();
     this.buildControllerTabs();
+    this.buildController();
 
     // Start animation to show settings form.
     var x = block.left;
