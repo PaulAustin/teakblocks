@@ -1042,6 +1042,16 @@ document.body.addEventListener("keydown",function(e){
         }
       });
       tbe.deleteChunk(todelete[0], todelete[todelete.length - 1]);
+    } else if( key === 49 ){
+      tbe.loadDoc('docA');
+    } else if( key === 50 ){
+      tbe.loadDoc('docB');
+    } else if( key === 51 ){
+      tbe.loadDoc('docC');
+    } else if( key === 52 ){
+      tbe.loadDoc('docD');
+    } else if( key === 53 ){
+      tbe.loadDoc('docE');
     }
 
 },false);
