@@ -54,10 +54,10 @@ module.exports = function () {
 
   // List of HTML snippets used for controller tabs.
   pictureBlock.tabs= {
-    '5x5picture' : '<i class="fa fa-smile-o" aria-hidden="true"></i>',
-    '5x5string'  : 'abc',
-    '5x5movie'   : '<i class="fa fa-film" aria-hidden="true"></i>',
-    '5x5sensor'  : '<i class="fa fa-tachometer" aria-hidden="true"></i>'
+    //'5x5picture' : '<i class="fa fa-smile-o" aria-hidden="true"></i>',
+    //'5x5string'  : 'abc',
+    //'5x5movie'   : '<i class="fa fa-film" aria-hidden="true"></i>',
+    //'5x5sensor'  : '<i class="fa fa-tachometer" aria-hidden="true"></i>'
   };
 
   // Initial setting for blocks of this type.

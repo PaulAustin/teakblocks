@@ -33,11 +33,11 @@ module.exports = function () {
   // flow block uses text labels for now.
   flowBlockHead.tabs= {
     // Simple interation count based for loop
-    'forLoop' : 'for',
+    //'forLoop' : 'for',
     // Loop while something is true
     //'whileLoop'  : 'while',
     // Skip body if condition not true
-    'ifThen'   : 'if'
+    //'ifThen'   : 'if'
   };
 
   flowBlockHead.keyPadValue = ko.observable(0+" times");

@@ -28,8 +28,8 @@ module.exports = function () {
   //var pb = svgb.pathBuilder;
   var motorBlock = {};
   motorBlock.tabs = {
-    'speed': '<i class="fa fa-tachometer" aria-hidden="true"></i>',
-    'duration': '<i class="fa fa-clock-o" aria-hidden="true"></i>',
+    //'speed': '<i class="fa fa-tachometer" aria-hidden="true"></i>',
+    //'duration': '<i class="fa fa-clock-o" aria-hidden="true"></i>',
   };
   motorBlock.keyPadValue = ko.observable(50 + "%");
   // Initial setting for blocks of this type.
@@ -39,6 +39,7 @@ module.exports = function () {
       data:{
         speed: 50,
         duration: 0,
+        motor: 1
       },
       // Indicate what controller is active. This may affect the data format.
       controller:'speed',

@@ -28,7 +28,7 @@ module.exports = function () {
 
   // List of HTML snippets used for controller tabs.
   soundBlock.tabs= {
-    'pianoKeyboard' : '<i class="fa fa-music" aria-hidden="true"></i>'
+    //'pianoKeyboard' : '<i class="fa fa-music" aria-hidden="true"></i>'
   };
 
   // Initial setting for blocks of this type.

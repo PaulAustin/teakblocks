@@ -61,9 +61,9 @@ module.exports = function () {
   // Start block is a work in progress, might not be needed. Might be
   // for naming seperate targets.
   identityBlock.tabs = {
-    'event': '<i class="fa fa-bolt" aria-hidden="true"></i>',
-    'target-bt': '<i class="fa fa-bluetooth-b" aria-hidden="true"></i>',
-    'target-usb': '<i class="fa fa-usb" aria-hidden="true"></i>',
+    //'event': '<i class="fa fa-bolt" aria-hidden="true"></i>',
+    //'target-bt': '<i class="fa fa-bluetooth-b" aria-hidden="true"></i>',
+    //'target-usb': '<i class="fa fa-usb" aria-hidden="true"></i>',
   };
 
   // Initial setting for blocks of this type.
