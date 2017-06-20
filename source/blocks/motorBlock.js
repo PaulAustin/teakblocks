@@ -30,6 +30,8 @@ module.exports = function () {
   motorBlock.tabs = {
     //'speed': '<i class="fa fa-tachometer" aria-hidden="true"></i>',
     //'duration': '<i class="fa fa-clock-o" aria-hidden="true"></i>',
+    '1': '1',
+    '2': '2'
   };
   motorBlock.keyPadValue = ko.observable(50 + "%");
   // Initial setting for blocks of this type.
@@ -74,7 +76,14 @@ module.exports = function () {
       'calcLayout': 'simple'
     });
   };
-  motorBlock.configuratorClose = function(div) {
+  motorBlock.configuratorClose = function(div, block) {
+    var tabs = document.getElementsByClassName('block-settings-tab');
+    //console.log(document.getElementsByClassName('block-settings-tab'));
+    for(var i = 0; i < tabs.length; i++){
+      if(tabs[i].classList.contains('tab-selected')){
+        block.controllerSettings.data.motor = tabs[i].textContent;
+      }
+    }
     keypad.closeTabs({'div': div});
   };
 
