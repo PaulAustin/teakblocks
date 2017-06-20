@@ -276,19 +276,37 @@ html, body { margin:0; padding:0; overflow:hidden }
     from{opacity:0.0;}
     to{opacity:0.4;}
 }
+@keyframes outShadowFadeIn {
+    from{opacity:0.0;}
+    to{opacity:0.15;}
+}
 .shadow-block {
   opacity:0.4;
   fill: #skyBlue;;
   animation: shadowFadeIn 0.35s ease;
 }
+.shadow-block-outsnap {
+  opacity:0.15;
+  fill: #skyBlue;;
+  animation: outShadowFadeIn 0.35s ease;
+}
 @keyframes shadowFadeOut {
     from{opacity:0.4;}
+    to{opacity:0.0;}
+}
+@keyframes outShadowFadeOut {
+    from{opacity:0.15;}
     to{opacity:0.0;}
 }
 .shadow-block-leave {
   opacity:0.0;
   fill: #skyBlue;
   animation: shadowFadeOut 0.35s ease;
+}
+.shadow-block-leave-outsnap {
+  opacity:0.0;
+  fill: #skyBlue;
+  animation: outShadowFadeOut 0.35s ease;
 }
 button {
   touch-action: none; /* prevents any screen bounce on android */

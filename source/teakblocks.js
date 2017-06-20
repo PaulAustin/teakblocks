@@ -88,7 +88,16 @@ tbe.clearStates = function clearStates(block) {
   actionButtons.addActionButtons(tbe.actionButtons, tbe);
 };
 
+tbe.customScale = function customScale(){
+    var contentWidth = 700,
+        windowWidth = window.innerHeight,
+        newScale = windowWidth / contentWidth; // 1439/700
+    document.body.style.zoom = newScale;
+    console.log(contentWidth, windowWidth);
+};
+
 tbe.init = function init(svg) {
+  //tbe.customScale();
   this.svg = svg;
   this.background = svgb.createRect('editor-background', 0, 0, 20, 20, 0);
   this.svg.appendChild(this.background);
@@ -747,7 +756,11 @@ tbe.FunctionBlock.prototype.insertTargetShadows = function(target, action) {
   }
   var shadow = null;
   while (block !== null) {
-    shadow = svgb.createRect('shadow-block', x, y, block.width, block.height, 10);
+    if(action === 'outsnap'){
+      shadow = svgb.createRect('shadow-block shadow-block-outsnap', x, y, block.width, block.height, 10);
+    } else{
+      shadow = svgb.createRect('shadow-block', x, y, block.width, block.height, 10);
+    }
     tbe.svg.insertBefore(shadow, tbe.background.nextSibling);
     block.targetShadow = shadow;
     x += block.width;
@@ -762,7 +775,12 @@ tbe.FunctionBlock.prototype.removeTargetShadows = function() {
     var shadow = block.targetShadow;
     if (shadow !== null) {
       shadowsToRemove.push(shadow);
-      shadow.setAttribute('class', 'shadow-block-leave');
+      if(block.snapAction === 'outsnap'){
+        shadow.setAttribute('class', 'shadow-block-leave shadow-block-leave-outsnap');
+        console.log("yeeeee");
+      } else{
+        shadow.setAttribute('class', 'shadow-block-leave');
+      }
       block.targetShadow = null;
     }
     block = block.next;
