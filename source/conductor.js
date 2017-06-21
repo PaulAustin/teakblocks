@@ -142,6 +142,9 @@ module.exports = function () {
       } else if (block.name === 'sound') {
         message = '(nt:' + block.controllerSettings.data.description + ');';
         console.log('msg ', message);
+      } else if(block.name === 'wait') {
+        message = '';
+        conductor.ble.write(botName, message);
       }
 
       if (message !== '') {
