@@ -143,7 +143,7 @@ function deviceReady() {
       'motor':{},
       'twoMotor':{},
       //'servo':{},
-      //'wait':{},
+      'wait':{},
       'loop':{}
     }
   };

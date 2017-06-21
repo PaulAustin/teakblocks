@@ -53,7 +53,7 @@ module.exports = function () {
     var path = svgb.createPath('svg-clear block-stencil', pathd);
     root.appendChild(path);
     var data = block.controllerSettings.data.duration;
-    var time = svgb.createText('svg-clear block-wait-text block-stencil-fill', 40, 70, data + " ms");
+    var time = svgb.createText('svg-clear block-wait-text block-stencil-fill', 40, 70, data + " bts");
     time.setAttribute('text-anchor', 'middle');
     root.appendChild(time);
     return root;
@@ -66,10 +66,10 @@ module.exports = function () {
       'type':waitBlock,
       'div': div,
       'block': block,
-      'min':-100,
-      'max':100,
-      'suffix':" ms",
-      'numArray': ["+50", "+10", "+1", "-50", "-10", "-1", undefined, "<-"],
+      'min':1,
+      'max':50,
+      'suffix':" beats",
+      'numArray': ["+1", "<-", "-1", "+10", undefined, "-10"],
       'calcLayout': 'simple'
     });
   //  formTools.sliderInteract(div);
