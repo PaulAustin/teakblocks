@@ -181,7 +181,7 @@ module.exports = function () {
       var blockType = object.type;
       var block = object.block;
 
-      var numArray = ["1", "2", "3", "4", "5"];
+      var numArray = ["1", "2", "3", "4", "5", "6"];
       var beatsSvg = document.getElementById('beatsSvg');
 
       // Show the current data on the config panel

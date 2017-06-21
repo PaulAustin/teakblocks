@@ -81,7 +81,6 @@ module.exports = function () {
       'suffix':"%",
       'numArray': ["+10", "<-", "-10", "+50", undefined, "-50"],
       'calcLayout': 'simple',
-      'start': 7,
       'getBeats': function() { return block.controllerSettings.data.duration; },
       'setBeats': function(duration) { block.controllerSettings.data.duration = duration; },
     });

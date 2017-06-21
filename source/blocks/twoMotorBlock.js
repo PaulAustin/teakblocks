@@ -29,6 +29,7 @@ module.exports = function () {
   var twoMotorBlock = {};
 
   twoMotorBlock.keyPadValue = ko.observable(50);
+  twoMotorBlock.beatsValue = ko.observable("1 beat");
 
   // Initial setting for blocks of this type.
   twoMotorBlock.defaultSettings = function() {
@@ -62,7 +63,7 @@ module.exports = function () {
   };
 
   twoMotorBlock.configuratorOpen = function(div, block) {
-    keypad.openTabs({
+    keypad.openTabsWithBeats({
       'getValue': function() { return block.controllerSettings.data.speed; },
       'setValue': function(speed) { block.controllerSettings.data.speed = speed; },
       'type':twoMotorBlock,
@@ -71,8 +72,10 @@ module.exports = function () {
       'min':-100,
       'max':100,
       'suffix':"%",
-      'numArray': ["+50", "+10", "+1", "-50", "-10", "-1", undefined, "<-"],
-      'calcLayout': 'simple'
+      'numArray': ["+10", "<-", "-10", "+50", undefined, "-50"],
+      'calcLayout': 'simple',
+      'getBeats': function() { return block.controllerSettings.data.duration; },
+      'setBeats': function(duration) { block.controllerSettings.data.duration = duration; },
     });
   };
   twoMotorBlock.configuratorClose = function(div) {
