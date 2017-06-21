@@ -34,13 +34,14 @@ module.exports = function () {
     '2': '2'
   };
   motorBlock.keyPadValue = ko.observable(50 + "%");
+  motorBlock.beatsValue = ko.observable("1 beat");
   // Initial setting for blocks of this type.
   motorBlock.defaultSettings = function() {
     // Return a new object with settings for the controller.
     return {
       data:{
         speed: 50,
-        duration: 0,
+        duration: 1,
         motor: '1'
       },
       // Indicate what controller is active. This may affect the data format.
@@ -69,7 +70,7 @@ module.exports = function () {
         tabs[i].classList.add('tab-selected');
       }
     }
-    keypad.openTabs({
+    keypad.openTabsWithBeats({
       'getValue': function() { return block.controllerSettings.data.speed; },
       'setValue': function(speed) { block.controllerSettings.data.speed = speed; },
       'type':motorBlock,
@@ -79,7 +80,10 @@ module.exports = function () {
       'max':100,
       'suffix':"%",
       'numArray': ["+10", "<-", "-10", "+50", undefined, "-50"],
-      'calcLayout': 'simple'
+      'calcLayout': 'simple',
+      'start': 7,
+      'getBeats': function() { return block.controllerSettings.data.duration; },
+      'setBeats': function(duration) { block.controllerSettings.data.duration = duration; },
     });
   };
   motorBlock.configuratorClose = function(div, block) {

@@ -38,15 +38,18 @@ module.exports = function () {
       var getValue = object.getValue;
       var numArray = object.numArray;
       var calcLayout = object.calcLayout;
-      div.innerHTML =
-          `<div id='keypadDiv' class='editorDiv'>
-              <div id="numeric-display" class = "numeric-display svg-clear" width='80px' height='80px' data-bind='text: keyPadValue'>
+      if(object.inner === undefined){
+        div.innerHTML =
+            `<div id='keypadDiv' class='editorDiv'>
+                <div id="numeric-display" class = "numeric-display svg-clear" width='80px' height='80px' data-bind='text: keyPadValue'>
 
-              </div>
-              <svg id="keypadSvg" class='area' width='225px' height='167.5px' xmlns='http://www.w3.org/2000/svg'></svg>
-              </svg>
-          </div>`;
-
+                </div>
+                <svg id="keypadSvg" class='area' width='225px' height='167.5px' xmlns='http://www.w3.org/2000/svg'></svg>
+                </svg>
+            </div>`;
+      } else {
+        div.innerHTML = object.inner;
+      }
 
       ko.applyBindings(blockType, div);
       var display = document.getElementById("numeric-display");
@@ -157,6 +160,76 @@ module.exports = function () {
 
       return;
     };
+
+    keypad.openTabsWithBeats = function(object) {
+      object.inner =
+          `<div id='keypadDiv' class='editorDiv'>
+              <div id="numeric-display" class = "numeric-display-half svg-clear" width='80px' height='80px' data-bind='text: keyPadValue'>
+
+              </div>
+              <div id="beats-display" class = "beats-display svg-clear" width='80px' height='80px' data-bind='text: beatsValue'>
+
+              </div>
+              <svg id="keypadSvg" class='area' width='225px' height='72px' xmlns='http://www.w3.org/2000/svg'></svg>
+              <svg id="beatsSvg" class='area' width='225px' height='80px' xmlns='http://www.w3.org/2000/svg'></svg>
+              </svg>
+          </div>`;
+      keypad.openTabs(object);
+
+      var getBeats = object.getBeats;
+      var setBeats = object.setBeats;
+      var blockType = object.type;
+      var block = object.block;
+
+      var numArray = ["1", "2", "3", "4", "5"];
+      var beatsSvg = document.getElementById('beatsSvg');
+
+      // Show the current data on the config panel
+      var num = getBeats().toString();
+      if(num === '1'){
+        blockType.beatsValue(num.toString() + " beat");
+      } else {
+        blockType.beatsValue(num.toString() + " beats");
+      }
+
+      for (var iy = 0; iy < 4; iy++) {
+        for (var ix = 0; ix < 3; ix++) {
+          // Create each button
+          if(numArray[((iy)*3) + ix] !== undefined){
+            var button = svgb.createGroup('', 0, 0);
+            var box = svgb.createRect('beatsButtons', 2.5+((ix)*75), 2+((iy)*35), 70, 30, 6);
+            var text = svgb.createText('svg-clear', 37.5+((ix)*75), 25+((iy)*35), numArray[((iy)*3) + ix]);
+            text.setAttribute('text-anchor', 'middle');
+
+            button.appendChild(box);
+            button.appendChild(text);
+
+            box.setAttribute('name', numArray[((iy)*3) + ix]);
+
+            beatsSvg.appendChild(button);
+          }
+        }
+      }
+
+      interact('.beatsButtons', {context:beatsSvg})
+        .on('tap', function (event) {
+          var strNum = event.target.getAttribute('name');
+
+          num = strNum; // Set num to strNum
+
+          // Now show the number on the config panel
+          if(num === '1'){
+            blockType.beatsValue(num.toString() + " beat");
+          } else {
+            blockType.beatsValue(num.toString() + " beats");
+          }
+          // And update the block data
+          setBeats(num);
+          block.updateSvg();
+        });
+
+      };
+
     keypad.closeTabs = function createKeyPad(object){
       ko.cleanNode(object.div);
     };

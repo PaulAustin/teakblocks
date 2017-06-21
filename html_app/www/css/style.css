@@ -446,6 +446,11 @@ label input[type="checkbox"]:disabled + .label-text:before {
   stroke: #1B5E20;
   stroke-width:2;
 }
+.beatsButtons{
+  fill: #81C784;
+  stroke: #1B5E20;
+  stroke-width:2;
+}
 /* actton dot are 'bottons' along the top of the canvas */
 .action-dot {
   transition: fill 0.2s ease;
@@ -567,6 +572,26 @@ label input[type="checkbox"]:disabled + .label-text:before {
 }
 .numeric-display{
   width: 230px;
+  height: 30px;
+  border-radius: 8px;
+  background-color: #c4c4c4;
+  font-size: 24px;
+}
+.numeric-display-half{
+  display: inline-block;
+  float:left;
+  width: 110px;
+  height: 30px;
+  border-radius: 8px;
+  background-color: #c4c4c4;
+  font-size: 24px;
+}
+.beats-display{
+  display: inline-block;
+  float:left;
+  position: relative;
+  left: 10px;
+  width: 110px;
   height: 30px;
   border-radius: 8px;
   background-color: #c4c4c4;
