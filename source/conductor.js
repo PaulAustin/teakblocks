@@ -65,15 +65,23 @@ module.exports = function () {
           if (block !== null && block.name === 'loop') {
             block = block.next;
           }
+          // If this is a new block, get its duration
           if(conductor.count === null){
             conductor.count = block.controllerSettings.data.duration;
           }
+
+          // If it does not have a duration or it has a duration of 0
+          // then set its duration to 1
           if(conductor.count === undefined || conductor.count === '0'){
             conductor.count = 1;
           }
           console.log(conductor.count);
+
           if (block !== null){
             conductor.count = parseInt(conductor.count, 10);
+
+            // If there is still duration left, play the block again
+            // Otherwise, get the next block ready and set count to null
             if(conductor.count > 1){
               conductor.playOne(block);
               conductor.count -= 1;

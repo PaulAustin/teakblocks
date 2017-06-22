@@ -790,7 +790,6 @@ tbe.FunctionBlock.prototype.removeTargetShadows = function() {
       if(elt.parentNode !== null){
         tbe.svg.removeChild(elt);
       }
-      //elt.parentNode.removeChild(elt);
       });
     },
     1000);
