@@ -27,6 +27,7 @@ module.exports = function () {
   conductor.tbe = null;
   conductor.hbTimer = 0;
   conductor.runningBlocks = [];
+  conductor.count = null;
 
   // Once the conductor system is connected to editor, it will ping the target
   // device to determine its current state.
@@ -64,10 +65,22 @@ module.exports = function () {
           if (block !== null && block.name === 'loop') {
             block = block.next;
           }
-          if (block !== null) {
-            console.log(block.name);
-            conductor.playOne(block);
-            conductor.runningBlocks[i] = block.next;
+          if(conductor.count === null){
+            conductor.count = block.controllerSettings.data.duration;
+          }
+          if(conductor.count === undefined || conductor.count === '0'){
+            conductor.count = 1;
+          }
+          console.log(conductor.count);
+          if (block !== null){
+            conductor.count = parseInt(conductor.count, 10);
+            if(conductor.count > 1){
+              conductor.playOne(block);
+              conductor.count -= 1;
+            } else{
+              conductor.runningBlocks[i] = block.next;
+              conductor.count = null;
+            }
           }
         }
       }
