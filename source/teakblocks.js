@@ -787,7 +787,10 @@ tbe.FunctionBlock.prototype.removeTargetShadows = function() {
   // Give some time for the animation to complete, then remove.
   setTimeout(function() {
     shadowsToRemove.forEach( function(elt) {
-      tbe.svg.removeChild(elt);
+      if(elt.parentNode !== null){
+        tbe.svg.removeChild(elt);
+      }
+      //elt.parentNode.removeChild(elt);
       });
     },
     1000);
