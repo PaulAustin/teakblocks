@@ -362,13 +362,20 @@ module.exports = function () {
       div = blockSettings.commonDiv;
     }
     // TODO make the config panel height NOT hardcoded
+    //console.log(block);
+    var settingsHeight = 0;
+    if(Object.keys(block.funcs.tabs).length !== 0){
+      settingsHeight = 260;
+    } else {
+      settingsHeight = 220;
+    }
     if(x-80 < 0){
       tweakx = 85-x;
     } else if(x+160 > window.innerWidth){
       tweakx = window.innerWidth - (x+165);
     }
-    if(y+220 > window.innerHeight && !block.isGroupSelected()){
-      tweaky = -230 - block.height;
+    if(y+settingsHeight > window.innerHeight && !block.isGroupSelected()){
+      tweaky = -settingsHeight -10 - block.height;
     }
     div.style.transition = 'all 0.0s ease';
     div.style.left = ((x-80) + tweakx) + 'px';
