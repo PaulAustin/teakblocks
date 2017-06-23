@@ -589,8 +589,7 @@ label input[type="checkbox"]:disabled + .label-text:before {
 .beats-display{
   display: inline-block;
   float:left;
-  position: relative;
-  left: 10px;
+  margin-left:10px;
   width: 110px;
   height: 30px;
   border-radius: 8px;
