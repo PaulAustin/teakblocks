@@ -573,6 +573,35 @@ tbe.FunctionBlock.prototype.isLoopTail = function() {
   return (this.flowHead !== null);
 };
 
+// Checks if a selected loop is the only thing selected
+tbe.FunctionBlock.prototype.isIsolatedLoop = function() {
+  if(this.isLoopHead() && this.isSelected()){
+    if(this.prev !== null && this.prev.isSelected()){
+      return false;
+    } else if(this.flowTail.next !== null && this.flowTail.next.isSelected()){
+      return false;
+    } else if(this.next !== this.flowTail && this.next.isSelected()){
+      return false;
+    }
+  }
+  if(this.isLoopTail() && this.isSelected()){
+    if(this.next !== null && this.next.isSelected()){
+      return false;
+    } else if(this.flowHead.prev !== null && this.flowHead.prev.isSelected()){
+      return false;
+    } else if(this.prev !== this.flowHead && this.prev.isSelected()){
+      return false;
+    }
+  }
+  if(!this.isLoopHead() && !this.isLoopTail()){
+    return false;
+  }
+  if(!this.isSelected()){
+    return false;
+  }
+  return true;
+};
+
 tbe.FunctionBlock.prototype.isGroupSelected = function() {
   var before = false;
   var after = false;
