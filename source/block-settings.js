@@ -364,7 +364,7 @@ module.exports = function () {
     // TODO make the config panel height NOT hardcoded
     //console.log(block);
     var settingsHeight = 0;
-    if(Object.keys(block.funcs.tabs).length !== 0){
+    if(block.funcs.tabs !== undefined && Object.keys(block.funcs.tabs).length !== 0){
       settingsHeight = 260;
     } else {
       settingsHeight = 220;
