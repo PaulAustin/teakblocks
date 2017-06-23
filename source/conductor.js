@@ -82,8 +82,8 @@ module.exports = function () {
 
             // If there is still duration left, play the block again
             // Otherwise, get the next block ready and set count to null
+            conductor.playOne(block);
             if(conductor.count > 1){
-              conductor.playOne(block);
               conductor.count -= 1;
             } else{
               conductor.runningBlocks[i] = block.next;
