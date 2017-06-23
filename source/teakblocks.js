@@ -619,8 +619,8 @@ tbe.FunctionBlock.prototype.isGroupSelected = function() {
 
 tbe.FunctionBlock.prototype.isOnScreen = function() {
   if(this.rect !== null){
-    if(this.rect.left >= 0 && this.rect.right <= window.innerWidth){
-      if(this.rect.top >= 0 && this.rect.bottom <= window.innerHeight){
+    if(this.rect.left+this.width >= 0 && this.rect.right-this.width <= window.innerWidth){
+      if(this.rect.top+this.height >= 0 && this.rect.bottom-this.height <= window.innerHeight){
         return true;
       }
     }
