@@ -156,7 +156,7 @@ module.exports = function () {
     var block = this.activeBlock;
 
     if(block !== null && block.isGroupSelected()){
-      if(block.name !== 'tail' && block.name !== 'loop'){
+      if(!block.isIsolatedLoop()){
         isSelectedGroup = true;
       }
     }
@@ -338,7 +338,7 @@ module.exports = function () {
     var block = this.activeBlock;
 
     if(block !== null && block.isGroupSelected()){
-      if(block.name !== 'tail' && block.name !== 'loop'){
+      if(!block.isIsolatedLoop()){
         isSelectedGroup = true;
       }
     }
