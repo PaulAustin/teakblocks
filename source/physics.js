@@ -3,18 +3,18 @@ module.exports = function (){
 
   function dump(block, editor) {
     if(block[0] === undefined) {
-          var frame = block.animateState.frame;
-          block.dmove(block.animateState.adx, block.animateState.ady, (frame === 1), block);
-          block.animateState.count += 1;
+      var frame = block.animateState.frame;
+      block.dmove(block.animateState.adx, block.animateState.ady, (frame === 1), block);
+      block.animateState.count += 1;
 
-      if (frame > 1 ) {
+      if (editor.blocksOnScreen() && frame > 0) {
         block.animateState.frame = frame - 1;
 
         requestAnimationFrame(function() {
           dump(block, editor);
         });
       } else {
-          editor.clearDiagramBlocks();
+        editor.clearDiagramBlocks();
       }
     }
   }
