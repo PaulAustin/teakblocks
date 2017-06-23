@@ -617,6 +617,17 @@ tbe.FunctionBlock.prototype.isGroupSelected = function() {
   return false;
 };
 
+tbe.FunctionBlock.prototype.isOnScreen = function() {
+  if(this.rect !== null){
+    if(this.rect.left >= 0 && this.rect.right <= window.innerWidth){
+      if(this.rect.top >= 0 && this.rect.bottom <= window.innerHeight){
+        return true;
+      }
+    }
+  }
+  return false;
+};
+
 // Change the element class to trigger CSS changes.
 tbe.FunctionBlock.prototype.hilite = function(state) {
   if (state) {
