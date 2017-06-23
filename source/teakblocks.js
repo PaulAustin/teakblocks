@@ -1445,6 +1445,20 @@ tbe.diagramChanged = function diagramChanged() {
   }
 };
 
+tbe.blocksOnScreen = function() {
+  var toReturn = false;
+  tbe.forEachDiagramBlock( function(block){
+    //console.log(Object.keys(tbe.diagramBlocks).length);
+    if(block.isOnScreen()){
+      toReturn = true;
+    }
+  });
+  if(Object.keys(tbe.diagramBlocks).length === 0){
+    return false;
+  }
+  return toReturn;
+};
+
 tbe.undoAction = function() {
   tbe.clearStates(undefined, false);
 
