@@ -60,8 +60,8 @@ module.exports = function () {
 
     var data1 = block.controllerSettings.data.speed;
     var rotate = (data1/100)*180;
-    var dx = Math.round(Math.cos((rotate) * (Math.PI/180)));
-    var dy = Math.round(Math.sin((rotate) * (Math.PI/180)));
+    var dx = Math.cos((rotate) * (Math.PI/180));
+    var dy = Math.sin((rotate) * (Math.PI/180));
     var spread = 1;
     if(rotate < 0){
       spread = 0;
