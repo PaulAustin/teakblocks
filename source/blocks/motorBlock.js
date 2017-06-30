@@ -25,7 +25,7 @@ module.exports = function () {
   var keypad = require('./keypadTab.js');
   var ko = require('knockout');
   //var formTools = require('./../block-settings.js');
-  //var pb = svgb.pathBuilder;
+  var pb = svgb.pathBuilder;
   var motorBlock = {};
   motorBlock.tabs = {
     //'speed': '<i class="fa fa-tachometer" aria-hidden="true"></i>',
@@ -57,10 +57,41 @@ module.exports = function () {
     root.appendChild(motor);
     var shaft = svgb.createCircle('svg-clear block-motor-shaft', 40, 30, 4);
     root.appendChild(shaft);
-    var data = block.controllerSettings.data.speed;
-    var speed = svgb.createText('svg-clear block-motor-text block-stencil-fill', 40, 70, data + "%");
-    speed.setAttribute('text-anchor', 'middle');
-    root.appendChild(speed);
+
+    var data1 = block.controllerSettings.data.speed;
+    var rotate = (data1/100)*180;
+    var dx = Math.round(Math.cos((rotate) * (Math.PI/180)));
+    var dy = Math.round(Math.sin((rotate) * (Math.PI/180)));
+    var spread = 1;
+    if(rotate < 0){
+      spread = 0;
+    }
+    var pathd = '';
+    pathd = pb.move(40, 30);
+    pathd += pb.line(0, -20);
+    pathd += pb.arc(20, rotate, 0, spread, (dy*20), -((dx*20)-20));
+    pathd += pb.close();
+    var path = svgb.createPath('svg-clear block-stencil-fill-back', pathd);
+    root.appendChild(path);
+    pathd = '';
+    pathd =  pb.move(37, 30);
+    pathd +=  pb.line(2.5, -19);
+    pathd +=  pb.hline(1);
+    pathd +=  pb.line(2.5, 19);
+    pathd += pb.arc(3.0, 180, 1, 1, -6, 0);
+    pathd +=  pb.close();
+    path = svgb.createPath('svg-clear block-stencil-fill', pathd);
+    path.setAttribute('transform', "rotate(" + rotate + " 40 30)"); //rotate
+    root.appendChild(path);
+
+    var data2 = block.controllerSettings.data.duration;
+    var textToDisplay = svgb.createGroup('displayText', 0, 0);
+    //var speed = svgb.createText('svg-clear block-motor-text block-stencil-fill', 40, 25, data1 + "% "); // + data2 + " \uf192");
+    var duration = svgb.createText('svg-clear block-motor-text-duration block-stencil-fill', 40, 75, data2 + " \uf192"); //data2 + " \uf192"
+    //textToDisplay.appendChild(speed);
+    textToDisplay.appendChild(duration);
+    textToDisplay.setAttribute('text-anchor', 'middle');
+    root.appendChild(textToDisplay);
     return root;
   };
   motorBlock.configuratorOpen = function(div, block) {
