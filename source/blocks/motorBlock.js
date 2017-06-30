@@ -86,9 +86,7 @@ module.exports = function () {
 
     var data2 = block.controllerSettings.data.duration;
     var textToDisplay = svgb.createGroup('displayText', 0, 0);
-    //var speed = svgb.createText('svg-clear block-motor-text block-stencil-fill', 40, 25, data1 + "% "); // + data2 + " \uf192");
     var duration = svgb.createText('svg-clear block-motor-text-duration block-stencil-fill', 40, 75, data2 + " \uf192"); //data2 + " \uf192"
-    //textToDisplay.appendChild(speed);
     textToDisplay.appendChild(duration);
     textToDisplay.setAttribute('text-anchor', 'middle');
     root.appendChild(textToDisplay);

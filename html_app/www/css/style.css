@@ -617,8 +617,8 @@ label input[type="checkbox"]:disabled + .label-text:before {
   stroke-width:0;
 }
 .block-twomotor-text{
-  font-family: "helvetica";
-  font-size:20px;
+  font-family: 'FontAwesome', "helvetica";
+  font-size:14px;
   stroke-width:0;
 }
 .block-servo-text{
