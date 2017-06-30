@@ -37,7 +37,7 @@ module.exports = function () {
     return {
       data:{
         speed: 50,
-        duration: 0,
+        duration: 1,
       },
       // Indicate what controller is active. This may affect the data format.
       controller:'speed',
