@@ -612,7 +612,7 @@ label input[type="checkbox"]:disabled + .label-text:before {
   stroke-width:0;
 }
 .block-wait-text{
-  font-family: "helvetica";
+  font-family: 'FontAwesome', "helvetica";
   font-size:20px;
   stroke-width:0;
 }

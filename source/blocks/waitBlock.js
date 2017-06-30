@@ -53,7 +53,7 @@ module.exports = function () {
     var path = svgb.createPath('svg-clear block-stencil', pathd);
     root.appendChild(path);
     var data = block.controllerSettings.data.duration;
-    var time = svgb.createText('svg-clear block-wait-text block-stencil-fill', 40, 70, data + " bts");
+    var time = svgb.createText('svg-clear block-wait-text block-stencil-fill', 40, 70, data + " \uf192");
     time.setAttribute('text-anchor', 'middle');
     root.appendChild(time);
     return root;
