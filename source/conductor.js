@@ -138,7 +138,7 @@ module.exports = function () {
   conductor.stopAll = function() {
     var blockChainIterator  = conductor.tbe.forEachDiagramChain;
     var botName = '';
-    var message = '(mo:0);';
+    var message = '(m2:0);';
     blockChainIterator(function(chainStart) {
       // Ignore chains that don't start with an identity block.
       if (chainStart.name === 'identity') {
