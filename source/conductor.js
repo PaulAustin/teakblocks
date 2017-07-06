@@ -136,6 +136,16 @@ module.exports = function () {
   };
 
   conductor.stopAll = function() {
+    var blockChainIterator  = conductor.tbe.forEachDiagramChain;
+    var botName = '';
+    var message = '(mo:0);';
+    blockChainIterator(function(chainStart) {
+      // Ignore chains that don't start with an identity block.
+      if (chainStart.name === 'identity') {
+        botName = chainStart.controllerSettings.data.deviceName;
+        conductor.ble.write(botName, message);
+      }
+    });
     conductor.runningBlocks = [];
     console.log('stop all');
     // Single step, find target and head of chain and run the single block.
