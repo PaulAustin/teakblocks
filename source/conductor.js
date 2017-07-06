@@ -28,6 +28,7 @@ module.exports = function () {
   conductor.hbTimer = 0;
   conductor.runningBlocks = [];
   conductor.count = null;
+  conductor.defaultPix = '0000000000';
 
   // Once the conductor system is connected to editor, it will ping the target
   // device to determine its current state.
@@ -139,11 +140,13 @@ module.exports = function () {
     var blockChainIterator  = conductor.tbe.forEachDiagramChain;
     var botName = '';
     var message = '(m2:0);';
+    var message2 = '(px:' + conductor.defaultPix + ');';
     blockChainIterator(function(chainStart) {
       // Ignore chains that don't start with an identity block.
       if (chainStart.name === 'identity') {
         botName = chainStart.controllerSettings.data.deviceName;
         conductor.ble.write(botName, message);
+        conductor.ble.write(botName, message2);
       }
     });
     conductor.runningBlocks = [];
