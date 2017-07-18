@@ -87,7 +87,11 @@ module.exports = function () {
             conductor.count = parseInt(conductor.count, 10);
 
             // Mark the current block as running
-            block.svgRect.classList.add('running-block');
+            var id = block.first;
+            var idData = id.controllerSettings.data.deviceName;
+            if(id.name === 'identity' && idData !== '-?-'){
+              block.svgRect.classList.add('running-block');
+            }
 
             // If there is still duration left, play the block again
             // Otherwise, get the next block ready and set count to null
