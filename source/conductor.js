@@ -89,7 +89,8 @@ module.exports = function () {
             // Mark the current block as running
             var id = block.first;
             var idData = id.controllerSettings.data.deviceName;
-            if(id.name === 'identity' && idData !== '-?-'){
+            var idStatus = id.controllerSettings.status;
+            if(id.name === 'identity' && idData !== '-?-' && idStatus === 3){
               block.svgRect.classList.add('running-block');
             }
 
