@@ -105,7 +105,6 @@ module.exports = function () {
         seen[key.substring(4)] = {
           mac:stored[0],
           ts:stored[1],
-          status:stored[2]
         };
       }
     }
@@ -120,12 +119,12 @@ module.exports = function () {
     identityBlock.devices.removeAll();
     for(var i in seen){
       if(bots[i] === undefined){
-        identityBlock.addItem(i, seen[i].mac, seen[i].ts, seen[i].status);
+        identityBlock.addItem(i, seen[i].mac, seen[i].ts);
       }
     }
     for (var key in bots) {
       if (bots.hasOwnProperty(key)) {
-        identityBlock.addItem(key, bots[key].mac, bots[key].ts, bots[key].status);
+        identityBlock.addItem(key, bots[key].mac, bots[key].ts);
       }
     }
     if (identityBlock.activeBlock) {
@@ -139,7 +138,7 @@ module.exports = function () {
     identityBlock.activeBlock = null;
     ko.cleanNode(div);
     for(var key in seen){
-      localStorage.setItem('bot-' + key, seen[key].mac + ", " + seen[key].ts + ", " + seen[key].status);
+      localStorage.setItem('bot-' + key, seen[key].mac + "," + seen[key].ts);
     }
   };
 
@@ -181,12 +180,11 @@ module.exports = function () {
     }
   };
 
-  identityBlock.addItem = function (botName, mac, status, ts) {
+  identityBlock.addItem = function (botName, mac, ts) {
     var block = identityBlock.activeBlock;
     var color = '#33691E';
     var back = '#C8E6C9';
     if(localStorage.getItem('bot-' + botName) !== null && block.controllerSettings.status === 0){
-      console.log(block.controllerSettings.status);
       color = '#555555';
       back = '#999999';
     }
@@ -204,7 +202,6 @@ module.exports = function () {
       seen[botName] = {
         mac: mac,
         ts: ts,
-        status: status
       };
     }
   };
