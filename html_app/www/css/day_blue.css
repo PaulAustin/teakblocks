@@ -8,6 +8,10 @@
   stroke: #873600;
   transition: stroke 0.3s ease;
 }
+.running-block{
+  stroke-width: 4;
+  stroke: #1E88E5;
+}
 .function-block-dragging {
   fill: #795548;
   stroke-width: 4;

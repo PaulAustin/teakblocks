@@ -56,6 +56,11 @@ module.exports = function () {
     // what part of the score the targets are at.
     conductor.checkAllIdentityBlocks();
 
+    // Set all of the blocks to a regular state
+    conductor.tbe.forEachDiagramBlock(function(b){
+      b.svgRect.classList.remove('running-block');
+    });
+
     if (conductor.runningBlocks.length > 0) {
       for (var i = 0; i < conductor.runningBlocks.length; i++) {
         var block = conductor.runningBlocks[i];
@@ -80,6 +85,9 @@ module.exports = function () {
 
           if (block !== null){
             conductor.count = parseInt(conductor.count, 10);
+
+            // Mark the current block as running
+            block.svgRect.classList.add('running-block');
 
             // If there is still duration left, play the block again
             // Otherwise, get the next block ready and set count to null
@@ -142,6 +150,7 @@ module.exports = function () {
     var message = '(m2:0);';
     var message2 = '(px:' + conductor.defaultPix + ');';
     blockChainIterator(function(chainStart) {
+      chainStart.svgRect.classList.remove('running-block');
       // Ignore chains that don't start with an identity block.
       if (chainStart.name === 'identity') {
         botName = chainStart.controllerSettings.data.deviceName;
@@ -149,6 +158,7 @@ module.exports = function () {
         conductor.ble.write(botName, message2);
       }
     });
+    conductor.count = null;
     conductor.runningBlocks = [];
     console.log('stop all');
     // Single step, find target and head of chain and run the single block.

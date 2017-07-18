@@ -92,6 +92,10 @@ html, body { margin:0; padding:0; overflow:hidden }
   stroke-width: 4;
   stroke: #1E88E5;
 }
+.running-block{
+  stroke-width: 4;
+  stroke: #1E88E5;
+}
 .function-block {
 /*  fill:#90CAF9; */
   fill: #3372FF;
