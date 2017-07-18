@@ -140,8 +140,9 @@ module.exports = function () {
     console.log('play all');
     var blockChainIterator  = conductor.tbe.forEachDiagramChain;
     blockChainIterator(function(chainStart) {
+      var cs = chainStart.controllerSettings;
       // Ignore chains that don't start with an identity block.
-      if (chainStart.name === 'identity') {
+      if (chainStart.name === 'identity' && cs.data.deviceName !== '-?-' && cs.status === 3) {
         conductor.runningBlocks.push(chainStart.next);
       }
     });
