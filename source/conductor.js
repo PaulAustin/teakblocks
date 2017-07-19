@@ -89,6 +89,7 @@ module.exports = function () {
             // Mark the current block as running
             var id = block.first;
             if(id.name === 'identity'){
+              conductor.tbe.svg.appendChild(block.svgGroup);
               block.svgRect.classList.add('running-block');
             }
 
