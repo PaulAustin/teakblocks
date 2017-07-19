@@ -1384,6 +1384,8 @@ tbe.configInteractions = function configInteractions() {
           // the chain will no longer be dragging.
           return;
         }
+
+        // Puts the blocks being dragged at the top
         var temp = block;
         while(temp !== null){
           tbe.svg.appendChild(temp.svgGroup);
