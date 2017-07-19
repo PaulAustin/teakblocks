@@ -1384,6 +1384,11 @@ tbe.configInteractions = function configInteractions() {
           // the chain will no longer be dragging.
           return;
         }
+        var temp = block;
+        while(temp !== null){
+          tbe.svg.appendChild(temp.svgGroup);
+          temp = temp.next;
+        }
 
         // Move the chain to the new location based on deltas.
         block.dmove(event.dx, event.dy, true);
