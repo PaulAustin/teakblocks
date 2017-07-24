@@ -92,7 +92,7 @@ module.exports = function () {
   };
 
   twoMotorBlock.configuratorOpen = function(div, block) {
-    keypad.openTabsWithBeats({
+    keypad.tabbedButtons({
       'getValue': function() { return block.controllerSettings.data.speed; },
       'setValue': function(speed) { block.controllerSettings.data.speed = speed; },
       'type':twoMotorBlock,
