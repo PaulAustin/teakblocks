@@ -99,7 +99,7 @@ module.exports = function () {
         tabs[i].classList.add('tab-selected');
       }
     }
-    keypad.openTabsWithBeats({
+    keypad.tabbedButtons({
       'getValue': function() { return block.controllerSettings.data.speed; },
       'setValue': function(speed) { block.controllerSettings.data.speed = speed; },
       'type':motorBlock,

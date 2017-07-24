@@ -585,6 +585,7 @@ label input[type="checkbox"]:disabled + .label-text:before {
   border-radius: 8px;
   background-color: #c4c4c4;
   font-size: 24px;
+  pointer-events: auto;
 }
 .numeric-display-half{
   display: inline-block;
@@ -594,6 +595,7 @@ label input[type="checkbox"]:disabled + .label-text:before {
   border-radius: 8px;
   background-color: #c4c4c4;
   font-size: 24px;
+  pointer-events: auto;
 }
 .beats-display{
   display: inline-block;
@@ -604,6 +606,7 @@ label input[type="checkbox"]:disabled + .label-text:before {
   border-radius: 8px;
   background-color: #c4c4c4;
   font-size: 24px;
+  pointer-events: auto;
 }
 .block-motor-text{
   font-family: 'FontAwesome', "helvetica";
@@ -639,4 +642,7 @@ label input[type="checkbox"]:disabled + .label-text:before {
   font-family: "helvetica";
   font-size:20px;
   stroke-width:0;
+}
+.area{
+  margin-top: 5px;
 }
