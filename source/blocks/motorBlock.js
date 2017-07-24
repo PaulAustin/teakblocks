@@ -40,7 +40,7 @@ module.exports = function () {
     // Return a new object with settings for the controller.
     return {
       data:{
-        speed: 50,
+        speed: 120,
         duration: 1,
         motor: '1'
       },
@@ -108,7 +108,7 @@ module.exports = function () {
       'min':-240,
       'max':240,
       'suffix':" RMP",
-      'numArray': ["+10", "C", "-10", "+50", undefined, "-50"],
+      'numArray': ["+10", "+40", "+100", "-10", "-40", "-100", undefined, "C"],
       'calcLayout': 'simple',
       'getBeats': function() { return block.controllerSettings.data.duration; },
       'setBeats': function(duration) { block.controllerSettings.data.duration = duration; },
