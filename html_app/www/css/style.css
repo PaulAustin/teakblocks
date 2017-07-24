@@ -608,6 +608,9 @@ label input[type="checkbox"]:disabled + .label-text:before {
   font-size: 24px;
   pointer-events: auto;
 }
+.selectedDisplay{
+  background-color: #ffc570;
+}
 .block-motor-text{
   font-family: 'FontAwesome', "helvetica";
   font-size:12px;

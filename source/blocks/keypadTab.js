@@ -27,10 +27,9 @@ module.exports = function () {
     var keypad = {};
 
     keypad.tabbedButtons = function(object){
-      //var beatsSvg = `<svg id="beatsSvg" class='area' width='225px' height='80px' xmlns='http://www.w3.org/2000/svg'></svg>`;
       object.inner =
           `<div id='keypadDiv' class='editorDiv'>
-              <div id="numeric-display" class = "numeric-display-half svg-clear" width='80px' height='80px' data-bind='text: keyPadValue'>
+              <div id="numeric-display" class = "numeric-display-half svg-clear selectedDisplay" width='80px' height='80px' data-bind='text: keyPadValue'>
 
               </div>
               <div id="beats-display" class = "beats-display svg-clear" width='80px' height='80px' data-bind='text: beatsValue'>
@@ -42,22 +41,23 @@ module.exports = function () {
       keypad.openTabs(object); //dataButton
       var beatsDisplay = document.getElementById('beats-display');
       var numericDisplay = document.getElementById('numeric-display');
-
       beatsDisplay.onclick = function(){
         var buttons = document.getElementsByClassName('dataButton');
+        beatsDisplay.className += " selectedDisplay";
+        numericDisplay.className = "numeric-display-half svg-clear";
         var buttonsLen = buttons.length;
         for(var i = 0; i < buttonsLen; i++){
           buttons[0].parentNode.removeChild(buttons[0]);
         }
         var svg = document.getElementById('keypadSvg');
-        console.log(svg);
         svg.parentNode.removeChild(svg);
-        //build time
         keypad.openBeats(object);
       };
 
       numericDisplay.onclick = function(){
         var buttons = document.getElementsByClassName('beatsButton');
+        numericDisplay.className += " selectedDisplay";
+        beatsDisplay.className = "beats-display svg-clear";
         var buttonsLen = buttons.length;
         for(var i = 0; i < buttonsLen; i++){
           buttons[0].parentNode.removeChild(buttons[0]);
@@ -82,7 +82,7 @@ module.exports = function () {
       if(object.inner === undefined){
         div.innerHTML =
             `<div id='keypadDiv' class='editorDiv'>
-                <div id="numeric-display" class = "numeric-display svg-clear" width='80px' height='80px' data-bind='text: keyPadValue'>
+                <div id="numeric-display" class = "numeric-display svg-clear selectedDisplay" width='80px' height='80px' data-bind='text: keyPadValue'>
 
                 </div>
                 <svg id="keypadSvg" class='area' width='225px' height='200px' xmlns='http://www.w3.org/2000/svg'></svg>
@@ -258,7 +258,7 @@ module.exports = function () {
     keypad.openTabsWithBeats = function(object) {
       object.inner =
           `<div id='keypadDiv' class='editorDiv'>
-              <div id="numeric-display" class = "numeric-display-half svg-clear" width='80px' height='80px' data-bind='text: keyPadValue'>
+              <div id="numeric-display" class = "numeric-display-half svg-clear selectedDisplay" width='80px' height='80px' data-bind='text: keyPadValue'>
 
               </div>
               <div id="beats-display" class = "beats-display svg-clear" width='80px' height='80px' data-bind='text: beatsValue'>
