@@ -504,19 +504,19 @@ label input[type="checkbox"]:disabled + .label-text:before {
 
 .action-dot-rect-edit{
   fill: #F2CDB5;
-  height: 240px;
+  height: 320px;
   -webkit-animation: outedit 0.45s ease; /* Safari 4.0 - 8.0 */
   animation: outedit 0.45s ease;
 }
 @-webkit-keyframes outedit {
   from   {height:0px;}
-  to {height:240px;}
+  to {height:320px;}
 }
 
 /* Standard syntax */
 @keyframes outedit {
   from   {height:0px;}
-  to {height:240px;}
+  to {height:320px;}
 }
 .action-dot-rect-remove-edit{
   fill: #F2CDB5;

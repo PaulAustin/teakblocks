@@ -33,6 +33,7 @@ function deviceReady() {
   var conductor = require('./conductor.js');
   var actionButtons = require('./actionButtons.js');
   var teaktext = require('./teaktext.js');
+  var save = require('./save.js');
 
   /* font awesome strings */
   var fastr = {
@@ -48,7 +49,8 @@ function deviceReady() {
     copy: '\uf24d',
     paste:'\uf0ea',
     page: '\uf0f6',
-    edit: '\uf044'
+    edit: '\uf044',
+    save: '\uf0c7'
   };
 
   // A few things are sensitive to diffs from running in tablet vs.
@@ -92,7 +94,8 @@ function deviceReady() {
   var buttonsEdit = [
     {'label': fastr.trash, 'command': 'trash'},
     {'label': fastr.copy, 'command': 'copy'},
-    {'label': fastr.paste, 'command': 'paste'}
+    {'label': fastr.paste, 'command': 'paste'},
+    {'label': fastr.save, 'command': 'save'}
   ];
 
   //var newButtons = [];
@@ -115,7 +118,8 @@ function deviceReady() {
     'pullUppages': function(){ actionButtons.deleteDropdown(tbe.dropdownButtons, tbe, fastr.page, 'pages'); },
     'pullUpedit': function(){ actionButtons.deleteDropdown(tbe.dropdownButtons, tbe, fastr.edit, 'edit'); },
     'copy': function(){ tbe.copyText = teaktext.blocksToText(tbe.forEachDiagramChain); },
-    'paste': function(){ if(tbe.copyTest !== null) { teaktext.textToBlocks(tbe, tbe.copyText); } }
+    'paste': function(){ if(tbe.copyTest !== null) { teaktext.textToBlocks(tbe, tbe.copyText); } },
+    'save': function(){ var currentDocText = teaktext.blocksToText(tbe.forEachDiagramChain); save.saveFile(tbe.currentDoc, currentDocText); }
   };
 
 
