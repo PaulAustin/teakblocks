@@ -205,8 +205,11 @@ module.exports = function () {
       var setBeats = object.setBeats;
       var blockType = object.type;
       var block = object.block;
+      var numArray = object.beatsRay;
 
-      var numArray = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
+      if(numArray === undefined){
+        numArray = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
+      }
       var beatsSvg = document.getElementById('beatsSvg');
 
       // Show the current data on the config panel
@@ -264,10 +267,11 @@ module.exports = function () {
               <div id="beats-display" class = "beats-display svg-clear" width='80px' height='80px' data-bind='text: beatsValue'>
 
               </div>
-              <svg id="keypadSvg" class='area' width='225px' height='200px' xmlns='http://www.w3.org/2000/svg'></svg>
-              <svg id="beatsSvg" class='area' width='225px' height='200px' xmlns='http://www.w3.org/2000/svg'></svg>
+              <svg id="keypadSvg" class='area' width='225px' height='72px' xmlns='http://www.w3.org/2000/svg'></svg>
+              <svg id="beatsSvg" class='area' width='225px' height='80px' xmlns='http://www.w3.org/2000/svg'></svg>
           </div>`;
       keypad.openTabs(object);
+      object.beatsRay = ["1", "2", "3", "4", "5", "6"];
       keypad.openBeats(object);
       };
 
