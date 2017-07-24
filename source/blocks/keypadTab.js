@@ -102,8 +102,8 @@ module.exports = function () {
                 strNum = strNum.substring(1);
               }
 
-              // If it is "<-", then delete current number
-              if(strNum === "<-"){
+              // If it is "<-" or "C", then delete current number
+              if(strNum === "<-" || strNum === "C"){
                 num = "0";
               }
 
@@ -125,8 +125,8 @@ module.exports = function () {
               }
             } else if(calcLayout === "complex"){ // If the layout is a complex layout
               var isNegate = strNum === "+/-";
-              // If it is "<-", then delete current number
-              if(strNum === "<-"){
+              // If it is "<-" or "C", then delete current number
+              if(strNum === "<-" || strNum === "C"){
                 num = "0";
                 display.classList.remove("error");
               } else if(isNegate && num !== "0"){ // Negate the number

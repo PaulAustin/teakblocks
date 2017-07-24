@@ -131,7 +131,7 @@ module.exports = function () {
       'min':0,
       'max':100,
       'suffix':" times",
-      'numArray': ["+1", "<-", "+10", "-1", undefined, "-10"],//["1", "2", "3", "4", "5","6", "7", "8", "9", "0", "<-"],
+      'numArray': ["+1", "C", "+10", "-1", undefined, "-10"],//["1", "2", "3", "4", "5","6", "7", "8", "9", "0", "<-"],
       'calcLayout': 'simple'//'complex'
     });
   };

@@ -69,7 +69,7 @@ module.exports = function () {
       'min':1,
       'max':50,
       'suffix':" beats",
-      'numArray': ["+1", "<-", "-1", "+10", undefined, "-10"],
+      'numArray': ["+1", "C", "-1", "+10", undefined, "-10"],
       'calcLayout': 'simple'
     });
   //  formTools.sliderInteract(div);

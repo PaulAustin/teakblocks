@@ -101,7 +101,7 @@ module.exports = function () {
       'min':-100,
       'max':100,
       'suffix':"%",
-      'numArray': ["+10", "<-", "-10", "+50", undefined, "-50"],
+      'numArray': ["+10", "C", "-10", "+50", undefined, "-50"],
       'calcLayout': 'simple',
       'getBeats': function() { return block.controllerSettings.data.duration; },
       'setBeats': function(duration) { block.controllerSettings.data.duration = duration; },

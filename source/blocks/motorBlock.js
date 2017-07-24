@@ -108,6 +108,7 @@ module.exports = function () {
       'min':-240,
       'max':240,
       'suffix':" RMP",
+      'numArray': ["+10", "C", "-10", "+50", undefined, "-50"],
       'calcLayout': 'simple',
       'getBeats': function() { return block.controllerSettings.data.duration; },
       'setBeats': function(duration) { block.controllerSettings.data.duration = duration; },
