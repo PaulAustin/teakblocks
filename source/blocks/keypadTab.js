@@ -208,7 +208,7 @@ module.exports = function () {
       var numArray = object.beatsRay;
 
       if(numArray === undefined){
-        numArray = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
+        numArray = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
       }
       var beatsSvg = document.getElementById('beatsSvg');
 
