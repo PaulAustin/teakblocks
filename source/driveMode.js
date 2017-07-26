@@ -23,12 +23,45 @@ SOFTWARE.
 module.exports = function(){
 
   var driveMode = {};
+  var interact = require('interact.js');
 
-  driveMode.buildSlider = function(motor){
-    console.log('build slider: ', motor);
+  driveMode.buildSlider = function(root){
+    var div = document.createElement('div');
+    //div.setAttribute('cx', '100');
+    //div.setAttribute('cy', '200');
+    div.innerHTML = `
+    <div class='slider'></div>
+    `;
+    //var domRoot = document.getElementById('leftMotorSlider');
+
+    root.appendChild(div);
+
+    driveMode.sliderInteract('slider');
   };
 
   driveMode.startDiagnostics = function() {
     console.log('starting diagnostics');
   };
-};
+
+  driveMode.sliderInteract = function sliderInteract(eltClass) {
+    interact('.' + eltClass)                   // target the matches of that selector
+      .origin('self')                     // (0, 0) will be the element's top-left
+      .restrict({drag: 'self'})           // keep the drag within the element
+      .inertia(true)                      // start inertial movement if thrown
+      .draggable({                        // make the element fire drag events
+        max: Infinity                     // allow drags on multiple elements
+      })
+      .on('dragmove', function (event) {  // call this function on every move
+        var sliderHeight = interact.getElementRect(event.target.parentNode).height,
+            value = event.pageY / sliderHeight;
+
+        event.target.style.paddingTop = (value * 45) + '%';
+        var display = Math.round(100-(value.toFixed(2)*200));
+        event.target.setAttribute('data-value', display);
+      });
+
+    interact.maxInteractions(Infinity);   // Allow multiple interactions
+  };
+
+  return driveMode;
+}();

@@ -22,7 +22,6 @@ SOFTWARE.
 
 module.exports = function () {
   var ko = require('knockout');
-  var interact = require('interact.js');
   var tbe = require('./teakblocks.js');
   var conductor = require('./conductor.js');
 
@@ -392,31 +391,6 @@ module.exports = function () {
     }, 10);
   };
 
-  blockSettings.sliderInteract = function sliderInteract(domElt) {
-    interact('.slider', {context:domElt})
-      .origin('self')
-      .restrict({drag: 'self'})
-      .inertia(true)
-      .draggable({
-        max: Infinity
-      })
-      .on('dragmove', function (event) {  // call this function on every move
-        var sliderWidth = interact.getElementRect(event.target.parentNode).width;
-        var thumbX = event.pageX;
-        var thO = 25.0 / 2.0;
-        if (thumbX < thO) {
-          // thumbX = thO;
-        } else if (thumbX > (sliderWidth - (2*thO))) {
-          thumbX = sliderWidth - (2*thO);
-        }
-        var value = event.pageX / sliderWidth;
-        console.log('slider move', sliderWidth, event.pageX);
-        event.target.style.paddingLeft = thumbX + 'px';
-        //event.target.style.paddingLeft = (value * 100) + '%';
-        event.target.setAttribute('data-value', value.toFixed(2));
-      });
-    // interact.maxInteractions(Infinity);
-  };
 
   return blockSettings;
 }();

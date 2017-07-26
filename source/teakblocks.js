@@ -149,10 +149,15 @@ tbe.loadDoc = function(docName) {
   tbe.undoArray = {}; //When we switch documents we want to clear undo history
   tbe.undoTransactionIndex = 0;
 
-  // First, save the current document.
-  var currentDocText = teakText.blocksToText(tbe.forEachDiagramChain);
-  console.log('doc is', docName, ' save text is', currentDocText);
-  save.saveFile(tbe.currentDoc, currentDocText);
+  // First, save the current document if actually a doc.
+  if(tbe.currentDoc !== 'driveMode'){
+    var currentDocText = teakText.blocksToText(tbe.forEachDiagramChain);
+    console.log('doc is', docName, ' save text is', currentDocText);
+    save.saveFile(tbe.currentDoc, currentDocText);
+  } else if(tbe.currentDoc === 'driveMode'){
+    // Delete all elements
+    console.log('switiching away from driveMode');
+  }
 
   // Second if they are actully switching then load the new one.
   if (tbe.currentDoc !== docName) {
@@ -182,8 +187,9 @@ tbe.loadDriveMode = function() {
 
     tbe.currentDoc = 'driveMode';
 
-    dm.buildSlider('rightMotor');
-    dm.buildSlider('leftMotor');
+    var dom = document.getElementById('tbe-driver-mode');
+    dm.buildSlider(dom);
+    //dm.buildSlider('leftMotor');
     dm.startDiagnostics();
   }
 };

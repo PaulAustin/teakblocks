@@ -649,3 +649,49 @@ label input[type="checkbox"]:disabled + .label-text:before {
 .area{
   margin-top: 5px;
 }
+/* the slider bar */
+.slider {
+  position: relative;
+  left:-6em;
+  width: 2em;
+  height: 8em;
+  margin: 1.5em auto;
+  background-color: #29e;
+  border-radius: 0.5em;
+  box-sizing: border-box;
+
+  font-size: 8vmin;
+
+  -ms-touch-action: none;
+      touch-action: none;
+}
+
+/* the slider handle */
+.slider:before {
+  content: "";
+  display: block;
+  position: relative;
+  right: -0.5em;
+
+  width: 3em;
+  height: 1em;
+  margin-left: -1em;
+  border: solid 0.25em #fff;
+  border-radius: 0em;
+  background-color: inherit;
+
+  box-sizing: border-box;
+}
+
+/* display the value */
+.slider:after {
+  content: attr(data-value);
+  position: absolute;
+  top: -1.5em;
+  width: 2em;
+  line-height:1em;
+  margin-left: 0em;
+  text-align: center;
+}
+
+body { margin: 5% 10%; }
