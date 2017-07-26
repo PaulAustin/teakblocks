@@ -115,6 +115,7 @@ function deviceReady() {
     'loadDocC': function(){ tbe.loadDoc('docC'); },
     'loadDocD': function(){ tbe.loadDoc('docD'); },
     'loadDocE': function(){ tbe.loadDoc('docE'); },
+    'loadDriveMode': function(){ tbe.loadDriveMode(); },
     'undo': function(){ tbe.undoAction(); },
     'redo': function(){ tbe.redoAction(); },
     'pullUppages': function(){ actionButtons.deleteDropdown(tbe.dropdownButtons, tbe, fastr.page, 'pages'); },

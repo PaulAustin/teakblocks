@@ -165,6 +165,16 @@ tbe.loadDoc = function(docName) {
     }
   }
 };
+tbe.loadDriveMode = function() {
+
+  tbe.undoArray = {}; //When we switch documents we want to clear undo history
+  tbe.undoTransactionIndex = 0;
+
+  // First, save the current document.
+  var currentDocText = teakText.blocksToText(tbe.forEachDiagramChain);
+  console.log('doc is driveMode', ' save text is', currentDocText);
+  save.saveFile(tbe.currentDoc, currentDocText);
+};
 
 tbe.nextBlockId = function(prefix) {
   var blockId = prefix + String(tbe.blockIdSequence);
