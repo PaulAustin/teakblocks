@@ -688,7 +688,7 @@ label input[type="checkbox"]:disabled + .label-text:before {
   height:1000px;
   background-color: #FFF8E1;
 }
-.driver-exit {
+.exitGroup {
   background-color: #F6DDCC;
   position: absolute;
   top:20px;
@@ -696,4 +696,13 @@ label input[type="checkbox"]:disabled + .label-text:before {
   position: relative;
   height:100px;
   width: 100px;
+  border-radius: 100px;
+}
+.driver-x {
+  color: #ff7043;
+  font-size: 100px;
+  position: relative;
+  text-align: center;
+  left: 10px;
+  bottom:5px;
 }

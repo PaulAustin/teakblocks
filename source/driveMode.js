@@ -37,6 +37,7 @@ module.exports = function(){
 
     driveMode.sliderInteract('slider');
   };
+
   driveMode.applyBackground = function() {
     var div = document.createElement('div');
     div.setAttribute('class', 'driverBackground');
@@ -44,11 +45,16 @@ module.exports = function(){
     var root = document.getElementById('tbe-driver-mode');
     root.appendChild(div);
 
+    var exitGroup = document.createElement('div');
+    exitGroup.setAttribute('class', 'exitGroup');
+    exitGroup.setAttribute('id', 'exitGroup');
     var exit = document.createElement('div');
     exit.setAttribute('class', 'driver-exit');
     exit.setAttribute('id', 'driver-exit');
-    exit.onclick = driveMode.exit;
-    root.appendChild(exit);
+    exitGroup.onclick = driveMode.exit;
+    exitGroup.appendChild(exit);
+    exitGroup.innerHTML += `<i class="fa fa-times driver-x svg-clear" aria-hidden="true"></i>`;
+    root.appendChild(exitGroup);
   };
 
   driveMode.startDiagnostics = function() {
@@ -93,7 +99,7 @@ module.exports = function(){
     var back = document.getElementById('driverBackground');
     back.parentNode.removeChild(back);
 
-    var exit = document.getElementById('driver-exit');
+    var exit = document.getElementById('exitGroup');
     exit.parentNode.removeChild(exit);
   };
 
