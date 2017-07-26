@@ -50,7 +50,8 @@ function deviceReady() {
     paste:'\uf0ea',
     page: '\uf0f6',
     edit: '\uf044',
-    save: '\uf0c7'
+    save: '\uf0c7',
+    gamepad: '\uf11b'
   };
 
   // A few things are sensitive to diffs from running in tablet vs.
@@ -90,6 +91,7 @@ function deviceReady() {
     {'label': 'C', 'command': 'loadDocC'},
     {'label': 'D', 'command': 'loadDocD'},
     {'label': 'E', 'command': 'loadDocE'},
+    {'label': fastr.gamepad, 'command': 'loadDriveMode'},
   ];
   var buttonsEdit = [
     {'label': fastr.trash, 'command': 'trash'},

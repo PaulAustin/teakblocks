@@ -471,19 +471,19 @@ label input[type="checkbox"]:disabled + .label-text:before {
 }
 .action-dot-rect-pages{
   fill: #F2CDB5;
-  height: 400px;
+  height: 480px;
   -webkit-animation: outpages 0.4s ease; /* Safari 4.0 - 8.0 */
   animation: outpages 0.4s ease;
 }
 @-webkit-keyframes outpages {
   from   {height:0px;}
-  to {height:400px;}
+  to {height:480px;}
 }
 
 /* Standard syntax */
 @keyframes outpages {
   from   {height:0px;}
-  to {height:400px;}
+  to {height:480px;}
 }
 .action-dot-rect-remove-pages{
   fill: #F2CDB5;
@@ -492,13 +492,13 @@ label input[type="checkbox"]:disabled + .label-text:before {
   animation: inpages 0.45s ease;
 }
 @-webkit-keyframes inpages {
-  from  {height:400px;}
+  from  {height:480px;}
   to {height:0px;}
 }
 
 /* Standard syntax */
 @keyframes inpages {
-  from   {height:400px;}
+  from   {height:480px;}
   to {height:0px;}
 }
 
