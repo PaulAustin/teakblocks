@@ -36,6 +36,12 @@ module.exports = function(){
 
     driveMode.sliderInteract('slider');
   };
+  driveMode.applyBackground = function() {
+    var div = document.createElement('div');
+    div.setAttribute('class', 'driverBackground');
+    var root = document.getElementById('tbe-driver-mode');
+    root.appendChild(div);
+  };
 
   driveMode.startDiagnostics = function() {
     console.log('starting diagnostics');
@@ -60,7 +66,9 @@ module.exports = function(){
 
     interact.maxInteractions(Infinity);   // Allow multiple interactions
   };
+
   driveMode.startDriveMode = function(dom) {
+    driveMode.applyBackground();
     driveMode.buildSlider(dom);
     driveMode.startDiagnostics();
   };
