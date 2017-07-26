@@ -154,9 +154,6 @@ tbe.loadDoc = function(docName) {
     var currentDocText = teakText.blocksToText(tbe.forEachDiagramChain);
     console.log('doc is', docName, ' save text is', currentDocText);
     save.saveFile(tbe.currentDoc, currentDocText);
-  } else if(tbe.currentDoc === 'driveMode'){
-    // Delete all elements
-    console.log('switiching away from driveMode');
   }
 
   // Second if they are actully switching then load the new one.
@@ -178,18 +175,11 @@ tbe.loadDriveMode = function() {
 
   // First, save the current document.
   var currentDocText = teakText.blocksToText(tbe.forEachDiagramChain);
-  console.log('doc is driveMode', ' save text is', currentDocText);
   save.saveFile(tbe.currentDoc, currentDocText);
+  tbe.clearStates();
 
-  if(tbe.currentDoc !== 'driveMode'){
-    tbe.clearStates();
-    tbe.clearDiagramBlocks();
-
-    tbe.currentDoc = 'driveMode';
-
-    var dom = document.getElementById('tbe-driver-mode');
-    dm.startDriveMode(dom);
-  }
+  var dom = document.getElementById('tbe-driver-mode');
+  dm.startDriveMode(dom, tbe);
 };
 
 tbe.nextBlockId = function(prefix) {

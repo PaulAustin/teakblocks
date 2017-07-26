@@ -24,7 +24,6 @@ module.exports = function(){
 
   var driveMode = {};
   var interact = require('interact.js');
-  var svgb = require('./svgbuilder.js');
 
   driveMode.buildSlider = function(root){
     var div = document.createElement('div');
@@ -81,8 +80,9 @@ module.exports = function(){
     interact.maxInteractions(Infinity);   // Allow multiple interactions
   };
 
-  driveMode.startDriveMode = function(dom) {
-    driveMode.applyBackground();
+  driveMode.startDriveMode = function(dom, tbe) {
+    driveMode.tbe = tbe;
+    driveMode.applyBackground(tbe);
     driveMode.buildSlider(dom);
     driveMode.startDiagnostics();
   };
@@ -101,6 +101,8 @@ module.exports = function(){
 
     var exit = document.getElementById('exitGroup');
     exit.parentNode.removeChild(exit);
+
+    driveMode.tbe.loadDoc('docA');
   };
 
   return driveMode;
