@@ -21,5 +21,14 @@ SOFTWARE.
 */
 
 module.exports = function(){
+
   var driveMode = {};
+
+  driveMode.buildSlider = function(motor){
+    console.log('build slider: ', motor);
+  };
+
+  driveMode.startDiagnostics = function() {
+    console.log('starting diagnostics');
+  };
 };

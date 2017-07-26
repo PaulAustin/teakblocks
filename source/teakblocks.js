@@ -35,6 +35,7 @@ var teakselection = require('./teakselection');
 var actionButtons = require('./actionButtons.js');
 var defaultFiles = require('./defaultFiles.js');
 var conductor = require('./conductor.js');
+var dm = require('./driveMode.js');
 
 var tbe = {};
 
@@ -174,6 +175,17 @@ tbe.loadDriveMode = function() {
   var currentDocText = teakText.blocksToText(tbe.forEachDiagramChain);
   console.log('doc is driveMode', ' save text is', currentDocText);
   save.saveFile(tbe.currentDoc, currentDocText);
+
+  if(tbe.currentDoc !== 'driveMode'){
+    tbe.clearStates();
+    tbe.clearDiagramBlocks();
+
+    tbe.currentDoc = 'driveMode';
+
+    dm.buildSlider('rightMotor');
+    dm.buildSlider('leftMotor');
+    dm.startDiagnostics();
+  }
 };
 
 tbe.nextBlockId = function(prefix) {
