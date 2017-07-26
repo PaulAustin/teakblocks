@@ -188,9 +188,7 @@ tbe.loadDriveMode = function() {
     tbe.currentDoc = 'driveMode';
 
     var dom = document.getElementById('tbe-driver-mode');
-    dm.buildSlider(dom);
-    //dm.buildSlider('leftMotor');
-    dm.startDiagnostics();
+    dm.startDriveMode(dom);
   }
 };
 

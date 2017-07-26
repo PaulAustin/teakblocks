@@ -59,6 +59,10 @@ module.exports = function(){
 
     interact.maxInteractions(Infinity);   // Allow multiple interactions
   };
+  driveMode.startDriveMode = function(dom) {
+    driveMode.buildSlider(dom);
+    driveMode.startDiagnostics();
+  };
 
   return driveMode;
 }();
