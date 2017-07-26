@@ -24,6 +24,7 @@ module.exports = function(){
 
   var driveMode = {};
   var interact = require('interact.js');
+  var svgb = require('./svgbuilder.js');
 
   driveMode.buildSlider = function(root){
     var div = document.createElement('div');
@@ -39,8 +40,15 @@ module.exports = function(){
   driveMode.applyBackground = function() {
     var div = document.createElement('div');
     div.setAttribute('class', 'driverBackground');
+    div.setAttribute('id', 'driverBackground');
     var root = document.getElementById('tbe-driver-mode');
     root.appendChild(div);
+
+    var exit = document.createElement('div');
+    exit.setAttribute('class', 'driver-exit');
+    exit.setAttribute('id', 'driver-exit');
+    exit.onclick = driveMode.exit;
+    root.appendChild(exit);
   };
 
   driveMode.startDiagnostics = function() {
@@ -71,6 +79,22 @@ module.exports = function(){
     driveMode.applyBackground();
     driveMode.buildSlider(dom);
     driveMode.startDiagnostics();
+  };
+
+  driveMode.exit = function() {
+    var sliders = document.getElementsByClassName('slider');
+    for(var i = 0; i < 2; i++){
+      sliders[0].parentNode.removeChild(sliders[0]);
+    }
+
+    var diagnostics = document.getElementById('diagnostics');
+    console.log('delete ' + diagnostics); // Delete diagnostics
+
+    var back = document.getElementById('driverBackground');
+    back.parentNode.removeChild(back);
+
+    var exit = document.getElementById('driver-exit');
+    exit.parentNode.removeChild(exit);
   };
 
   return driveMode;
