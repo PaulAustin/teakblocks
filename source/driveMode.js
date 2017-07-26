@@ -27,12 +27,9 @@ module.exports = function(){
 
   driveMode.buildSlider = function(root){
     var div = document.createElement('div');
-    //div.setAttribute('cx', '100');
-    //div.setAttribute('cy', '200');
     div.innerHTML = `
     <div class='slider'></div>
     `;
-    //var domRoot = document.getElementById('leftMotorSlider');
 
     root.appendChild(div);
 
