@@ -28,7 +28,8 @@ module.exports = function(){
   driveMode.buildSlider = function(root){
     var div = document.createElement('div');
     div.innerHTML = `
-    <div class='slider'></div>
+    <div class='slider sliderRight'></div>
+    <div class='slider sliderLeft'></div>
     `;
 
     root.appendChild(div);
@@ -49,11 +50,11 @@ module.exports = function(){
         max: Infinity                     // allow drags on multiple elements
       })
       .on('dragmove', function (event) {  // call this function on every move
-        var sliderHeight = interact.getElementRect(event.target.parentNode).height,
+        var sliderHeight = interact.getElementRect(event.target).height,
             value = event.pageY / sliderHeight;
 
-        event.target.style.paddingTop = (value * 45) + '%';
-        var display = Math.round(100-(value.toFixed(2)*200));
+        event.target.style.paddingTop = (value * 36) + '%';
+        var display = (100-Math.round((value.toFixed(3)*200)));
         event.target.setAttribute('data-value', display);
       });
 

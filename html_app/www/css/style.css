@@ -628,7 +628,6 @@ label input[type="checkbox"]:disabled + .label-text:before {
 /* the slider bar */
 .slider {
   position: relative;
-  left:-6em;
   width: 2em;
   height: 8em;
   margin: 1.5em auto;
@@ -648,7 +647,6 @@ label input[type="checkbox"]:disabled + .label-text:before {
   display: block;
   position: relative;
   right: -0.5em;
-
   width: 3em;
   height: 1em;
   margin-left: -1em;
@@ -670,5 +668,15 @@ label input[type="checkbox"]:disabled + .label-text:before {
   text-align: center;
   font-family: "helvetica";
 }
-
-body { margin: 5% 10%; }
+.sliderLeft {
+  left: 2em;
+  position:relative;
+  float:left;
+  display:inline-block;
+}
+.sliderRight {
+  right: 2em;
+  position:relative;
+  float:right;
+  display:inline-block;
+}
