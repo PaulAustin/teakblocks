@@ -525,13 +525,13 @@ label input[type="checkbox"]:disabled + .label-text:before {
   animation: inedit 0.45s ease;
 }
 @-webkit-keyframes inedit {
-  from   {height:240px;}
+  from   {height:320px;}
   to {height:0px;}
 }
 
 /* Standard syntax */
 @keyframes inedit {
-  from {height:240px;}
+  from {height:320px;}
   to   {height:0px;}
 }
 .action-dot.switch-bg {
