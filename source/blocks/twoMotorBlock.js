@@ -28,7 +28,7 @@ module.exports = function () {
   var pb = svgb.pathBuilder;
   var twoMotorBlock = {};
 
-  twoMotorBlock.keyPadValue = ko.observable(50);
+  twoMotorBlock.keyPadValue = ko.observable(120 + " RPM");
   twoMotorBlock.beatsValue = ko.observable("1 beat");
 
   // Initial setting for blocks of this type.
@@ -36,7 +36,7 @@ module.exports = function () {
     // Return a new object with settings for the controller.
     return {
       data:{
-        speed: 50,
+        speed: 120,
         duration: 1,
       },
       // Indicate what controller is active. This may affect the data format.
@@ -57,7 +57,7 @@ module.exports = function () {
     root.appendChild(shaft);
 
     var data1 = block.controllerSettings.data.speed;
-    var rotate = (data1/100)*180;
+    var rotate = (data1/240)*180;
     var dx = Math.cos((rotate) * (Math.PI/180));
     var dy = Math.sin((rotate) * (Math.PI/180));
     var spread = 1;
@@ -98,10 +98,10 @@ module.exports = function () {
       'type':twoMotorBlock,
       'div': div,
       'block': block,
-      'min':-100,
-      'max':100,
-      'suffix':"%",
-      'numArray': ["+10", "C", "-10", "+50", undefined, "-50"],
+      'min':-240,
+      'max':240,
+      'suffix':"RMP",
+      'numArray': ["+10", "+40", "+100", "-10", "-40", "-100", undefined, "C"],
       'calcLayout': 'simple',
       'getBeats': function() { return block.controllerSettings.data.duration; },
       'setBeats': function(duration) { block.controllerSettings.data.duration = duration; },
