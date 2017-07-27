@@ -91,7 +91,7 @@ function deviceReady() {
     {'label': 'C', 'command': 'loadDocC'},
     {'label': 'D', 'command': 'loadDocD'},
     {'label': 'E', 'command': 'loadDocE'},
-    {'label': fastr.gamepad, 'command': 'loadDriveMode'},
+    //{'label': fastr.gamepad, 'command': 'loadDriveMode'},
   ];
   var buttonsEdit = [
     {'label': fastr.trash, 'command': 'trash'},
@@ -159,8 +159,9 @@ function deviceReady() {
  var actionButtonObj = [
    {'alignment': 'L', 'position': 1, 'label': fastr.play, 'command': 'play', 'tweakx': 4},
    {'alignment': 'L', 'position': 2, 'label': fastr.stop, 'command': 'stop'},
-   {'alignment': 'M', 'position': 1, 'label': fastr.page, 'command': 'pages'},
-   {'alignment': 'M', 'position': 2, 'label': fastr.edit, 'command': 'edit'},
+   {'alignment': 'M', 'position': 1, 'label': fastr.gamepad, 'command': 'loadDriveMode'},
+   {'alignment': 'M', 'position': 2, 'label': fastr.page, 'command': 'pages'},
+   {'alignment': 'M', 'position': 3, 'label': fastr.edit, 'command': 'edit'},
    {'alignment': 'R', 'position': 2, 'label': fastr.redo, 'command': 'redo'},
    {'alignment': 'R', 'position': 1, 'label': fastr.undo, 'command': 'undo'}
  ];
