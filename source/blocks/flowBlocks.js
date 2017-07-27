@@ -128,7 +128,7 @@ module.exports = function () {
       'type':flowBlockHead,
       'div': div,
       'block': block,
-      'min':0,
+      'min':1,
       'max':100,
       'suffix':" times",
       'numArray': ["+1", "C", "+10", "-1", undefined, "-10"],//["1", "2", "3", "4", "5","6", "7", "8", "9", "0", "<-"],
