@@ -716,3 +716,6 @@ label input[type="checkbox"]:disabled + .label-text:before {
 .commented{
   fill: #fff;
 }
+.text-buttons{
+  font-family: 'helvetica';
+}

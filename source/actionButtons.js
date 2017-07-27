@@ -169,7 +169,12 @@ module.exports = function () {
 
     for(var i = 0; i < buttons.length; i++){
       var label = buttons[i].label;
-      newButtons[i] = this.addButton(label, x, y, tbe, buttons[i].command, undefined, 'dropdown-buttons');
+      console.log(label, label.match(/[a-z]/i));
+      if(label.match(/[a-z]/i) !== null){
+        newButtons[i] = this.addButton(label, x, y, tbe, buttons[i].command, undefined, 'dropdown-buttons', 'text-buttons');
+      } else{
+        newButtons[i] = this.addButton(label, x, y, tbe, buttons[i].command, undefined, 'dropdown-buttons');
+      }
     }
 
     for(var k = 0; k < newButtons.length; k++){
@@ -215,7 +220,7 @@ module.exports = function () {
     underlay[0].setAttribute('class', 'action-dot-rect-remove-' + id);
   };
 
-  actionButtons.addButton = function(label, x, y, tbe, command, id, eltClass){
+  actionButtons.addButton = function(label, x, y, tbe, command, id, eltClass, txtClass){
     var group = svgb.createGroup('buttonGroup', 0, 0);
     var svgCircle = svgb.createCircle('action-dot', x, y, 33);
     var svgText = svgb.createText('fa action-dot-text', x, parseInt(y, 10)+13, label);
@@ -224,6 +229,9 @@ module.exports = function () {
     }
     if(id !== undefined){
       group.setAttribute('id', id);
+    }
+    if(txtClass !== undefined){
+      svgText.setAttribute('class', 'fa action-dot-text ' + txtClass);
     }
     if(eltClass !== undefined){
       group.setAttribute('class', 'buttonGroup ' + eltClass);
