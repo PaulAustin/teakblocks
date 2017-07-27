@@ -88,7 +88,7 @@ module.exports = function () {
 
             // Mark the current block as running
             var id = block.first;
-            if(id.name === 'identity'){
+            if(id.name === 'identity' && !block.svgRect.classList.contains('commented')){
               conductor.tbe.svg.appendChild(block.svgGroup);
               block.svgRect.classList.add('running-block');
             }
