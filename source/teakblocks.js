@@ -589,6 +589,10 @@ tbe.FunctionBlock.prototype.isLoopTail = function() {
   return (this.flowHead !== null);
 };
 
+tbe.FunctionBlock.prototype.isCommented = function() {
+  return (this.svgRect.classList.contains('commented'));
+};
+
 // Checks if a selected loop is the only thing selected
 tbe.FunctionBlock.prototype.isIsolatedLoop = function() {
   if(this.isLoopHead() && this.isSelected()){
