@@ -631,7 +631,7 @@ label input[type="checkbox"]:disabled + .label-text:before {
   width: 2em;
   height: 8em;
   margin: 1.5em auto;
-  background-color: #29e;
+  background-color: #873600; 
   border-radius: 0.5em;
   box-sizing: border-box;
   padding-top:18%;
@@ -651,8 +651,8 @@ label input[type="checkbox"]:disabled + .label-text:before {
   width: 3em;
   height: 1em;
   margin-left: -1em;
-  border: solid 0.25em #fff;
-  border-radius: 0em;
+  border: solid 0.25em #f4af41;
+  border-radius: 2em;
   background-color: inherit;
 
   box-sizing: border-box;
