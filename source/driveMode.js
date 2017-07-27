@@ -63,11 +63,11 @@ module.exports = function(){
     div.setAttribute('id', 'drive-diagnostics');
     div.setAttribute('text-anchor', 'middle');
     div.innerHTML = `
-        <h1 class="drive-accelerometer">Accelerometer: 100</h1>
-        <h1 class="drive-compass">Compass: 100</h1>
-        <h1 class="drive-temperature">Temperature: 100</h1>
-        <h1 class="drive-encoderL">Left Encoder: 100</h1>
-        <h1 class="drive-encoderR">Right Encoder: 100</h1>
+        <h1 class="drive-accelerometer svg-clear">Accelerometer: 100</h1>
+        <h1 class="drive-compass svg-clear">Compass: 100</h1>
+        <h1 class="drive-temperature svg-clear">Temperature: 100</h1>
+        <h1 class="drive-encoderL svg-clear">Left Encoder: 100</h1>
+        <h1 class="drive-encoderR svg-clear">Right Encoder: 100</h1>
     `;
     var root = document.getElementById('tbe-driver-mode');
     root.appendChild(div);
