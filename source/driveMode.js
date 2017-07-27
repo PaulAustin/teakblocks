@@ -85,7 +85,7 @@ module.exports = function(){
         var sliderHeight = interact.getElementRect(event.target).height,
             value = event.pageY / sliderHeight;
 
-        event.target.style.paddingTop = (value * 36) + '%';
+        event.target.style.paddingTop = (value * 7) + 'em';
         var display = (100-Math.round((value.toFixed(3)*200)));
         event.target.setAttribute('data-value', display);
       });

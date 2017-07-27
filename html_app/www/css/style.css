@@ -631,10 +631,10 @@ label input[type="checkbox"]:disabled + .label-text:before {
   width: 2em;
   height: 8em;
   margin: 1.5em auto;
-  background-color: #873600; 
+  background-color: #873600;
   border-radius: 0.5em;
   box-sizing: border-box;
-  padding-top:18%;
+  padding-top:3.5em;
 
   font-size: 8vmin;
 
