@@ -58,6 +58,18 @@ module.exports = function(){
 
   driveMode.startDiagnostics = function() {
     console.log('starting diagnostics');
+    var div = document.createElement('div');
+    div.setAttribute('class', 'drive-diagnostics');
+    div.setAttribute('text-anchor', 'middle');
+    div.innerHTML = `
+        <h1 class="drive-accelerometer">Accelerometer: 100</h1>
+        <h1 class="drive-compass">Compass: 100</h1>
+        <h1 class="drive-temperature">Temperature: 100</h1>
+        <h1 class="drive-encoderL">Left Encoder: 100</h1>
+        <h1 class="drive-encoderR">Right Encoder: 100</h1>
+    `;
+    var root = document.getElementById('tbe-driver-mode');
+    root.appendChild(div);
   };
 
   driveMode.sliderInteract = function sliderInteract(eltClass) {
