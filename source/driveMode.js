@@ -28,8 +28,8 @@ module.exports = function(){
   driveMode.buildSlider = function(root){
     var div = document.createElement('div');
     div.innerHTML = `
-    <div class='slider sliderRight'></div>
-    <div class='slider sliderLeft'></div>
+    <div class='slider sliderRight' data-value='0'></div>
+    <div class='slider sliderLeft' data-value='0'></div>
     `;
 
     root.appendChild(div);
