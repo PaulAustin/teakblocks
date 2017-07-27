@@ -62,7 +62,17 @@ module.exports = function(){
     div.setAttribute('class', 'drive-diagnostics');
     div.setAttribute('id', 'drive-diagnostics');
     div.setAttribute('text-anchor', 'middle');
+    var id = null;
+    driveMode.tbe.forEachDiagramBlock( function(block){
+      if(block.name === 'identity' && block.controllerSettings.status === 3){
+        id = block.controllerSettings.data.deviceName;
+      }
+    });
+    if(id === null){
+      id = '-?-';
+    }
     div.innerHTML = `
+        <h1 class="connected-brick svg-clear">Connected Bot: ` + id + `</h1>
         <h1 class="drive-accelerometer svg-clear">Accelerometer: 100</h1>
         <h1 class="drive-compass svg-clear">Compass: 100</h1>
         <h1 class="drive-temperature svg-clear">Temperature: 100</h1>
