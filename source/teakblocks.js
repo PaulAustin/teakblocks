@@ -1276,7 +1276,7 @@ tbe.configInteractions = function configInteractions() {
        }
 
        if(!block.isPaletteBlock){
-         if(!block.svgRect.classList.contains('commented')){
+         if(!block.isCommented()){
            block.svgRect.classList.add('commented');
          } else{
            block.svgRect.classList.remove('commented');

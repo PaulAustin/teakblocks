@@ -88,7 +88,7 @@ module.exports = function () {
 
             // Mark the current block as running
             var id = block.first;
-            if(id.name === 'identity' && !block.svgRect.classList.contains('commented')){
+            if(id.name === 'identity' && !block.isCommented()){
               conductor.tbe.svg.appendChild(block.svgGroup);
               block.svgRect.classList.add('running-block');
             }
@@ -174,7 +174,7 @@ module.exports = function () {
     // Ah the SXSWedu mega hack. Ti took longer to get BLE working
     // due to terminaology mixup with the ubit. os no on device execution system
     // so execution it in the app.
-    if(block.svgRect.classList.contains('commented')){
+    if(block.isCommented()){
       return;
     }
 
