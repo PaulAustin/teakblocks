@@ -174,6 +174,9 @@ module.exports = function () {
     // Ah the SXSWedu mega hack. Ti took longer to get BLE working
     // due to terminaology mixup with the ubit. os no on device execution system
     // so execution it in the app.
+    if(block.svgRect.classList.contains('commented')){
+      return;
+    }
 
     if (first.name === 'identity') {
       var botName = first.controllerSettings.data.deviceName;
