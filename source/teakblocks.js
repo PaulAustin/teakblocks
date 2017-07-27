@@ -1271,7 +1271,7 @@ tbe.configInteractions = function configInteractions() {
          return;
        }
        // bring up config, dont let drag start
-       thisTbe.components.blockSettings.tap(block);
+       //thisTbe.components.blockSettings.tap(block);
     })
     .on('move', function(event) {
       var interaction = event.interaction;
