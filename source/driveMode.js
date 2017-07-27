@@ -24,6 +24,7 @@ module.exports = function(){
 
   var driveMode = {};
   var interact = require('interact.js');
+  var conductor = require('./conductor.js');
 
   driveMode.buildSlider = function(root){
     var div = document.createElement('div');
@@ -98,6 +99,16 @@ module.exports = function(){
         event.target.style.paddingTop = (value * 7) + 'em';
         var display = (100-Math.round((value.toFixed(3)*200)));
         event.target.setAttribute('data-value', display);
+        var id = null;
+        driveMode.tbe.forEachDiagramBlock( function(block){
+          if(block.name === 'identity' && block.controllerSettings.status === 3){
+            id = block.controllerSettings.data.deviceName;
+          }
+        });
+
+        if(id !== null && id !== '-?-'){
+          conductor.ble.write(id, '(m2:' + display + ');');
+        }
       });
 
     interact.maxInteractions(Infinity);   // Allow multiple interactions
