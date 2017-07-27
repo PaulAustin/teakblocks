@@ -593,6 +593,15 @@ tbe.FunctionBlock.prototype.isCommented = function() {
   return (this.svgRect.classList.contains('commented'));
 };
 
+tbe.FunctionBlock.statusIs = function(status) {
+  if(this.name === 'identity'){
+    if(this.controllerSettings.status === status){
+      return true;
+    }
+  }
+  return false;
+};
+
 // Checks if a selected loop is the only thing selected
 tbe.FunctionBlock.prototype.isIsolatedLoop = function() {
   if(this.isLoopHead() && this.isSelected()){
