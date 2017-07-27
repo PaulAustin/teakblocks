@@ -118,7 +118,7 @@ module.exports = function () {
       if (chainStart.name === 'identity') {
         var botName = chainStart.controllerSettings.data.deviceName;
         var status = conductor.ble.checkDeviceStatus(botName);
-        if (chainStart.controllerSettings.status !== status) {
+        if (!chainStart.statusIs(status)) {
           chainStart.controllerSettings.status = status;
           chainStart.updateSvg();
         }

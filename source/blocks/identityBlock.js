@@ -163,13 +163,13 @@ module.exports = function () {
     if (botName !== '-?-') {
       var statusClass = 0;
       // Connection status dot
-      if (block.controllerSettings.status === 0 ) {
+      if (block.statusIs(0)) { //controllerSettings.status === 0
         statusClass = 'block-bot-not-found';
-      } else if (block.controllerSettings.status === 1 ) {
+      } else if (block.statusIs(1)) {
         statusClass = 'block-bot-visible';
-      } else if (block.controllerSettings.status === 2 ) {
+      } else if (block.statusIs(2)) {
         statusClass = 'block-bot-connecting';
-      } else if (block.controllerSettings.status === 3 ) {
+      } else if (block.statusIs(3)) {
         statusClass = 'block-bot-connected';
       } else if (block.controllerSettings.status < 0 ) {
         // Connected but with protocol errors. Might be wrong FW
@@ -184,7 +184,7 @@ module.exports = function () {
     var block = identityBlock.activeBlock;
     var color = '#33691E';
     var back = '#C8E6C9';
-    if(localStorage.getItem('bot-' + botName) !== null && block.controllerSettings.status === 0){
+    if(localStorage.getItem('bot-' + botName) !== null && block.statusIs(0)){
       color = '#555555';
       back = '#999999';
     }

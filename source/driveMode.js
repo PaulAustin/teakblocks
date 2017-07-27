@@ -65,7 +65,7 @@ module.exports = function(){
     div.setAttribute('text-anchor', 'middle');
     var id = null;
     driveMode.tbe.forEachDiagramBlock( function(block){
-      if(block.name === 'identity' && block.controllerSettings.status === 3){
+      if(block.name === 'identity' && block.statusIs(3)){
         id = block.controllerSettings.data.deviceName;
       }
     });
@@ -101,7 +101,7 @@ module.exports = function(){
         event.target.setAttribute('data-value', display);
         var id = null;
         driveMode.tbe.forEachDiagramBlock( function(block){
-          if(block.name === 'identity' && block.controllerSettings.status === 3){
+          if(block.name === 'identity' && block.statusIs(3)){
             id = block.controllerSettings.data.deviceName;
           }
         });
