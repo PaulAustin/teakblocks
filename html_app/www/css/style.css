@@ -713,3 +713,6 @@ label input[type="checkbox"]:disabled + .label-text:before {
   left:calc(50% - 150px);
   top:200px;
 }
+.commented{
+  fill: #fff;
+}
