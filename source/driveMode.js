@@ -60,6 +60,7 @@ module.exports = function(){
     console.log('starting diagnostics');
     var div = document.createElement('div');
     div.setAttribute('class', 'drive-diagnostics');
+    div.setAttribute('id', 'drive-diagnostics');
     div.setAttribute('text-anchor', 'middle');
     div.innerHTML = `
         <h1 class="drive-accelerometer">Accelerometer: 100</h1>
@@ -105,8 +106,8 @@ module.exports = function(){
       sliders[0].parentNode.removeChild(sliders[0]);
     }
 
-    var diagnostics = document.getElementById('diagnostics');
-    console.log('delete ' + diagnostics); // Delete diagnostics
+    var diagnostics = document.getElementById('drive-diagnostics');
+    diagnostics.parentNode.removeChild(diagnostics); // Delete diagnostics
 
     var back = document.getElementById('driverBackground');
     back.parentNode.removeChild(back);
