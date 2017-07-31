@@ -181,18 +181,19 @@ module.exports = function () {
     if (first.name === 'identity') {
       var botName = first.controllerSettings.data.deviceName;
       var message = '';
+      var d = block.controllerSettings.data;
       if (block.name === 'picture') {
-        var imageData = block.controllerSettings.data.pix;
+        var imageData = d.pix;
         var pixStr = conductor.packPix(imageData);
-        message = '(px:' + pixStr + ');';
+        message = '(px:' + pixStr + ':' + 1 + ');';
       } else if (block.name === 'servo') {
         message = '(sr:' + 50 + ');';
       } else if (block.name === 'motor') {
-        message = '(mo:' + block.controllerSettings.data.speed + ');';
+        message = '(mo:' + d.speed + ':' + d.duration + ');';
       } else if (block.name === 'twoMotor') {
-        message = '(m2:' + block.controllerSettings.data.speed + ');';
+        message = '(m2:' + d.speed + ':' + d.duration + ');';
       } else if (block.name === 'sound') {
-        message = '(nt:' + block.controllerSettings.data.description + ');';
+        message = '(nt:' + d.description + ':' + 1 + ');';
         console.log('msg ', message);
       } else if(block.name === 'wait') {
         message = '';
