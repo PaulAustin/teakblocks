@@ -45,10 +45,10 @@ module.exports = function () {
   flowBlockHead.svg = function (root, block) {
     var loop = svgb.createText('svg-clear block-flowhead-loop', 10, 40, '\uf021');
     root.appendChild(loop);
-    var data = block.controllerSettings.data.count;
-    var count = svgb.createText('svg-clear block-flowhead-count block-stencil-fill', 25, 70, data); //
-    count.setAttribute('text-anchor', 'middle');
-    root.appendChild(count);
+    var data = block.controllerSettings.data.duration;
+    var duration = svgb.createText('svg-clear block-flowhead-count block-stencil-fill', 25, 70, data); //
+    duration.setAttribute('text-anchor', 'middle');
+    root.appendChild(duration);
     return root;
   };
 
@@ -58,11 +58,11 @@ module.exports = function () {
     // return a new object with settings for the controller.
     return {
       // And the data that goes with that editor.
-      data: {count:5},
+      data: {duration:5},
       // Indicate what controller is active. This may affect the data format.
       controller: 'forLoop',
       // Width of the block
-      width: flowBlockWidth
+      width: flowBlockWidth,
     };
   };
   flowBlockTail.defaultSettings = flowBlockHead.defaultSettings;
@@ -123,8 +123,8 @@ module.exports = function () {
   };
   flowBlockHead.configuratorOpen = function(div, block) {
     keypad.openTabs({
-      'getValue': function() { return block.controllerSettings.data.count; },
-      'setValue': function(count) { block.controllerSettings.data.count = count; },
+      'getValue': function() { return block.controllerSettings.data.duration; },
+      'setValue': function(duration) { block.controllerSettings.data.duration = duration; },
       'type':flowBlockHead,
       'div': div,
       'block': block,
