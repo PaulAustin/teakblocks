@@ -181,6 +181,7 @@ module.exports = function () {
     if (first.name === 'identity') {
       var botName = first.controllerSettings.data.deviceName;
       var message = '';
+      var message2 = '';
       var d = block.controllerSettings.data;
       if (block.name === 'picture') {
         var imageData = d.pix;
@@ -189,9 +190,14 @@ module.exports = function () {
       } else if (block.name === 'servo') {
         message = '(sr:' + 50 + ');';
       } else if (block.name === 'motor') {
-        message = '(mo:' + d.speed + ':' + d.duration + ');';
+        if(d.motor === '1'){
+          message = '(mo:' + d.speed + ':' + d.duration + ');';
+        } else{
+          message = '(m2:' + d.speed + ':' + d.duration + ');';
+        }
       } else if (block.name === 'twoMotor') {
-        message = '(m2:' + d.speed + ':' + d.duration + ');';
+        message = '(mo:' + d.speed + ':' + d.duration + ');';
+        message2 = '(m2:' + d.speed + ':' + d.duration + ');';
       } else if (block.name === 'sound') {
         message = '(nt:' + d.description + ':' + 1 + ');';
         console.log('msg ', message);
@@ -203,6 +209,10 @@ module.exports = function () {
       if (message !== '') {
         console.log ('block message', message);
         conductor.ble.write(botName, message);
+      }
+      if(message2 !== ''){
+        console.log ('block message', message2);
+        conductor.ble.write(botName, message2);
       }
     }
     // Single step, find target and head of chain and run the single block.
