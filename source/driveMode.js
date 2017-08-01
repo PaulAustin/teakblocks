@@ -25,6 +25,7 @@ module.exports = function(){
   var driveMode = {};
   var interact = require('interact.js');
   var conductor = require('./conductor.js');
+  driveMode.past = 0;
 
   driveMode.buildSlider = function(root){
     var div = document.createElement('div');
@@ -99,19 +100,29 @@ module.exports = function(){
         event.target.style.paddingTop = (value * 7) + 'em';
         var display = (100-Math.round((value.toFixed(3)*200)));
         event.target.setAttribute('data-value', display);
-        var id = null;
-        driveMode.tbe.forEachDiagramBlock( function(block){
-          if(block.name === 'identity' && block.statusIs(3)){
-            id = block.controllerSettings.data.deviceName;
-          }
-        });
-
-        if(id !== null && id !== '-?-'){
-          conductor.ble.write(id, '(m2:' + display + ');');
-        }
+        driveMode.display = display;
       });
 
     interact.maxInteractions(Infinity);   // Allow multiple interactions
+  };
+
+  driveMode.updateSlider = function() {
+    var id = null;
+    driveMode.tbe.forEachDiagramBlock( function(block){
+      if(block.name === 'identity' && block.statusIs(3)){
+        id = block.controllerSettings.data.deviceName;
+      }
+    });
+    if(id !== null && id !== '-?-' && driveMode.display !== driveMode.past){
+        var message = '(m2:' + driveMode.display + ');';
+        console.log(driveMode.display);
+        conductor.ble.write(id, message);
+        driveMode.past = driveMode.display;
+    }
+    driveMode.timer = setTimeout( function() {
+      driveMode.updateSlider();
+    }
+    , 500);
   };
 
   driveMode.startDriveMode = function(dom, tbe) {
@@ -119,9 +130,11 @@ module.exports = function(){
     driveMode.applyBackground(tbe);
     driveMode.buildSlider(dom);
     driveMode.startDiagnostics();
+    driveMode.updateSlider();
   };
 
   driveMode.exit = function() {
+    clearTimeout(driveMode.timer);
     var sliders = document.getElementsByClassName('slider');
     for(var i = 0; i < 2; i++){
       sliders[0].parentNode.removeChild(sliders[0]);
