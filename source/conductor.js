@@ -190,14 +190,9 @@ module.exports = function () {
       } else if (block.name === 'servo') {
         message = '(sr:' + 50 + ');';
       } else if (block.name === 'motor') {
-        if(d.motor === '1'){
-          message = '(mo:' + d.speed + ':' + d.duration + ');';
-        } else{
-          message = '(m2:' + d.speed + ':' + d.duration + ');';
-        }
+        message = '(m:'+ d.motor + ' d:' + d.speed +' b:' + d.duration + ');';
       } else if (block.name === 'twoMotor') {
-        message = '(mo:' + d.speed + ':' + d.duration + ');';
-        message2 = '(m2:' + d.speed + ':' + d.duration + ');';
+        message = '(m:(1 2) d:' + d.speed + ');'; // +' b:' + d.duration
       } else if (block.name === 'sound') {
         message = '(nt:' + d.description + ':' + 1 + ');';
         console.log('msg ', message);
