@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2016 Paul Austin - SDG
+Copyright (c) 2017 Paul Austin - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -113,8 +113,8 @@ module.exports = function(){
         id = block.controllerSettings.data.deviceName;
       }
     });
-    if(id !== null && id !== '-?-' && driveMode.display !== driveMode.past){
-        var message = '(m2:' + driveMode.display + ');';
+    if(id !== null && id !== '-?-' && driveMode.display !== driveMode.past) {
+        var message = '(m:1 d:' + driveMode.display + ');';
         console.log(driveMode.display);
         conductor.ble.write(id, message);
         driveMode.past = driveMode.display;
