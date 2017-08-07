@@ -24,7 +24,7 @@ module.exports = function () {
   var svgb = require('./../svgbuilder.js');
   var ble = require('./../bleConnections.js');
   var ko = require('knockout');
-  var seen = [];
+  //var seen = [];
 
   var pb = svgb.pathBuilder;
   var identityBlock = {};
@@ -90,16 +90,16 @@ module.exports = function () {
     div.innerHTML =
       `<div class='list-box-shell'>
           <ul class='list-box' data-bind='foreach: devices'>
-            <li data-bind= "css:{'list-item-selected':selected()}, style:{color: colorName, backgroundColor:back}">
+            <li data-bind= "css:{'list-item-selected':selected()}">
               <span data-bind= "text:name, click:$parent.onDeviceClick"></span>
             </li>
           </ul>
-      </div>`;
+      </div>`; //, style:{color: colorName, backgroundColor:back}
 
     // Connect the dataBinding.
     ko.applyBindings(identityBlock, div);
 
-    for(var key in localStorage){
+    /*for(var key in localStorage){
       if(key.startsWith('bot-')){
         var stored = localStorage.getItem(key).split(',');
         seen[key.substring(4)] = {
@@ -107,7 +107,7 @@ module.exports = function () {
           ts:stored[1],
         };
       }
-    }
+    }*/
 
     identityBlock.refreshList(ble.devices);
     ble.observeDevices(identityBlock.refreshList);
@@ -117,14 +117,14 @@ module.exports = function () {
   identityBlock.refreshList = function (bots) {
     // TODO, might be able to use data binding to do this as well.
     identityBlock.devices.removeAll();
-    for(var i in seen){
+    /*for(var i in seen){
       if(bots[i] === undefined){
         identityBlock.addItem(i, seen[i].mac, seen[i].ts);
       }
-    }
+    }*/
     for (var key in bots) {
       if (bots.hasOwnProperty(key)) {
-        identityBlock.addItem(key, bots[key].mac, bots[key].ts);
+        identityBlock.addItem(key); //, bots[key].mac, bots[key].ts
       }
     }
     if (identityBlock.activeBlock) {
@@ -137,9 +137,9 @@ module.exports = function () {
     ble.stopObserving();
     identityBlock.activeBlock = null;
     ko.cleanNode(div);
-    for(var key in seen){
+    /*for(var key in seen){
       localStorage.setItem('bot-' + key, seen[key].mac + "," + seen[key].ts);
-    }
+    }*/
   };
 
   identityBlock.svg = function(root, block) {
@@ -180,30 +180,30 @@ module.exports = function () {
     }
   };
 
-  identityBlock.addItem = function (botName, mac, ts) {
+  identityBlock.addItem = function (botName) { //, mac, ts
     var block = identityBlock.activeBlock;
-    var color = '#33691E';
-    var back = '#C8E6C9';
-    if(localStorage.getItem('bot-' + botName) !== null && block.statusIs(0)){
+    //var color = '#33691E';
+    //var back = '#C8E6C9';
+    /*if(localStorage.getItem('bot-' + botName) !== null && block.statusIs(0)){
       color = '#555555';
       back = '#999999';
-    }
+    }*/
     if (block !== null) {
       var targetName = block.controllerSettings.data.deviceName;
       var item = ko.observable({
         name: botName,
-        selected: ko.observable(botName === targetName),
-        colorName: color,
-        back: back
+        selected: ko.observable(botName === targetName)//,
+        //colorName: color,
+        //back: back
       });
       identityBlock.devices.unshift(item);
     }
-    if(!seen.includes(botName)){
+    /*if(!seen.includes(botName)){
       seen[botName] = {
         mac: mac,
         ts: ts,
       };
-    }
+    }*/
   };
 
   return identityBlock;
