@@ -25,7 +25,8 @@ module.exports = function(){
   var driveMode = {};
   var interact = require('interact.js');
   var conductor = require('./conductor.js');
-  driveMode.past = 0;
+  driveMode.pastRight = 0;
+  driveMode.pastLeft = 0;
 
   driveMode.buildSlider = function(root){
     var div = document.createElement('div');
@@ -100,7 +101,13 @@ module.exports = function(){
         event.target.style.paddingTop = (value * 7) + 'em';
         var display = (100-Math.round((value.toFixed(3)*200)));
         event.target.setAttribute('data-value', display);
-        driveMode.display = display;
+        //console.log(event.target.classList.contains('sliderRight'));
+        if(event.target.classList.contains('sliderRight')){
+          driveMode.displayRight = display;
+        } else if(event.target.classList.contains('sliderLeft')){
+          driveMode.displayLeft = display;
+        }
+        //console.log(driveMode.displayRight, driveMode.displayLeft);
       });
 
     interact.maxInteractions(Infinity);   // Allow multiple interactions
@@ -113,11 +120,19 @@ module.exports = function(){
         id = block.controllerSettings.data.deviceName;
       }
     });
-    if(id !== null && id !== '-?-' && driveMode.display !== driveMode.past) {
-        var message = '(m:1 d:' + driveMode.display + ');';
-        console.log(driveMode.display);
-        conductor.ble.write(id, message);
-        driveMode.past = driveMode.display;
+    //var changed = driveMode.displayLeft !== driveMode.pastLeft || driveMode.displayRight !== driveMode.pastRight;
+    if(id !== null && id !== '-?-') {
+      if(driveMode.displayLeft !== undefined && driveMode.displayLeft !== driveMode.pastLeft){
+        var message2 = '(m:1 d:' + driveMode.displayLeft + ');';
+        conductor.ble.write(id, message2);
+      }
+      if(driveMode.displayRight !== undefined && driveMode.displayRight !== driveMode.pastRight){
+        var message1 = '(m:2 d:' + driveMode.displayRight + ');';
+        conductor.ble.write(id, message1);
+      }
+
+      driveMode.pastRight = driveMode.displayRight;
+      driveMode.pastLeft = driveMode.displayLeft;
     }
     driveMode.timer = setTimeout( function() {
       driveMode.updateSlider();
