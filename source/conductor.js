@@ -152,15 +152,15 @@ module.exports = function () {
   conductor.stopAll = function() {
     var blockChainIterator  = conductor.tbe.forEachDiagramChain;
     var botName = '';
-    var message = '(stop);';
-    //var message2 = '(px:' + conductor.defaultPix + ');';
+    var message = '(m:(1 2) d:0);';
+    var message2 = '(px:' + conductor.defaultPix + ');';
     blockChainIterator(function(chainStart) {
       chainStart.svgRect.classList.remove('running-block');
       // Ignore chains that don't start with an identity block.
       if (chainStart.name === 'identity') {
         botName = chainStart.controllerSettings.data.deviceName;
         conductor.ble.write(botName, message);
-        //conductor.ble.write(botName, message2);
+        conductor.ble.write(botName, message2);
       }
     });
     conductor.count = null;
