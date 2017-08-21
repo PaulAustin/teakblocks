@@ -57,7 +57,7 @@ module.exports = function () {
     root.appendChild(shaft);
 
     var data1 = block.controllerSettings.data.speed;
-    var rotate = (data1/240)*180;
+    var rotate = (data1/100)*180;
     var dx = Math.cos((rotate) * (Math.PI/180));
     var dy = Math.sin((rotate) * (Math.PI/180));
     var spread = 1;
@@ -98,10 +98,10 @@ module.exports = function () {
       'type':twoMotorBlock,
       'div': div,
       'block': block,
-      'min':-240,
-      'max':240,
-      'suffix':"RMP",
-      'numArray': ["+10", "+40", "+100", "-10", "-40", "-100", undefined, "C"],
+      'min':-100,
+      'max':100,
+      'suffix':"%",
+      'numArray': ["+1", "+10", "+50", "-1", "-10", "-50", undefined, "C"],
       'calcLayout': 'simple',
       'getBeats': function() { return block.controllerSettings.data.duration; },
       'setBeats': function(duration) { block.controllerSettings.data.duration = duration; },
