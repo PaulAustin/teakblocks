@@ -28,14 +28,14 @@ module.exports = function () {
   var pb = svgb.pathBuilder;
   var waitBlock = {};
 
-  waitBlock.keyPadValue = ko.observable(10);
+  waitBlock.keyPadValue = ko.observable(1);
 
   // Initial setting for blocks of this type.
   waitBlock.defaultSettings = function() {
     // return a new object with settings for the controller.
     return {
       // And the data that goes with that editor.
-      data:{ 'duration':10.0 },
+      data:{ 'duration':1.0 },
       // Indicate what controller is active. This may affect the data format.
     };
   };
