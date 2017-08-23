@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2016 Paul Austin - SDG
+Copyright (c) 2017 Paul Austin - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -54,12 +54,12 @@ function deviceReady() {
     gamepad: '\uf11b'
   };
 
-  // A few things are sensitive to diffs from running in tablet vs.
+  // A few things are sensitive to differences between running in tablet vs.
   // browser.
   tbe.isRegularBrowser = isRegularBrowser;
 
-  // Configuation components for the app and blocks
-  // Initialize knockout databinding for documnets DOM
+  // Configuration components for the app and blocks
+  // Initialize knockout databinding for documents DOM
   tbe.components = {};
   tbe.components.appSettings = require('./app-settings.js');
   tbe.components.blockSettings = require('./block-settings.js');
@@ -70,7 +70,7 @@ function deviceReady() {
   tbe.components.blockSettings.insert(formsDiv);
 
   // Some early experiments. seems to work well for desktop Chrome
-  // Safar has noticable lag, wih volume fluxuations.
+  // Safari has noticeable lag, with volume fluctuations.
   tbe.audio = {
     shortClick: document.getElementById('short-click'),
     poof: document.getElementById('poof'),
@@ -183,7 +183,7 @@ isRegularBrowser =
 
 if (!isRegularBrowser) {
   document.addEventListener('deviceready', deviceReady, false);
-  // Guess that it is Cordova then. Not intened to run direct from file:
+  // Guess that it is Cordova then. Not intened to run directly from file:
   var script = document.createElement('script');
   script.setAttribute('src','./cordova.js');
   document.head.appendChild(script);

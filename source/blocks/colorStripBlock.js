@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2016 Paul Austin - SDG
+Copyright (c) 2017 Paul Austin - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@ module.exports = function () {
   // var pb = svgb.pathBuilder;
   var colorStripBlock = {};
 
-  // Block for one or more color Leds in a strip. Typically implimented with
+  // Block for one or more color LEDs in a strip, typically implemented with
   // ws2811, ws2812 LED, AKA neopixels. The block is not coupled to how the
   // colors are produced.
   colorStripBlock.svg = function(root) {

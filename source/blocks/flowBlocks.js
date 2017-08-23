@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2016 Paul Austin - SDG
+Copyright (c) 2017 Paul Austin - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ module.exports = function () {
   // List of HTML snippets used for controller tabs.
   // flow block uses text labels for now.
   flowBlockHead.tabs= {
-    // Simple interation count based for loop
+    // Simple iteration count based for loop
     //'forLoop' : 'for',
     // Loop while something is true
     //'whileLoop'  : 'while',
@@ -53,9 +53,9 @@ module.exports = function () {
   };
 
 
-  // Initial setting for blocks of this type.
+  // Initial settings for blocks of this type.
   flowBlockHead.defaultSettings= function() {
-    // return a new object with settings for the controller.
+    // Return a new object with settings for the controller.
     return {
       // And the data that goes with that editor.
       data: {duration:5},
@@ -68,7 +68,7 @@ module.exports = function () {
   flowBlockTail.defaultSettings = flowBlockHead.defaultSettings;
 
   flowBlockTail.calculateEnclosedScopeDepth = function(blockTail) {
-    // walk back from end of a loop to its front and determine the deepest
+    // Walk back from end of a loop to its front and determine the deepest
     // number of scopes it contains. That depth determines how far out
     // the flowBar needs to be.
     var nesting = 0;
