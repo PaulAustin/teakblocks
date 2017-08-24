@@ -39,7 +39,7 @@ module.exports = function () {
 
   // Map page XY to index in pixel array.
   function pictureEventToIndex(event) {
-    // Offset is experimental not supported on all browsers.
+    // Offset is experimental and not supported on all browsers.
     // var x = Math.floor(event.offsetX / 35);
     // var y = Math.floor(event.offsetY / 35);
     var bb = event.target.parentNode.getBoundingClientRect();
@@ -62,16 +62,16 @@ module.exports = function () {
 
   // Initial setting for blocks of this type.
   pictureBlock.defaultSettings = function() {
-    // return a new object with settings for the controller.
+    // Return a new object with settings for the controller
     return {
-      // And the data that goes with that editor.
+      // and the data that goes with that editor.
       data:{pix:[0,0,0,0,0, 0,1,0,1,0, 0,0,0,0,0, 1,0,0,0,1, 0,1,1,1,0]},
       // Indicate what controller is active. This may affect the data format.
       controller:'5x5picture',
     };
   };
 
-  // Generate and SVG based image for a specific block.
+  // Generate an SVG based image for a specific block.
   pictureBlock.svg= function(svg, block) {
     var pix = block.controllerSettings.data.pix;
     var group = svgb.createGroup('svg-clear', 26, 15);
@@ -92,8 +92,8 @@ module.exports = function () {
     svg.appendChild(group);
   };
 
-  // Inject the HTML for the controllers editor.
-  // TODO: pass in the controller. That might all move our of this class.
+  // Inject the HTML for the controller's editor.
+  // TODO: pass in the controller. That might all move out of this class.
   pictureBlock.configuratorClose = function(div, block) {
     console.log('configurator closing', block);
   };

@@ -31,7 +31,7 @@ module.exports = function () {
   twoMotorBlock.keyPadValue = ko.observable(120 + " RPM");
   twoMotorBlock.beatsValue = ko.observable("1 beat");
 
-  // Initial setting for blocks of this type.
+  // Initial settings for blocks of this type.
   twoMotorBlock.defaultSettings = function() {
     // Return a new object with settings for the controller.
     return {
@@ -43,8 +43,7 @@ module.exports = function () {
       controller:'speed',
     };
   };
-  // Wait block - Wait until something happens, it can wait for things other
-  // than time, but it is given that time pasing is part of the function.
+  // Two Motor block
   twoMotorBlock.svg = function(root, block) {
     // Motor 1
     var motor = svgb.createCircle('svg-clear block-motor-body', 27, 30, 20);

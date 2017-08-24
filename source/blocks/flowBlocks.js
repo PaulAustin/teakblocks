@@ -30,7 +30,7 @@ module.exports = function () {
   var flowBlockWidth = 50;
 
   // List of HTML snippets used for controller tabs.
-  // flow block uses text labels for now.
+  // Flow block uses text labels for now.
   flowBlockHead.tabs= {
     // Simple iteration count based for loop
     //'forLoop' : 'for',

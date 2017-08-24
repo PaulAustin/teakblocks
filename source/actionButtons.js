@@ -43,14 +43,14 @@ module.exports = function () {
     var existing = document.getElementsByClassName('buttonGroup');
     var dropLength = document.getElementsByClassName('dropdown-buttons').length;
 
-    // If action buttons exist, delete them
+    // If action buttons exist, delete them.
     if(existing[0] !== undefined){
       while(existing.length > 0){
           existing[0].parentNode.removeChild(existing[0]);
       }
     }
 
-    // Determine how many buttons are inthe middle
+    // Determine how many buttons are in the middle.
     for (var k = 0; k < buttons.length; k++) {
       if (buttons[k].alignment === 'M' && buttons[k].position > numMiddle) {
         numMiddle = buttons[k].position;
@@ -82,7 +82,7 @@ module.exports = function () {
       group = svgb.createGroup('buttonGroup', 0, 0);
       svgCircle = svgb.createCircle('action-dot', x, 40, 33);
 
-      //Check if chatacter strings are more than one character to create a label on top of the usual label
+      //Check if character strings are more than one character to create a label on top of the usual label
       if(label.length > 1){
         svgText = svgb.createText('fa action-dot-text', x + tweakx, 53, label.substring(0, 1));
         svgText2 = svgb.createText('action-dot-doc-label', x + tweakx, 53, label.substring(1));

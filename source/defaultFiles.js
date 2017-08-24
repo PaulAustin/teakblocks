@@ -73,7 +73,7 @@ var defaultDocE = `(
    }
    return true;
  };
- // defaultFiles
+ // default Files
  defaultFiles.default = function(files){
    for(var i = 0; i < files.length; i++){
      if(!this.containsFile(files[i])){

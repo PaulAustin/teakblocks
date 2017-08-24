@@ -82,7 +82,7 @@ tbe.forEachDiagramChain = function (callBack) {
 };
 
 tbe.clearStates = function clearStates(block) {
-  // clear any showing forms or multi step state.
+  // Clear any showing forms or multi step state.
   // If the user has interacted with a general part of the editor.
   tf.hideOpenForm();
   this.components.blockSettings.hide(block);
@@ -146,7 +146,7 @@ tbe.clearAllBlocks = function() {
 
 tbe.loadDoc = function(docName) {
 
-  tbe.undoArray = {}; //When we switch documents we want to clear undo history
+  tbe.undoArray = {}; // When we switch documents we want to clear undo history.
   tbe.undoTransactionIndex = 0;
 
   // First, save the current document if actually a doc.
@@ -170,7 +170,7 @@ tbe.loadDoc = function(docName) {
 };
 tbe.loadDriveMode = function() {
 
-  tbe.undoArray = {}; //When we switch documents we want to clear undo history
+  tbe.undoArray = {}; // When we switch documents we want to clear undo history.
   tbe.undoTransactionIndex = 0;
 
   // First, save the current document.
@@ -204,11 +204,11 @@ tbe.addPaletteBlock = function(x, y, name) {
    return block;
 };
 
-// delete -- delete a chunk of blocs (typically one)
+// Delete a chunk of blocks (typically one).
 tbe.deleteChunk = function(block, endBlock){
 
 
-  //Remember any tail so it can be slid over.
+  // Remember any tail so it can be slid over.
   var tail = endBlock.next;
 
   // Disconnect the chunk from its surroundings.
@@ -255,7 +255,7 @@ tbe.deleteChunk = function(block, endBlock){
 
     while(block !== null){
       tempBlock = block.next; // Make a copy of block.next before it becomes null
-      // remove map entry for the block.
+      // Remove map entry for the block.
       delete tbe.diagramBlocks[block.interactId];
 
       tbe.svg.removeChild(block.svgGroup);
@@ -268,8 +268,8 @@ tbe.deleteChunk = function(block, endBlock){
     }
   }
 
-  // Slide any remaining blocks over to the left
-  // the links have already been fixed.
+  // Slide any remaining blocks over to the left.
+  // The links have already been fixed.
   if (tail !== null) {
     var frameCount = 10;
     var animationState = {
@@ -283,15 +283,15 @@ tbe.deleteChunk = function(block, endBlock){
   }
 };
 
-// Copy a chunk, or the rest of the chain, return the copy.
-// the section specififed should not have links to parts out side.
+// Copy a chunk or the rest of the chain, and return the copy.
+// The section specified should not have links to parts outside.
 tbe.replicateChunk = function(chain, endBlock) {
 
   this.clearStates(); //???
 
   var stopPoint = null;
   if (endBlock !== undefined && endBlock !== null) {
-    // this might be null as well.
+    // This might be null as well.
     stopPoint = endBlock.next;
   }
 
@@ -308,7 +308,7 @@ tbe.replicateChunk = function(chain, endBlock) {
       newChain = newBlock;
     }
 
-    // TODO can params and contorller settings be combined?
+    // TODO can params and controller settings be combined?
     //newBlock.params = JSON.parse(JSON.stringify(b.params));
     newBlock.controllerSettings = JSON.parse(JSON.stringify(b.controllerSettings));
     newBlock.isPaletteBlock = false;
@@ -335,7 +335,7 @@ tbe.replicateChunk = function(chain, endBlock) {
     temp.fixupChainCrossBlockSvg();
   }
 
-  // Update images in the new chain
+  // Update images in the new chain.
   b = newChain;
   while (b !== null) {
     b.updateSvg();
@@ -359,7 +359,7 @@ tbe.replicateChunk = function(chain, endBlock) {
 //
 tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
 
-  // Connect the generic block class to the behaviour definition class.
+  // Connect the generic block class to the behavior definition class.
   this.name = blockName;
   this.funcs = fblocks.bind(blockName);
   if (typeof this.funcs.defaultSettings === 'function' ) {
@@ -374,7 +374,7 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   this.flowHead = null;
   this.flowTail = null;
 
-  // Blocks at the top level have a nesting of 0
+  // Blocks at the top level have a nesting of 0.
   this.nesting = 0;
   this.newBlock = null;
 
@@ -388,7 +388,8 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   this.snapAction = null;   // append, prepend, replace, ...
   this.targetShadow = null; // Svg element to hilite target location
 
-  // Create the actual SVG object. Its a group of two pieces:
+  // Create the actual SVG object.
+  // It's a group of two pieces:
   // a rounded rect and a group that holds the custom graphics for the block.
   let width = this.controllerSettings.width;
   if (width === undefined) {
@@ -406,14 +407,14 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   this.svgCustomGroup = null; // see updateSvg()
   this.updateSvg();
 
-  // Position block, relative to it initila location at 0, 0
+  // Position block, relative to its initial location at (0, 0).
   this.dmove(x, y, true);
 
   // Add block to the editor tree. This makes it visible.
   tbe.svg.appendChild(this.svgGroup);
 };
 
-// Create an image fothe block base on its type.
+// Create an image for the block base on its type.
 tbe.FunctionBlock.prototype.updateSvg = function() {
   // Remove the old custom image if they exist.
   if (this.svgCustomGroup !== null) {
@@ -431,7 +432,7 @@ tbe.FunctionBlock.prototype.chainContainsBlock = function(other){
     }
     block = block.next;
   }
-  //If none found, return false.
+  // If no blocks that were the same were found, return false.
   return false;
 };
 
@@ -461,7 +462,7 @@ tbe.FunctionBlock.prototype.refreshNesting = function() {
 };
 
 // Scan down the chain and allow any block that has cross block graphics
-// to update them
+// to update them.
 tbe.FunctionBlock.prototype.fixupChainCrossBlockSvg = function() {
   // TODO, only refresh nesting when the links actually change.
   // no need to do it during each animation step.
@@ -533,7 +534,7 @@ Object.defineProperty(tbe.FunctionBlock.prototype, 'interactId', {
   },
 });
 
-// mapToNewBlock -- used by replicateChunk to fix up pointers in a
+// mapToNewBlock -- uUed by replicateChunk to fix up pointers in a
 // copied chain.
 tbe.FunctionBlock.prototype.mapToNewBlock = function (object) {
   if (object === undefined || object === null) {
@@ -597,7 +598,7 @@ tbe.FunctionBlock.prototype.statusIs = function(status) {
   return this.controllerSettings.status === status;
 };
 
-// Checks if a selected loop is the only thing selected
+// Checks if a selected loop is the only thing selected.
 tbe.FunctionBlock.prototype.isIsolatedLoop = function() {
   if(this.isLoopHead() && this.isSelected()){
     if(this.prev !== null && this.prev.isSelected()){
@@ -655,7 +656,7 @@ tbe.FunctionBlock.prototype.isOnScreen = function() {
 // Change the element class to trigger CSS changes.
 tbe.FunctionBlock.prototype.hilite = function(state) {
   if (state) {
-    // Bring hilited block to top. Blocks don't normally
+    // Bring highlighted block to top. Blocks don't normally
     // overlap, so z plane is not important. But blocks
     // that are being dragged need to float above one on
     // the diagram.
@@ -666,7 +667,7 @@ tbe.FunctionBlock.prototype.hilite = function(state) {
   }
 };
 
-// Move a section of a chain a delta x, y (from this to endBlock)
+// Move a section of a chain by a delta (x, y) (from this to endBlock)
 tbe.FunctionBlock.prototype.dmove = function (dx, dy, snapToInt, endBlock) {
   var block = this;
   if (endBlock === undefined) {
@@ -722,7 +723,7 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
   var thisWidth = this.width;
 
   // Look at every diagram block taking into consideration
-  // weather or not it is in the chain.
+  // whether or not it is in the chain.
   tbe.forEachDiagramBlock(function (entry) {
     if (entry !== self  && !entry.dragging) {
       rect = {
@@ -806,7 +807,7 @@ tbe.FunctionBlock.prototype.insertTargetShadows = function(target, action) {
     // The shadows will be covered up, and not going to move the
     // down stream blocks until the move is committed.
     // so offset them a bit.
-    // TODO show abovw OR based on wherr draggin block are coming from.
+    // TODO show above OR based on where dragging blocks are coming from.
     x = target.left - 20;
     y -= 25;
   } else if (action === 'append') {
@@ -916,7 +917,7 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
     dy = this.snapTarget.top - this.top;
 
 
-      // TODO:base frame count on distance to final location.
+      // TODO: Base frame count on distance to final location.
       // The model snaps directly to the target location
       // but the view eases to it.
     var animateSlideDown = {
@@ -1178,7 +1179,7 @@ tbe.configInteractions = function configInteractions() {
   var thisTbe = tbe;
 
   // Most edit transaction start from code dispatched from this code.
-  // know it well and edit with caution. There are subtle interaction states
+  // Know it well and edit with caution. There are subtle interaction states
   // managed in these event handlers.
   interact('.drag-delete')
     .on('down', function () {
@@ -1238,7 +1239,7 @@ tbe.configInteractions = function configInteractions() {
       }
     });
 
-  // Pointer events to the background go here. Might make sure the even is not
+  // Pointer events to the background go here. Might make sure the event is not
   // right next to a block, e.g. allow some safe zones.
   interact('.editor-background')
     .on('down', function (event) {
@@ -1247,10 +1248,10 @@ tbe.configInteractions = function configInteractions() {
     });
 
   // Event directed to function blocks (SVG objects with class 'drag-group')
-  // There come in two main types. Pointer events(mouse, track, and touch) and
+  // These come in two main types: pointer events(mouse, track, and touch) and
   // drag events. Drag events start manually, if the semantics of the pointer
-  // event inndicate that makes sense. Note that the object at the root of the
-  // drag event may different than the object the pointer event came to.
+  // event indicate that makes sense. Note that the object at the root of the
+  // drag event may differ from the object the pointer event came to.
   // For example, dragging may use the head of a flow block, not the tail that was
   // clicked on or that chain dragged might be a copy of the block clicked on.
   //
@@ -1274,7 +1275,7 @@ tbe.configInteractions = function configInteractions() {
        var block = thisTbe.elementToBlock(event.target);
        event.interaction.stop();
        if (block.isPaletteBlock) {
-         // Hold on palette item, any special behaviour here?
+         // Hold on palette item, any special behavior here?
          // not for now.
          return;
        }
@@ -1286,7 +1287,7 @@ tbe.configInteractions = function configInteractions() {
            block.svgRect.classList.remove('commented');
          }
        }
-       // bring up config, dont let drag start
+       // Bring up config; dont let drag start.
        //thisTbe.components.blockSettings.tap(block);
     })
     .on('move', function(event) {
@@ -1296,7 +1297,7 @@ tbe.configInteractions = function configInteractions() {
         block = block.flowHead;
       }
       // If the pointer was moved while being held down
-      // and an interaction hasn't started yet
+      // and an interaction hasn't started yet...
       if (interaction.pointerIsDown && !interaction.interacting()) {
         if (tbe.pointerDownObject === event.target) {
           block = tbe.findChunkStart(block);
@@ -1348,13 +1349,13 @@ tbe.configInteractions = function configInteractions() {
             }
           }
 
-            // If coming from pallette, or if coming from shift drag
+            // If coming from palette, or if coming from shift drag...
             if (block.isPaletteBlock || event.shiftKey) {
               block = thisTbe.replicateChunk(block);
               targetToDrag = block.svgGroup;
             }
 
-            // Start a drag interaction targeting the clone
+            // Start a drag interaction targeting the clone.
             block.setDraggingState(true);
 
             tbe.clearStates();
@@ -1374,7 +1375,7 @@ tbe.configInteractions = function configInteractions() {
           restriction: thisTbe.svg,
           endOnly: true,
           // Restrictions, by default, are for the point not the whole object
-          // so R and B are 1.x to inlcude the width and height of the object.
+          // so R and B are 1.x to include the width and height of the object.
           // 'Coordinates' are percent of width and height.
           elementRect: { left: -0.2, top: -0.2, right: 1.2, bottom: 2.4 },
           // TODO bottom needs to exclude the palette.
@@ -1427,10 +1428,10 @@ tbe.configInteractions = function configInteractions() {
         // Move the chain to the new location based on deltas.
         block.dmove(event.dx, event.dy, true);
 
-        // Then see if there is a possbile target, a place to snap to.
+        // Then see if there is a possible target, a place to snap to.
         var target = block.hilitePossibleTarget();
 
-        // If thre is a target and its in the coasting phase then redirect
+        // If there is a target and its in the coasting phase then redirect
         // the coasting to the target.
         if (target !== null) {
           var iStatus = event.interaction.inertiaStatus;
@@ -1553,7 +1554,7 @@ tbe.initPaletteBox = function initPaletteBox() {
 };
 
 tbe.updateScreenSizes = function() {
-  // First resize pallette and background then resize the action buttons
+  // First resize palette and background then resize the action buttons
   tbe.sizePaletteToWindow();
   actionButtons.addActionButtons(tbe.actionButtons, tbe);
 };

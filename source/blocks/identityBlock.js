@@ -43,31 +43,31 @@ module.exports = function () {
       var block = identityBlock.activeBlock;
       var currentBotName = block.controllerSettings.data.deviceName;
       if (currentBotName !== newBotName) {
-        // Find the current item, and mark it as unslelected.
+        // Find the current item, and mark it as unselected.
         var match = ko.utils.arrayFirst(identityBlock.devices(), function(item) {
           return (item().name === currentBotName);
         });
         if (match) {
           match().selected(false);
         }
-        // select the itme that was clicked on.
+        // Select the item that was clicked.
         this.selected(true);
       }
-      // Move the selected name into the object
+      // Move the selected name into the object.
       block.controllerSettings.data.deviceName = newBotName;
       block.updateSvg();
     }
   };
 
-  // Start block is a work in progress, might not be needed. Might be
-  // for naming seperate targets.
+  // Start block is a work in progress; it might not be needed.
+  // It might be for naming seperate targets.
   identityBlock.tabs = {
     //'event': '<i class="fa fa-bolt" aria-hidden="true"></i>',
     //'target-bt': '<i class="fa fa-bluetooth-b" aria-hidden="true"></i>',
     //'target-usb': '<i class="fa fa-usb" aria-hidden="true"></i>',
   };
 
-  // Initial setting for blocks of this type.
+  // Initial settings for blocks of this type.
   identityBlock.defaultSettings = function() {
     // Return a new object with settings for the controller.
     return {

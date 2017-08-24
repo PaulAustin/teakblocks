@@ -22,12 +22,10 @@ SOFTWARE.
 
 module.exports = function (){
 
-/* global ble  */
-
 var bleConnection = {};
 bleConnection.observerCallback = null;
 
-// this is Nordic's UART service
+// This is Nordic's UART service.
 var nordicUARTservice = {
     serviceUUID: '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
     txCharacteristic: '6e400002-b5a3-f393-e0a9-e50e24dcca9e', // transmit is from the phone's perspective

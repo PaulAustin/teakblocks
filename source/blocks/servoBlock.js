@@ -31,9 +31,9 @@ module.exports = function () {
   servoBlock.keyPadValue = ko.observable(0+"%");
   // Initial setting for blocks of this type.
   servoBlock.defaultSettings = function() {
-    // return a new object with settings for the controller.
+    // Return a new object with settings for the controller
     return {
-      // And the data that goes with that editor.
+      // and the data that goes with that editor.
       data:{
         'pos':0
       },

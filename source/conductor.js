@@ -30,12 +30,13 @@ module.exports = function () {
   conductor.count = null;
   conductor.defaultPix = '0000000000';
 
-  // Once the conductor system is connected to editor, it will ping the target
-  // device to determine its current state.
+  // Once the conductor system is connected to the editor,
+  // it will ping the target device to determine
+  // its current state.
 
   // Scan the editor looking for identity blocks
-  // For each id block. determine if it is currently connected.
-  // and still responding.
+  // For each id block,
+  // determine if it is currently connected and still responding.
 
   // Give some time for the animation to complete, then remove.
 
@@ -49,14 +50,10 @@ module.exports = function () {
   conductor.linkHeartBeat = function() {
     conductor.hbTimer = 0;
 
-    // See what replies we have seen in last window
-    // Visit all chains and see if any have chained connection state
-    // or need to checked during the next heart beat.
-    // May look at async notifications from the target that let the editor indicate
-    // what part of the score the targets are at.
+    // Visit all chains and see if any have changed connection states.
     conductor.checkAllIdentityBlocks();
 
-    // Set all of the blocks to a regular state
+    // Set all of the blocks to a regular state.
     conductor.tbe.forEachDiagramBlock(function(b){
       b.svgRect.classList.remove('running-block');
     });
@@ -93,8 +90,9 @@ module.exports = function () {
               block.svgRect.classList.add('running-block');
             }
 
-            // If there is still duration left, play the block again
-            // Otherwise, get the next block ready and set count to null
+            // If the block has not played for its entire duration,
+            // continue playing the block.
+            // Otherwise, get the next block ready and set count to null.
             conductor.playOne(block);
             if(conductor.count > 1){
               conductor.count -= 1;
@@ -126,8 +124,8 @@ module.exports = function () {
           botsToConnect.push(botName);
         }
       }
-      // If any found that are not yet connected, connected
-      // if connected ones exists that are not still needed, disconnect.
+      // If any bots are found that are not yet connected, connect to them.
+      // If connected ones exist that are not still needed, disconnect them.
       for (var i = 0; i < botsToConnect.length; i++) {
         conductor.ble.connect(botsToConnect[i]);
       }
@@ -166,14 +164,12 @@ module.exports = function () {
     conductor.count = null;
     conductor.runningBlocks = [];
     console.log('stop all');
-    // Single step, find target and head of chain and run the single block.
+    // Single step, find target and head of chain, and run the single block.
   };
 
   conductor.playOne = function(block) {
     var first = block.first;
-    // Ah the SXSWedu mega hack. Ti took longer to get BLE working
-    // due to terminaology mixup with the ubit. os no on device execution system
-    // so execution it in the app.
+
     if(block.isCommented()){
       return;
     }
@@ -215,7 +211,7 @@ module.exports = function () {
 
   conductor.playSingleChain = function() {
     console.log('play single chain');
-    // The conductor starts one chain (part of the score)
+    // The conductor starts one chain (part of the score).
   };
 
   conductor.packPix = function(imageData) {

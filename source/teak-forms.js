@@ -28,7 +28,7 @@ module.exports = function () {
 
   // Toggle the position of a form. Since they are actually all
   // stacked but with different transform locations, it is necessary
-  // to toggle pointerEvents, other wise the top one eats them all.
+  // to toggle pointerEvents, otherwise the top one eats them all.
   teakForm.showHide = function showHide(component) {
     var tform = document.getElementById(component.domId);
     // See what the current state is.

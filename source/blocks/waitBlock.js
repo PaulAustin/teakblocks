@@ -30,17 +30,17 @@ module.exports = function () {
 
   waitBlock.keyPadValue = ko.observable(1);
 
-  // Initial setting for blocks of this type.
+  // Initial settings for blocks of this type.
   waitBlock.defaultSettings = function() {
-    // return a new object with settings for the controller.
+    // Return a new object with settings for the controller
     return {
-      // And the data that goes with that editor.
+      // and the data that goes with that editor.
       data:{ 'duration':1.0 },
       // Indicate what controller is active. This may affect the data format.
     };
   };
-  // Wait block - Wait until something happens, it can wait for things other
-  // than time, but it is given that time pasing is part of the function.
+  // Wait block - Wait until something happens. It can wait for things other
+  // than time, but it is assumed that time passing is part of the function.
   waitBlock.svg = function(root, block) {
     var pathd = '';
     pathd =  pb.move(40, 19);

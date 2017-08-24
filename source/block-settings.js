@@ -25,7 +25,7 @@ module.exports = function () {
   var tbe = require('./teakblocks.js');
   var conductor = require('./conductor.js');
 
-  // Set of propoerties that can be bound to.
+  // Bindable properties
   var blockSettings = {
     visible: ko.observable(true),
     activeBlock:null
@@ -160,7 +160,7 @@ module.exports = function () {
       }
     }
 
-    // If the form is actally associated with a block, hide it.
+    // If the form is actually associated with a block, hide it.
     if (block !== null && block !== exceptBlock) {
       if (block.funcs.configuratorClose !== undefined) {
         block.funcs.configuratorClose(this.customDiv, block);
@@ -181,13 +181,13 @@ module.exports = function () {
       div.style.transform = 'scale(0.33, 0.0)';
       div.style.pointerEvents = 'all';
 
-      // Clear out the custom part of the form
+      // Clear out the custom part of the form.
       this.customDiv.innerHTML = '';
 
       this.tabNames = [];
       this.tabButtons = [];
     }
-    // Catch the clear states from the redo button
+    // Catch the clear states from the redo button.
     if(diagram !== undefined){
       diagramChanger = diagram;
     }
@@ -198,16 +198,17 @@ module.exports = function () {
 
   };
 
-  // A block has been  tapped on, the gesture for the config page.
-  // bring it up, toggle or move as apppropriate.
+  // A block has been tapped on, the gesture for the config page.
+  // Bring it up, toggle it, or move it as apppropriate.
   blockSettings.tap = function(block) {
     if (this.activeBlock === block) {
-      // Clicked on the same block make it go away.
+      // Clicked on the same block so make it go away.
       //this.hide();
       tbe.clearStates();
     } else if (this.activeBlock !== null) {
-      // Clicked on another block, but one is showing, make it go away.
-      // Then show the new one once the hide transition is done.
+      // Clicked on a block other than the one that is showing.
+      // Make the block that is showing go away,
+      // then show the new one once the hide transition is done.
       //this.hide();
       tbe.clearStates();
       this.activeBlock = block;
@@ -223,7 +224,7 @@ module.exports = function () {
       setTimeout(function() { blockSettings.showActive(); }, 400);
 //      this.addEventListener(this.showActive, 500);
     } else {
-      // Nothing showing, make it pop-up.
+      // Nothing is showing, so make it pop-up.
       //block.markSelected(true);
       if(block.name === 'tail'){
         block.markSelected(true);
@@ -239,25 +240,25 @@ module.exports = function () {
     }
   };
 
-  // Build the row of tabs one for each controller editor that canbe used
+  // Build the row of tabs one for each controller editor that can be used
   // by the actor.
   blockSettings.buildControllerTabs = function() {
     // Clear out old tabs.
     blockSettings.controllersDiv.innerHTML = '';//TABS - uncomment
 
-    // Get the list of tabs wiht HTML snippets
+    // Get the list of tabs with HTML snippets.
     var tabs = this.activeBlock.funcs.tabs;
     this.tabButtons = [];
     if (tabs !== undefined) {
       this.tabNames = Object.keys(tabs);
 
-      // Build some SOM for the buttons
+      // Build some SOM for the buttons.
       var tabCount = this.tabNames.length;
       var tabsDiv = document.createElement('div');
       var width = (100 / tabCount) + '%';
 
       for (var i = 0; i < tabCount; i++) {
-        // Create the button
+        // Create the button.
         var button = document.createElement('button');
         var name = this.tabNames[i];
         blockSettings.tabButtons.push(button);
@@ -267,7 +268,7 @@ module.exports = function () {
         button.id = name;
         button.className = 'block-settings-tab';
         button.style.width = width;
-        // tweak the curved edges based on position.
+        // Tweak the curved edges based on position.
         if (i===0) {
           button.style.borderRadius='0px 0px 0px 10px';
         } else if (i === (tabCount-1)) {
@@ -276,20 +277,20 @@ module.exports = function () {
           button.style.borderRadius='0px';
         }
 
-        // Inject the HTML snippet
+        // Inject the HTML snippet.
         button.innerHTML = tabs[name];
         button.onclick = blockSettings.onClickTab;
       }
       // Add the row of tabs to the view.
       this.controllersDiv.appendChild(tabsDiv);//TABS - uncomment
 
-      // Select the initial tab
+      // Select the initial tab.
       this.selectActiveTab(this.activeBlock.controllerSettings.controller);
     } else {
       // Add controller tabs at the bottom.
       var controllers = this.activeBlock.funcs.controllers;
       if (typeof controllers === "function") {
-        // OLD way, delete once other code merged
+        // OLD way, delete once other code is merged.
         controllers(blockSettings.controllersDiv);//TABS - uncomment
       } else {
         blockSettings.controllersDiv.innerHTML = '';//TABS - uncomment

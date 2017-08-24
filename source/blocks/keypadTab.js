@@ -95,12 +95,12 @@ module.exports = function () {
       var display = document.getElementById("numeric-display");
       var keypadSvg = document.getElementById('keypadSvg');
 
-      // Show the current data on the config panel
+      // Show the current data on the configuration panel
       var num = getValue().toString();
       blockType.keyPadValue(num.toString() + suffix);
       var strNum = "";
 
-      // Create a editor state object for the interactions to work with.
+      // Create an editor state object for the interactions to work with.
 
       for (var iy = 0; iy < 4; iy++) {
         for (var ix = 0; ix < 3; ix++) {

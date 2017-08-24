@@ -23,7 +23,7 @@ SOFTWARE.
 module.exports = function () {
   var ko = require('knockout');
 
-  // Set of propoerties that can be bound to.
+  // Bindable properties
   var appSettings = {
     showCode: ko.observable(false),
     editorSounds: ko.observable(true),

@@ -33,9 +33,9 @@ module.exports = function () {
 
   // Initial setting for blocks of this type.
   soundBlock.defaultSettings = function() {
-    // return a new object with settings for the controller.
+    // Return a new object with settings for the controller
     return {
-      // And the data that goes with that editor.
+      // and the data that goes with that editor.
       data:{'description':'C4', 'period':'1/4'},
       // Indicate what controller is active. This may affect the data format.
       controller:'pianoKeyboard',
@@ -69,7 +69,7 @@ module.exports = function () {
           </svg>
         </div>`;
 
-    // Create a editor state object for the interactions to work with.
+    // Create an editor state object for the interactions to work with.
     var svg = document.getElementById('pianoSvg');
     var keyIndex = 0;
     for (var iwKey = 0; iwKey < 8; iwKey++) {
@@ -123,7 +123,7 @@ module.exports = function () {
   soundBlock.originalClass = null;
   soundBlock.lastKey = null;
 
-  // play a key, updage graphics, etc.
+  // Play a key, update graphics, etc.
   soundBlock.playKey = function(svgElt) {
     var keyIndex = Number(svgElt.getAttribute('key'));
     svgElt.setAttribute('key', keyIndex);
@@ -133,7 +133,7 @@ module.exports = function () {
     var newClass = soundBlock.originalClass + '-pressed';
     svgElt.setAttribute('class', newClass);
 
-    // Start Oscillator
+    // Start oscillator
     var ctx = soundBlock.audioContext;
     var oscillator = ctx.createOscillator();
     var gain = ctx.createGain();
@@ -163,7 +163,7 @@ module.exports = function () {
       soundBlock.currentKey.setAttribute('class', soundBlock.originalClass);
       soundBlock.currentKey = null;
     }
-    // Stop Oscillator
+    // Stop oscillator
   };
   // Sound block to make a joyful noise.
   soundBlock.svg = function(root, block) {

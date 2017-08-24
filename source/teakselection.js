@@ -27,7 +27,7 @@ var svgb = require('./svgbuilder.js');
 var tbSelecton = {};
 
 // The selection region has a minimum dimension so it can be seen when it is
-// first created, espicially on a touch based device.
+// first created, especially on a touch based device.
 var minDim = 20;
 tbSelecton.selectionSvg = null;
 tbSelecton.currentChain = null;
@@ -36,7 +36,7 @@ tbSelecton.init = function(tbe) {
   tbSelecton.tbe = tbe;
   tbSelecton.interactable = interact(".selection-rect")
     .draggable({
-      manualStart: true,  // Drag wont start until initiated by code.
+      manualStart: true,  // Drag won't start until initiated by code.
       max: Infinity,
       onstart: function(event) {
         // Move the selection rectangle to its initial location.
@@ -52,7 +52,7 @@ tbSelecton.init = function(tbe) {
         tbSelecton.currentChain = null;
       },
       onmove: function (event) {
-        // Determine the top left and the width height basd on the pointer
+        // Determine the top left and the width height based on the pointer
         // location.
         var left = 0;
         var top = 0;
@@ -74,7 +74,7 @@ tbSelecton.init = function(tbe) {
         }
         width += minDim;
         height += minDim;
-        // clientX, clientY reflect the current location
+        // clientX, clientY reflect the current location.
         // clientX0, clientY0 reflect the initial location at start.
         svgb.translateXY(tbSelecton.selectionSvg, left, top);
         svgb.resizeRect(tbSelecton.selectionSvg, width, height);
@@ -103,7 +103,7 @@ tbSelecton.startSelectionBoxDrag = function(event) {
   tbSelecton.selectionSvg = svgb.createRect('selection-rect', offset, offset, minDim, minDim, 5);
   tbSelecton.tbe.svg.insertBefore(tbSelecton.selectionSvg, tbSelecton.tbe.background.nextSibling);
 
-  // Start interacting wiht the rectangle. This give the rectangel the focus
+  // Start interacting with the rectangle. This give the rectangle the focus
   // for all events until the pointer is let up.
   event.interaction.start({ name: 'drag'}, tbSelecton.interactable,
         tbSelecton.selectionSvg);
@@ -112,7 +112,7 @@ tbSelecton.startSelectionBoxDrag = function(event) {
  // Adds and removes the class for a selected block based on position and order of selection.
  tbSelecton.checkForSelectedBlocks = function(rect, tbe) {
    var intersecting = [];
-      // Take all of the blocks int the selection area and push it to the array.
+      // Take all of the blocks in the selection area and push it to the array.
      tbe.forEachDiagramBlock( function(block) {
        if(tbe.intersectingArea(rect, block.rect) > 0){
          intersecting.push(block);

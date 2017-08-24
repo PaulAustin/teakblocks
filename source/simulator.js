@@ -23,7 +23,7 @@ SOFTWARE.
 module.exports = function () {
 
   // At this point no fancy data binding. This component returns an object
-  // with the application configuration settings. When the form is shown, the
+  // with the application configuration settings. When the form appears the
   // user may change the settings. The application refers to this object where
   // needed
   var ko = require('knockout');
