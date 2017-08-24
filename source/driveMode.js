@@ -44,7 +44,7 @@ module.exports = function(){
     var div = document.createElement('div');
     div.setAttribute('class', 'driverBackground');
     div.setAttribute('id', 'driverBackground');
-    var root = document.getElementById('tbe-driver-mode');
+    var root = document.getElementById('tbe-overlay-mode');
     root.appendChild(div);
 
     var exitGroup = document.createElement('div');
@@ -82,7 +82,7 @@ module.exports = function(){
         <h1 class="drive-encoderL svg-clear">Left Encoder: 100</h1>
         <h1 class="drive-encoderR svg-clear">Right Encoder: 100</h1-->
     `;
-    var root = document.getElementById('tbe-driver-mode');
+    var root = document.getElementById('tbe-overlay-mode');
     root.appendChild(div);
   };
 

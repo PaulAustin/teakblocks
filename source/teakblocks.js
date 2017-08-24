@@ -178,7 +178,7 @@ tbe.loadDriveMode = function() {
   save.saveFile(tbe.currentDoc, currentDocText);
   tbe.clearStates();
 
-  var dom = document.getElementById('tbe-driver-mode');
+  var dom = document.getElementById('tbe-overlay-mode');
   dm.startDriveMode(dom, tbe);
 };
 
