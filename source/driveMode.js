@@ -142,7 +142,7 @@ module.exports = function(){
 
   driveMode.startDriveMode = function(dom, tbe) {
     driveMode.tbe = tbe;
-    driveMode.applyBackground(tbe);
+    driveMode.applyBackground();
     driveMode.buildSlider(dom);
     driveMode.startDiagnostics();
     driveMode.updateSlider();

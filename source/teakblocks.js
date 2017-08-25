@@ -35,7 +35,8 @@ var teakselection = require('./teakselection');
 var actionButtons = require('./actionButtons.js');
 var defaultFiles = require('./defaultFiles.js');
 var conductor = require('./conductor.js');
-var dm = require('./driveMode.js');
+var driveMode = require('./driveMode.js');
+var debugMode = require('./debugMode.js');
 
 var tbe = {};
 
@@ -179,7 +180,20 @@ tbe.loadDriveMode = function() {
   tbe.clearStates();
 
   var dom = document.getElementById('tbe-overlay-mode');
-  dm.startDriveMode(dom, tbe);
+  driveMode.startDriveMode(dom, tbe);
+};
+
+tbe.loadDebugMode = function() {
+  tbe.undoArray = {}; //When we switch documents we want to clear undo history
+  tbe.undoTransactionIndex = 0;
+
+  // First, save the current document.
+  var currentDocText = teakText.blocksToText(tbe.forEachDiagramChain);
+  save.saveFile(tbe.currentDoc, currentDocText);
+  tbe.clearStates();
+
+  var dom = document.getElementById('tbe-overlay-mode');
+  debugMode.startDebugMode(dom, tbe);
 };
 
 tbe.nextBlockId = function(prefix) {

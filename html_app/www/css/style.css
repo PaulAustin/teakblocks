@@ -689,6 +689,14 @@ label input[type="checkbox"]:disabled + .label-text:before {
   height:100%;
   background-color: #FFF8E1;
 }
+.debugBackground {
+  position: absolute;
+  top:0px;
+  left:0px;
+  width:100%;
+  height:100%;
+  background-color: #4F5659;
+}
 .exitGroup {
   background-color: #F6DDCC;
   position: absolute;
@@ -699,6 +707,37 @@ label input[type="checkbox"]:disabled + .label-text:before {
   width: 100px;
   border-radius: 100px;
 }
+.debugExitGroup {
+  background-color: #FF3F4A;
+  position: absolute;
+  top:5px;
+  left: calc(20px);
+  position: relative;
+  height:50px;
+  width: 50px;
+  border-radius: 100px;
+}
+.debugWindow {
+  width: calc(100% - 20px);
+  height:620px;
+  position:relative;
+  top: 10px;
+  left:10px;
+  background-color: #020602;
+  border-radius: 10px;
+}
+.debug-log{
+  font-family: "courier new";
+  font-size: 35px;
+  height:600px;
+  width: calc(100% - 18px);
+  color:#00FF12;
+  position:relative;
+  top: 10px;
+  left:15px;
+  overflow: auto;
+  white-space: pre;
+}
 .driver-x {
   color: #ff7043;
   font-size: 100px;
@@ -706,6 +745,14 @@ label input[type="checkbox"]:disabled + .label-text:before {
   text-align: center;
   left: 10px;
   bottom:5px;
+}
+.driver-x-debug {
+  color: #ff7043;
+  font-size: 50px;
+  position: relative;
+  text-align: center;
+  left: 5px;
+  bottom:2px;
 }
 .drive-diagnostics {
   font-family: "helvetica";

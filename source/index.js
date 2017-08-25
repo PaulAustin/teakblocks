@@ -51,7 +51,8 @@ function deviceReady() {
     page: '\uf0f6',
     edit: '\uf044',
     save: '\uf0c7',
-    gamepad: '\uf11b'
+    gamepad: '\uf11b',
+    debug: '\uf120'
   };
 
   // A few things are sensitive to differences between running in tablet vs.
@@ -116,6 +117,7 @@ function deviceReady() {
     'loadDocD': function(){ tbe.loadDoc('docD'); },
     'loadDocE': function(){ tbe.loadDoc('docE'); },
     'loadDriveMode': function(){ tbe.loadDriveMode(); },
+    'loadDebugMode': function(){ tbe.loadDebugMode(); },
     'undo': function(){ tbe.undoAction(); },
     'redo': function(){ tbe.redoAction(); },
     'pullUppages': function(){ actionButtons.deleteDropdown(tbe.dropdownButtons, tbe, fastr.page, 'pages'); },
@@ -160,8 +162,9 @@ function deviceReady() {
    {'alignment': 'L', 'position': 1, 'label': fastr.play, 'command': 'play', 'tweakx': 4},
    {'alignment': 'L', 'position': 2, 'label': fastr.stop, 'command': 'stop'},
    {'alignment': 'M', 'position': 1, 'label': fastr.gamepad, 'command': 'loadDriveMode'},
-   {'alignment': 'M', 'position': 2, 'label': fastr.page, 'command': 'pages'},
-   {'alignment': 'M', 'position': 3, 'label': fastr.edit, 'command': 'edit'},
+   {'alignment': 'M', 'position': 2, 'label': fastr.debug, 'command': 'loadDebugMode'},
+   {'alignment': 'M', 'position': 3, 'label': fastr.page, 'command': 'pages'},
+   {'alignment': 'M', 'position': 4, 'label': fastr.edit, 'command': 'edit'},
    {'alignment': 'R', 'position': 2, 'label': fastr.redo, 'command': 'redo'},
    {'alignment': 'R', 'position': 1, 'label': fastr.undo, 'command': 'undo'}
  ];

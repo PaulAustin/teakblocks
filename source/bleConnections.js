@@ -23,6 +23,7 @@ SOFTWARE.
 module.exports = function (){
 
 var bleConnection = {};
+bleConnection.messages = [];
 bleConnection.observerCallback = null;
 
 // This is Nordic's UART service.
@@ -204,6 +205,7 @@ bleConnection.onDisconnect = function(info) {
 bleConnection.onData = function(name, data) {
   var str = bufferToString(data);
   console.log('On Data:', name, str);
+  bleConnection.messages.push(name + ':' + str);
 };
 
 bleConnection.onError = function(reason) {
