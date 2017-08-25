@@ -32,7 +32,8 @@ module.exports = function () {
 
   appSettings.insert = function(domRoot) {
     var div = document.createElement("div");
-    div.innerHTML = `
+    div.innerHTML = '';
+/*
     <div id='app-settings'
       class='teakform pulldown closed' opened=false
       style='position:fixed;top:1em;right:1em;pointer-events:none'>
@@ -48,9 +49,10 @@ module.exports = function () {
       </label>
     </form>
     </div>`;
+    */
     appSettings.domId = 'app-settings';
     domRoot.appendChild(div);
-    ko.applyBindings(appSettings, div);
+    //ko.applyBindings(appSettings, div);
   };
 
   return appSettings;
