@@ -37,6 +37,7 @@ var defaultFiles = require('./defaultFiles.js');
 var conductor = require('./conductor.js');
 var driveMode = require('./driveMode.js');
 var debugMode = require('./debugMode.js');
+var settingsMode = require('./overlays/settings.js');
 
 var tbe = {};
 
@@ -169,6 +170,7 @@ tbe.loadDoc = function(docName) {
     }
   }
 };
+
 tbe.loadDriveMode = function() {
 
   tbe.undoArray = {}; // When we switch documents we want to clear undo history.
@@ -193,7 +195,22 @@ tbe.loadDebugMode = function() {
   tbe.clearStates();
 
   var dom = document.getElementById('tbe-overlay-mode');
+  // overlays can have a uniform name 'startOverlay'
   debugMode.startDebugMode(dom, tbe);
+};
+
+tbe.loadSettings = function() {
+  // need to not just copy this code :(
+  tbe.undoArray = {}; // When we switch documents we want to clear undo history.
+  tbe.undoTransactionIndex = 0;
+
+  // First, save the current document.
+  var currentDocText = teakText.blocksToText(tbe.forEachDiagramChain);
+  save.saveFile(tbe.currentDoc, currentDocText);
+  tbe.clearStates();
+
+  var dom = document.getElementById('tbe-overlay-mode');
+  settingsMode.startOverlay(dom, tbe);
 };
 
 tbe.nextBlockId = function(prefix) {

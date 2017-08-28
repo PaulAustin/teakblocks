@@ -98,14 +98,15 @@ function deviceReady() {
     {'label': fastr.trash, 'command': 'trash'},
     {'label': fastr.copy, 'command': 'copy'},
     {'label': fastr.paste, 'command': 'paste'},
-    {'label': fastr.save, 'command': 'save'}
+    {'label': fastr.save, 'command': 'save'},
+    {'label': fastr.settings, 'command': 'settings'}
   ];
 
   //var newButtons = [];
 
   tbe.deleteRay = null;
   tbe.commands = {
-    'settings': function() { tf.showHide(tbe.components.appSettings); },
+    //'settings': function() { tf.showHide(tbe.components.appSettings); },
     'play': function() { conductor.playAll(); },
     'stop': function() { conductor.stopAll(); },
     'trash': function() { tbe.clearAllBlocks(); },
@@ -117,7 +118,7 @@ function deviceReady() {
     'loadDocD': function(){ tbe.loadDoc('docD'); },
     'loadDocE': function(){ tbe.loadDoc('docE'); },
     'loadDriveMode': function(){ tbe.loadDriveMode(); },
-    'loadDebugMode': function(){ tbe.loadDebugMode(); },
+    'settings': function(){ tbe.loadSettings(); },
     'undo': function(){ tbe.undoAction(); },
     'redo': function(){ tbe.redoAction(); },
     'pullUppages': function(){ actionButtons.deleteDropdown(tbe.dropdownButtons, tbe, fastr.page, 'pages'); },

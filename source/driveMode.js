@@ -28,7 +28,7 @@ module.exports = function(){
   driveMode.pastRight = 0;
   driveMode.pastLeft = 0;
 
-  driveMode.buildSlider = function(root){
+  driveMode.buildSlider = function(root) {
     var div = document.createElement('div');
     div.innerHTML = `
     <div class='slider sliderRight' data-value='0'></div>
@@ -36,7 +36,6 @@ module.exports = function(){
     `;
 
     root.appendChild(div);
-
     driveMode.sliderInteract('slider');
   };
 
@@ -59,13 +58,17 @@ module.exports = function(){
     root.appendChild(exitGroup);
   };
 
+  // Diagnostics include the text display in the center of the page.
   driveMode.startDiagnostics = function() {
     console.log('starting diagnostics');
+
     var div = document.createElement('div');
     div.setAttribute('class', 'drive-diagnostics');
     div.setAttribute('id', 'drive-diagnostics');
     div.setAttribute('text-anchor', 'middle');
     var id = null;
+    // Look through the blocks on the edit page
+    // to find a start block thath is connected.
     driveMode.tbe.forEachDiagramBlock( function(block){
       if(block.name === 'identity' && block.statusIs(3)){
         id = block.controllerSettings.data.deviceName;
@@ -82,6 +85,7 @@ module.exports = function(){
         <h1 class="drive-encoderL svg-clear">Left Encoder: 100</h1>
         <h1 class="drive-encoderR svg-clear">Right Encoder: 100</h1-->
     `;
+    // Insert the diagnostics div into the overlay mode div.
     var root = document.getElementById('tbe-overlay-mode');
     root.appendChild(div);
   };

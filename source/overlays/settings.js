@@ -22,67 +22,56 @@ SOFTWARE.
 
 module.exports = function(){
 
-  var debugMode = {};
-  var ble = require('./bleConnections.js');
+  var settings = {};
 
-  debugMode.applyBackground = function(){
+  settings.applyBackground = function(overlayDom) {
+
     var div = document.createElement('div');
     div.setAttribute('class', 'debugBackground');
     div.setAttribute('id', 'debugBackground');
-    var root = document.getElementById('tbe-overlay-mode');
-    root.appendChild(div);
+
+    overlayDom.appendChild(div);
 
     var exitGroup = document.createElement('div');
     exitGroup.setAttribute('class', 'debugExitGroup');
     exitGroup.setAttribute('id', 'debugExitGroup');
+
     var exit = document.createElement('div');
     exit.setAttribute('class', 'debug-exit');
     exit.setAttribute('id', 'debug-exit');
-    exitGroup.onclick = debugMode.exit;
+
+    exitGroup.onclick = settings.exit;
     exitGroup.appendChild(exit);
     exitGroup.innerHTML += `<i class="fa fa-times driver-x-debug svg-clear" aria-hidden="true"></i>`;
-    root.appendChild(exitGroup);
+    overlayDom.appendChild(exitGroup);
   };
 
-  debugMode.startDebug = function(root){
+  settings.startDebug = function(overlayDom){
     var div = document.createElement('div');
     div.setAttribute('id', 'debugWindow');
     div.setAttribute('class', 'debugWindow');
     div.innerHTML = `
       <div class="debug-log" id="debug-log"></div>
     `;
-
-    root.appendChild(div);
+    overlayDom.appendChild(div);
   };
-  debugMode.updateDebug = function() {
-    console.log(ble.messages);
+  settings.updateDebug = function() {
+  //  console.log(ble.messages);
 
     var debugConsole = document.getElementById('debug-log');
     debugConsole.innerHTML = '';
-
-    for(var i = 0; i < ble.messages.length; i++) {
-      debugConsole.innerHTML += (ble.messages[i] + '\n');
-    }
-
-    debugMode.timer = setTimeout( function() {
-      debugMode.updateDebug();
-    }
-    , 500);
   };
 
-  // TODO: startDebug/startDebugMode are similar names and can be confusing.
-  debugMode.startDebugMode = function(dom, tbe){
-    debugMode.tbe = tbe;
-    debugMode.applyBackground();
-    debugMode.startDebug(dom);
-    debugMode.updateDebug();
-    // var div = document.createElement('div');
-    // exit also
+  settings.startOverlay = function(overlayDom, tbe){
+    // How is this tied to the TBE?
+    settings.tbe = tbe;
+    settings.applyBackground(overlayDom);
+    settings.startDebug(overlayDom);
+    settings.updateDebug();
   };
 
-  debugMode.exit = function() {
-    clearTimeout(debugMode.timer);
-
+  settings.exit = function() {
+    // Can this just be GC'd by javascript.
     var back = document.getElementById('debugBackground');
     back.parentNode.removeChild(back);
 
@@ -93,6 +82,5 @@ module.exports = function(){
     debugConsole.parentNode.removeChild(debugConsole);
   };
 
-  return debugMode;
-
+  return settings;
 }();
