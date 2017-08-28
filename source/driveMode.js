@@ -39,11 +39,10 @@ module.exports = function(){
     driveMode.sliderInteract('slider');
   };
 
-  driveMode.applyBackground = function() {
+  driveMode.applyBackground = function(root) {
     var div = document.createElement('div');
     div.setAttribute('class', 'driverBackground');
     div.setAttribute('id', 'driverBackground');
-    var root = document.getElementById('tbe-overlay-mode');
     root.appendChild(div);
 
     var exitGroup = document.createElement('div');

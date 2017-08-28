@@ -25,11 +25,10 @@ module.exports = function(){
   var debugMode = {};
   var ble = require('./bleConnections.js');
 
-  debugMode.applyBackground = function(){
+  debugMode.applyBackground = function(root){
     var div = document.createElement('div');
     div.setAttribute('class', 'debugBackground');
     div.setAttribute('id', 'debugBackground');
-    var root = document.getElementById('tbe-overlay-mode');
     root.appendChild(div);
 
     var exitGroup = document.createElement('div');
