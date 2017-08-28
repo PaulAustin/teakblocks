@@ -118,6 +118,7 @@ function deviceReady() {
     'loadDocD': function(){ tbe.loadDoc('docD'); },
     'loadDocE': function(){ tbe.loadDoc('docE'); },
     'loadDriveMode': function(){ tbe.loadDriveMode(); },
+    'loadDebugMode': function(){ tbe.loadDebugMode(); },
     'settings': function(){ tbe.loadSettings(); },
     'undo': function(){ tbe.undoAction(); },
     'redo': function(){ tbe.redoAction(); },
