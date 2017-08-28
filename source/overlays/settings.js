@@ -26,6 +26,8 @@ module.exports = function(){
 
   settings.applyBackground = function(overlayDom) {
 
+    // Can one div hold all parts? why insert all individually in the overlay?
+    // this will simplifiy cleanup.
     var div = document.createElement('div');
     div.setAttribute('class', 'debugBackground');
     div.setAttribute('id', 'debugBackground');
@@ -44,10 +46,8 @@ module.exports = function(){
     exitGroup.appendChild(exit);
     exitGroup.innerHTML += `<i class="fa fa-times driver-x-debug svg-clear" aria-hidden="true"></i>`;
     overlayDom.appendChild(exitGroup);
-  };
 
-  settings.startDebug = function(overlayDom){
-    var div = document.createElement('div');
+    div = document.createElement('div');
     div.setAttribute('id', 'debugWindow');
     div.setAttribute('class', 'debugWindow');
     div.innerHTML = `
@@ -55,19 +55,9 @@ module.exports = function(){
     `;
     overlayDom.appendChild(div);
   };
-  settings.updateDebug = function() {
-  //  console.log(ble.messages);
 
-    var debugConsole = document.getElementById('debug-log');
-    debugConsole.innerHTML = '';
-  };
-
-  settings.startOverlay = function(overlayDom, tbe){
-    // How is this tied to the TBE?
-    settings.tbe = tbe;
+  settings.startOverlay = function(overlayDom){
     settings.applyBackground(overlayDom);
-    settings.startDebug(overlayDom);
-    settings.updateDebug();
   };
 
   settings.exit = function() {

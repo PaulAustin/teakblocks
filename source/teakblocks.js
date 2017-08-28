@@ -210,7 +210,7 @@ tbe.loadSettings = function() {
   tbe.clearStates();
 
   var dom = document.getElementById('tbe-overlay-mode');
-  settingsMode.startOverlay(dom, tbe);
+  settingsMode.startOverlay(dom);
 };
 
 tbe.nextBlockId = function(prefix) {
