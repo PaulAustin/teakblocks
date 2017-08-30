@@ -23,6 +23,7 @@ SOFTWARE.
 // Load cordova.js if not in regular browser, and then set up initialization.
 var isRegularBrowser = false;
 
+
 function deviceReady() {
 
   var tbe = require('./teakblocks.js');

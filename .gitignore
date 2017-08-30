@@ -19,3 +19,5 @@ html_app/res/mipmap-mdpi/icon.png
 html_app/.DS_Store
 
 html_app/.DS_Store
+
+html_app/www/style.css
