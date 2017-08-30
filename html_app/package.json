@@ -1,0 +1,21 @@
+{
+    "name": "org.trashbots.teakblocks",
+    "version": "0.0.2",
+    "displayName": "Teak Blocks",
+    "cordova": {
+        "platforms": [
+            "android",
+            "ios"
+        ],
+        "plugins": {
+            "cordova-plugin-ble": {},
+            "cordova-plugin-whitelist": {}
+        }
+    },
+    "dependencies": {
+        "cordova-ios": "^4.4.0",
+        "cordova-plugin-ble": "1",
+        "cordova-plugin-whitelist": "1",
+        "cordova-android": "~6.2.3"
+    }
+}

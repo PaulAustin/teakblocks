@@ -3,10 +3,12 @@ A web based block editor for making teak programs.
 
 
 # Tools you may need
-Teak Block editor is implimente in HTML5. The underlying JavaScript is bundled and compressed with [Browserify](http://browserify.org/). The tools also allows npm style package support. It is typically installed as such:
+Teak Block editor is implemented in HTML5. The underlying JavaScript is bundled and compressed with [Browserify](http://browserify.org/). The tools also allows npm style package support. It is typically installed as such:
 
 ```
-npm install -g browserify
+npm install -g browserify       // Turning npm style packages into browser js
+npm install -g less             // Compiling *.less into *.css
+npm install -g catw             // For build process
 ```
 Yes, it is also based on [npm](https://www.npmjs.com/) packages and thus npm and [node](https://nodejs.org/en/) itself.
 
@@ -18,7 +20,7 @@ npm install -g cordova
 npm install -g uglify-js
 ```
 
-The html_app already has a few config files set up to work with Cordova however, to build for a native platform you need pull down support files for the platforms. These additional files are not part of this repo, but they are easy to add. Change directories to the top of the html_app and run the Cordova commands. For android, it should look like this:
+The html_app already has a few config files set up to work with Cordova however, to build for a native platform you need to install support files for the platforms. These additional files are not part of this repo, but they are easy to add. Change directories to the top of the html_app and run the Cordova commands. For android, it should look like this:
 
 ```
 cd html_app

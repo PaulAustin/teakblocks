@@ -1,33 +1,52 @@
-html,
-body {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
+
+// General IDE colors
+@canvas-backgound-color:#FFF8E1;
+@action-glyph-color:#FF7043;
+@action-glyph-bcolor:#F2CDB5;
+
+// Block related Colors
+@block-running-color:#3300ff;
+@block-branch-color:lightgreen;
+@block-shadow-color:#43A047;
+@block-glyph-color:#FFB74D;
+
+
+@selection-outline-color:#1E88E5;
+@selection-fill-color:#B3E5FC;
+
+// Config Ppage colors
+@mono-spaced-font:"Monaco";
+@app-font:"Helvetica";
+
+// Other overlays
+@console-text-color:#00FF12;
+@console-text-bcolor:#020602;
+
+html, body { margin:0; padding:0; overflow:hidden }
 .teak-log {
   position: absolute;
-  top: 0;
-  left: 50%;
-  font-size: 12px;
-  font-family: "Monaco";
-  width: 25%;
+  top:0;
+  left:50%;
+  font-size:12px;
+  font-family:"Monaco";
+  width:25%;
   height: 100%;
-  float: right;
+  float:right;
   border: none;
   outline: none;
   overflow-y: scroll;
-  background-color: rgba(0, 0, 1, 0.05);
+  background-color: rgba(0,0,1,0.05);
   background-blend-mode: multiply;
 }
 .editor-background {
-  fill: #FFF8E1;
+  fill:@canvas-backgound-color;
 }
 .editor-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
   background-color: white;
   -ms-touch-action: none;
   touch-action: none;
@@ -38,47 +57,43 @@ body {
   -webkit-user-select: none;
   -ms-user-select: none;
 }
-.dropArea {
+.dropArea{
   /* drop area will be moved to bottom, match width of screen */
   fill: #F5B041;
-  stroke-width: 0;
+  stroke-width:0;
   stroke: none;
 }
-.tab-block {
+.tab-block{
   fill: #F5B041;
   stroke: #1B5E20;
-  stroke-width: 2;
+  stroke-width:2;
   z-index: 500;
 }
-.tab-text {
+.tab-text{
   width: 40px;
   height: 25px;
-  font-size: 24px;
+  font-size:24px;
   fill: black;
-  font-family: "helvetica";
+  font-family:"helvetica";
   pointer-events: none;
   z-index: 501;
 }
 @keyframes selectionFadeIn {
-  from {
-    opacity: 0.0;
-  }
-  to {
-    opacity: 1.0;
-  }
+    from{opacity:0.0;}
+    to{opacity:1.0;}
 }
 .selection-rect {
-  fill: #B3E5FC;
+  fill: @selection-fill-color;
   stroke-width: 4;
-  stroke: #1E88E5;
+  stroke: @selection-outline-color;
   animation: selectionFadeIn 0.3s ease;
 }
 .selectedBlock {
   transition: stroke 0.3s ease;
   stroke-width: 4;
-  stroke: #1E88E5;
+  stroke: @selection-outline-color;
 }
-.running-block {
+.running-block{
   stroke-width: 4;
   stroke: #3300ff;
 }
@@ -88,6 +103,11 @@ body {
   stroke: #5A33FF;
   transition: stroke 0.3s ease;
 }
+//.function-block-dragging {
+//  fill: green;
+//  stroke-width: 4;
+//  stroke: #5A33FF;
+// }
 .flow-path {
   fill: none;
   stroke-width: 4;
@@ -99,14 +119,14 @@ body {
 .block-stencil {
   fill: none;
   stroke-width: 2.5;
-  stroke: #FFB74D;
+  stroke: @block-glyph-color;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 .block-stencil-fill {
   stroke-width: 2;
-  stroke: #FFB74D;
-  fill: #FFB74D;
+  stroke: @block-glyph-color;
+  fill: @block-glyph-color;
   stroke-linejoin: round;
 }
 .block-stencil-fill-back {
@@ -117,7 +137,7 @@ body {
 .block-sensor-stencil {
   fill: none;
   stroke-width: 1.5;
-  stroke: #FFB74D;
+  stroke: @block-glyph-color;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -133,7 +153,7 @@ body {
   font-family: "helvetica";
   text-align: center;
   font-size: 16px;
-  fill: #FFB74D;
+  fill: @block-glyph-color;
 }
 .block-picture-board {
   fill: #332222;
@@ -166,7 +186,7 @@ body {
 }
 .block-motor-body {
   fill: #777777;
-  stroke: #FFB74D;
+  stroke: @block-glyph-color;
   stroke-width: 2;
   stroke-dasharray: 4, 5;
 }
@@ -177,23 +197,22 @@ body {
   /* setting dialogs */
   background-color: #C8E6C9;
   border-radius: 10px;
-  box-sizing: border-box;
+  box-sizing:border-box;
   box-shadow: 1px 4px 5px 2px rgba(0, 0, 0, 0.2);
-  font-family: "helvetica";
-  font-size: 20px;
-  touch-action: none;
-  /* prevents any screen bounce on android */
+  font-family:"helvetica";
+  font-size:20px;
+  touch-action: none; /* prevents any screen bounce on android */
 }
 .block-sound-piano-w {
   fill: #FFFDE7;
 }
-.block-sound-piano-w-pressed {
+.block-sound-piano-w-pressed{
   fill: #FFE082;
 }
 .block-sound-piano-b {
   fill: #212121;
 }
-.block-sound-piano-b-pressed {
+.block-sound-piano-b-pressed{
   fill: #616161;
 }
 .block-sound-piano {
@@ -203,12 +222,12 @@ body {
 }
 /* Buttons for the bock config edit operations run, copy, delete */
 .block-settings-editops {
-  padding: 2px;
+  padding:2px;
 }
 .block-settings-editops button {
-  margin: 2px;
-  width: 31.6%;
-  font-size: 20px;
+  margin:2px;
+  width:31.6%;
+  font-size:20px;
   border: 2px solid #81C784;
   border-radius: 6px;
   background-color: #81C784;
@@ -225,8 +244,8 @@ body {
   /* All editors should be the same height */
   height: 175px;
 }
-.editorDiv {
-  text-align: center;
+.editorDiv{
+  text-align:center;
 }
 /* Block controllers is a row of tab-like buttons on the edge of the config panel */
 .block-settings-tab {
@@ -247,78 +266,59 @@ body {
 .svg-clear {
   pointer-events: none;
   user-select: none;
-  -webkit-user-select: none;
-  /* Chrome/Safari */
+  -webkit-user-select: none; /* Chrome/Safari */
 }
 .function-text {
   width: 80px;
   height: 80px;
-  font-size: 22px;
+  font-size:22px;
   font-weight: bold;
   fill: #D6E2FE;
-  font-family: "helvetica";
+  font-family:"helvetica";
   pointer-events: none;
   stroke-width: 0;
 }
 @keyframes shadowFadeIn {
-  from {
-    opacity: 0.0;
-  }
-  to {
-    opacity: 0.4;
-  }
+    from{opacity:0.0;}
+    to{opacity:0.4;}
 }
 @keyframes outShadowFadeIn {
-  from {
-    opacity: 0.0;
-  }
-  to {
-    opacity: 0.15;
-  }
+    from{opacity:0.0;}
+    to{opacity:0.15;}
 }
 .shadow-block {
-  opacity: 0.4;
-  fill: #43A047;
+  opacity:0.4;
+  fill: @block-shadow-color;
   animation: shadowFadeIn 0.35s ease;
 }
 .shadow-block-outsnap {
-  opacity: 0.15;
-  fill: #43A047;
+  opacity:0.15;
+  fill: @block-shadow-color;
   animation: outShadowFadeIn 0.35s ease;
 }
 @keyframes shadowFadeOut {
-  from {
-    opacity: 0.4;
-  }
-  to {
-    opacity: 0.0;
-  }
+    from{opacity:0.4;}
+    to{opacity:0.0;}
 }
 @keyframes outShadowFadeOut {
-  from {
-    opacity: 0.15;
-  }
-  to {
-    opacity: 0.0;
-  }
+    from{opacity:0.15;}
+    to{opacity:0.0;}
 }
 .shadow-block-leave {
-  opacity: 0.0;
-  fill: #43A047;
+  opacity:0.0;
+  fill: @block-shadow-color;
   animation: shadowFadeOut 0.35s ease;
 }
 .shadow-block-leave-outsnap {
-  opacity: 0.0;
-  fill: #43A047;
+  opacity:0.0;
+  fill: @block-shadow-color;
   animation: outShadowFadeOut 0.35s ease;
 }
 button {
-  touch-action: none;
-  /* prevents any screen bounce on android */
+  touch-action: none; /* prevents any screen bounce on android */
 }
 textarea {
-  touch-action: none;
-  /* prevents any screen bounce on android */
+  touch-action: none; /* prevents any screen bounce on android */
 }
 body {
   margin: 0;
@@ -358,7 +358,7 @@ label input[type="checkbox"] + .label-text:before {
   font-style: normal;
   font-weight: normal;
   font-variant: normal;
-  font-size: 25px;
+  font-size:25px;
   text-transform: none;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
@@ -376,39 +376,26 @@ label input[type="checkbox"]:disabled + .label-text {
   color: #aaa;
 }
 label input[type="checkbox"]:disabled + .label-text:before {
-  content: "f096";
-  /* square-o */
+  content: "f096";  /* square-o */
   color: #ccc;
 }
 @keyframes toUnchecked {
-  0% {
-    transform: scale(0.9);
-  }
-  60% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
+  0% {transform: scale(0.9);}
+  60% {transform: scale(1.1);}
+  100% {transform: scale(1);}
 }
 @keyframes toChecked {
-  0% {
-    transform: scale(0.9);
-  }
-  60% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
+  0% {transform: scale(0.9);}
+  60% {transform: scale(1.1);}
+  100% {transform: scale(1);}
 }
 /* teak form is for system wide dialogs that slide in from the top */
 .pulldown {
-  width: 14em;
+  width:14em;
   transition: transform .4s ease;
 }
 .pulldown.opened {
-  width: 14em;
+  width:14em;
   transform: translate(0, 0%);
 }
 .pulldown.closed {
@@ -418,14 +405,13 @@ label input[type="checkbox"]:disabled + .label-text:before {
   /* setting dialogs */
   background-color: #75DCE7;
   border-radius: 10px;
-  box-sizing: border-box;
+  box-sizing:border-box;
   box-shadow: 1px 4px 5px 2px rgba(0, 0, 0, 0.2);
-  font-family: "helvetica";
-  color: #33691E;
-  font-size: 20px;
-  padding: 20px;
-  touch-action: none;
-  /* prevents any screen bounce on android */
+  font-family:"helvetica";
+  color:#33691E;
+  font-size:20px;
+  padding:20px;
+  touch-action: none; /* prevents any screen bounce on android */
 }
 .teakform button {
   border: 2px solid #06a3e9;
@@ -438,7 +424,7 @@ label input[type="checkbox"]:disabled + .label-text:before {
 }
 .list-box-shell {
   font-family: "helvetica";
-  height: 97%;
+  height:97%;
   border-radius: 6px;
   margin-left: -1px;
   margin-right: -1px;
@@ -449,8 +435,8 @@ label input[type="checkbox"]:disabled + .label-text:before {
   color: #33691E;
   font-size: 30px;
   user-select: none;
-  display: block;
-  overflow: scroll;
+  display:block;
+  overflow:scroll;
 }
 .list-item-selected {
   background-color: #81C784;
@@ -461,134 +447,103 @@ label input[type="checkbox"]:disabled + .label-text:before {
   list-style: none;
   padding-left: 0px;
 }
-.calcButtons {
+.calcButtons{
   fill: #81C784;
   stroke: #1B5E20;
-  stroke-width: 2;
+  stroke-width:2;
 }
-.beatsButtons {
+.beatsButtons{
   fill: #81C784;
   stroke: #1B5E20;
-  stroke-width: 2;
+  stroke-width:2;
 }
 /* actton dot are 'bottons' along the top of the canvas */
 .action-dot {
   transition: fill 0.2s ease;
   fill: #F6DDCC;
 }
-.action-dot-underlay {
+.action-dot-underlay{
   transition: fill 0.2s ease;
-  fill: #F2CDB5;
+  fill: @action-glyph-bcolor;
 }
-.action-dot-rect-pages {
-  fill: #F2CDB5;
+.action-dot-rect-pages{
+  fill: @action-glyph-bcolor;
   height: 400px;
-  -webkit-animation: outpages 0.4s ease;
-  /* Safari 4.0 - 8.0 */
+  -webkit-animation: outpages 0.4s ease; /* Safari 4.0 - 8.0 */
   animation: outpages 0.4s ease;
 }
 @-webkit-keyframes outpages {
-  from {
-    height: 0px;
-  }
-  to {
-    height: 400px;
-  }
+  from   {height:0px;}
+  to {height:400px;}
 }
+
 /* Standard syntax */
 @keyframes outpages {
-  from {
-    height: 0px;
-  }
-  to {
-    height: 400px;
-  }
+  from   {height:0px;}
+  to {height:400px;}
 }
-.action-dot-rect-remove-pages {
-  fill: #F2CDB5;
+.action-dot-rect-remove-pages{
+  fill: @action-glyph-bcolor;
   height: 0px;
-  -webkit-animation: inpages 0.45s ease;
-  /* Safari 4.0 - 8.0 */
+  -webkit-animation: inpages 0.45s ease; /* Safari 4.0 - 8.0 */
   animation: inpages 0.45s ease;
 }
 @-webkit-keyframes inpages {
-  from {
-    height: 400px;
-  }
-  to {
-    height: 0px;
-  }
+  from  {height:400px;}
+  to {height:0px;}
 }
+
 /* Standard syntax */
 @keyframes inpages {
-  from {
-    height: 400px;
-  }
-  to {
-    height: 0px;
-  }
+  from   {height:400px;}
+  to {height:0px;}
 }
-.action-dot-rect-edit {
-  fill: #F2CDB5;
+
+.action-dot-rect-edit{
+  fill: @action-glyph-bcolor;
   height: 320px;
-  -webkit-animation: outedit 0.45s ease;
-  /* Safari 4.0 - 8.0 */
+  -webkit-animation: outedit 0.45s ease; /* Safari 4.0 - 8.0 */
   animation: outedit 0.45s ease;
 }
 @-webkit-keyframes outedit {
-  from {
-    height: 0px;
-  }
-  to {
-    height: 320px;
-  }
+  from   {height:0px;}
+  to {height:320px;}
 }
+
 /* Standard syntax */
 @keyframes outedit {
-  from {
-    height: 0px;
-  }
-  to {
-    height: 320px;
-  }
+  from   {height:0px;}
+  to {height:320px;}
 }
-.action-dot-rect-remove-edit {
-  fill: #F2CDB5;
+.action-dot-rect-remove-edit{
+  fill: @action-glyph-bcolor;
   height: 0px;
-  -webkit-animation: inedit 0.45s ease;
-  /* Safari 4.0 - 8.0 */
+  -webkit-animation: inedit 0.45s ease; /* Safari 4.0 - 8.0 */
   animation: inedit 0.45s ease;
 }
 @-webkit-keyframes inedit {
-  from {
-    height: 320px;
-  }
-  to {
-    height: 0px;
-  }
+  from   {height:320px;}
+  to {height:0px;}
 }
+
 /* Standard syntax */
 @keyframes inedit {
-  from {
-    height: 320px;
-  }
-  to {
-    height: 0px;
-  }
+  from {height:320px;}
+  to   {height:0px;}
 }
 .action-dot.switch-bg {
   /*fill: #4DD0E1; */
   fill: #B3E5FC;
 }
 .action-dot-text {
-  fill: #FF7043;
+  fill: @action-glyph-color;
   font-family: FontAwesome;
   font-size: 36px;
   text-anchor: middle;
   pointer-events: none;
 }
 .action-dot-doc-label {
-  fill: #FF7043;
+  fill: @action-glyph-color;
   font-family: "helvetica";
   font-size: 24px;
   text-anchor: middle;
@@ -597,7 +552,7 @@ label input[type="checkbox"]:disabled + .label-text:before {
 .error {
   color: red;
 }
-.numeric-display {
+.numeric-display{
   width: 230px;
   height: 30px;
   border-radius: 8px;
@@ -605,9 +560,9 @@ label input[type="checkbox"]:disabled + .label-text:before {
   font-size: 24px;
   pointer-events: auto;
 }
-.numeric-display-half {
+.numeric-display-half{
   display: inline-block;
-  float: left;
+  float:left;
   width: 110px;
   height: 30px;
   border-radius: 8px;
@@ -615,10 +570,10 @@ label input[type="checkbox"]:disabled + .label-text:before {
   font-size: 24px;
   pointer-events: auto;
 }
-.beats-display {
+.beats-display{
   display: inline-block;
-  float: left;
-  margin-left: 10px;
+  float:left;
+  margin-left:10px;
   width: 110px;
   height: 30px;
   border-radius: 8px;
@@ -626,45 +581,45 @@ label input[type="checkbox"]:disabled + .label-text:before {
   font-size: 24px;
   pointer-events: auto;
 }
-.selectedDisplay {
+.selectedDisplay{
   background-color: #ffc570;
 }
-.block-motor-text {
+.block-motor-text{
   font-family: 'FontAwesome', "helvetica";
-  font-size: 12px;
-  stroke-width: 0;
+  font-size:12px;
+  stroke-width:0;
 }
-.block-motor-text-duration {
+.block-motor-text-duration{
   font-family: 'FontAwesome', "helvetica";
-  font-size: 20px;
-  stroke-width: 0;
+  font-size:20px;
+  stroke-width:0;
 }
-.block-wait-text {
+.block-wait-text{
   font-family: 'FontAwesome', "helvetica";
-  font-size: 20px;
-  stroke-width: 0;
+  font-size:20px;
+  stroke-width:0;
 }
-.block-twomotor-text {
+.block-twomotor-text{
   font-family: 'FontAwesome', "helvetica";
-  font-size: 14px;
-  stroke-width: 0;
+  font-size:14px;
+  stroke-width:0;
 }
-.block-servo-text {
+.block-servo-text{
   font-family: "helvetica";
-  font-size: 20px;
-  stroke-width: 0;
+  font-size:20px;
+  stroke-width:0;
 }
-.block-flowhead-loop {
+.block-flowhead-loop{
   font-family: FontAwesome;
   font-size: 35px;
-  fill: #FFB74D;
+  fill: @block-glyph-color;
 }
-.block-flowhead-count {
+.block-flowhead-count{
   font-family: "helvetica";
-  font-size: 20px;
-  stroke-width: 0;
+  font-size:20px;
+  stroke-width:0;
 }
-.area {
+.area{
   margin-top: 5px;
 }
 /* the slider bar */
@@ -676,11 +631,14 @@ label input[type="checkbox"]:disabled + .label-text:before {
   background-color: #873600;
   border-radius: 0.5em;
   box-sizing: border-box;
-  padding-top: 3.5em;
+  padding-top:3.5em;
+
   font-size: 8vmin;
+
   -ms-touch-action: none;
-  touch-action: none;
+      touch-action: none;
 }
+
 /* the slider handle */
 .slider:before {
   content: "";
@@ -693,113 +651,115 @@ label input[type="checkbox"]:disabled + .label-text:before {
   border: solid 0.25em #f4af41;
   border-radius: 2em;
   background-color: inherit;
+
   box-sizing: border-box;
 }
+
 /* display the value */
 .slider:after {
   content: attr(data-value);
   position: absolute;
   top: -1.5em;
   width: 2em;
-  line-height: 1em;
+  line-height:1em;
   margin-left: 0em;
   text-align: center;
   font-family: "helvetica";
 }
 .sliderLeft {
   left: 2em;
-  position: relative;
-  float: left;
-  display: inline-block;
+  position:relative;
+  float:left;
+  display:inline-block;
 }
 .sliderRight {
   right: 2em;
-  position: relative;
-  float: right;
-  display: inline-block;
+  position:relative;
+  float:right;
+  display:inline-block;
 }
 .driverBackground {
   position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 100%;
-  height: 100%;
+  top:0px;
+  left:0px;
+  width:100%;
+  height:100%;
   background-color: #FFF8E1;
 }
 .debugBackground {
   position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 100%;
-  height: 100%;
+  top:0px;
+  left:0px;
+  width:100%;
+  height:100%;
   background-color: #4F5659;
 }
 .exitGroup {
-  background-color: #F2CDB5;
+  background-color: @action-glyph-bcolor;
   position: absolute;
-  top: 20px;
-  left: calc(0%);
+  top:20px;
+  left: calc(50% - 50px);
   position: relative;
-  height: 100px;
+  height:100px;
   width: 100px;
   border-radius: 100px;
 }
 .debugExitGroup {
   background-color: #FF3F4A;
   position: absolute;
-  top: 5px;
+  top:5px;
   left: calc(20px);
   position: relative;
-  height: 50px;
+  height:50px;
   width: 50px;
   border-radius: 100px;
 }
 .debugWindow {
-  width: calc(80%);
-  height: 620px;
-  position: relative;
+  width: calc(100% - 20px);
+  height:620px;
+  position:relative;
   top: 10px;
-  left: 10px;
-  background-color: #020602;
+  left:10px;
+  background-color: @console-text-bcolor;
   border-radius: 10px;
 }
-.debug-log {
+.debug-log{
   font-family: "courier new";
   font-size: 35px;
-  height: 600px;
-  width: calc(82%);
-  color: #00FF12;
-  position: relative;
+  height:600px;
+  width: calc(100% - 18px);
+  color:@console-text-color;
+  position:relative;
   top: 10px;
-  left: 15px;
+  left:15px;
   overflow: auto;
   white-space: pre;
 }
 .driver-x {
-  color: #FF7043;
+  color: @action-glyph-color;
   font-size: 100px;
   position: relative;
   text-align: center;
   left: 10px;
-  bottom: 5px;
+  bottom:5px;
 }
 .driver-x-debug {
-  color: #FF7043;
+  color: @action-glyph-color;
   font-size: 50px;
   position: relative;
   text-align: center;
   left: 5px;
-  bottom: 2px;
+  bottom:2px;
 }
 .drive-diagnostics {
   font-family: 'helvetica';
-  position: absolute;
-  left: calc(-100%);
-  top: 200px;
+  position:absolute;
+  left:calc(50% - 150px);
+  top:200px;
 }
-.commented {
+.commented{
   fill: #fff;
 }
-.text-buttons {
+.text-buttons{
   font-family: 'helvetica';
 }

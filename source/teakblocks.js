@@ -686,15 +686,14 @@ tbe.FunctionBlock.prototype.isOnScreen = function() {
 
 // Change the element class to trigger CSS changes.
 tbe.FunctionBlock.prototype.hilite = function(state) {
+  // TODO looks like there is more than one bring to front
+  // unify the function and give it a better name.
   if (state) {
     // Bring highlighted block to top. Blocks don't normally
     // overlap, so z plane is not important. But blocks
-    // that are being dragged need to float above one on
+    // that are being dragged need to float above ones on
     // the diagram.
     tbe.svg.appendChild(this.svgGroup);
-    this.svgRect.setAttribute('class', 'function-block-dragging');
-  } else {
-    this.svgRect.setAttribute('class', 'function-block');
   }
 };
 

@@ -26,7 +26,6 @@ var isRegularBrowser = false;
 function deviceReady() {
 
   var tbe = require('./teakblocks.js');
-  var tf = require('./teak-forms.js');
   var ko = require('knockout');
   var Clipboard = require('clipboard');
   var tt = require('./teaktext.js');
