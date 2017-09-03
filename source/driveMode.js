@@ -58,7 +58,7 @@ module.exports = function(){
   };
 
   // Diagnostics include the text display in the center of the page.
-  driveMode.startDiagnostics = function() {
+  driveMode.startDiagnostics = function(root) {
     console.log('starting diagnostics');
 
     var div = document.createElement('div');
@@ -85,7 +85,6 @@ module.exports = function(){
         <h1 class="drive-encoderR svg-clear">Right Encoder: 100</h1-->
     `;
     // Insert the diagnostics div into the overlay mode div.
-    var root = document.getElementById('tbe-overlay-mode');
     root.appendChild(div);
   };
 
@@ -145,9 +144,9 @@ module.exports = function(){
 
   driveMode.startDriveMode = function(dom, tbe) {
     driveMode.tbe = tbe;
-    driveMode.applyBackground();
+    driveMode.applyBackground(dom);
     driveMode.buildSlider(dom);
-    driveMode.startDiagnostics();
+    driveMode.startDiagnostics(dom);
     driveMode.updateSlider();
   };
 

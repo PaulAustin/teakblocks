@@ -72,7 +72,7 @@ module.exports = function(){
   // TODO: startDebug/startDebugMode are similar names and can be confusing.
   debugMode.startDebugMode = function(dom, tbe){
     debugMode.tbe = tbe;
-    debugMode.applyBackground();
+    debugMode.applyBackground(dom);
     debugMode.startDebug(dom);
     debugMode.updateDebug();
     // var div = document.createElement('div');
