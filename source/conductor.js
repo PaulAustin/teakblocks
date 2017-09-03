@@ -62,9 +62,22 @@ module.exports = function () {
       for (var i = 0; i < conductor.runningBlocks.length; i++) {
         var block = conductor.runningBlocks[i];
         if (block !== null) {
-          if (block.name === 'tail') {
-            block = block.flowHead;
+          if(conductor.loopCount === undefined && block.isLoopHead()){
+            conductor.loopCount = block.controllerSettings.data.duration;
           }
+
+          if (block.name === 'tail' && conductor.loopCount > 1) {
+            block = block.flowHead;
+            conductor.loopCount -= 1;
+          } else if(block.name === 'tail' && conductor.loopCount === 1) {
+            conductor.loopCount = undefined;
+            if(block.next !== null){
+              block = block.next;
+            } else {
+              conductor.stopAll();
+            }
+          }
+
           if (block !== null && block.name === 'loop') {
             block = block.next;
           }
