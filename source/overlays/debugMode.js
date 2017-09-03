@@ -23,7 +23,7 @@ SOFTWARE.
 module.exports = function(){
 
   var debugMode = {};
-  var ble = require('./bleConnections.js');
+  var ble = require('./../bleConnections.js');
 
   debugMode.applyBackground = function(root){
     var div = document.createElement('div');

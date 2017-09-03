@@ -24,7 +24,7 @@ module.exports = function(){
 
   var driveMode = {};
   var interact = require('interact.js');
-  var conductor = require('./conductor.js');
+  var conductor = require('./../conductor.js');
   driveMode.pastRight = 0;
   driveMode.pastLeft = 0;
 

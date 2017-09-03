@@ -35,8 +35,8 @@ var teakselection = require('./teakselection');
 var actionButtons = require('./actionButtons.js');
 var defaultFiles = require('./defaultFiles.js');
 var conductor = require('./conductor.js');
-var driveMode = require('./driveMode.js');
-var debugMode = require('./debugMode.js');
+var driveMode = require('./overlays/driveMode.js');
+var debugMode = require('./overlays/debugMode.js');
 var settingsMode = require('./overlays/settings.js');
 
 var tbe = {};
