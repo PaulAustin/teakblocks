@@ -698,7 +698,7 @@ label input[type="checkbox"]:disabled + .label-text:before {
   background-color: @action-glyph-bcolor;
   position: absolute;
   top:20px;
-  left: calc(50% - 50px);
+  left: calc(~'50% - 50px');//50% - 50px;//calc(50% - 50px);
   position: relative;
   height:100px;
   width: 100px;
@@ -708,14 +708,14 @@ label input[type="checkbox"]:disabled + .label-text:before {
   background-color: #FF3F4A;
   position: absolute;
   top:5px;
-  left: calc(20px);
+  left: 20px;
   position: relative;
   height:50px;
   width: 50px;
   border-radius: 100px;
 }
 .debugWindow {
-  width: calc(100% - 20px);
+  width: calc(~'100% - 20px');
   height:620px;
   position:relative;
   top: 10px;
@@ -727,7 +727,7 @@ label input[type="checkbox"]:disabled + .label-text:before {
   font-family: "courier new";
   font-size: 35px;
   height:600px;
-  width: calc(100% - 18px);
+  width: calc(~'100% - 18px');
   color:@console-text-color;
   position:relative;
   top: 10px;
@@ -754,7 +754,7 @@ label input[type="checkbox"]:disabled + .label-text:before {
 .drive-diagnostics {
   font-family: 'helvetica';
   position:absolute;
-  left:calc(50% - 150px);
+  left:calc(~'50% - 150px');
   top:200px;
 }
 .commented{
