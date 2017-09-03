@@ -55,6 +55,17 @@ module.exports = function(){
     exitGroup.appendChild(exit);
     exitGroup.innerHTML += `<i class="fa fa-times driver-x svg-clear" aria-hidden="true"></i>`;
     root.appendChild(exitGroup);
+
+    var stopGroup = document.createElement('div');
+    stopGroup.setAttribute('class', 'stopGroup');
+    stopGroup.setAttribute('id', 'stopGroup');
+    var stop = document.createElement('div');
+    stop.setAttribute('class', 'driver-stop');
+    stop.setAttribute('id', 'driver-stop');
+    stopGroup.onclick = conductor.stopAll;
+    stopGroup.appendChild(stop);
+    stopGroup.innerHTML += `<i class="fa fa-stop driver-stop-icon svg-clear" aria-hidden="true"></i>`;
+    root.appendChild(stopGroup);
   };
 
   // Diagnostics include the text display in the center of the page.
@@ -165,6 +176,9 @@ module.exports = function(){
 
     var exit = document.getElementById('exitGroup');
     exit.parentNode.removeChild(exit);
+
+    var stop = document.getElementById('stopGroup');
+    stop.parentNode.removeChild(stop);
 
     driveMode.tbe.loadDoc('docA');
   };

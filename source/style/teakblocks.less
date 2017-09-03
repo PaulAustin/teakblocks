@@ -625,6 +625,7 @@ label input[type="checkbox"]:disabled + .label-text:before {
 /* the slider bar */
 .slider {
   position: relative;
+  top:80px;
   width: 2em;
   height: 8em;
   margin: 1.5em auto;
@@ -698,7 +699,21 @@ label input[type="checkbox"]:disabled + .label-text:before {
   background-color: @action-glyph-bcolor;
   position: absolute;
   top:20px;
-  left: calc(~'50% - 50px');//50% - 50px;//calc(50% - 50px);
+  float: left;
+  left: 40%;
+  //left: calc(~'50% + 150px');//50% - 50px;//calc(50% - 50px);
+  position: relative;
+  height:100px;
+  width: 100px;
+  border-radius: 100px;
+}
+.stopGroup {
+  background-color: @action-glyph-bcolor;
+  position: absolute;
+  top:20px;
+  float: right;
+  right: 40%;
+  //left: calc(~'50% - 150px');//50% - 50px;//calc(50% - 50px);
   position: relative;
   height:100px;
   width: 100px;
@@ -742,6 +757,14 @@ label input[type="checkbox"]:disabled + .label-text:before {
   text-align: center;
   left: 10px;
   bottom:5px;
+}
+.driver-stop-icon {
+  color: @action-glyph-color;
+  font-size: 70px;
+  position: relative;
+  text-align: center;
+  left: 20px;
+  bottom:-15px;
 }
 .driver-x-debug {
   color: @action-glyph-color;
