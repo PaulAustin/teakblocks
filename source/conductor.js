@@ -98,7 +98,7 @@ module.exports = function () {
 
             // Mark the current block as running
             var id = block.first;
-            if(id.name === 'identity' && !block.isCommented()){
+            if(id.name === 'identity'){ // && !block.isCommented()
               conductor.tbe.svg.appendChild(block.svgGroup);
               block.svgRect.classList.add('running-block');
             }
@@ -183,9 +183,9 @@ module.exports = function () {
   conductor.playOne = function(block) {
     var first = block.first;
 
-    if(block.isCommented()){
-      return;
-    }
+    //if(block.isCommented()){
+    //  return;
+    //}
 
     if (first.name === 'identity') {
       var botName = first.controllerSettings.data.deviceName;

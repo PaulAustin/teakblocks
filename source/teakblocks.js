@@ -1310,13 +1310,13 @@ tbe.configInteractions = function configInteractions() {
          return;
        }
 
-       if(!block.isPaletteBlock){
+       /*if(!block.isPaletteBlock){
          if(!block.isCommented()){
            block.svgRect.classList.add('commented');
          } else{
            block.svgRect.classList.remove('commented');
          }
-       }
+       }*/
        // Bring up config; dont let drag start.
        //thisTbe.components.blockSettings.tap(block);
     })
