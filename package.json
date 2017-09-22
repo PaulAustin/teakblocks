@@ -4,6 +4,7 @@
   "description": "A diagram editor for teak blocks",
   "main": "teakblocks.js",
   "scripts": {
+    "build-doc": "documentation build source/index.js -f md -o doc/index.md",
     "watch-dev":"npm watch-css & npm run wify & npm run http",
     "watch-css": "catw -c 'lessc -' 'source/style/*.less' -o html_app/www/style.css -v",
     "test": "echo \"Error: no test specified\" && exit 1",

@@ -26,25 +26,45 @@ var svgBuilder = {};
 svgBuilder.ns = 'http://www.w3.org/2000/svg';
 svgBuilder.xlinkns = 'http://www.w3.org/1999/xlink';
 
+/**
+ * A class for building SVG path descriptions
+ */
 svgBuilder.pathBuilder = {
-  // Very simple svg tools for the teak block editor needs.
+  /**
+  * Build a path move operation
+  */
   move: function (dx, dy) {
     return 'm' + dx + ' ' + dy + ' ';
   },
-  hline: function(length) {
-    return 'h' + length + ' ';
+  /**
+  * Build a path line operation
+  */
+  hline: function(dx) {
+    return 'h' + dx + ' ';
   },
-  vline: function(length) {
-    return 'v' + length + ' ';
+  /**
+  * Build a path line operation
+  */
+  vline: function(dy) {
+    return 'v' + dy + ' ';
   },
+  /**
+  * Build a path line operation
+  */
   line: function(dx, dy) {
     return 'l' + dx + ' ' + dy + ' ';
   },
+  /**
+  * Build a path arc operation more details.
+  */
   arc: function(radius, degrees, large, sweep, dx, dy) {
     var text = 'a' + radius + ' ' + radius + ' ' + degrees;
     text += ' ' + large + ' ' + sweep + ' ' + dx + ' ' + dy + ' ';
     return text;
   },
+  /**
+  * Build a path close operation.
+  */
   close: function() {
     return 'z ';
   }
