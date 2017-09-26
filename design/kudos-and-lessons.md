@@ -478,3 +478,29 @@ There is quite likely a hint of smalltalk here.
 [stackoverflow discussion](http://stackoverflow.com/questions/26449512/how-to-create-a-signed-apk-file-using-cordova-command-line-interface)
 
  keytool -genkey -v -keystore teakblocks.keystore -alias teakblocks -keyalg RSA -keysize 2048 -validity 10000
+
+
+## September - the end of it no less.
+### looked at documentation tools
+JSDoc, documentation.js, yuidoc, ESDoc. pretty sad state of affairs. though not for lack of a
+lot of work. In many cases
+is seem more like the tools ignore the the language and just provide an ugly way
+clutter code with parallel outline of information that may or might not be related to the source.
+not of the extract the sources structure. Doxygen for C++ provides that as a base and then
+hangs user level comments on the generated text. Oh well different goals.
+
+### checked out basic documentation
+1. //* /** or GT!--* (HTML comment) begin a block of external comments
+This is a comment that is intended to be extracted.
+2. The outline of generated doc has the following outline
+ (a) file system - directories,
+ (b) file system
+ (c) indentation in a file
+
+After a comment perhaps a preprocessor can guess at the sections intent.
+ (a) funciton - next line contains 'function'
+ (b) simple constant
+ (c) module   - module.export
+ (d) object   -
+ (e) function flow (body of function that explains how it works)
+ (f) lambdas (perhaps)

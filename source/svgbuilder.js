@@ -20,8 +20,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/** @module svgBuilder */
+
 module.exports = function (){
 
+  /** @class svgBuilder */
 var svgBuilder = {};
 svgBuilder.ns = 'http://www.w3.org/2000/svg';
 svgBuilder.xlinkns = 'http://www.w3.org/1999/xlink';
@@ -29,47 +32,38 @@ svgBuilder.xlinkns = 'http://www.w3.org/1999/xlink';
 /**
  * A class for building SVG path descriptions
  */
+/** @summary  pathBuilder */
 svgBuilder.pathBuilder = {
-  /**
-  * Build a path move operation
-  */
+  //* relative pen relocation with no drawing
   move: function (dx, dy) {
     return 'm' + dx + ' ' + dy + ' ';
   },
-  /**
-  * Build a path line operation
-  */
-  hline: function(dx) {
+  //* realtive horizontal line
+  hline: function hline(dx) {
     return 'h' + dx + ' ';
   },
-  /**
-  * Build a path line operation
-  */
+  //* relative vertical line
   vline: function(dy) {
     return 'v' + dy + ' ';
   },
-  /**
-  * Build a path line operation
-  */
+  //* relative straight line
   line: function(dx, dy) {
     return 'l' + dx + ' ' + dy + ' ';
   },
-  /**
-  * Build a path arc operation more details.
-  */
+  //* arc path element
   arc: function(radius, degrees, large, sweep, dx, dy) {
     var text = 'a' + radius + ' ' + radius + ' ' + degrees;
     text += ' ' + large + ' ' + sweep + ' ' + dx + ' ' + dy + ' ';
     return text;
   },
-  /**
-  * Build a path close operation.
-  */
+  //* path closing
   close: function() {
     return 'z ';
   }
 };
 
+
+/** @function */
 svgBuilder.createUse = function createSymbolUse(elementClass, symbolName) {
   var elt  = document.createElementNS(svgBuilder.ns, 'use');
   elt.setAttribute('class', elementClass);

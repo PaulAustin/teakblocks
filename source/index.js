@@ -20,10 +20,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Load cordova.js if not in regular browser, and then set up initialization.
+//* A few place need to know if in browser or cordova/phone-gap app.
 var isRegularBrowser = false;
 
-
+//* deviceReady -- called in a cordova based app once the container application
 function deviceReady() {
 
   var tbe = require('./teakblocks.js');
@@ -102,8 +102,6 @@ function deviceReady() {
     {'label': fastr.settings, 'command': 'settings'}
   ];
 
-  //var newButtons = [];
-
   tbe.deleteRay = null;
   tbe.commands = {
     //'settings': function() { tf.showHide(tbe.components.appSettings); },
@@ -129,7 +127,7 @@ function deviceReady() {
     'save': function(){ var currentDocText = teaktext.blocksToText(tbe.forEachDiagramChain); save.saveFile(tbe.currentDoc, currentDocText); }
   };
 
-
+  // Construct the clipboard
   var clipboard = new Clipboard('.copy-button', {
     text: function() {
         return tt.blocksToText(tbe.forEachDiagramChain);
@@ -159,6 +157,7 @@ function deviceReady() {
     }
   };
 
+ // Add the main command buttons, to left, middel and right locations.
  tbe.addPalette(package1);
  var actionButtonObj = [
    {'alignment': 'L', 'position': 1, 'label': fastr.play, 'command': 'play', 'tweakx': 4},
@@ -172,9 +171,7 @@ function deviceReady() {
  ];
 
  tbe.actionButtons = actionButtonObj;
-
  actionButtons.addActionButtons(actionButtonObj, tbe);
-
  document.body.onresize = tbe.updateScreenSizes; // Buttons/screen resizing
 
  // The conductor coordinates the score managed by the editor and the collection
@@ -182,16 +179,19 @@ function deviceReady() {
  conductor.attachToScoreEditor(tbe);
 }
 
+// Determine if page laucnhed in broswer, or cordova/phone-gap app.
 isRegularBrowser =
   document.URL.indexOf('http://') >= 0 ||
   document.URL.indexOf('https://') >= -0;
 
 if (!isRegularBrowser) {
-  document.addEventListener('deviceready', deviceReady, false);
   // Guess that it is Cordova then. Not intened to run directly from file:
+  document.addEventListener('deviceready', deviceReady, false);
   var script = document.createElement('script');
+  // Load cordova.js if not in regular browser, and then set up initialization.
   script.setAttribute('src','./cordova.js');
   document.head.appendChild(script);
 } else {
+  // If in regular broswer, call deviceReady directly.
   deviceReady();
 }

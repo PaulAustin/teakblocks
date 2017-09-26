@@ -20,19 +20,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-module.exports = function (){
+// Module for managing BLE connections and lists of devices found.
+module.exports = function factory(){
 
 var bleConnection = {};
 bleConnection.messages = [];
 bleConnection.observerCallback = null;
 
-// This is Nordic's UART service.
+// GUIDs for Nordic BLE UART services.
 var nordicUARTservice = {
     serviceUUID: '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
     txCharacteristic: '6e400002-b5a3-f393-e0a9-e50e24dcca9e', // transmit is from the phone's perspective
     rxCharacteristic: '6e400003-b5a3-f393-e0a9-e50e24dcca9e'  // receive is from the phone's perspective
 };
 
+// Convert a string to an array of int (int8s).
 function stringToBuffer(str) {
   var array = new Uint8Array(str.length);
   for (var i = 0, l = str.length; i < l; i++) {
@@ -41,6 +43,7 @@ function stringToBuffer(str) {
   return array.buffer;
 }
 
+// Convert an array ints to a string.
 function bufferToString(buffer) {
   return String.fromCharCode.apply(null, new Uint8Array(buffer));
 }

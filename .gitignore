@@ -21,3 +21,6 @@ html_app/.DS_Store
 html_app/.DS_Store
 
 html_app/www/style.css
+
+docs/*
+doc/*
