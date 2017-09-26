@@ -20,6 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+// Drive mode overlay allows users to diretly control the motors and other IO.
 module.exports = function(){
 
   var driveMode = {};
@@ -27,6 +28,14 @@ module.exports = function(){
   var conductor = require('./../conductor.js');
   driveMode.pastRight = 0;
   driveMode.pastLeft = 0;
+
+  driveMode.start = function(dom, tbe) {
+    driveMode.tbe = tbe;
+    driveMode.applyBackground(dom);
+    driveMode.buildSlider(dom);
+    driveMode.startDiagnostics(dom);
+    driveMode.updateSlider();
+  };
 
   driveMode.buildSlider = function(root) {
     var div = document.createElement('div');
@@ -153,14 +162,8 @@ module.exports = function(){
     , 500);
   };
 
-  driveMode.startDriveMode = function(dom, tbe) {
-    driveMode.tbe = tbe;
-    driveMode.applyBackground(dom);
-    driveMode.buildSlider(dom);
-    driveMode.startDiagnostics(dom);
-    driveMode.updateSlider();
-  };
-
+  // Close the driveMode overlay.
+  // [TODO] sliders should be owned by voerlay so they dont need to be individually removed.
   driveMode.exit = function() {
     clearTimeout(driveMode.timer);
     var sliders = document.getElementsByClassName('slider');

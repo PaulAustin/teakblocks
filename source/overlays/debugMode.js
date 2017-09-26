@@ -20,10 +20,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+
+// An overlay to see log messages and communications
+// between the app and hte robot.
 module.exports = function(){
 
   var debugMode = {};
   var ble = require('./../bleConnections.js');
+
+  debugMode.start = function(dom, tbe) {
+    debugMode.tbe = tbe;
+    debugMode.applyBackground(dom);
+    debugMode.startDebug(dom);
+    debugMode.updateDebug();
+    // var div = document.createElement('div');
+  };
 
   debugMode.applyBackground = function(root){
     var div = document.createElement('div');
@@ -69,16 +80,7 @@ module.exports = function(){
     , 500);
   };
 
-  // TODO: startDebug/startDebugMode are similar names and can be confusing.
-  debugMode.startDebugMode = function(dom, tbe){
-    debugMode.tbe = tbe;
-    debugMode.applyBackground(dom);
-    debugMode.startDebug(dom);
-    debugMode.updateDebug();
-    // var div = document.createElement('div');
-    // exit also
-  };
-
+  /** Close the overlay.  */
   debugMode.exit = function() {
     clearTimeout(debugMode.timer);
 

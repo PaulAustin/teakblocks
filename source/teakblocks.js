@@ -182,7 +182,7 @@ tbe.loadDriveMode = function() {
   tbe.clearStates();
 
   var dom = document.getElementById('tbe-overlay-mode');
-  driveMode.startDriveMode(dom, tbe);
+  driveMode.start(dom, tbe);
 };
 
 tbe.loadDebugMode = function() {
@@ -196,7 +196,7 @@ tbe.loadDebugMode = function() {
 
   var dom = document.getElementById('tbe-overlay-mode');
   // overlays can have a uniform name 'startOverlay'
-  debugMode.startDebugMode(dom, tbe);
+  debugMode.start(dom, tbe);
 };
 
 tbe.loadSettings = function() {
