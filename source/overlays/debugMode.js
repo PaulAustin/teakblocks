@@ -28,20 +28,20 @@ module.exports = function(){
   var ble = require('./../bleConnections.js');
 
   // External function for putting it all together.
-  debugMode.start = function(dom, tbe) {
+  debugMode.start = function(domRoot, tbe) {
     debugMode.tbe = tbe;
-    debugMode.applyBackground(dom);
-    debugMode.startDebug(dom);
+    debugMode.applyBackground(domRoot);
     debugMode.updateDebug();
     // var div = document.createElement('div');
   };
 
   // Construct the DOM for the overlay.
-  debugMode.applyBackground = function(root){
+  debugMode.applyBackground = function(domRoot){
+
     var div = document.createElement('div');
     div.setAttribute('class', 'debugBackground');
     div.setAttribute('id', 'debugBackground');
-    root.appendChild(div);
+    domRoot.appendChild(div);
 
     var exitGroup = document.createElement('div');
     exitGroup.setAttribute('class', 'debugExitGroup');
@@ -52,19 +52,20 @@ module.exports = function(){
     exitGroup.onclick = debugMode.exit;
     exitGroup.appendChild(exit);
     exitGroup.innerHTML += `<i class="fa fa-times driver-x-debug svg-clear" aria-hidden="true"></i>`;
-    root.appendChild(exitGroup);
-  };
+    domRoot.appendChild(exitGroup);
 
-  // Finialize the DOM and insert it into the main page.
-  debugMode.startDebug = function(root){
-    var div = document.createElement('div');
-    div.setAttribute('id', 'debugWindow');
-    div.setAttribute('class', 'debugWindow');
-    div.innerHTML = `
+    var div2 = document.createElement('div');
+    div2.setAttribute('id', 'debugWindow');
+    div2.setAttribute('class', 'debugWindow');
+    div2.innerHTML = `
       <div class="debug-log" id="debug-log"></div>
     `;
-    root.appendChild(div);
+    domRoot.appendChild(div2);
   };
+
+  // Add a messge to the log.
+  debugMode.log = function() {
+  }
 
   // Update the list of messages show in the display.
   debugMode.updateDebug = function() {
@@ -81,7 +82,7 @@ module.exports = function(){
     }
 
     // Prime the timer again.
-    debugMode.timer = setTimeout(function() { debugMode.updateDebug(); }, 500);
+    debugMode.timer = setTimeout(function() { debugMode.updateDebug(); }, 2000);
   };
 
   // Close the overlay.
