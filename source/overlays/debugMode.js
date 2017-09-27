@@ -20,7 +20,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-
 // An overlay to see log messages and communications
 // between the app and hte robot.
 module.exports = function(){
@@ -28,6 +27,7 @@ module.exports = function(){
   var debugMode = {};
   var ble = require('./../bleConnections.js');
 
+  // External function for putting it all together.
   debugMode.start = function(dom, tbe) {
     debugMode.tbe = tbe;
     debugMode.applyBackground(dom);
@@ -36,6 +36,7 @@ module.exports = function(){
     // var div = document.createElement('div');
   };
 
+  // Construct the DOM for the overlay.
   debugMode.applyBackground = function(root){
     var div = document.createElement('div');
     div.setAttribute('class', 'debugBackground');
@@ -54,6 +55,7 @@ module.exports = function(){
     root.appendChild(exitGroup);
   };
 
+  // Finialize the DOM and insert it into the main page.
   debugMode.startDebug = function(root){
     var div = document.createElement('div');
     div.setAttribute('id', 'debugWindow');
@@ -61,26 +63,28 @@ module.exports = function(){
     div.innerHTML = `
       <div class="debug-log" id="debug-log"></div>
     `;
-
     root.appendChild(div);
   };
+
+  // Update the list of messages show in the display.
   debugMode.updateDebug = function() {
     console.log(ble.messages);
 
     var debugConsole = document.getElementById('debug-log');
+
+    // Erase old text.
     debugConsole.innerHTML = '';
 
+    // Replace contents with existing list of messages.
     for(var i = 0; i < ble.messages.length; i++) {
       debugConsole.innerHTML += (ble.messages[i] + '\n');
     }
 
-    debugMode.timer = setTimeout( function() {
-      debugMode.updateDebug();
-    }
-    , 500);
+    // Prime the timer again.
+    debugMode.timer = setTimeout(function() { debugMode.updateDebug(); }, 500);
   };
 
-  /** Close the overlay.  */
+  // Close the overlay.
   debugMode.exit = function() {
     clearTimeout(debugMode.timer);
 
@@ -95,5 +99,4 @@ module.exports = function(){
   };
 
   return debugMode;
-
 }();
