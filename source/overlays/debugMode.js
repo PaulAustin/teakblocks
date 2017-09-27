@@ -30,13 +30,9 @@ module.exports = function(){
   // External function for putting it all together.
   debugMode.start = function(domRoot, tbe) {
     debugMode.tbe = tbe;
-    debugMode.applyBackground(domRoot);
-    debugMode.updateDebug();
-  };
+    debugMode.overlayRoot = domRoot;
 
-  // Construct the DOM for the overlay.
-  debugMode.applyBackground = function(domRoot){
-
+    // Construct the DOM for the overlay.
     domRoot.innerHTML = `
       <div id='debugBackground' class='debugBackground'></div>
       <div id='debugExitGroup' class='debugExitGroup'>
@@ -49,6 +45,9 @@ module.exports = function(){
 
     var exitButton = document.getElementById('debugExitGroup');
     exitButton.onclick = debugMode.exit;
+
+    // Start update function.
+    debugMode.updateDebug();
   };
 
   // Add a messge to the log.
@@ -74,15 +73,8 @@ module.exports = function(){
   // Close the overlay.
   debugMode.exit = function() {
     clearTimeout(debugMode.timer);
-
-    var back = document.getElementById('debugBackground');
-    back.parentNode.removeChild(back);
-
-    var exit = document.getElementById('debugExitGroup');
-    exit.parentNode.removeChild(exit);
-
-    var debugConsole = document.getElementById('debugWindow');
-    debugConsole.parentNode.removeChild(debugConsole);
+    debugMode.overlayRoot.innerHTML = '';
+    debugMode.overlayRoot = null;
   };
 
   return debugMode;
