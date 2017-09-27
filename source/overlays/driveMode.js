@@ -26,14 +26,15 @@ module.exports = function(){
   var driveMode = {};
   var interact = require('interact.js');
   var conductor = require('./../conductor.js');
+  var app = require('./../appMain.js');
+
   driveMode.pastRight = 0;
   driveMode.pastLeft = 0;
 
-  driveMode.start = function(dom, tbe) {
-    driveMode.tbe = tbe;
-    driveMode.applyBackground(dom);
-    driveMode.buildSlider(dom);
-    driveMode.startDiagnostics(dom);
+  driveMode.start = function() {
+    driveMode.applyBackground(app.overlayDom);
+    driveMode.buildSlider(app.overlayDom);
+    driveMode.startDiagnostics(app.overlayDom);
     driveMode.updateSlider();
   };
 
@@ -88,7 +89,7 @@ module.exports = function(){
     var id = null;
     // Look through the blocks on the edit page
     // to find a start block thath is connected.
-    driveMode.tbe.forEachDiagramBlock( function(block){
+    app.tbe.forEachDiagramBlock( function(block){
       if(block.name === 'identity' && block.statusIs(3)){
         id = block.controllerSettings.data.deviceName;
       }
@@ -137,7 +138,7 @@ module.exports = function(){
 
   driveMode.updateSlider = function() {
     var id = null;
-    driveMode.tbe.forEachDiagramBlock( function(block){
+    app.tbe.forEachDiagramBlock( function(block){
       if(block.name === 'identity' && block.statusIs(3)){
         id = block.controllerSettings.data.deviceName;
       }
@@ -183,7 +184,7 @@ module.exports = function(){
     var stop = document.getElementById('stopGroup');
     stop.parentNode.removeChild(stop);
 
-    driveMode.tbe.loadDoc('docA');
+    app.tbe.loadDoc('docA');
   };
 
   return driveMode;

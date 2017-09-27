@@ -20,7 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-module.exports = function (){
+module.exports = function () {
 
 var assert = require('assert');
 var interact = require('interact.js');
@@ -35,9 +35,7 @@ var teakselection = require('./teakselection');
 var actionButtons = require('./actionButtons.js');
 var defaultFiles = require('./defaultFiles.js');
 var conductor = require('./conductor.js');
-var driveMode = require('./overlays/driveMode.js');
-var debugMode = require('./overlays/debugMode.js');
-var settingsMode = require('./overlays/settings.js');
+var app = require('./appMain.js');
 
 var tbe = {};
 
@@ -180,9 +178,7 @@ tbe.loadDriveMode = function() {
   var currentDocText = teakText.blocksToText(tbe.forEachDiagramChain);
   save.saveFile(tbe.currentDoc, currentDocText);
   tbe.clearStates();
-
-  var dom = document.getElementById('tbe-overlay-mode');
-  driveMode.start(dom, tbe);
+  app.driverOverlay.start();
 };
 
 tbe.loadDebugMode = function() {
@@ -193,10 +189,7 @@ tbe.loadDebugMode = function() {
   var currentDocText = teakText.blocksToText(tbe.forEachDiagramChain);
   save.saveFile(tbe.currentDoc, currentDocText);
   tbe.clearStates();
-
-  var dom = document.getElementById('tbe-overlay-mode');
-  // overlays can have a uniform name 'startOverlay'
-  debugMode.start(dom, tbe);
+  app.debugOverlay.start();
 };
 
 tbe.loadSettings = function() {
@@ -208,9 +201,7 @@ tbe.loadSettings = function() {
   var currentDocText = teakText.blocksToText(tbe.forEachDiagramChain);
   save.saveFile(tbe.currentDoc, currentDocText);
   tbe.clearStates();
-
-  var dom = document.getElementById('tbe-overlay-mode');
-  settingsMode.startOverlay(dom);
+  app.settingsOverlay.start();
 };
 
 tbe.nextBlockId = function(prefix) {
@@ -1615,4 +1606,3 @@ tbe.addPalette = function addPalette(palette) {
 
 return tbe;
 }();
-// comment

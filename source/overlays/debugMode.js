@@ -22,18 +22,17 @@ SOFTWARE.
 
 // An overlay to see log messages and communications
 // between the app and hte robot.
-module.exports = function(){
+module.exports = function () {
 
   var debugMode = {};
   var ble = require('./../bleConnections.js');
+  var app = require('./../appMain.js');
 
   // External function for putting it all together.
-  debugMode.start = function(domRoot, tbe) {
-    debugMode.tbe = tbe;
-    debugMode.overlayRoot = domRoot;
+  debugMode.start = function () {
 
     // Construct the DOM for the overlay.
-    domRoot.innerHTML = `
+    app.overlayDom.innerHTML = `
       <div id='debugBackground' class='debugBackground'></div>
       <div id='debugExitGroup' class='debugExitGroup'>
         <div id='debug-exit' class='debug-exit'></div>
@@ -44,6 +43,7 @@ module.exports = function(){
       </div>`;
 
     var exitButton = document.getElementById('debugExitGroup');
+    debugMode.logElement = document.getElementById('debug-log');
     exitButton.onclick = debugMode.exit;
 
     // Start update function.
@@ -51,19 +51,20 @@ module.exports = function(){
   };
 
   // Add a messge to the log.
-  debugMode.log = function() {
-  }
+  debugMode.log = function (text) {
+    debugMode.logElement.innerHTML += text;
+    // TODO need way to trim buffer to a max size (10K??)
+  };
 
   // Update the list of messages show in the display.
   debugMode.updateDebug = function() {
-    var debugConsole = document.getElementById('debug-log');
 
     // Erase old text.
-    debugConsole.innerHTML = '';
+    debugMode.logElement.innerHTML = '';
 
     // Replace contents with existing list of messages.
     for(var i = 0; i < ble.messages.length; i++) {
-      debugConsole.innerHTML += (ble.messages[i] + '\n');
+      debugMode.log(ble.messages[i] + '\n');
     }
 
     // Prime the timer again.
@@ -73,8 +74,7 @@ module.exports = function(){
   // Close the overlay.
   debugMode.exit = function() {
     clearTimeout(debugMode.timer);
-    debugMode.overlayRoot.innerHTML = '';
-    debugMode.overlayRoot = null;
+    app.overlayDom.innerHTML = '';
   };
 
   return debugMode;

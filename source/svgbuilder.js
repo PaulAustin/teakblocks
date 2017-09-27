@@ -22,7 +22,7 @@ SOFTWARE.
 
 /** @module svgBuilder */
 
-module.exports = function (){
+module.exports = function () {
 
   /** @class svgBuilder */
 var svgBuilder = {};
@@ -39,25 +39,25 @@ svgBuilder.pathBuilder = {
     return 'm' + dx + ' ' + dy + ' ';
   },
   //* realtive horizontal line
-  hline: function hline(dx) {
+  hline: function (dx) {
     return 'h' + dx + ' ';
   },
   //* relative vertical line
-  vline: function(dy) {
+  vline: function (dy) {
     return 'v' + dy + ' ';
   },
   //* relative straight line
-  line: function(dx, dy) {
+  line: function (dx, dy) {
     return 'l' + dx + ' ' + dy + ' ';
   },
   //* arc path element
-  arc: function(radius, degrees, large, sweep, dx, dy) {
+  arc: function (radius, degrees, large, sweep, dx, dy) {
     var text = 'a' + radius + ' ' + radius + ' ' + degrees;
     text += ' ' + large + ' ' + sweep + ' ' + dx + ' ' + dy + ' ';
     return text;
   },
   //* path closing
-  close: function() {
+  close: function () {
     return 'z ';
   }
 };
