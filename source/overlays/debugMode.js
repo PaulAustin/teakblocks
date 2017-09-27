@@ -32,35 +32,23 @@ module.exports = function(){
     debugMode.tbe = tbe;
     debugMode.applyBackground(domRoot);
     debugMode.updateDebug();
-    // var div = document.createElement('div');
   };
 
   // Construct the DOM for the overlay.
   debugMode.applyBackground = function(domRoot){
 
-    var div = document.createElement('div');
-    div.setAttribute('class', 'debugBackground');
-    div.setAttribute('id', 'debugBackground');
-    domRoot.appendChild(div);
+    domRoot.innerHTML = `
+      <div id='debugBackground' class='debugBackground'></div>
+      <div id='debugExitGroup' class='debugExitGroup'>
+        <div id='debug-exit' class='debug-exit'></div>
+        <i class="fa fa-times driver-x-debug svg-clear" aria-hidden="true"></i>
+      </div>
+      <div id='debugWindow' class='debugWindow'>
+        <div class="debug-log" id="debug-log"></div>
+      </div>`;
 
-    var exitGroup = document.createElement('div');
-    exitGroup.setAttribute('class', 'debugExitGroup');
-    exitGroup.setAttribute('id', 'debugExitGroup');
-    var exit = document.createElement('div');
-    exit.setAttribute('class', 'debug-exit');
-    exit.setAttribute('id', 'debug-exit');
-    exitGroup.onclick = debugMode.exit;
-    exitGroup.appendChild(exit);
-    exitGroup.innerHTML += `<i class="fa fa-times driver-x-debug svg-clear" aria-hidden="true"></i>`;
-    domRoot.appendChild(exitGroup);
-
-    var div2 = document.createElement('div');
-    div2.setAttribute('id', 'debugWindow');
-    div2.setAttribute('class', 'debugWindow');
-    div2.innerHTML = `
-      <div class="debug-log" id="debug-log"></div>
-    `;
-    domRoot.appendChild(div2);
+    var exitButton = document.getElementById('debugExitGroup');
+    exitButton.onclick = debugMode.exit;
   };
 
   // Add a messge to the log.
@@ -69,8 +57,6 @@ module.exports = function(){
 
   // Update the list of messages show in the display.
   debugMode.updateDebug = function() {
-    console.log(ble.messages);
-
     var debugConsole = document.getElementById('debug-log');
 
     // Erase old text.
