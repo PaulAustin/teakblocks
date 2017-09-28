@@ -23,11 +23,10 @@ SOFTWARE.
 var app = require('./appMain.js');
 
 // Determine if page launched in broswer, or cordova/phone-gap app.
-var isRegularBrowser =
+app.isRegularBrowser =
   document.URL.indexOf('http://') >= 0 ||
   document.URL.indexOf('https://') >= -0;
 
-app.isRegularBrowser = isRegularBrowser;
 if (!app.isRegularBrowser) {
   // Guess that it is Cordova then. Not intened to run directly from file:
   document.addEventListener('deviceready', app.start, false);

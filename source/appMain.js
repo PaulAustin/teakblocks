@@ -24,7 +24,7 @@ module.exports = function () {
 
   var app = {};
 
-  // deviceReady -- called in a cordova based app once the container application
+  // Application main, called once shell is fully up.
   app.start = function () {
     var tbe = require('./teakblocks.js');
     var ko = require('knockout');
