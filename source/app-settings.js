@@ -27,7 +27,6 @@ module.exports = function () {
   var appSettings = {
     showCode: ko.observable(false),
     editorSounds: ko.observable(true),
-    editorXRay: ko.observable(false),
   };
 
   appSettings.insert = function(domRoot) {
@@ -44,9 +43,6 @@ module.exports = function () {
       <label><input type="checkbox" id="editor-sounds" data-bind="checked:editorSounds">
         <span class="label-text">Sound effects</span>
       </label><br><br>
-      <label><input type="checkbox" id="editor-xray" data-bind="checked:editorXRay">
-        <span class="label-text">X-Ray</span>
-      </label>
     </form>
     </div>`;
     */

@@ -23,9 +23,6 @@ SOFTWARE.
 module.exports = function () {
   var actionButtons = {};
   var svgb = require('./svgbuilder.js');
-  // var interact = require('interact.js');
-  // var save = require('./save.js');
-  // var defaultFiles = require('./defaultFiles.js');
 
   actionButtons.addActionButtons = function(buttons, tbe) {
     var position = null;

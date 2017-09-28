@@ -27,8 +27,7 @@ var interact = require('interact.js');
 var tf = require('./teak-forms.js');
 var teakText = require('./teaktext.js');
 var svgb = require('./svgbuilder.js');
-var svglog = require('./svglog.js');
-var trashBlocks = require('./physics.js');
+var trashBlocks = require('./trashBlocks.js');
 var fblocks = require('./fblock-settings.js');
 var save = require('./save.js');
 var teakselection = require('./teakselection');
@@ -51,6 +50,7 @@ tbe.actionButtons = null;
 tbe.draggingSelectionArea = null;
 tbe.defaultBlockLoc = [80, 240];
 
+// Visitor for each block in the diagram
 tbe.forEachDiagramBlock = function (callBack) {
   for (var key in tbe.diagramBlocks) {
     if (tbe.diagramBlocks.hasOwnProperty(key)) {
@@ -62,6 +62,7 @@ tbe.forEachDiagramBlock = function (callBack) {
   }
 };
 
+// Visitor for each block in the palette
 tbe.forEachPalette = function (callBack) {
   for (var key in tbe.paletteBlocks) {
     if (tbe.paletteBlocks.hasOwnProperty(key)) {
@@ -73,6 +74,7 @@ tbe.forEachPalette = function (callBack) {
   }
 };
 
+// Visitor that finds the head of each chain.
 tbe.forEachDiagramChain = function (callBack) {
   tbe.forEachDiagramBlock(function(block) {
     if (block.prev === null) {
@@ -81,6 +83,7 @@ tbe.forEachDiagramChain = function (callBack) {
   });
 };
 
+// Clear any semi modal state
 tbe.clearStates = function clearStates(block) {
   // Clear any showing forms or multi step state.
   // If the user has interacted with a general part of the editor.
@@ -782,9 +785,6 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
     } else {
       action = 'append';
     }
-    if (tbe.components.appSettings.editorXRay()) {
-      svglog.logRect(tbe.svg, bestRect, action + ' ' + target.name);
-    }
   } else {
       action = 'outsnap';
       //target = 0;  //?
@@ -1419,7 +1419,6 @@ tbe.configInteractions = function configInteractions() {
           // the chain will no longer be dragging.
           block.moveToPossibleTarget();
           block.setDraggingState(false);
-          svglog.clearLog();
         }
 
         // Serialize after all moving has settled.
@@ -1460,22 +1459,12 @@ tbe.configInteractions = function configInteractions() {
             // Its in the coasting state, just move it to the snapping place.
             block.moveToPossibleTarget();
             block.setDraggingState(false);
-            svglog.clearLog();
           }
         }
       }
     });
 };
 
-/*tbe.stage1deletion = function(fastr){
-  tbe.deleteRay[0].setAttribute('command', 'trashSecond');
-  tbe.deleteRay[1].innerHTML = fastr.trashFull;
-};
-tbe.stage2deletion = function(fastr){
-  tbe.clearAllBlocks();
-  tbe.deleteRay[0].setAttribute('command', 'trashFirst');
-  tbe.deleteRay[1].innerHTML = fastr.trashEmpty;
-};*/
 tbe.undoArray[0] = teakText.blocksToText(tbe.forEachDiagramChain);
 
 tbe.diagramChanged = function diagramChanged() {
@@ -1509,7 +1498,6 @@ tbe.diagramChanged = function diagramChanged() {
 tbe.blocksOnScreen = function() {
   var toReturn = false;
   tbe.forEachDiagramBlock( function(block){
-    //console.log(Object.keys(tbe.diagramBlocks).length);
     if(block.isOnScreen()){
       toReturn = true;
     }
