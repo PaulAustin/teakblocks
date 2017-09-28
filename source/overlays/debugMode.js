@@ -35,7 +35,6 @@ module.exports = function () {
     app.overlayDom.innerHTML = `
       <div id='debugBackground' class='debugBackground'></div>
       <div id='debugExitGroup' class='debugExitGroup'>
-        <div id='debug-exit' class='debug-exit'></div>
         <i class="fa fa-times driver-x-debug svg-clear" aria-hidden="true"></i>
       </div>
       <div id='debugWindow' class='debugWindow'>
