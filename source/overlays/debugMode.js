@@ -33,12 +33,13 @@ module.exports = function () {
 
     // Construct the DOM for the overlay.
     app.overlayDom.innerHTML = `
-      <div id='debugBackground' class='debugBackground'></div>
-      <div id='debugExitGroup' class='debugExitGroup'>
-        <i class="fa fa-times driver-x-debug svg-clear" aria-hidden="true"></i>
-      </div>
-      <div id='debugWindow' class='debugWindow'>
-        <div class="debug-log" id="debug-log"></div>
+      <div id='debugBackground' class='debugBackground'>
+        <div id='debugExitGroup' class='debugExitGroup'>
+          <i class="fa fa-times driver-x-debug svg-clear" aria-hidden="true"></i>
+        </div>
+        <div id='debugWindow' class='debugWindow'>
+          <div class="debug-log" id="debug-log"></div>
+        </div>
       </div>`;
 
     var exitButton = document.getElementById('debugExitGroup');
