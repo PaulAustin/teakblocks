@@ -4,8 +4,7 @@
   "description": "A diagram editor for teak blocks",
   "main": "teakblocks.js",
   "scripts": {
-    "build-doc": "documentation build source/index.js -f md -o doc/index.md",
-    "watch-dev":"npm watch-css & npm run wify & npm run http",
+    "watch-dev": "npm run watch-css & npm run wify & npm run http",
     "watch-css": "catw -c 'lessc -' 'source/style/*.less' -o html_app/www/style.css -v",
     "test": "echo \"Error: no test specified\" && exit 1",
     "bifyu": "browserify source/index.js -t [ babelify --presets es2015 ] | uglifyjs >html_app/www/bundled_tbe.js; ls -l html_app/www/bundled_tbe.js",
@@ -48,6 +47,7 @@
     "babel-preset-es2015": "^6.14.0",
     "babelify": "^7.3.0",
     "browserify": "^14.1.0",
-    "eslint": "^3.4.0"
+    "eslint": "^3.4.0",
+    "minami": "^1.2.3"
   }
 }
