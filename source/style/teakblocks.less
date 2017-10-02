@@ -785,15 +785,30 @@ label input[type="checkbox"]:disabled + .label-text:before {
   left:calc(~'50% - 150px');
   top:200px;
 }
-//Debug widow
-#debugBackground {
+//Debug window
+#debugOverlay {
   position: absolute;
-  top:0px;
   left:0px;
   width:100%;
   height:100%;
   background-color: #4F5659;
   overflow: hidden;
+}
+//Overlay animations
+.overlaySlideIn {
+  animation: overlaySlideIn 0.75s ease;
+}
+@keyframes overlaySlideIn{
+    from{top:-100%;}
+    to{top:0px;}
+}
+.overlaySlideOut {
+  top:-100%;
+  animation: overlaySlideOut 0.75s ease;
+}
+@keyframes overlaySlideOut {
+    from{top:0px;}
+    to{top:-100%;}
 }
 #debugWindow {
   position:relative;
@@ -804,7 +819,7 @@ label input[type="checkbox"]:disabled + .label-text:before {
   background-color: @console-text-bcolor;
   border-radius: 10px;
 }
-#debugExitGroup {
+#debugExitButton {
   background-color: #FF3F4A;
   position: absolute;
   top:5px;
@@ -814,7 +829,7 @@ label input[type="checkbox"]:disabled + .label-text:before {
   width: 50px;
   border-radius: 100px;
 }
-#debug-log{
+#debugLog{
   font-family: "courier new";
   font-size: 35px;
   height:80%;

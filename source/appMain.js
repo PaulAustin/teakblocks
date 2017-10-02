@@ -22,20 +22,22 @@ SOFTWARE.
 
 module.exports = function () {
 
+  // Starts as an object and will be mosty empty until start()
+  // is called.
   var app = {};
 
   // Application main, called once shell is fully up.
   app.start = function () {
-    var tbe = require('./teakblocks.js');
     var ko = require('knockout');
     var Clipboard = require('clipboard');
-    var conductor = app.conductor = require('./conductor.js');
+    app.tbe = require('./teakblocks.js');
+    app.conductor = require('./conductor.js');
     var actionButtons = require('./actionButtons.js');
     var teaktext = require('./teaktext.js');
     var save = require('./save.js');
 
     // Add major modules to the application object.
-    app.tbe = tbe;
+    var tbe = app.tbe;
     app.overlayDom = document.getElementById('tbe-overlay-mode');
     app.driverOverlay = require('./overlays/driveMode.js');
     app.debugOverlay = require('./overlays/debugMode.js');
@@ -107,8 +109,8 @@ module.exports = function () {
     tbe.deleteRay = null;
     tbe.commands = {
       //'settings': function() { tf.showHide(tbe.components.appSettings); },
-      'play': function() { conductor.playAll(); },
-      'stop': function() { conductor.stopAll(); },
+      'play': function() { app.conductor.playAll(); },
+      'stop': function() { app.conductor.stopAll(); },
       'trash': function() { tbe.clearAllBlocks(); },
       'pages': function() { tbe.clearStates(); tbe.dropdownButtons = actionButtons.createDropdown(buttonsPages, tbe, fastr.page, 'pages'); },
       'edit': function() { tbe.clearStates(); tbe.dropdownButtons = actionButtons.createDropdown(buttonsEdit, tbe, fastr.edit, 'edit'); },
@@ -178,7 +180,7 @@ module.exports = function () {
 
    // The conductor coordinates the score managed by the editor and the collection
    // of bots that make up the orchestra.
-   conductor.attachToScoreEditor(tbe);
+   app.conductor.attachToScoreEditor(tbe);
  };
 
  return app;

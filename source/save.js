@@ -1,7 +1,5 @@
 
-//var tbe = require('./teakblocks.js');
 var teak = require('teak');
-//var tbe = require('./teakblocks.js');
 
 module.exports = function (){
 

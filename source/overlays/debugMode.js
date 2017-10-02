@@ -33,18 +33,18 @@ module.exports = function () {
 
     // Construct the DOM for the overlay.
     app.overlayDom.innerHTML = `
-      <div id='debugBackground'>
-        <div id='debugExitGroup'>
-          <i class="fa fa-times driver-x-debug svg-clear" aria-hidden="true"></i>
+      <div id='debugOverlay' class ='overlaySlideIn'>
+        <div id='debugExitButton'>
+          <i class='fa fa-times driver-x-debug svg-clear' aria-hidden='true'></i>
         </div>
         <div id='debugWindow'>
-          <div id="debug-log"></div>
+          <div id='debugLog'></div>
         </div>
       </div>`;
 
-    var exitButton = document.getElementById('debugExitGroup');
-    debugMode.logElement = document.getElementById('debug-log');
+    var exitButton = document.getElementById('debugExitButton');
     exitButton.onclick = debugMode.exit;
+    debugMode.logElement = document.getElementById('debugLog');
 
     // Start update function.
     debugMode.updateDebug();
@@ -74,7 +74,12 @@ module.exports = function () {
   // Close the overlay.
   debugMode.exit = function() {
     clearTimeout(debugMode.timer);
-    app.overlayDom.innerHTML = '';
+    var overlay = document.getElementById('debugOverlay');
+    if  (overlay !== null) {
+      overlay.className = 'overlaySlideOut';
+    }
+    // For now, leave the element there until the next overlay replaces it.
+    // app.overlayDom.innerHTML = '';
   };
 
   return debugMode;
