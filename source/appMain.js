@@ -42,6 +42,7 @@ module.exports = function () {
     app.driverOverlay = require('./overlays/driveMode.js');
     app.debugOverlay = require('./overlays/debugMode.js');
     app.settingsOverlay = require('./overlays/settings.js');
+    app.splashOverlay = require('./overlays/splashOverlay.js');
 
     // Unicode charcodes for FontAwesome symbols.
     var fastr = {

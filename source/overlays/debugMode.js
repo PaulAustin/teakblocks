@@ -34,20 +34,21 @@ module.exports = function () {
     // Construct the DOM for the overlay.
     app.overlayDom.innerHTML = `
       <div id='debugOverlay' class ='overlaySlideIn'>
-        <div id='debugExitButton'>
+        <div id='overlayExitButton'>
           <i class='fa fa-times driver-x-debug svg-clear' aria-hidden='true'></i>
         </div>
-        <div id='debugWindow'>
+        <div id='debugLogBackground'>
           <div id='debugLog'></div>
         </div>
       </div>`;
 
-    var exitButton = document.getElementById('debugExitButton');
+    var exitButton = document.getElementById('overlayExitButton');
     exitButton.onclick = debugMode.exit;
     debugMode.logElement = document.getElementById('debugLog');
 
     // Start update function.
     debugMode.updateDebug();
+    debugMode.log('> Hello');
   };
 
   // Add a messge to the log.
@@ -60,7 +61,7 @@ module.exports = function () {
   debugMode.updateDebug = function() {
 
     // Erase old text.
-    debugMode.logElement.innerHTML = '';
+    // debugMode.logElement.innerHTML = '';
 
     // Replace contents with existing list of messages.
     for(var i = 0; i < ble.messages.length; i++) {
