@@ -40,7 +40,7 @@ module.exports = function () {
     var tbe = app.tbe;
     app.overlayDom = document.getElementById('tbe-overlay-mode');
     app.driverOverlay = require('./overlays/driveMode.js');
-    app.debugOverlay = require('./overlays/debugMode.js');
+    app.debugOverlay = require('./overlays/debugOverlay.js');
     app.settingsOverlay = require('./overlays/settings.js');
     app.splashOverlay = require('./overlays/splashOverlay.js');
 
@@ -120,8 +120,8 @@ module.exports = function () {
       'loadDocC': function(){ tbe.loadDoc('docC'); },
       'loadDocD': function(){ tbe.loadDoc('docD'); },
       'loadDocE': function(){ tbe.loadDoc('docE'); },
-      'loadDriveMode': function(){ tbe.loadDriveMode(); },
-      'loadDebugMode': function(){ tbe.loadDebugMode(); },
+      'loadDriveMode': function(){ app.showOverlay(app.driverOverlay); },
+      'loadDebugMode': function(){ app.showOverlay(app.debugOverlay); },
       'settings': function(){ tbe.loadSettings(); },
       'undo': function(){ tbe.undoAction(); },
       'redo': function(){ tbe.redoAction(); },
@@ -182,6 +182,18 @@ module.exports = function () {
    // The conductor coordinates the score managed by the editor and the collection
    // of bots that make up the orchestra.
    app.conductor.attachToScoreEditor(tbe);
+ };
+
+ app.showOverlay = function(overlay) {
+
+   // TODO modularized control of editor. Why is this part of the show overlay logic?
+   app.tbe.undoArray = {}; // When we switch documents we want to clear undo history.
+   app.tbe.undoTransactionIndex = 0;
+
+   // First, save the current document.
+   app.tbe.saveCurrentDoc();
+   app.tbe.clearStates();
+   overlay.start();
  };
 
  return app;

@@ -79,6 +79,7 @@ module.exports = function () {
     if  (overlay !== null) {
       overlay.className = 'overlaySlideOut';
     }
+
     // For now, leave the element there until the next overlay replaces it.
     // app.overlayDom.innerHTML = '';
   };
