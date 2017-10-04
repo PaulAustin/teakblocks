@@ -32,81 +32,53 @@ module.exports = function(){
   driveMode.pastLeft = 0;
 
   driveMode.start = function() {
-    driveMode.applyBackground(app.overlayDom);
+    driveMode.activeDivice = driveMode.findConnectedDevice();
     driveMode.buildSlider(app.overlayDom);
-    driveMode.startDiagnostics(app.overlayDom);
     driveMode.updateSlider();
   };
 
-  driveMode.buildSlider = function(root) {
-    var div = document.createElement('div');
-    div.innerHTML = `
-    <div class='slider sliderRight' data-value='0'></div>
-    <div class='slider sliderLeft' data-value='0'></div>
+  driveMode.buildSlider = function() {
+    app.overlayDom.innerHTML = `
+    <div id='driverBackground' class='driverBackground'>
+      <div class='slider sliderRight' data-value='0'></div>
+      <div class='slider sliderLeft' data-value='0'></div>
+      <div id='drive-diagnostics' class='drive-diagnostics'>
+        <h1 class='connected-brick svg-clear'>Connected Bot: -?-</h1>
+        <h1 class="drive-accelerometer svg-clear">Accelerometer: 100</h1>
+        <h1 class="drive-compass svg-clear">Compass: 100</h1>
+        <h1 class="drive-temperature svg-clear">Temperature: 100</h1>
+        <h1 class="drive-encoderL svg-clear">Left Encoder: 100</h1>
+        <h1 class="drive-encoderR svg-clear">Right Encoder: 100</h1>
+      </div>
+      <div id='exitGroup' class ='exitGroup'>
+        <div id='driver-exit' class ='driver-exit'>
+          <i class='fa fa-times driver-x svg-clear' aria-hidden='true'></i>
+        </div>
+      </div>
+      <div id='stopGroup' class='stopGroup'>
+        <div id='driver-stop' class='driver-stop' text-anchor='middle'>
+          <i class='fa fa-stop driver-stop-icon svg-clear' aria-hidden='true'></i>
+        </div>
+      </div>
+    </div>
     `;
 
-    root.appendChild(div);
+    var exitButton = document.getElementById('exitGroup');
+    exitButton.onclick = driveMode.exit;
+
+    // TODO connect the stop button
+
     driveMode.sliderInteract('slider');
   };
 
-  driveMode.applyBackground = function(root) {
-    var div = document.createElement('div');
-    div.setAttribute('class', 'driverBackground');
-    div.setAttribute('id', 'driverBackground');
-    root.appendChild(div);
-
-    var exitGroup = document.createElement('div');
-    exitGroup.setAttribute('class', 'exitGroup');
-    exitGroup.setAttribute('id', 'exitGroup');
-    var exit = document.createElement('div');
-    exit.setAttribute('class', 'driver-exit');
-    exit.setAttribute('id', 'driver-exit');
-    exitGroup.onclick = driveMode.exit;
-    exitGroup.appendChild(exit);
-    exitGroup.innerHTML += `<i class="fa fa-times driver-x svg-clear" aria-hidden="true"></i>`;
-    root.appendChild(exitGroup);
-
-    var stopGroup = document.createElement('div');
-    stopGroup.setAttribute('class', 'stopGroup');
-    stopGroup.setAttribute('id', 'stopGroup');
-    var stop = document.createElement('div');
-    stop.setAttribute('class', 'driver-stop');
-    stop.setAttribute('id', 'driver-stop');
-    stopGroup.onclick = conductor.stopAll;
-    stopGroup.appendChild(stop);
-    stopGroup.innerHTML += `<i class="fa fa-stop driver-stop-icon svg-clear" aria-hidden="true"></i>`;
-    root.appendChild(stopGroup);
-  };
-
-  // Diagnostics include the text display in the center of the page.
-  driveMode.startDiagnostics = function(root) {
-    console.log('starting diagnostics');
-
-    var div = document.createElement('div');
-    div.setAttribute('class', 'drive-diagnostics');
-    div.setAttribute('id', 'drive-diagnostics');
-    div.setAttribute('text-anchor', 'middle');
+  driveMode.findConnectedDevice = function() {
     var id = null;
-    // Look through the blocks on the edit page
-    // to find a start block thath is connected.
     app.tbe.forEachDiagramBlock( function(block){
       if(block.name === 'identity' && block.statusIs(3)){
         id = block.controllerSettings.data.deviceName;
       }
     });
-    if(id === null){
-      id = '-?-';
-    }
-    div.innerHTML = `
-        <h1 class="connected-brick svg-clear">Connected Bot: ` + id + `</h1>
-        <!--h1 class="drive-accelerometer svg-clear">Accelerometer: 100</h1>
-        <h1 class="drive-compass svg-clear">Compass: 100</h1>
-        <h1 class="drive-temperature svg-clear">Temperature: 100</h1>
-        <h1 class="drive-encoderL svg-clear">Left Encoder: 100</h1>
-        <h1 class="drive-encoderR svg-clear">Right Encoder: 100</h1-->
-    `;
-    // Insert the diagnostics div into the overlay mode div.
-    root.appendChild(div);
+    return id;
   };
 
   driveMode.sliderInteract = function sliderInteract(eltClass) {
@@ -122,12 +94,12 @@ module.exports = function(){
             value = event.pageY / sliderHeight;
 
         event.target.style.paddingTop = (value * 7) + 'em';
-        var display = (100-Math.round((value.toFixed(3)*200)));
+        var display = (100 - Math.round((value.toFixed(3)*200)));
         event.target.setAttribute('data-value', display);
         //console.log(event.target.classList.contains('sliderRight'));
-        if(event.target.classList.contains('sliderRight')){
+        if(event.target.classList.contains('sliderRight')) {
           driveMode.displayRight = display;
-        } else if(event.target.classList.contains('sliderLeft')){
+        } else if (event.target.classList.contains('sliderLeft')) {
           driveMode.displayLeft = display;
         }
         //console.log(driveMode.displayRight, driveMode.displayLeft);
@@ -137,19 +109,14 @@ module.exports = function(){
   };
 
   driveMode.updateSlider = function() {
-    var id = null;
-    app.tbe.forEachDiagramBlock( function(block){
-      if(block.name === 'identity' && block.statusIs(3)){
-        id = block.controllerSettings.data.deviceName;
-      }
-    });
+    var id = driveMode.activeDivice;
     //var changed = driveMode.displayLeft !== driveMode.pastLeft || driveMode.displayRight !== driveMode.pastRight;
-    if(id !== null && id !== '-?-') {
-      if(driveMode.displayLeft !== undefined && driveMode.displayLeft !== driveMode.pastLeft){
+    if (id !== null && id !== '-?-') {
+      if (driveMode.displayLeft !== undefined && driveMode.displayLeft !== driveMode.pastLeft) {
         var message2 = '(m:1 d:' + driveMode.displayLeft + ');';
         conductor.ble.write(id, message2);
       }
-      if(driveMode.displayRight !== undefined && driveMode.displayRight !== driveMode.pastRight){
+      if (driveMode.displayRight !== undefined && driveMode.displayRight !== driveMode.pastRight) {
         var message1 = '(m:2 d:' + driveMode.displayRight + ');';
         conductor.ble.write(id, message1);
       }
@@ -164,26 +131,11 @@ module.exports = function(){
   };
 
   // Close the driveMode overlay.
-  // [TODO] sliders should be owned by voerlay so they dont need to be individually removed.
   driveMode.exit = function() {
+    app.overlayDom.innerHTML = '';
     clearTimeout(driveMode.timer);
-    var sliders = document.getElementsByClassName('slider');
-    for(var i = 0; i < 2; i++){
-      sliders[0].parentNode.removeChild(sliders[0]);
-    }
-
-    var diagnostics = document.getElementById('drive-diagnostics');
-    diagnostics.parentNode.removeChild(diagnostics); // Delete diagnostics
-
-    var back = document.getElementById('driverBackground');
-    back.parentNode.removeChild(back);
-
-    var exit = document.getElementById('exitGroup');
-    exit.parentNode.removeChild(exit);
-
-    var stop = document.getElementById('stopGroup');
-    stop.parentNode.removeChild(stop);
-
+    // Why load docA ?, it will still be there.
+    // TODO add animations
     app.tbe.loadDoc('docA');
   };
 
