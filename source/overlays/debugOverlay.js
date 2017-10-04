@@ -33,7 +33,7 @@ module.exports = function () {
 
     // Construct the DOM for the overlay.
     app.overlayDom.innerHTML = `
-      <div id='debugOverlay' class ='overlaySlideIn'>
+      <div id='debugOverlay' class ='fullScreenSlideIn'>
         <div id='overlayExitButton'>
           <i class='fa fa-times driver-x-debug svg-clear' aria-hidden='true'></i>
         </div>
@@ -74,10 +74,11 @@ module.exports = function () {
 
   // Close the overlay.
   debugMode.exit = function() {
+
     clearTimeout(debugMode.timer);
     var overlay = document.getElementById('debugOverlay');
     if  (overlay !== null) {
-      overlay.className = 'overlaySlideOut';
+      overlay.className = 'fullScreenSlideOut';
     }
 
     // For now, leave the element there until the next overlay replaces it.

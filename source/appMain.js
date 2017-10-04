@@ -97,14 +97,13 @@ module.exports = function () {
       {'label': 'C', 'command': 'loadDocC'},
       {'label': 'D', 'command': 'loadDocD'},
       {'label': 'E', 'command': 'loadDocE'},
-      //{'label': fastr.gamepad, 'command': 'loadDriveMode'},
     ];
     var buttonsEdit = [
       {'label': fastr.trash, 'command': 'trash'},
       {'label': fastr.copy, 'command': 'copy'},
       {'label': fastr.paste, 'command': 'paste'},
       {'label': fastr.save, 'command': 'save'},
-      {'label': fastr.settings, 'command': 'settings'}
+      {'label': fastr.settings, 'command': 'loadSplashOverlay'}
     ];
 
     tbe.deleteRay = null;
@@ -122,6 +121,7 @@ module.exports = function () {
       'loadDocE': function(){ tbe.loadDoc('docE'); },
       'loadDriveMode': function(){ app.showOverlay(app.driverOverlay); },
       'loadDebugMode': function(){ app.showOverlay(app.debugOverlay); },
+      'loadSplashOverlay': function(){ app.showOverlay(app.splashOverlay); },
       'settings': function(){ tbe.loadSettings(); },
       'undo': function(){ tbe.undoAction(); },
       'redo': function(){ tbe.redoAction(); },

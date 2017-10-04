@@ -31,22 +31,20 @@ module.exports = function(){
     // Construct the DOM for the overlay.
     // TODO Add a method to app for showing overlays.
     app.overlayDom.innerHTML = `
-      <div id='splashOverlay' class ='overlaySlideIn'>
-        <div id='overlayExitButton'>
-          <i class='fa fa-times driver-x-debug svg-clear' aria-hidden='true'></i>
-        </div>
+      <div id='splashOverlay' class ='centeredSlideIn'>
       </div>`;
 
-    var exitButton = document.getElementById('debugExitButton');
+    var exitButton = document.getElementById('splashOverlay');
     exitButton.onclick = splashOverlay.exit;
 
-    splashOverlay.exit = function () {
-      // TODO should be done by application class.
-      var overlay = document.getElementById('splashOverlay');
-      if  (overlay !== null) {
-        overlay.className = 'overlaySlideOut';
-      }
-    };
+  };
+
+  splashOverlay.exit = function () {
+    // TODO should be done by application class.
+    var overlay = document.getElementById('splashOverlay');
+    if (overlay !== null) {
+      overlay.className = 'centeredSlideOut';
+    }
   };
 
   return splashOverlay;
