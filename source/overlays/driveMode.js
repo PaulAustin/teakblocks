@@ -39,7 +39,7 @@ module.exports = function(){
 
   driveMode.buildSlider = function() {
     app.overlayDom.innerHTML = `
-    <div id='driverBackground' class='driverBackground'>
+    <div id='driverBackground' class='fullScreenSlideIn'>
       <div class='slider sliderRight' data-value='0'></div>
       <div class='slider sliderLeft' data-value='0'></div>
       <div id='drive-diagnostics' class='drive-diagnostics'>
@@ -132,11 +132,18 @@ module.exports = function(){
 
   // Close the driveMode overlay.
   driveMode.exit = function() {
-    app.overlayDom.innerHTML = '';
     clearTimeout(driveMode.timer);
+
+    var overlay = document.getElementById('driverBackground');
+    if  (overlay !== null) {
+      overlay.className = 'fullScreenSlideOut';
+    }
+    // TODO Remove content after it is off the screen. 
+    //  app.overlayDom.innerHTML = '';
+
     // Why load docA ?, it will still be there.
     // TODO add animations
-    app.tbe.loadDoc('docA');
+    //app.tbe.loadDoc('docA');
   };
 
   return driveMode;
