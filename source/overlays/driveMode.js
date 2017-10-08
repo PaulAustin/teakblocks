@@ -103,7 +103,20 @@ module.exports = function(){
           driveMode.displayLeft = display;
         }
         //console.log(driveMode.displayRight, driveMode.displayLeft);
-      });
+      })
+    .on('dragend', function(event){
+      var sliderHeight = interact.getElementRect(event.target).height,
+          value = event.pageY / sliderHeight;
+
+      event.target.style.paddingTop = (0.5 * 7) + 'em';
+      //var display = (100 - Math.round((0)));
+      event.target.setAttribute('data-value', 0);
+      if(event.target.classList.contains('sliderRight')) {
+        driveMode.displayRight = 0;
+      } else if (event.target.classList.contains('sliderLeft')) {
+        driveMode.displayLeft = 0;
+      }
+    });
 
     interact.maxInteractions(Infinity);   // Allow multiple interactions
   };
