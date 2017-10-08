@@ -31,9 +31,10 @@ module.exports = function(){
     // Construct the DOM for the overlay.
     // TODO Add a method to app for showing overlays.
     app.overlayDom.innerHTML = `
-      <div id='splashOverlay' class ='centeredSlideIn'>
-      </div>`;
-
+    <div id='overlayFrame' class='fullScreenSlideIn'>
+      <div id='splashOverlay'>
+      </div>
+    </div>`;
     var exitButton = document.getElementById('splashOverlay');
     exitButton.onclick = splashOverlay.exit;
 
@@ -41,9 +42,9 @@ module.exports = function(){
 
   splashOverlay.exit = function () {
     // TODO should be done by application class.
-    var overlay = document.getElementById('splashOverlay');
+    var overlay = document.getElementById('overlayFrame');
     if (overlay !== null) {
-      overlay.className = 'centeredSlideOut';
+      overlay.className = 'fullScreenSlideOut';
     }
   };
 
