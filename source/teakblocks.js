@@ -1269,9 +1269,9 @@ tbe.configInteractions = function configInteractions() {
       }
     })
     .on('up', function(event) {
-      event.interaction.stop();
       var block = thisTbe.elementToBlock(event.target);
       if(block.rect.top > window.innerHeight - 100 && !block.isPaletteBlock){
+        event.interaction.stop();
         block.setDraggingState(false);
         if(block.isLoopHead()){
           block.next.markSelected(true);
