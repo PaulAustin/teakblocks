@@ -27,6 +27,8 @@ var bleConnection = {};
 bleConnection.messages = [];
 bleConnection.observerCallback = null;
 bleConnection.accelerometer = 0;
+bleConnection.compass = 0;
+bleConnection.temp = 0;
 
 // GUIDs for Nordic BLE UART services.
 var nordicUARTservice = {
@@ -212,6 +214,10 @@ bleConnection.onData = function(name, data) {
   bleConnection.messages.push(name + ':' + str);
   if(str.includes('accel')){
     bleConnection.accelerometer = str.substring(7, str.length - 2);
+  } else if(str.includes('compass')){
+    bleConnection.compass = str.substring(9, str.length - 2);
+  } else if(str.includes('temp')){
+    bleConnection.temp = str.substring(6, str.length - 2);
   }
 };
 
