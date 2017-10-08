@@ -83,7 +83,7 @@ module.exports = function(){
   };
 
   driveMode.sliderInteract = function sliderInteract(eltClass) {
-    interact('.' + eltClass)                   // target the matches of that selector
+    interact('.' + eltClass)              // target the matches of that selector
       .origin('self')                     // (0, 0) will be the element's top-left
       .restrict({drag: 'self'})           // keep the drag within the element
       .inertia(true)                      // start inertial movement if thrown
@@ -106,11 +106,7 @@ module.exports = function(){
         //console.log(driveMode.displayRight, driveMode.displayLeft);
       })
     .on('dragend', function(event){
-      var sliderHeight = interact.getElementRect(event.target).height,
-          value = event.pageY / sliderHeight;
-
       event.target.style.paddingTop = (0.5 * 7) + 'em';
-      //var display = (100 - Math.round((0)));
       event.target.setAttribute('data-value', 0);
       if(event.target.classList.contains('sliderRight')) {
         driveMode.displayRight = 0;
@@ -118,7 +114,16 @@ module.exports = function(){
         driveMode.displayLeft = 0;
       }
     });
-
+    interact(".stopGroup")
+      .on('tap', function(event){
+        var sliders = document.getElementsByClassName('slider');
+        sliders[0].style.paddingTop = (0.5 * 7) + 'em';
+        sliders[0].setAttribute('data-value', 0);
+        sliders[1].style.paddingTop = (0.5 * 7) + 'em';
+        sliders[1].setAttribute('data-value', 0);
+        driveMode.displayRight = 0;
+        driveMode.displayLeft = 0;
+      });
     interact.maxInteractions(Infinity);   // Allow multiple interactions
   };
 
