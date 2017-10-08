@@ -142,6 +142,12 @@ module.exports = function(){
     var accel = document.getElementsByClassName("drive-accelerometer")[0];
     accel.innerHTML = "Accelerometer:" + ble.accelerometer;
 
+    var compass = document.getElementsByClassName("drive-compass")[0];
+    compass.innerHTML = "Compass:" + ble.compass;
+
+    var temp = document.getElementsByClassName("drive-temperature")[0];
+    temp.innerHTML = "Temperature:" + ble.temp;
+
     driveMode.timer = setTimeout( function() {
       driveMode.updateSlider();
     }
