@@ -1262,7 +1262,7 @@ tbe.configInteractions = function configInteractions() {
     })
     .on('tap', function(event) {
       var block = thisTbe.elementToBlock(event.target);
-      if (block.isPaletteBlock) {
+      if (block !== null && block.isPaletteBlock) {
         tbe.autoPlace(block);
       }  else {
         thisTbe.components.blockSettings.tap(block);
