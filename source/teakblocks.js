@@ -1268,7 +1268,23 @@ tbe.configInteractions = function configInteractions() {
         thisTbe.components.blockSettings.tap(block);
       }
     })
-    .on('hold', function(event) {
+    .on('up', function() {
+      var block = thisTbe.elementToBlock(event.target);
+      //block.setDraggingState(false);
+      if(block.rect.top > window.innerHeight - 100 && !block.isPaletteBlock){
+        block.setDraggingState(false);
+        if(block.isLoopHead()){
+          block.next.markSelected(true);
+          block.markSelected(true);
+          tbe.deleteChunk(block, block.last);
+        } else if(block.isLoopTail()){
+          tbe.deleteChunk(block.flowHead, block.last);
+        } else{
+          tbe.deleteChunk(block, block.last);
+        }
+      }
+    })
+    .on( 'hold' , function(event) {
        var block = thisTbe.elementToBlock(event.target);
        event.interaction.stop();
        if (block.isPaletteBlock) {
