@@ -27,6 +27,7 @@ module.exports = function(){
   var interact = require('interact.js');
   var conductor = require('./../conductor.js');
   var app = require('./../appMain.js');
+  var ble = require('./../bleConnections.js');
 
   driveMode.pastRight = 0;
   driveMode.pastLeft = 0;
@@ -137,6 +138,10 @@ module.exports = function(){
       driveMode.pastRight = driveMode.displayRight;
       driveMode.pastLeft = driveMode.displayLeft;
     }
+
+    var accel = document.getElementsByClassName("drive-accelerometer")[0];
+    accel.innerHTML = "Accelerometer:" + ble.accelerometer;
+
     driveMode.timer = setTimeout( function() {
       driveMode.updateSlider();
     }
@@ -151,7 +156,7 @@ module.exports = function(){
     if  (overlay !== null) {
       overlay.className = 'fullScreenSlideOut';
     }
-    // TODO Remove content after it is off the screen. 
+    // TODO Remove content after it is off the screen.
     //  app.overlayDom.innerHTML = '';
 
     // Why load docA ?, it will still be there.
