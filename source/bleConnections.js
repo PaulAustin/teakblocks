@@ -26,6 +26,7 @@ module.exports = function factory(){
 var bleConnection = {};
 bleConnection.messages = [];
 bleConnection.observerCallback = null;
+bleConnection.accelerometer = 0;
 
 // GUIDs for Nordic BLE UART services.
 var nordicUARTservice = {
@@ -209,6 +210,9 @@ bleConnection.onData = function(name, data) {
   var str = bufferToString(data);
   console.log('On Data:', name, str);
   bleConnection.messages.push(name + ':' + str);
+  if(str.includes('accel')){
+    bleConnection.accelerometer = str.substring(7, str.length - 2);
+  }
 };
 
 bleConnection.onError = function(reason) {
