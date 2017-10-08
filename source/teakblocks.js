@@ -221,10 +221,18 @@ tbe.deleteChunk = function(block, endBlock){
   //console.log(block.next.svgRect.classList);
   if((block.flowTail === endBlock) && (!block.isGroupSelected())){
     tbe.clearStates();
-
-    block.next.prev = block.prev;
+    if(block.prev !== null){
+      block.next.prev = block.prev;
+    } else{
+      block.next.prev = null;
+    }
     block.next = null;
-    endBlock.prev.next = endBlock.next;
+
+    if(endBlock.next !== null){
+      endBlock.prev.next = endBlock.next;
+    } else{
+      endBlock.prev.next = null;
+    }
     endBlock.prev = null;
 
     delete tbe.diagramBlocks[block.interactId];
