@@ -33,14 +33,14 @@ module.exports = function () {
     '1': '1',
     '2': '2'
   };
-  motorBlock.keyPadValue = ko.observable(240 + " RPM");
+  motorBlock.keyPadValue = ko.observable(100 + "%");
   motorBlock.beatsValue = ko.observable("1 beat");
   // Initial setting for blocks of this type.
   motorBlock.defaultSettings = function() {
     // Return a new object with settings for the controller.
     return {
       data:{
-        speed: 120,
+        speed: 100,
         duration: 1,
         motor: '1'
       },

@@ -28,7 +28,7 @@ module.exports = function () {
   var pb = svgb.pathBuilder;
   var twoMotorBlock = {};
 
-  twoMotorBlock.keyPadValue = ko.observable(120 + " RPM");
+  twoMotorBlock.keyPadValue = ko.observable(100 + "%");
   twoMotorBlock.beatsValue = ko.observable("1 beat");
 
   // Initial settings for blocks of this type.
@@ -36,7 +36,7 @@ module.exports = function () {
     // Return a new object with settings for the controller.
     return {
       data:{
-        speed: 120,
+        speed: 100,
         duration: 1,
       },
       // Indicate what controller is active. This may affect the data format.
