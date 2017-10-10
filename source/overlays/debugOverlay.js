@@ -21,7 +21,7 @@ SOFTWARE.
 */
 
 // An overlay to see log messages and communications
-// between the app and hte robot.
+// between the app and the robot.
 module.exports = function () {
 
   var debugMode = {};

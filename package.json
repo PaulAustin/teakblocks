@@ -5,7 +5,7 @@
   "main": "teakblocks.js",
   "scripts": {
     "watch-dev": "npm run watch-css & npm run wify & npm run http",
-    "watch-css": "catw -c 'lessc -' 'source/style/*.less' -o html_app/www/style.css -v",
+    "watch-css": "catw -c 'lessc --include-path=source/style/ -' 'source/style/*.less' -o html_app/www/style.css -v",
     "test": "echo \"Error: no test specified\" && exit 1",
     "bifyu": "browserify source/index.js -t [ babelify --presets es2015 ] | uglifyjs >html_app/www/bundled_tbe.js; ls -l html_app/www/bundled_tbe.js",
     "bify15": "browserify source/index.js -t [ babelify --presets es2015 ] -o html_app/www/bundled_tbe.js; ls -l html_app/www/bundled_tbe.js",

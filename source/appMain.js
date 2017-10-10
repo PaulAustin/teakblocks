@@ -41,6 +41,7 @@ module.exports = function () {
     app.overlayDom = document.getElementById('tbe-overlay-mode');
     app.driverOverlay = require('./overlays/driveMode.js');
     app.debugOverlay = require('./overlays/debugOverlay.js');
+    app.fileOverlay = require('./overlays/fileOverlay.js');
     app.settingsOverlay = require('./overlays/settings.js');
     app.splashOverlay = require('./overlays/splashOverlay.js');
 
@@ -61,7 +62,8 @@ module.exports = function () {
       edit: '\uf044',
       save: '\uf0c7',
       gamepad: '\uf11b',
-      debug: '\uf120'
+      debug: '\uf120',
+      camera: '\uf030'
     };
 
     // Configuration components for the app and blocks
@@ -119,8 +121,10 @@ module.exports = function () {
       'loadDocC': function(){ tbe.loadDoc('docC'); },
       'loadDocD': function(){ tbe.loadDoc('docD'); },
       'loadDocE': function(){ tbe.loadDoc('docE'); },
-      'loadDriveMode': function(){ app.showOverlay(app.driverOverlay); },
-      'loadDebugMode': function(){ app.showOverlay(app.debugOverlay); },
+
+      'docSnapShot': function(){ app.fileOverlay.flashBulb(); },
+      'loadDriveOverlay': function(){ app.showOverlay(app.driverOverlay); },
+      'loadDebugOverlay': function(){ app.showOverlay(app.debugOverlay); },
       'loadSplashOverlay': function(){ app.showOverlay(app.splashOverlay); },
       'settings': function(){ tbe.loadSettings(); },
       'undo': function(){ tbe.undoAction(); },
@@ -167,10 +171,11 @@ module.exports = function () {
    var actionButtonObj = [
      {'alignment': 'L', 'position': 1, 'label': fastr.play, 'command': 'play', 'tweakx': 4},
      {'alignment': 'L', 'position': 2, 'label': fastr.stop, 'command': 'stop'},
-     {'alignment': 'M', 'position': 1, 'label': fastr.gamepad, 'command': 'loadDriveMode'},
-     {'alignment': 'M', 'position': 2, 'label': fastr.debug, 'command': 'loadDebugMode'},
+     {'alignment': 'M', 'position': 1, 'label': fastr.gamepad, 'command': 'loadDriveOverlay'},
+     {'alignment': 'M', 'position': 2, 'label': fastr.debug, 'command': 'loadDebugOverlay'},
      {'alignment': 'M', 'position': 3, 'label': fastr.page, 'command': 'pages'},
-     {'alignment': 'M', 'position': 4, 'label': fastr.edit, 'command': 'edit'},
+     {'alignment': 'M', 'position': 4, 'label': fastr.camera, 'command': 'docSnapShot'},
+     {'alignment': 'M', 'position': 5, 'label': fastr.edit, 'command': 'edit'},
      {'alignment': 'R', 'position': 2, 'label': fastr.redo, 'command': 'redo'},
      {'alignment': 'R', 'position': 1, 'label': fastr.undo, 'command': 'undo'}
    ];
