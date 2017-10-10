@@ -38,8 +38,8 @@ module.exports = function () {
 
     // Add major modules to the application object.
     var tbe = app.tbe;
-    app.overlayDom = document.getElementById('tbe-overlay-mode');
-    app.driverOverlay = require('./overlays/driveMode.js');
+    app.overlayDom = document.getElementById('overlayLayer');
+    app.driverOverlay = require('./overlays/driveOverlay.js');
     app.debugOverlay = require('./overlays/debugOverlay.js');
     app.fileOverlay = require('./overlays/fileOverlay.js');
     app.settingsOverlay = require('./overlays/settings.js');
