@@ -52,7 +52,6 @@ function bufferToString(buffer) {
 }
 
 if (typeof ble !== 'undefined') {
-  console.log('found ble', ble);
   bleConnection.bleApi = ble;
 } else {
   bleConnection.bleApi = null;

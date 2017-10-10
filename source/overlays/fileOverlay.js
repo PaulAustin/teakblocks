@@ -51,7 +51,7 @@ module.exports = function () {
   var fileOverlay = {};
   var app = require('./../appMain.js');
 
-  fileOverlay.cameraFlare = document.getElementById('cameraFlare');
+  fileOverlay.saveCamera = document.getElementById('saveCamera');
 
   // External function for putting it all together.
   fileOverlay.start = function () {
@@ -87,10 +87,10 @@ module.exports = function () {
   // 1/16 the storeac, then show smaller thumb nails. on hover the thumb nail
   // can be magnified.
 
-  fileOverlay.flashBulb = function() {
-    fileOverlay.cameraFlare.className = 'flashBulb';
+  fileOverlay.cameraFlash = function() {
+    fileOverlay.saveCamera.className = 'cameraFlash';
     setTimeout(function() {
-      fileOverlay.cameraFlare.className = 'flashIdle';
+      fileOverlay.saveCamera.className = 'cameraIdle';
       }, 1000);
   };
 

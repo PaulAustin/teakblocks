@@ -122,7 +122,7 @@ module.exports = function () {
       'loadDocD': function(){ tbe.loadDoc('docD'); },
       'loadDocE': function(){ tbe.loadDoc('docE'); },
 
-      'docSnapShot': function(){ app.fileOverlay.flashBulb(); },
+      'docSnapShot': function(){ app.fileOverlay.cameraFlash(); },
       'loadDriveOverlay': function(){ app.showOverlay(app.driverOverlay); },
       'loadDebugOverlay': function(){ app.showOverlay(app.debugOverlay); },
       'loadSplashOverlay': function(){ app.showOverlay(app.splashOverlay); },
