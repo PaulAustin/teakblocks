@@ -52,7 +52,7 @@ module.exports = function () {
       stop: '\uf04D',
       file: '\uf016',
       trash: '\uf014',
-      folder: '\uf115',
+      folder: '\uf114',
       undo: '\uf0e2',
       redo: '\uf01e',
       settings: '\uf013',
@@ -114,7 +114,7 @@ module.exports = function () {
       'play': function() { app.conductor.playAll(); },
       'stop': function() { app.conductor.stopAll(); },
       'trash': function() { tbe.clearAllBlocks(); },
-      'pages': function() { tbe.clearStates(); tbe.dropdownButtons = actionButtons.createDropdown(buttonsPages, tbe, fastr.page, 'pages'); },
+      'pages': function() { tbe.clearStates(); tbe.dropdownButtons = actionButtons.createDropdown(buttonsPages, tbe, fastr.folder, 'pages'); },
       'edit': function() { tbe.clearStates(); tbe.dropdownButtons = actionButtons.createDropdown(buttonsEdit, tbe, fastr.edit, 'edit'); },
       'loadDocA': function(){ tbe.loadDoc('docA'); },
       'loadDocB': function(){ tbe.loadDoc('docB'); },
@@ -129,7 +129,7 @@ module.exports = function () {
       'settings': function(){ tbe.loadSettings(); },
       'undo': function(){ tbe.undoAction(); },
       'redo': function(){ tbe.redoAction(); },
-      'pullUppages': function(){ actionButtons.deleteDropdown(tbe.dropdownButtons, tbe, fastr.page, 'pages'); },
+      'pullUppages': function(){ actionButtons.deleteDropdown(tbe.dropdownButtons, tbe, fastr.folder, 'pages'); },
       'pullUpedit': function(){ actionButtons.deleteDropdown(tbe.dropdownButtons, tbe, fastr.edit, 'edit'); },
       'copy': function(){ tbe.copyText = teaktext.blocksToText(tbe.forEachDiagramChain); },
       'paste': function(){ if(tbe.copyTest !== null) { teaktext.textToBlocks(tbe, tbe.copyText); } },
@@ -173,11 +173,11 @@ module.exports = function () {
      {'alignment': 'L', 'position': 2, 'label': fastr.stop, 'command': 'stop'},
      {'alignment': 'M', 'position': 1, 'label': fastr.gamepad, 'command': 'loadDriveOverlay'},
      {'alignment': 'M', 'position': 2, 'label': fastr.debug, 'command': 'loadDebugOverlay'},
-     {'alignment': 'M', 'position': 3, 'label': fastr.page, 'command': 'pages'},
+     {'alignment': 'M', 'position': 3, 'label': fastr.folder, 'command': 'pages'},
      {'alignment': 'M', 'position': 4, 'label': fastr.camera, 'command': 'docSnapShot'},
-     {'alignment': 'M', 'position': 5, 'label': fastr.edit, 'command': 'edit'},
-     {'alignment': 'R', 'position': 2, 'label': fastr.redo, 'command': 'redo'},
-     {'alignment': 'R', 'position': 1, 'label': fastr.undo, 'command': 'undo'}
+     {'alignment': 'M', 'position': 5, 'label': fastr.edit, 'command': 'edit'}
+    // {'alignment': 'R', 'position': 2, 'label': fastr.redo, 'command': 'redo'},
+    // {'alignment': 'R', 'position': 1, 'label': fastr.undo, 'command': 'undo'}
    ];
 
    tbe.actionButtons = actionButtonObj;
