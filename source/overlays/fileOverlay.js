@@ -87,6 +87,21 @@ module.exports = function () {
   // 1/16 the storeac, then show smaller thumb nails. on hover the thumb nail
   // can be magnified.
 
+  fileOverlay.saveFile = function(fileName, content) {
+    if (typeof (Storage) !== "undefined") {
+      // Store
+      console.log('saved to local storage to ' + fileName);
+      localStorage.setItem(fileName, content);
+    } else {
+      console.log('no local storage');
+    }
+  };
+
+  fileOverlay.loadFile = function(fileName) {
+    var content =  localStorage.getItem(fileName);
+    return content;
+  };
+
   fileOverlay.cameraFlash = function() {
     fileOverlay.saveCamera.className = 'cameraFlash';
     setTimeout(function() {

@@ -19,10 +19,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+
 module.exports = function () {
   var defaultFiles = {};
-  var save = require('./save.js');
+  var app = require('./appMain.js');
   var defaultDocA = '()';
+
   var defaultDocB = `(
   (chain x:80 y:240 (
     (identity start:'click' deviceName:'-?-' bus:'ble')
@@ -30,49 +32,48 @@ module.exports = function () {
     (picture pix:(0 0 0 0 0 0 1 0 1 0 0 0 0 0 0 0 1 1 1 0 1 0 0 0 1))
     (picture pix:(0 0 0 0 0 0 1 0 1 0 0 0 0 0 0 1 1 1 1 1 0 0 0 0 0))
     (picture pix:(0 1 0 1 0 0 0 0 0 0 0 1 1 1 0 1 0 0 0 1 0 1 1 1 0))
-  ))
-)`;
-var defaultDocC = `(
-  (chain x:80 y:240 (
-    (identity start:'click' deviceName:'-?-' bus:'ble')
-    (loop count:'25' (
-      (picture pix:(1 1 1 1 1 1 0 0 0 1 1 0 0 0 1 1 0 0 0 1 1 1 1 1 1))
-      (picture pix:(0 0 0 0 0 0 1 1 1 0 0 1 0 1 0 0 1 1 1 0 0 0 0 0 0))
-      (picture pix:(0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0))
-    ))
-  ))
-)
-)`;
-var defaultDocD = `(
-  (chain x:80 y:240 (
-    (identity start:'click' deviceName:'-?-' bus:'ble')
-    (sound description:'C4' period:'1/4')
-    (sound description:'E4' period:'1/4')
-    (sound description:'G4' period:'1/4')
-    (sound description:'E4' period:'1/4')
-    (sound description:'C4' period:'1/4')
-  ))
-)`;
-var defaultDocE = `(
-  (chain x:80 y:240 (
-    (identity start:'click' deviceName:'-?-' bus:'ble')
-    (motor speed:50 duration:0)
-    (motor speed:'100' duration:0)
-    (motor speed:50 duration:0)
-    (motor speed:'0' duration:0)
-    (motor speed:'-50' duration:0)
-    (motor speed:'-100' duration:0)
-    (motor speed:'-50' duration:0)
-  ))
-)`;
+  )))`;
+
+  var defaultDocC = `(
+    (chain x:80 y:240 (
+      (identity start:'click' deviceName:'-?-' bus:'ble')
+      (loop count:'25' (
+        (picture pix:(1 1 1 1 1 1 0 0 0 1 1 0 0 0 1 1 0 0 0 1 1 1 1 1 1))
+        (picture pix:(0 0 0 0 0 0 1 1 1 0 0 1 0 1 0 0 1 1 1 0 0 0 0 0 0))
+        (picture pix:(0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0))
+      ))
+    )))`;
+
+  var defaultDocD = `(
+    (chain x:80 y:240 (
+      (identity start:'click' deviceName:'-?-' bus:'ble')
+      (sound description:'C4' period:'1/4')
+      (sound description:'E4' period:'1/4')
+      (sound description:'G4' period:'1/4')
+      (sound description:'E4' period:'1/4')
+      (sound description:'C4' period:'1/4')
+    )))`;
+
+  var defaultDocE = `(
+    (chain x:80 y:240 (
+      (identity start:'click' deviceName:'-?-' bus:'ble')
+      (motor speed:50 duration:0)
+      (motor speed:'100' duration:0)
+      (motor speed:50 duration:0)
+      (motor speed:'0' duration:0)
+      (motor speed:'-50' duration:0)
+      (motor speed:'-100' duration:0)
+      (motor speed:'-50' duration:0)
+    )))`;
 
  // check if contains file (file name)
  defaultFiles.containsFile = function(fileName){
-   if(save.loadFile(fileName) === null || save.loadFile(fileName) === `null`){
+   if(app.fileOverlay.loadFile(fileName) === null || app.fileOverlay.loadFile(fileName) === `null`){
      return false;
    }
    return true;
  };
+
  // default Files
  defaultFiles.default = function(files){
    for(var i = 0; i < files.length; i++){
@@ -99,9 +100,10 @@ var defaultDocE = `(
            break;
 
        }
-       save.saveFile(files[i], file);
+       app.fileOverlay.saveFile(files[i], file);
      }
    }
  };
+
  return defaultFiles;
 }();

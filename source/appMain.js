@@ -34,7 +34,6 @@ module.exports = function () {
     app.conductor = require('./conductor.js');
     var actionButtons = require('./actionButtons.js');
     var teaktext = require('./teaktext.js');
-    var save = require('./save.js');
 
     // Add major modules to the application object.
     var tbe = app.tbe;
@@ -126,14 +125,17 @@ module.exports = function () {
       'loadDriveOverlay': function(){ app.showOverlay(app.driverOverlay); },
       'loadDebugOverlay': function(){ app.showOverlay(app.debugOverlay); },
       'loadSplashOverlay': function(){ app.showOverlay(app.splashOverlay); },
-      'settings': function(){ tbe.loadSettings(); },
-      'undo': function(){ tbe.undoAction(); },
-      'redo': function(){ tbe.redoAction(); },
-      'pullUppages': function(){ actionButtons.deleteDropdown(tbe.dropdownButtons, tbe, fastr.folder, 'pages'); },
-      'pullUpedit': function(){ actionButtons.deleteDropdown(tbe.dropdownButtons, tbe, fastr.edit, 'edit'); },
-      'copy': function(){ tbe.copyText = teaktext.blocksToText(tbe.forEachDiagramChain); },
-      'paste': function(){ if(tbe.copyTest !== null) { teaktext.textToBlocks(tbe, tbe.copyText); } },
-      'save': function(){ var currentDocText = teaktext.blocksToText(tbe.forEachDiagramChain); save.saveFile(tbe.currentDoc, currentDocText); }
+      'settings': function() { tbe.loadSettings(); },
+      'undo': function() { tbe.undoAction(); },
+      'redo': function() { tbe.redoAction(); },
+      'pullUppages': function() { actionButtons.deleteDropdown(tbe.dropdownButtons, tbe, fastr.folder, 'pages'); },
+      'pullUpedit': function() { actionButtons.deleteDropdown(tbe.dropdownButtons, tbe, fastr.edit, 'edit'); },
+      'copy': function() { tbe.copyText = teaktext.blocksToText(tbe.forEachDiagramChain); },
+      'paste': function() { if(tbe.copyTest !== null) { teaktext.textToBlocks(tbe, tbe.copyText); } },
+      'save': function() {
+        var currentDocText = teaktext.blocksToText(tbe.forEachDiagramChain);
+        app.fileOverlay.saveFile(tbe.currentDoc, currentDocText);
+      }
     };
 
     // Construct the clipboard

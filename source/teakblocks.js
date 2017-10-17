@@ -29,7 +29,6 @@ var teakText = require('./teaktext.js');
 var svgb = require('./svgbuilder.js');
 var trashBlocks = require('./trashBlocks.js');
 var fblocks = require('./fblock-settings.js');
-var save = require('./save.js');
 var teakselection = require('./teakselection');
 var actionButtons = require('./actionButtons.js');
 var defaultFiles = require('./defaultFiles.js');
@@ -103,7 +102,7 @@ tbe.init = function init(svg) {
   this.initPaletteBox();
   var files = ['docA', 'docB', 'docC', 'docD', 'docE'];
   defaultFiles.default(files);
-  var loadedDocText = save.loadFile('docA');
+  var loadedDocText = app.fileOverlay.loadFile('docA');
   if (loadedDocText !== null) {
     teakText.textToBlocks(tbe, loadedDocText);
   }
@@ -149,7 +148,7 @@ tbe.clearAllBlocks = function() {
 
 tbe.saveCurrentDoc = function() {
   var currentDocText = teakText.blocksToText(tbe.forEachDiagramChain);
-  save.saveFile(tbe.currentDoc, currentDocText);
+  app.fileOverlay.saveFile(tbe.currentDoc, currentDocText);
 };
 
 tbe.loadDoc = function(docName) {
@@ -167,7 +166,7 @@ tbe.loadDoc = function(docName) {
     tbe.clearStates();
     tbe.clearDiagramBlocks();
     tbe.currentDoc = docName;
-    var loadedDocText = save.loadFile(docName);
+    var loadedDocText = app.fileOverlay.loadFile(docName);
 
     if (loadedDocText !== null) {
       teakText.textToBlocks(tbe, loadedDocText);
@@ -1226,11 +1225,11 @@ tbe.configInteractions = function configInteractions() {
           break;
 
       }
-      save.saveFile(doc, null);
+      app.fileOverlay.saveFile(doc, null);
       defaultFiles.default([doc]);
       tbe.clearDiagramBlocks();
       tbe.currentDoc = doc;
-      var loadedDocText = save.loadFile(doc);
+      var loadedDocText = app.fileOverlay.loadFile(doc);
       if (loadedDocText !== null) {
         teakText.textToBlocks(tbe, loadedDocText);
       }
