@@ -52,8 +52,8 @@ function bufferToString(buffer) {
 }
 
 if (typeof ble !== 'undefined') {
-  // ble is defined by out environment.
-  bleConnection.bleApi = ble;
+  // ble is defined by the environment.
+  bleConnection.bleApi = ble; // eslint-disable-line no-undef
 } else {
   bleConnection.bleApi = null;
 }
