@@ -115,7 +115,7 @@ module.exports = function(){
       }
     });
     interact(".stopGroup")
-      .on('tap', function(event){
+      .on('tap', function(){
         var sliders = document.getElementsByClassName('slider');
         sliders[0].style.paddingTop = (0.5 * 7) + 'em';
         sliders[0].setAttribute('data-value', 0);

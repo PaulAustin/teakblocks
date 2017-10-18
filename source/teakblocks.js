@@ -92,7 +92,6 @@ tbe.clearStates = function clearStates(block) {
   actionButtons.addActionButtons(tbe.actionButtons, tbe);
 };
 
-
 tbe.init = function init(svg) {
   this.svg = svg;
   this.background = svgb.createRect('editor-background', 0, 0, 20, 20, 0);
@@ -716,7 +715,6 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
   var target = null;
   var overlap = 0;
   var bestOverlap = 0;
-  var bestRect = null;
   var action = null;
   var rect = null;
   var thisWidth = this.width;
@@ -743,7 +741,6 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
       overlap = tbe.intersectingArea(self.rect, rect);
       if (overlap > bestOverlap) {
         bestOverlap = overlap;
-        bestRect = rect;
         target = entry;
       }
     }
@@ -1051,51 +1048,55 @@ tbe.autoPlace = function autoPlace(block){
   }
 };
 
-document.body.addEventListener("keydown",function(e){
+document.body.addEventListener("keydown", function(e){
     e = e || window.event;
-    var key = e.which || e.keyCode; // keyCode detection
-    var ctrl = e.ctrlKey ? e.ctrlKey : ((key === 17) ? true : false); // ctrl detection
+
+    // Browsers report keys code differently, check both.
+    var key = e.which || e.keyCode || 0;
+
+    // Look for control modifier
+    var ctrl = e.ctrlKey ? e.ctrlKey : (key === 17);
 
     if ( key === 86 && ctrl ) {
-        console.log("Ctrl + V Pressed !");
+      console.log("Ctrl + V Pressed !");
     } else if ( key === 67 && ctrl ) {
-        console.log("Ctrl + C Pressed !");
-        var array = [];
-        tbe.forEachDiagramBlock( function(block){
-          if(block.isSelected()){
-            array.push(block);
-          }
-        });
-        var textArea = document.createElement("textarea");
-
-        textArea.style.position = 'fixed';
-        textArea.style.top = 0;
-        textArea.style.left = 0;
-        textArea.style.width = '2em';
-        textArea.style.height = '2em';
-        textArea.style.padding = 0;
-        textArea.style.border = 'none';
-        textArea.style.outline = 'none';
-        textArea.style.boxShadow = 'none';
-        textArea.style.background = 'transparent';
-        if(array.length >= 0){
-          textArea.value = teakText.chunkToText(tbe.findChunkStart(array[0]), null, '');
-          console.log(textArea);
-          document.body.appendChild(textArea);
-          textArea.select();
-
-          try {
-            var successful = document.execCommand('copy');
-            var msg = successful ? 'successful' : 'unsuccessful';
-            console.log('Copying text command was ' + msg);
-          } catch (err) {
-            console.log('Oops, unable to copy');
-          }
+      console.log("Ctrl + C Pressed !");
+      var array = [];
+      tbe.forEachDiagramBlock( function(block){
+        if(block.isSelected()){
+          array.push(block);
         }
+      });
+      var textArea = document.createElement("textarea");
 
-        document.body.removeChild(textArea);
+      textArea.style.position = 'fixed';
+      textArea.style.top = 0;
+      textArea.style.left = 0;
+      textArea.style.width = '2em';
+      textArea.style.height = '2em';
+      textArea.style.padding = 0;
+      textArea.style.border = 'none';
+      textArea.style.outline = 'none';
+      textArea.style.boxShadow = 'none';
+      textArea.style.background = 'transparent';
+      if(array.length >= 0){
+        textArea.value = teakText.chunkToText(tbe.findChunkStart(array[0]), null, '');
+        console.log(textArea);
+        document.body.appendChild(textArea);
+        textArea.select();
+
+        try {
+          var successful = document.execCommand('copy');
+          var msg = successful ? 'successful' : 'unsuccessful';
+          console.log('Copying text command was ' + msg);
+        } catch (err) {
+          console.log('Oops, unable to copy');
+        }
+      }
+
+      document.body.removeChild(textArea);
     } else if ( key === 90 && ctrl) {
-        tbe.undoAction();
+      tbe.undoAction();
     } else if ( key === 89 && ctrl) {
       tbe.redoAction();
     } else if( key === 8) {
@@ -1108,28 +1109,28 @@ document.body.addEventListener("keydown",function(e){
       if(todelete.length !== 0){
         tbe.deleteChunk(todelete[0], todelete[todelete.length - 1]);
       }
-    } else if( key === 49 ){
+    } else if( key === 49 ) {
       tbe.loadDoc('docA');
-    } else if( key === 50 ){
+    } else if( key === 50 ) {
       tbe.loadDoc('docB');
-    } else if( key === 51 ){
+    } else if( key === 51 ) {
       tbe.loadDoc('docC');
-    } else if( key === 52 ){
+    } else if( key === 52 ) {
       tbe.loadDoc('docD');
-    } else if( key === 53 ){
+    } else if( key === 53 ) {
       tbe.loadDoc('docE');
-    } else if( key === 80 ){
+    } else if( key === 80 ) {
       conductor.playAll();
-    } else if( key === 83 ){
+    } else if( key === 83 ) {
       conductor.stopAll();
-    } else if( key === 88 ){
+    } else if( key === 88 ) {
       var cloneBlocks = [];
-      tbe.forEachDiagramBlock( function(block){
-        if(block.isSelected()){
+      tbe.forEachDiagramBlock( function(block) {
+        if(block.isSelected()) {
           cloneBlocks.push(block);
         }
       });
-      if(cloneBlocks.length !== 0){
+      if(cloneBlocks.length !== 0) {
         var clone = tbe.replicateChunk(cloneBlocks[0], cloneBlocks[cloneBlocks.length - 1]);
 
         // TODO put it in a non-hardcoded place
@@ -1146,23 +1147,23 @@ document.body.addEventListener("keydown",function(e){
         };
         tbe.animateMove(animateClone);
       }
-    } else if( key === 32 ){
+    } else if( key === 32 ) {
       tbe.clearAllBlocks();
-    } else if(ctrl && key === 65){
+    } else if(ctrl && key === 65) {
       var selected = null;
-      tbe.forEachDiagramBlock( function(block){
-        if(block.isSelected()){
+      tbe.forEachDiagramBlock( function(block) {
+        if(block.isSelected()) {
           selected = block;
         }
       });
 
       tbe.clearStates();
 
-      while(selected.next !== null){
+      while(selected.next !== null) {
         selected.markSelected(true);
         selected = selected.next;
       }
-      while(selected !== null){
+      while(selected !== null) {
         selected.markSelected(true);
         selected = selected.prev;
       }

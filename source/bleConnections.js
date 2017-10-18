@@ -52,6 +52,7 @@ function bufferToString(buffer) {
 }
 
 if (typeof ble !== 'undefined') {
+  // ble is defined by out environment.
   bleConnection.bleApi = ble;
 } else {
   bleConnection.bleApi = null;

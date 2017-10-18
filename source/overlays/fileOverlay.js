@@ -47,7 +47,6 @@ SOFTWARE.
 */
 module.exports = function () {
 
-
   var fileOverlay = {};
   var app = require('./../appMain.js');
 
