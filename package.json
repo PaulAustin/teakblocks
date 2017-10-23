@@ -6,8 +6,9 @@
   "scripts": {
     "watch-dev": "npm run watch-css & npm run wify & npm run http",
     "watch-css": "catw -c 'lessc --include-path=source/style/ -' 'source/style/teakblocks.less' -o html_app/www/style.css -v",
+    "ghpages": "cp -R html_app/www/ docs/",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "bifyu": "browserify source/index.js -t [ babelify --presets es2015 ] | uglifyjs >html_app/www/bundled_tbe.js; ls -l html_app/www/bundled_tbe.js",
+    "bifyu": "browserify source/index.js -t [ babelify --presets es2015 ] | uglifyjs -m >html_app/www/bundled_tbe.js; ls -l html_app/www/bundled_tbe.js",
     "bify15": "browserify source/index.js -t [ babelify --presets es2015 ] -o html_app/www/bundled_tbe.js; ls -l html_app/www/bundled_tbe.js",
     "bify": "browserify source/index.js -o html_app/www/bundled_tbe.js; ls -l html_app/www/bundled_tbe.js",
     "wify": "watchify source/index.js -o html_app/www/bundled_tbe.js -v",

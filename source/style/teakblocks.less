@@ -31,6 +31,7 @@
 
 @import "blocks.less";
 @import "fileOverlay.less";
+@import "splashOverlay.less";
 
 html, body { margin:0; padding:0; overflow:hidden }
 .teak-log {
@@ -572,19 +573,7 @@ label input[type="checkbox"]:disabled + .label-text:before {
   width: 50px;
   border-radius: 100px;
 }
-// Splash screen (also the about box)
-#splashOverlay {
-  position: absolute;
-  left:10%;
-  top:10%;
-  width:80%;
-  height:80%;
-  background-color: @overlay-splash-backgroud;
-  border-radius: 10px;
-  border-width: 4;
-  border-color: @overlay-splash-outline;
-  overflow: hidden;
-}
+
 // Debug window
 #overlayFrame {
   position: absolute;

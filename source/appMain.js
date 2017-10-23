@@ -191,8 +191,14 @@ module.exports = function () {
    app.conductor.attachToScoreEditor(tbe);
  };
 
- app.showOverlay = function(overlay) {
+ app.doCommand = function(commandName) {
+   var cmdFunction = app.tbe.commands[commandName];
+   if (typeof cmdFunction === 'function') {
+     cmdFunction();
+   }
+ };
 
+ app.showOverlay = function(overlay) {
    // TODO modularized control of editor. Why is this part of the show overlay logic?
    app.tbe.undoArray = {}; // When we switch documents we want to clear undo history.
    app.tbe.undoTransactionIndex = 0;

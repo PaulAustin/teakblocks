@@ -33,11 +33,24 @@ module.exports = function(){
     app.overlayDom.innerHTML = `
     <div id='overlayFrame' class='fullScreenSlideIn'>
       <div id='splashOverlay'>
+      <p class='splashTitle'>Teak blocks<p>
+      <p class='splashBody'>A block sequencing tool for simple programs.<p>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <!--div>
+        <input id='noLaunchSplash' type='checkbox' class='splashBody'>
+        <label for='noLaunchSplash' class='splashBody'>Show at launch</lable>
+      </div-->
+      <br>
+      <br>
+      <p class='splashBody'>Copyright 2017 Paul Austin and Sidharth Srinivasan<p>
       </div>
     </div>`;
     var exitButton = document.getElementById('splashOverlay');
     exitButton.onclick = splashOverlay.exit;
-
   };
 
   splashOverlay.exit = function () {

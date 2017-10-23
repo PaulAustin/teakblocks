@@ -1193,10 +1193,7 @@ tbe.configInteractions = function configInteractions() {
   })
   .on('up', function (event) {
     var cmd = event.currentTarget.getAttribute('command');
-    var cmdFunction = tbe.commands[cmd];
-    if (typeof cmdFunction === 'function') {
-      cmdFunction();
-    }
+    app.doCommand(cmd);
     event.currentTarget.classList.toggle('switch-bg');
   });
 
