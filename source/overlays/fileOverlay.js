@@ -109,15 +109,9 @@ module.exports = function () {
   };
 
   fileOverlay.snapShot = function() {
-    var image = new Image();
-    var context = document.getElementById('snapShotCanvas');
-    var svg = document.getElementById('editor-canvas');
 
     // Create a SVG string by joining the serialized form with a header.
-    var xml = new XMLSerializer().serializeToString(svg);
-    image.src = 'data:image/svg+xml;base64,' + btoa(xml);
 
-    context.drawImage(image, 0, 0);
   };
 
   return fileOverlay;

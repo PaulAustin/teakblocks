@@ -90,7 +90,7 @@ module.exports = function () {
     tbe.audio.shortClick.preload = 'true';
     tbe.audio.poof.preload = 'true';
 
-    tbe.init(document.getElementById('editorCanvas'));
+    tbe.init(document.getElementById('editorSvgCanvas'));
 
     var buttonsPages = [
       {'label': 'A', 'command': 'loadDocA'},
