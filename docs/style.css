@@ -1,0 +1,920 @@
+.function-text {
+  width: 80px;
+  height: 80px;
+  font-size: 22px;
+  font-weight: bold;
+  fill: #D6E2FE;
+  font-family: "helvetica";
+  pointer-events: none;
+  stroke-width: 0;
+}
+@keyframes shadowFadeIn {
+  from {
+    opacity: 0.0;
+  }
+  to {
+    opacity: 0.4;
+  }
+}
+@keyframes outShadowFadeIn {
+  from {
+    opacity: 0.0;
+  }
+  to {
+    opacity: 0.15;
+  }
+}
+.shadow-block {
+  opacity: 0.4;
+  fill: #43A047;
+  animation: shadowFadeIn 0.35s ease;
+}
+.shadow-block-outsnap {
+  opacity: 0.15;
+  fill: #43A047;
+  animation: outShadowFadeIn 0.35s ease;
+}
+@keyframes shadowFadeOut {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 0.0;
+  }
+}
+@keyframes outShadowFadeOut {
+  from {
+    opacity: 0.15;
+  }
+  to {
+    opacity: 0.0;
+  }
+}
+.shadow-block-leave {
+  opacity: 0.0;
+  fill: #43A047;
+  animation: shadowFadeOut 0.35s ease;
+}
+.shadow-block-leave-outsnap {
+  opacity: 0.0;
+  fill: #43A047;
+  animation: outShadowFadeOut 0.35s ease;
+}
+.selectedBlock {
+  transition: stroke 0.3s ease;
+  stroke-width: 4;
+  stroke: #1E88E5;
+}
+.running-block {
+  stroke-width: 4;
+  stroke: #3300ff;
+}
+.function-block {
+  fill: #3372FF;
+  stroke-width: 4;
+  stroke: #5A33FF;
+  transition: stroke 0.3s ease;
+}
+.flow-path {
+  fill: none;
+  stroke-width: 4;
+  stroke: #5A33FF;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  /* stroke-dasharray: 8, 3.5; */
+}
+.block-stencil {
+  fill: none;
+  stroke-width: 2.5;
+  stroke: #FFB74D;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.block-stencil-fill {
+  stroke-width: 2;
+  stroke: #FFB74D;
+  fill: #FFB74D;
+  stroke-linejoin: round;
+}
+.block-stencil-fill-back {
+  fill: #81C784;
+  opacity: .5;
+  stroke-linejoin: round;
+}
+.block-sensor-stencil {
+  fill: none;
+  stroke-width: 1.5;
+  stroke: #FFB74D;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.block-sensor-stencil-value {
+  fill: #33FF33;
+  stroke-width: 0;
+  stroke: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.block-identity-text {
+  /* For name of connected device */
+  font-family: "helvetica";
+  text-align: center;
+  font-size: 20px;
+  fill: #FFB74D;
+}
+.block-picture-board {
+  fill: #332222;
+}
+.block-picture-led-off {
+  fill: #641E16;
+}
+.block-picture-led-on {
+  fill: #FF3366;
+}
+.block-bot-connecting {
+  fill: #BA68C8;
+}
+.block-bot-connected {
+  fill: #4CAF50;
+}
+.block-bot-visible {
+  fill: #42A5F5;
+}
+.block-bot-not-found {
+  fill: #FDD835;
+}
+.block-bot-connection-error {
+  fill: #FF5722;
+}
+.block-micro-servo-body {
+  stroke: #303F9F;
+  fill: #0033FF;
+  stroke-width: 2;
+}
+.block-motor-body {
+  fill: #777777;
+  stroke: #FFB74D;
+  stroke-width: 2;
+  stroke-dasharray: 4, 5;
+}
+.block-motor-shaft {
+  fill: #202020;
+}
+.block-config-form {
+  /* setting dialogs */
+  background-color: #C8E6C9;
+  border-radius: 10px;
+  box-sizing: border-box;
+  box-shadow: 1px 4px 5px 2px rgba(0, 0, 0, 0.2);
+  font-family: "helvetica";
+  font-size: 20px;
+  touch-action: none;
+  /* prevents any screen bounce on android */
+}
+.block-sound-piano-w {
+  fill: #FFFDE7;
+}
+.block-sound-piano-w-pressed {
+  fill: #FFE082;
+}
+.block-sound-piano-b {
+  fill: #212121;
+}
+.block-sound-piano-b-pressed {
+  fill: #616161;
+}
+.block-sound-piano {
+  fill: #3E2723;
+  stroke: #3E2723;
+  stroke-width: 2px;
+}
+.block-motor-text {
+  font-family: 'FontAwesome', "helvetica";
+  font-size: 12px;
+  stroke-width: 0;
+}
+.block-motor-text-duration {
+  font-family: 'FontAwesome', "helvetica";
+  font-size: 20px;
+  stroke-width: 0;
+}
+.block-wait-text {
+  font-family: 'FontAwesome', "helvetica";
+  font-size: 20px;
+  stroke-width: 0;
+}
+.block-twomotor-text {
+  font-family: 'FontAwesome', "helvetica";
+  font-size: 14px;
+  stroke-width: 0;
+}
+.block-servo-text {
+  font-family: "helvetica";
+  font-size: 20px;
+  stroke-width: 0;
+}
+.block-flowhead-loop {
+  font-family: FontAwesome;
+  font-size: 35px;
+  fill: #FFB74D;
+}
+.block-flowhead-count {
+  font-family: "helvetica";
+  font-size: 20px;
+  stroke-width: 0;
+}
+#saveCamera {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.cameraIdle {
+  background-color: rgba(0, 0, 0, 0);
+}
+.cameraFlash {
+  background-color: rgba(0, 0, 0, 0);
+  animation: cameraFlash 0.7s ease;
+}
+@keyframes cameraFlash {
+  0% {
+    background-color: rgba(255, 255, 255, 0);
+  }
+  25% {
+    background-color: rgba(255, 255, 255, 0);
+  }
+  35% {
+    background-color: rgba(240, 240, 255, 0.9);
+  }
+  40% {
+    background-color: rgba(240, 240, 255, 0.9);
+  }
+  100% {
+    background-color: rgba(255, 255, 255, 0);
+  }
+}
+#splashOverlay {
+  position: absolute;
+  left: 15%;
+  top: 15%;
+  width: 70%;
+  height: 50%;
+  padding: 20px;
+  background-color: #E1F5FE;
+  border-radius: 12px;
+  border: 10px solid #4FC3F7;
+  overflow: hidden;
+}
+.splashTitle {
+  font-size: 24px;
+  font-weight: bold;
+  font-family: "helvetica";
+}
+.splashBody {
+  font-size: 16px;
+  font-family: "helvetica";
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.teak-log {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  font-size: 12px;
+  font-family: "Monaco";
+  width: 25%;
+  height: 100%;
+  float: right;
+  border: none;
+  outline: none;
+  overflow-y: scroll;
+  background-color: rgba(0, 0, 1, 0.05);
+  background-blend-mode: multiply;
+}
+.editor-background {
+  fill: #FFF8E1;
+}
+#testCircle {
+  position: fixed;
+  top: 20%;
+  left: 0%;
+}
+#snapShotCanvas {
+  position: fixed;
+  top: 5%;
+  left: 20%;
+  width: 80%;
+  height: 50%;
+  background-color: cyan;
+}
+#editorSvgCanvas {
+  position: fixed;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  -ms-touch-action: none;
+  touch-action: none;
+  /* prevent text from being selected browser style */
+  user-select: none;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+.dropArea {
+  /* drop area will be moved to bottom, match width of screen */
+  fill: #F5B041;
+  stroke-width: 0;
+  stroke: none;
+}
+.tab-block {
+  fill: #F5B041;
+  stroke: #1B5E20;
+  stroke-width: 2;
+  z-index: 500;
+}
+.tab-text {
+  width: 40px;
+  height: 25px;
+  font-size: 24px;
+  fill: black;
+  font-family: "helvetica";
+  pointer-events: none;
+  z-index: 501;
+}
+@keyframes selectionFadeIn {
+  from {
+    opacity: 0.0;
+  }
+  to {
+    opacity: 1.0;
+  }
+}
+.selection-rect {
+  fill: #B3E5FC;
+  stroke-width: 4;
+  stroke: #1E88E5;
+  animation: selectionFadeIn 0.3s ease;
+}
+/* Buttons for the bock config edit operations run, copy, delete */
+.block-settings-editops {
+  padding: 2px;
+}
+.block-settings-editops button {
+  margin: 2px;
+  width: 31.6%;
+  font-size: 20px;
+  border: 2px solid #81C784;
+  border-radius: 6px;
+  background-color: #81C784;
+  user-select: none;
+  outline: none;
+}
+.block-settings-editops button:active {
+  background-color: #4CAF50;
+}
+/* Controller settings for the block. */
+#block-settings-custom {
+  /* Ensure rom on left and right */
+  margin: 0px 5px 0px 5px;
+  /* All editors should be the same height */
+  height: 175px;
+}
+.editorDiv {
+  text-align: center;
+}
+/* Block controllers is a row of tab-like buttons on the edge of the config panel */
+.block-settings-tab {
+  text-align: center;
+  font-size: 24px;
+  height: 36px;
+  margin: 5px 0px 0px 0px;
+  border: 0px solid #81C784;
+  background-color: #81C784;
+  user-select: none;
+  outline: none;
+}
+.tab-selected {
+  background-color: #C8E6C9;
+  border: 0px solid #C8E6C9;
+}
+/* Use this class for SVG elements that do not directly interact with the pointer */
+.svg-clear {
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  /* Chrome/Safari */
+}
+button {
+  touch-action: none;
+  /* prevents any screen bounce on android */
+}
+textarea {
+  touch-action: none;
+  /* prevents any screen bounce on android */
+}
+body {
+  margin: 0;
+}
+.palette-button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 15px 15px;
+  width: 82px;
+  height: 82px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 10px;
+  margin: 4px 2px;
+  cursor: pointer;
+  outline: none;
+}
+.palette-button:active {
+  background-color: #1E8449;
+}
+label {
+  margin: 15
+  cursor: pointer;
+  /* prevent selecting text in control captions */
+  -webkit-user-select: none;
+  user-select: none;
+}
+label input[type="checkbox"] {
+  display: none;
+}
+label input[type="checkbox"] + .label-text:before {
+  content: "\f096";
+  font-family: "FontAwesome";
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  font-size: 25px;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  width: 1em;
+  display: inline-block;
+  margin-right: 5px;
+  animation: toUnchecked 200ms ease-in;
+}
+label input[type="checkbox"]:checked + .label-text:before {
+  content: "\f046";
+  color: #06a3e9;
+  animation: toChecked 200ms ease-in;
+}
+label input[type="checkbox"]:disabled + .label-text {
+  color: #aaa;
+}
+label input[type="checkbox"]:disabled + .label-text:before {
+  content: "f096";
+  /* square-o */
+  color: #ccc;
+}
+@keyframes toUnchecked {
+  0% {
+    transform: scale(0.9);
+  }
+  60% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes toChecked {
+  0% {
+    transform: scale(0.9);
+  }
+  60% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+/* teak form is for system wide dialogs that slide in from the top */
+.pulldown {
+  width: 14em;
+  transition: transform .4s ease;
+}
+.pulldown.opened {
+  width: 14em;
+  transform: translate(0, 0%);
+}
+.pulldown.closed {
+  transform: translate(0, -120%);
+}
+.teakform {
+  /* setting dialogs */
+  background-color: #75DCE7;
+  border-radius: 10px;
+  box-sizing: border-box;
+  box-shadow: 1px 4px 5px 2px rgba(0, 0, 0, 0.2);
+  font-family: "helvetica";
+  color: #33691E;
+  font-size: 20px;
+  padding: 20px;
+  touch-action: none;
+  /* prevents any screen bounce on android */
+}
+.teakform button {
+  border: 2px solid #06a3e9;
+  border-radius: 4px;
+  background-color: #75DCE7;
+  user-select: none;
+}
+.teakform button:active {
+  outline: none;
+}
+.list-box-shell {
+  font-family: "helvetica";
+  height: 97%;
+  border-radius: 6px;
+  margin-left: -1px;
+  margin-right: -1px;
+  margin-bottom: 5px;
+  /* margin-right: -1px; */
+  border: 3px solid #81C784;
+  background-color: #C8E6C9;
+  color: #33691E;
+  font-size: 40px;
+  user-select: none;
+  display: block;
+  overflow: scroll;
+}
+.list-item-selected {
+  background-color: #81C784;
+  color: #33691E;
+}
+.list-box {
+  margin: 0px;
+  list-style: none;
+  padding-left: 0px;
+}
+.calcButtons {
+  fill: #81C784;
+  stroke: #1B5E20;
+  stroke-width: 2;
+}
+.beatsButtons {
+  fill: #81C784;
+  stroke: #1B5E20;
+  stroke-width: 2;
+}
+/* actton dot are 'bottons' along the top of the canvas */
+.action-dot {
+  transition: fill 0.2s ease;
+  fill: #F6DDCC;
+}
+.action-dot-underlay {
+  transition: fill 0.2s ease;
+  fill: #F2CDB5;
+}
+.action-dot-rect-pages {
+  fill: #F2CDB5;
+  height: 400px;
+  -webkit-animation: outpages 0.4s ease;
+  /* Safari 4.0 - 8.0 */
+  animation: outpages 0.4s ease;
+}
+@-webkit-keyframes outpages {
+  from {
+    height: 0px;
+  }
+  to {
+    height: 400px;
+  }
+}
+/* Standard syntax */
+@keyframes outpages {
+  from {
+    height: 0px;
+  }
+  to {
+    height: 400px;
+  }
+}
+.action-dot-rect-remove-pages {
+  fill: #F2CDB5;
+  height: 0px;
+  -webkit-animation: inpages 0.45s ease;
+  /* Safari 4.0 - 8.0 */
+  animation: inpages 0.45s ease;
+}
+@-webkit-keyframes inpages {
+  from {
+    height: 400px;
+  }
+  to {
+    height: 0px;
+  }
+}
+/* Standard syntax */
+@keyframes inpages {
+  from {
+    height: 400px;
+  }
+  to {
+    height: 0px;
+  }
+}
+.action-dot-rect-edit {
+  fill: #F2CDB5;
+  height: 400px;
+  -webkit-animation: outedit 0.45s ease;
+  /* Safari 4.0 - 8.0 */
+  animation: outedit 0.45s ease;
+}
+@-webkit-keyframes outedit {
+  from {
+    height: 0px;
+  }
+  to {
+    height: 400px;
+  }
+}
+/* Standard syntax */
+@keyframes outedit {
+  from {
+    height: 0px;
+  }
+  to {
+    height: 400px;
+  }
+}
+.action-dot-rect-remove-edit {
+  fill: #F2CDB5;
+  height: 0px;
+  -webkit-animation: inedit 0.45s ease;
+  /* Safari 4.0 - 8.0 */
+  animation: inedit 0.45s ease;
+}
+@-webkit-keyframes inedit {
+  from {
+    height: 400px;
+  }
+  to {
+    height: 0px;
+  }
+}
+/* Standard syntax */
+@keyframes inedit {
+  from {
+    height: 400px;
+  }
+  to {
+    height: 0px;
+  }
+}
+.action-dot.switch-bg {
+  /*fill: #4DD0E1; */
+  fill: #B3E5FC;
+}
+.action-dot-text {
+  fill: #FF7043;
+  font-family: FontAwesome;
+  font-size: 36px;
+  text-anchor: middle;
+  pointer-events: none;
+}
+.action-dot-doc-label {
+  fill: #FF7043;
+  font-family: "helvetica";
+  font-size: 24px;
+  text-anchor: middle;
+  pointer-events: none;
+}
+.error {
+  color: red;
+}
+.numeric-display {
+  width: 230px;
+  height: 30px;
+  border-radius: 8px;
+  background-color: #c4c4c4;
+  font-size: 24px;
+  pointer-events: auto;
+}
+.numeric-display-half {
+  display: inline-block;
+  float: left;
+  width: 110px;
+  height: 30px;
+  border-radius: 8px;
+  background-color: #c4c4c4;
+  font-size: 24px;
+  pointer-events: auto;
+}
+.beats-display {
+  display: inline-block;
+  float: left;
+  margin-left: 10px;
+  width: 110px;
+  height: 30px;
+  border-radius: 8px;
+  background-color: #c4c4c4;
+  font-size: 24px;
+  pointer-events: auto;
+}
+.selectedDisplay {
+  background-color: #ffc570;
+}
+.area {
+  margin-top: 5px;
+}
+.slider {
+  position: relative;
+  top: 80px;
+  width: 2em;
+  height: 8em;
+  margin: 1.5em auto;
+  background-color: #873600;
+  border-radius: 0.5em;
+  box-sizing: border-box;
+  padding-top: 3.5em;
+  font-size: 8vmin;
+  -ms-touch-action: none;
+  touch-action: none;
+}
+.slider:before {
+  content: "";
+  display: block;
+  position: relative;
+  right: -0.5em;
+  width: 3em;
+  height: 1em;
+  margin-left: -1em;
+  border: solid 0.25em #f4af41;
+  border-radius: 2em;
+  background-color: inherit;
+  box-sizing: border-box;
+}
+.slider:after {
+  content: attr(data-value);
+  position: absolute;
+  top: -1.5em;
+  width: 2em;
+  line-height: 1em;
+  margin-left: 0em;
+  text-align: center;
+  font-family: "helvetica";
+}
+.sliderLeft {
+  left: 2em;
+  position: relative;
+  float: left;
+  display: inline-block;
+}
+.sliderRight {
+  right: 2em;
+  position: relative;
+  float: right;
+  display: inline-block;
+}
+#driverBackground {
+  position: absolute;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  background-color: #FFF8E1;
+  overflow: hidden;
+}
+.exitGroup {
+  background-color: #F2CDB5;
+  position: absolute;
+  top: 20px;
+  float: left;
+  left: 40%;
+  position: relative;
+  height: 100px;
+  width: 100px;
+  border-radius: 100px;
+}
+.stopGroup {
+  background-color: #F2CDB5;
+  position: absolute;
+  top: 20px;
+  float: right;
+  right: 40%;
+  position: relative;
+  height: 100px;
+  width: 100px;
+  border-radius: 100px;
+}
+.driver-x {
+  color: #FF7043;
+  font-size: 100px;
+  position: relative;
+  text-align: center;
+  left: 10px;
+  bottom: 5px;
+}
+.driver-stop-icon {
+  color: #FF7043;
+  font-size: 70px;
+  position: relative;
+  text-align: center;
+  left: 20px;
+  bottom: -15px;
+}
+.driver-x-debug {
+  color: #FF7043;
+  font-size: 50px;
+  position: relative;
+  text-align: center;
+  left: 5px;
+  bottom: 2px;
+}
+.drive-diagnostics {
+  font-family: 'helvetica';
+  position: absolute;
+  left: calc(50% - 150px);
+  top: 200px;
+}
+.fullScreenSlideIn {
+  top: 0%;
+  animation: fullScreenSlideIn 0.75s ease;
+}
+.fullScreenSlideOut {
+  top: -100%;
+  animation: fullScreenSlideOut 0.75s ease;
+}
+@keyframes fullScreenSlideIn {
+  from {
+    top: -100%;
+  }
+  to {
+    top: 0px;
+  }
+}
+@keyframes fullScreenSlideOut {
+  from {
+    top: 0px;
+  }
+  to {
+    top: -100%;
+  }
+}
+#overlayExitButton {
+  background-color: #FF3F4A;
+  position: absolute;
+  top: 5px;
+  left: 20px;
+  position: relative;
+  height: 50px;
+  width: 50px;
+  border-radius: 100px;
+}
+#overlayFrame {
+  position: absolute;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+#debugOverlay {
+  position: absolute;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  background-color: #4F5659;
+  overflow: hidden;
+}
+#debugLogBackground {
+  position: relative;
+  top: 10px;
+  left: 10px;
+  width: calc(100% - 20px);
+  height: calc(100% - 70px);
+  background-color: #020602;
+  border-radius: 10px;
+}
+#debugLog {
+  font-family: "courier new";
+  font-size: 35px;
+  height: 80%;
+  width: calc(100% - 18px);
+  color: #00FF12;
+  position: relative;
+  top: 10px;
+  left: 15px;
+  overflow: auto;
+  white-space: pre;
+}
+.commented {
+  fill: #fff;
+}
+.text-buttons {
+  font-family: 'helvetica';
+}
