@@ -97,11 +97,9 @@ module.exports = function () {
       buttons[i].svgCircle = svgCircle;
       svgCircle.setAttribute('command', command);
 
-      group.setAttribute('id', buttons[i].command);
-
       toReturn[buttons.length - i - 1] = [svgCircle, svgText];
-
     }
+
     var underlay = document.getElementsByClassName('buttonGroupUnderlay');
     if(underlay[0] !== undefined){
       if(underlay[0].getAttribute('transform') === null){

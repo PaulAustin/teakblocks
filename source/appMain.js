@@ -104,7 +104,7 @@ module.exports = function () {
       {'label': fastr.copy, 'command': 'copy'},
       {'label': fastr.paste, 'command': 'paste'},
       {'label': fastr.save, 'command': 'save'},
-      {'label': fastr.settings, 'command': 'loadSplashOverlay'}
+      {'label': fastr.settings, 'command': 'splashOverlay'}
     ];
 
     tbe.deleteRay = null;
@@ -122,9 +122,9 @@ module.exports = function () {
       'loadDocE': function(){ tbe.loadDoc('docE'); },
 
       'docSnapShot': function(){ app.fileOverlay.cameraFlash(); },
-      'loadDriveOverlay': function(){ app.showOverlay(app.driverOverlay); },
-      'loadDebugOverlay': function(){ app.showOverlay(app.debugOverlay); },
-      'loadSplashOverlay': function(){ app.showOverlay(app.splashOverlay); },
+      'driveOverlay': function(){ app.showOverlay(app.driverOverlay); },
+      'debugOverlay': function(){ app.showOverlay(app.debugOverlay); },
+      'splashOverlay': function(){ app.showOverlay(app.splashOverlay); },
       'settings': function() { tbe.loadSettings(); },
       'undo': function() { tbe.undoAction(); },
       'redo': function() { tbe.redoAction(); },
@@ -168,26 +168,26 @@ module.exports = function () {
       }
     };
 
-   // Add the main command buttons, to left, middel and right locations.
-   tbe.addPalette(package1);
-   var actionButtonObj = [
+    // Add the main command buttons, to left, middle and right locations.
+    tbe.addPalette(package1);
+    var actionButtonObj = [
      {'alignment': 'L', 'position': 1, 'label': fastr.play, 'command': 'play', 'tweakx': 4},
      {'alignment': 'L', 'position': 2, 'label': fastr.stop, 'command': 'stop'},
-     {'alignment': 'M', 'position': 1, 'label': fastr.gamepad, 'command': 'loadDriveOverlay'},
-     {'alignment': 'M', 'position': 2, 'label': fastr.debug, 'command': 'loadDebugOverlay'},
+     {'alignment': 'M', 'position': 1, 'label': fastr.gamepad, 'command': 'driveOverlay'},
+     {'alignment': 'M', 'position': 2, 'label': fastr.debug, 'command': 'debugOverlay'},
      {'alignment': 'M', 'position': 3, 'label': fastr.folder, 'command': 'pages'},
      {'alignment': 'M', 'position': 4, 'label': fastr.camera, 'command': 'docSnapShot'},
      {'alignment': 'M', 'position': 5, 'label': fastr.edit, 'command': 'edit'}
     // {'alignment': 'R', 'position': 2, 'label': fastr.redo, 'command': 'redo'},
     // {'alignment': 'R', 'position': 1, 'label': fastr.undo, 'command': 'undo'}
-   ];
+    ];
 
-   tbe.actionButtons = actionButtonObj;
-   actionButtons.addActionButtons(actionButtonObj, tbe);
-   document.body.onresize = tbe.updateScreenSizes; // Buttons/screen resizing
+    tbe.actionButtons = actionButtonObj;
+    actionButtons.addActionButtons(actionButtonObj, tbe);
+    document.body.onresize = tbe.updateScreenSizes; // Buttons/screen resizing
 
     if (app.splashOverlay.showLaunchAboutBox()) {
-      app.doCommand('loadSplashOverlay');
+      app.doCommand('splashOverlay');
     }
   };
 
