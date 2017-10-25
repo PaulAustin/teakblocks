@@ -37,23 +37,32 @@ module.exports = function(){
       <p class='splashBody'>A block sequencing tool for simple programs.<p>
       <br>
       <br>
-      <br>
-      <br>
-      <br>
-      <!--div>
+      <p class='splashBody'>This site uses cookies and local storage to maintain your settings.<p>
+      <div>
         <input id='noLaunchSplash' type='checkbox' class='splashBody'>
-        <label for='noLaunchSplash' class='splashBody'>Show at launch</lable>
-      </div-->
+        <label for='noLaunchSplash' class='splashBody'>Show this box at launch.</lable>
+      <div>
       <br>
-      <br>
-      <p class='splashBody'>Copyright 2017 Paul Austin and Sidharth Srinivasan<p>
+      <p class='splashBody'>© 2017 Paul Austin and Sidharth Srinivasan. All rights reserved.<p>
       </div>
     </div>`;
     var exitButton = document.getElementById('splashOverlay');
     exitButton.onclick = splashOverlay.exit;
   };
 
+  splashOverlay.showLaunchAboutBox = function() {
+    var show = true;
+    if (typeof (Storage) !== "undefined") {
+      var key = localStorage.getItem('teakBlockShowAboutBox');
+      show = (key === null) || (key === true);
+    }
+    return show;
+  };
+
   splashOverlay.exit = function () {
+    // Record that the box has been shown.
+    localStorage.setItem('teakBlockShowAboutBox', false);
+
     // TODO should be done by application class.
     var overlay = document.getElementById('overlayFrame');
     if (overlay !== null) {

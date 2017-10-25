@@ -99,16 +99,6 @@ module.exports = function () {
     // Connect the dataBinding.
     ko.applyBindings(identityBlock, div);
 
-    /*for(var key in localStorage){
-      if(key.startsWith('bot-')){
-        var stored = localStorage.getItem(key).split(',');
-        seen[key.substring(4)] = {
-          mac:stored[0],
-          ts:stored[1],
-        };
-      }
-    }*/
-
     identityBlock.refreshList(ble.devices);
     ble.observeDevices(identityBlock.refreshList);
     ble.startObserving();
@@ -117,11 +107,6 @@ module.exports = function () {
   identityBlock.refreshList = function (bots) {
     // TODO, might be able to use data binding to do this as well.
     identityBlock.devices.removeAll();
-    /*for(var i in seen){
-      if(bots[i] === undefined){
-        identityBlock.addItem(i, seen[i].mac, seen[i].ts);
-      }
-    }*/
     for (var key in bots) {
       if (bots.hasOwnProperty(key)) {
         identityBlock.addItem(key); //, bots[key].mac, bots[key].ts
@@ -182,12 +167,6 @@ module.exports = function () {
 
   identityBlock.addItem = function (botName) { //, mac, ts
     var block = identityBlock.activeBlock;
-    //var color = '#33691E';
-    //var back = '#C8E6C9';
-    /*if(localStorage.getItem('bot-' + botName) !== null && block.statusIs(0)){
-      color = '#555555';
-      back = '#999999';
-    }*/
     if (block !== null) {
       var targetName = block.controllerSettings.data.deviceName;
       var item = ko.observable({
@@ -198,12 +177,6 @@ module.exports = function () {
       });
       identityBlock.devices.unshift(item);
     }
-    /*if(!seen.includes(botName)){
-      seen[botName] = {
-        mac: mac,
-        ts: ts,
-      };
-    }*/
   };
 
   return identityBlock;

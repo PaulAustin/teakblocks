@@ -186,28 +186,28 @@ module.exports = function () {
    actionButtons.addActionButtons(actionButtonObj, tbe);
    document.body.onresize = tbe.updateScreenSizes; // Buttons/screen resizing
 
-   // The conductor coordinates the score managed by the editor and the collection
-   // of bots that make up the orchestra.
-   app.conductor.attachToScoreEditor(tbe);
- };
+    if (app.splashOverlay.showLaunchAboutBox()) {
+      app.doCommand('loadSplashOverlay');
+    }
+  };
 
- app.doCommand = function(commandName) {
-   var cmdFunction = app.tbe.commands[commandName];
-   if (typeof cmdFunction === 'function') {
-     cmdFunction();
-   }
- };
+  app.doCommand = function(commandName) {
+    var cmdFunction = app.tbe.commands[commandName];
+    if (typeof cmdFunction === 'function') {
+      cmdFunction();
+    }
+  };
 
- app.showOverlay = function(overlay) {
-   // TODO modularized control of editor. Why is this part of the show overlay logic?
-   app.tbe.undoArray = {}; // When we switch documents we want to clear undo history.
-   app.tbe.undoTransactionIndex = 0;
+  app.showOverlay = function(overlay) {
+    // TODO modularized control of editor. Why is this part of the show overlay logic?
+    app.tbe.undoArray = {}; // When we switch documents we want to clear undo history.
+    app.tbe.undoTransactionIndex = 0;
 
-   // First, save the current document.
-   app.tbe.saveCurrentDoc();
-   app.tbe.clearStates();
-   overlay.start();
- };
+    // First, save the current document.
+    app.tbe.saveCurrentDoc();
+    app.tbe.clearStates();
+    overlay.start();
+  };
 
- return app;
+  return app;
 }();
