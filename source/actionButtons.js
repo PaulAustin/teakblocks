@@ -97,6 +97,7 @@ module.exports = function () {
       buttons[i].svgCircle = svgCircle;
       svgCircle.setAttribute('command', command);
 
+      group.setAttribute('id', buttons[i].command + 'Command');
       toReturn[buttons.length - i - 1] = [svgCircle, svgText];
     }
 
@@ -135,7 +136,7 @@ module.exports = function () {
   };
 
   actionButtons.createDropdown = function(buttons, tbe, changeText, id){
-    var droppoint = document.getElementById(id).childNodes;
+    var droppoint = document.getElementById(id + 'Command').childNodes;
     var x = droppoint[0].getAttribute('cx');
     var y = droppoint[0].getAttribute('cy');
 
