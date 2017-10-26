@@ -44,6 +44,9 @@ module.exports = function () {
     app.settingsOverlay = require('./overlays/settings.js');
     app.splashOverlay = require('./overlays/splashOverlay.js');
 
+    // fileOverlay will provide some from of localStorage, even if faked.
+    app.storage = app.fileOverlay.localStorage();
+
     // Unicode charcodes for FontAwesome symbols.
     var fastr = {
       play: '\uf04b',

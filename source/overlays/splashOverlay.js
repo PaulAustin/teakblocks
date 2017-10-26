@@ -51,17 +51,13 @@ module.exports = function(){
   };
 
   splashOverlay.showLaunchAboutBox = function() {
-    var show = true;
-    if (typeof (Storage) !== "undefined") {
-      var key = localStorage.getItem('teakBlockShowAboutBox');
-      show = (key === null) || (key === true);
-    }
-    return show;
+    var value = app.storage.getItem('teakBlockShowAboutBox');
+    return (value === null) || (value === true);
   };
 
   splashOverlay.exit = function () {
     // Record that the box has been shown.
-    localStorage.setItem('teakBlockShowAboutBox', false);
+    app.storage.setItem('teakBlockShowAboutBox', false);
 
     // TODO should be done by application class.
     var overlay = document.getElementById('overlayFrame');

@@ -122,9 +122,6 @@ module.exports = function () {
     ble.stopObserving();
     identityBlock.activeBlock = null;
     ko.cleanNode(div);
-    /*for(var key in seen){
-      localStorage.setItem('bot-' + key, seen[key].mac + "," + seen[key].ts);
-    }*/
   };
 
   identityBlock.svg = function(root, block) {

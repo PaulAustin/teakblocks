@@ -16,3 +16,7 @@
     identityBlock.addItem(i, seen[i].mac, seen[i].ts);
   }
 }*/
+
+/*for(var key in seen){
+  localStorage.setItem('bot-' + key, seen[key].mac + "," + seen[key].ts);
+}*/

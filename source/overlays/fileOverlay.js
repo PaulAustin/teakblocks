@@ -87,17 +87,31 @@ module.exports = function () {
   // can be magnified.
 
   fileOverlay.saveFile = function(fileName, content) {
-    if (typeof (Storage) !== "undefined") {
-      // Store
-      localStorage.setItem(fileName, content);
-    } else {
-      console.log('no local storage');
-    }
+    app.storage.setItem(fileName, content);
   };
 
   fileOverlay.loadFile = function(fileName) {
-    var content =  localStorage.getItem(fileName);
-    return content;
+    return app.storage.getItem(fileName);
+  };
+
+  fileOverlay.mockLocalStorage = {
+    getItem: function (key) {
+      return null;
+    },
+    setItem: function (key, value) {
+    },
+    key: function(index) {
+      return null;
+    }
+  };
+
+  fileOverlay.localStorage = function() {
+    if (typeof window.localStorage !== 'undefined') {
+      // if localStoarge exists then use it directly.
+      return window.localStorage;
+    } else {
+      return fileOverlay.mockLocalStorage;
+    }
   };
 
   fileOverlay.cameraFlash = function() {
@@ -105,6 +119,8 @@ module.exports = function () {
     setTimeout(function() {
       fileOverlay.saveCamera.className = 'cameraIdle';
       }, 1000);
+
+      // add picture, animate to folder
   };
 
   fileOverlay.snapShot = function() {
