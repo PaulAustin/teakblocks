@@ -107,9 +107,9 @@ tbe.init = function init(svg) {
   }
 
   teakselection.init(tbe);
-  tbe.svg.onmousemove = function(){
-    for(var i = 0; i < tbe.actionButtons.length; i++){
-      if(tbe.actionButtons[i].svgCircle.classList.contains('switch-bg')){
+  tbe.svg.onmousemove = function() {
+    for(var i = 0; i < tbe.actionButtons.length; i++) {
+      if (tbe.actionButtons[i].svgCircle.classList.contains('switch-bg')) {
         tbe.actionButtons[i].svgCircle.classList.remove('switch-bg');
       }
     }
@@ -156,7 +156,7 @@ tbe.loadDoc = function(docName) {
   tbe.undoTransactionIndex = 0;
 
   // First, save the current document if actually a doc.
-  if(tbe.currentDoc !== 'driveMode') {
+  if (tbe.currentDoc !== 'driveMode') {
     tbe.saveCurrentDoc();
   }
 
@@ -196,7 +196,7 @@ tbe.addPaletteBlock = function(x, y, name) {
 };
 
 // Delete a chunk of blocks (typically one).
-tbe.deleteChunk = function(block, endBlock){
+tbe.deleteChunk = function(block, endBlock) {
 
 
   // Remember any tail so it can be slid over.
@@ -217,16 +217,16 @@ tbe.deleteChunk = function(block, endBlock){
   var tempBlock = null;
 
   //console.log(block.next.svgRect.classList);
-  if((block.flowTail === endBlock) && (!block.isGroupSelected())){
+  if ((block.flowTail === endBlock) && (!block.isGroupSelected())) {
     tbe.clearStates();
-    if(block.prev !== null){
+    if (block.prev !== null) {
       block.next.prev = block.prev;
     } else{
       block.next.prev = null;
     }
     block.next = null;
 
-    if(endBlock.next !== null){
+    if (endBlock.next !== null) {
       endBlock.prev.next = endBlock.next;
     } else{
       endBlock.prev.next = null;
@@ -252,7 +252,7 @@ tbe.deleteChunk = function(block, endBlock){
     // Delete the chunk.
     tbe.clearStates();
 
-    while(block !== null){
+    while(block !== null) {
       tempBlock = block.next; // Make a copy of block.next before it becomes null
       // Remove map entry for the block.
       delete tbe.diagramBlocks[block.interactId];
@@ -412,13 +412,13 @@ tbe.FunctionBlock.prototype.updateSvg = function() {
     this.svgGroup.removeChild(this.svgCustomGroup);
 }
 // Checks if block passed in is in the same chain as this.
-tbe.FunctionBlock.prototype.chainContainsBlock = function(other){
+tbe.FunctionBlock.prototype.chainContainsBlock = function(other) {
   // Block is the first block of the chain.
   var block = this.first;
   // Go through the whole chain and look for if any blocks same as other.
-  while(block !== null){
+  while(block !== null) {
     // If a similarity is found, return true.
-    if(block === other){
+    if (block === other) {
       return true;
     }
     block = block.next;
@@ -558,10 +558,10 @@ tbe.FunctionBlock.prototype.markSelected = function(state) {
     tbe.svg.removeChild(this.svgGroup);
     tbe.svg.appendChild(this.svgGroup);
     this.svgRect.classList.add('selectedBlock');
-    if(this.flowHead !== null){
+    if (this.flowHead !== null) {
       this.flowHead.svgRect.classList.add('selectedBlock');
     }
-    if(this.flowTail !== null){
+    if (this.flowTail !== null) {
       this.flowTail.svgRect.classList.add('selectedBlock');
     }
   } else {
@@ -591,28 +591,28 @@ tbe.FunctionBlock.prototype.statusIs = function(status) {
 
 // Checks if a selected loop is the only thing selected.
 tbe.FunctionBlock.prototype.isIsolatedLoop = function() {
-  if(this.isLoopHead() && this.isSelected()){
-    if(this.prev !== null && this.prev.isSelected()){
+  if (this.isLoopHead() && this.isSelected()) {
+    if (this.prev !== null && this.prev.isSelected()) {
       return false;
-    } else if(this.flowTail.next !== null && this.flowTail.next.isSelected()){
+    } else if (this.flowTail.next !== null && this.flowTail.next.isSelected()) {
       return false;
-    } else if(this.next !== this.flowTail && this.next.isSelected()){
-      return false;
-    }
-  }
-  if(this.isLoopTail() && this.isSelected()){
-    if(this.next !== null && this.next.isSelected()){
-      return false;
-    } else if(this.flowHead.prev !== null && this.flowHead.prev.isSelected()){
-      return false;
-    } else if(this.prev !== this.flowHead && this.prev.isSelected()){
+    } else if (this.next !== this.flowTail && this.next.isSelected()) {
       return false;
     }
   }
-  if(!this.isLoopHead() && !this.isLoopTail()){
+  if (this.isLoopTail() && this.isSelected()) {
+    if (this.next !== null && this.next.isSelected()) {
+      return false;
+    } else if (this.flowHead.prev !== null && this.flowHead.prev.isSelected()) {
+      return false;
+    } else if (this.prev !== this.flowHead && this.prev.isSelected()) {
+      return false;
+    }
+  }
+  if (!this.isLoopHead() && !this.isLoopTail()) {
     return false;
   }
-  if(!this.isSelected()){
+  if (!this.isSelected()) {
     return false;
   }
   return true;
@@ -621,22 +621,22 @@ tbe.FunctionBlock.prototype.isIsolatedLoop = function() {
 tbe.FunctionBlock.prototype.isGroupSelected = function() {
   var before = false;
   var after = false;
-  if(this.next !== null){
+  if (this.next !== null) {
     before = this.next.isSelected();
   }
-  if(this.prev !== null){
+  if (this.prev !== null) {
     after = this.prev.isSelected();
   }
-  if(this.isSelected() && (before || after)){
+  if (this.isSelected() && (before || after)) {
     return true;
   }
   return false;
 };
 
 tbe.FunctionBlock.prototype.isOnScreen = function() {
-  if(this.rect !== null){
-    if(this.rect.left+this.width >= 0 && this.rect.right-this.width <= window.innerWidth){
-      if(this.rect.top+this.height >= 0 && this.rect.bottom-this.height <= window.innerHeight){
+  if (this.rect !== null) {
+    if (this.rect.left+this.width >= 0 && this.rect.right-this.width <= window.innerWidth) {
+      if (this.rect.top+this.height >= 0 && this.rect.bottom-this.height <= window.innerHeight) {
         return true;
       }
     }
@@ -767,7 +767,7 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
     if (target !== null) {
       this.insertTargetShadows(target, action);
     }
-  } else if(action === 'outsnap' && ((this.snapOpen.top !== shadowX || this.snapOpen.left !== shadowY) || this.snapAction !== action)){
+  } else if (action === 'outsnap' && ((this.snapOpen.top !== shadowX || this.snapOpen.left !== shadowY) || this.snapAction !== action)) {
     this.removeTargetShadows();
     this.snapAction = action;
     this.snapOpen = {
@@ -797,7 +797,7 @@ tbe.FunctionBlock.prototype.insertTargetShadows = function(target, action) {
     y -= 25;
   } else if (action === 'append') {
     x = target.right;
-  } else if(action === 'outsnap'){
+  } else if (action === 'outsnap') {
     var gridsize = 40;
     x = gridsize*(Math.round(this.rect.left/gridsize));
     y = gridsize*(Math.round(this.rect.top/gridsize));
@@ -806,7 +806,7 @@ tbe.FunctionBlock.prototype.insertTargetShadows = function(target, action) {
   }
   var shadow = null;
   while (block !== null) {
-    if(action === 'outsnap'){
+    if (action === 'outsnap') {
       shadow = svgb.createRect('shadow-block shadow-block-outsnap', x, y, block.width, block.height, 10);
     } else{
       shadow = svgb.createRect('shadow-block', x, y, block.width, block.height, 10);
@@ -825,7 +825,7 @@ tbe.FunctionBlock.prototype.removeTargetShadows = function() {
     var shadow = block.targetShadow;
     if (shadow !== null) {
       shadowsToRemove.push(shadow);
-      if(block.snapAction === 'outsnap'){
+      if (block.snapAction === 'outsnap') {
         shadow.setAttribute('class', 'shadow-block-leave shadow-block-leave-outsnap');
       } else{
         shadow.setAttribute('class', 'shadow-block-leave');
@@ -837,14 +837,14 @@ tbe.FunctionBlock.prototype.removeTargetShadows = function() {
   // Give some time for the animation to complete, then remove.
   setTimeout(function() {
     shadowsToRemove.forEach( function(elt) {
-      if(elt.parentNode !== null){
+      if (elt.parentNode !== null) {
         tbe.svg.removeChild(elt);
       }
       });
     },
     1000);
     var shadows = document.getElementsByClassName('shadow-block');
-    for(var i = shadows.length - 1; i >= 0; i--){
+    for(var i = shadows.length - 1; i >= 0; i--) {
       shadows[i].parentNode.removeChild(shadows[i]);
     }
 };
@@ -862,7 +862,7 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
   if (this.snapTarget !==  null && this.targetShadow !== null) {
     // TODO:assert that chain we have has clean prev/next links
     // Append/Prepend the block(chain) to the list
-    if(this.snapAction === 'prepend') {
+    if (this.snapAction === 'prepend') {
       assert(this.snapTarget.prev === null);
       targx =  this.snapTarget.left - this.chainWidth;
       thisLast.next = this.snapTarget;
@@ -896,7 +896,7 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
     // The model snaps directly to the target location
     // but the view eases to it.
     tbe.animateMove(this, thisLast, dx, dy, 10);
-  } else if(this.snapOpen !== null) {
+  } else if (this.snapOpen !== null) {
     dx = Math.round(this.snapOpen.left - this.rect.left);
     dy = Math.round(this.snapOpen.top - this.rect.top);
     tbe.animateMove(this, thisLast, dx, dy, 10);
@@ -963,7 +963,7 @@ tbe.internalClearDiagramBlocks = function clearDiagramBlocks() {
 tbe.findChunkStart = function findChunkStart(clickedBlock) {
   var chunkStart = clickedBlock;
   while(chunkStart.isSelected()) {
-    if (chunkStart.prev !== null && chunkStart.prev.isSelected()){
+    if (chunkStart.prev !== null && chunkStart.prev.isSelected()) {
       chunkStart = chunkStart.prev;
     } else {
       break;
@@ -986,27 +986,27 @@ tbe.findChunkStart = function findChunkStart(clickedBlock) {
 };
 // Finds the block before where a block can be placed (end of chain)
 // Used when block is dropped by tapping on palette
-tbe.findInsertionPoint = function findInsertionPoint(){
+tbe.findInsertionPoint = function findInsertionPoint() {
   var foundBlock = null;
   var defaultX = Math.round(tbe.defaultBlockLoc[0]);
   var defaultY = Math.round(tbe.defaultBlockLoc[1]);
 
   // Find the block at the default location
-  tbe.forEachDiagramBlock( function(block){
+  tbe.forEachDiagramBlock( function(block) {
     var top = block.top;
     var left = block.left;
-    if(top === defaultY && left === defaultX){
+    if (top === defaultY && left === defaultX) {
       foundBlock = block;
     }
   });
   // Go find the end of the chain with foundBlock as the start
-  while(foundBlock !== null && foundBlock.next !== null){
+  while(foundBlock !== null && foundBlock.next !== null) {
     foundBlock = foundBlock.next;
   }
   return foundBlock;
 };
 // Places variable block after the the insertion point
-tbe.autoPlace = function autoPlace(block){
+tbe.autoPlace = function autoPlace(block) {
   var foundBlock = tbe.findInsertionPoint();
   block = tbe.replicateChunk(block);
   var x = tbe.defaultBlockLoc[0];
@@ -1016,7 +1016,7 @@ tbe.autoPlace = function autoPlace(block){
 
   // Check if a chain currently exists
   // If one exists, move the block next to it
-  if(foundBlock === null){
+  if (foundBlock === null) {
     block.dmove(dx, dy);
   } else{
     block.dmove(dx + foundBlock.right - x, dy);
@@ -1025,7 +1025,7 @@ tbe.autoPlace = function autoPlace(block){
   }
 };
 
-document.body.addEventListener("keydown", function(e){
+document.body.addEventListener("keydown", function(e) {
     e = e || window.event;
 
     // Browsers report keys code differently, check both.
@@ -1039,8 +1039,8 @@ document.body.addEventListener("keydown", function(e){
     } else if ( key === 67 && ctrl ) {
       console.log("Ctrl + C Pressed !");
       var array = [];
-      tbe.forEachDiagramBlock( function(block){
-        if(block.isSelected()){
+      tbe.forEachDiagramBlock( function(block) {
+        if (block.isSelected()) {
           array.push(block);
         }
       });
@@ -1056,7 +1056,7 @@ document.body.addEventListener("keydown", function(e){
       textArea.style.outline = 'none';
       textArea.style.boxShadow = 'none';
       textArea.style.background = 'transparent';
-      if(array.length >= 0){
+      if (array.length >= 0) {
         textArea.value = teakText.chunkToText(tbe.findChunkStart(array[0]), null, '');
         console.log(textArea);
         document.body.appendChild(textArea);
@@ -1076,38 +1076,38 @@ document.body.addEventListener("keydown", function(e){
       tbe.undoAction();
     } else if ( key === 89 && ctrl) {
       tbe.redoAction();
-    } else if( key === 8) {
+    } else if ( key === 8) {
       var todelete = [];
-      tbe.forEachDiagramBlock( function(block){
-        if(block.isSelected()){
+      tbe.forEachDiagramBlock( function(block) {
+        if (block.isSelected()) {
           todelete.push(block);
         }
       });
-      if(todelete.length !== 0){
+      if (todelete.length !== 0) {
         tbe.deleteChunk(todelete[0], todelete[todelete.length - 1]);
       }
-    } else if( key === 49 ) {
+    } else if ( key === 49 ) {
       tbe.loadDoc('docA');
-    } else if( key === 50 ) {
+    } else if ( key === 50 ) {
       tbe.loadDoc('docB');
-    } else if( key === 51 ) {
+    } else if ( key === 51 ) {
       tbe.loadDoc('docC');
-    } else if( key === 52 ) {
+    } else if ( key === 52 ) {
       tbe.loadDoc('docD');
-    } else if( key === 53 ) {
+    } else if ( key === 53 ) {
       tbe.loadDoc('docE');
-    } else if( key === 80 ) {
+    } else if ( key === 80 ) {
       conductor.playAll();
-    } else if( key === 83 ) {
+    } else if ( key === 83 ) {
       conductor.stopAll();
-    } else if( key === 88 ) {
+    } else if ( key === 88 ) {
       var cloneBlocks = [];
       tbe.forEachDiagramBlock( function(block) {
-        if(block.isSelected()) {
+        if (block.isSelected()) {
           cloneBlocks.push(block);
         }
       });
-      if(cloneBlocks.length !== 0) {
+      if (cloneBlocks.length !== 0) {
         var clone = tbe.replicateChunk(cloneBlocks[0], cloneBlocks[cloneBlocks.length - 1]);
 
         // TODO put it in a non-hardcoded place
@@ -1117,12 +1117,12 @@ document.body.addEventListener("keydown", function(e){
         }
         tbe.animateMove(clone, clone.last, 0, dy, 20);
       }
-    } else if( key === 32 ) {
+    } else if ( key === 32 ) {
       tbe.clearAllBlocks();
-    } else if(ctrl && key === 65) {
+    } else if (ctrl && key === 65) {
       var selected = null;
       tbe.forEachDiagramBlock( function(block) {
-        if(block.isSelected()) {
+        if (block.isSelected()) {
           selected = block;
         }
       });
@@ -1168,7 +1168,7 @@ tbe.configInteractions = function configInteractions() {
   });
 
   interact('.dropdown-buttons')
-    .on('hold', function (event){
+    .on('hold', function (event) {
       var block = event.target;
       var command = block.getAttribute('command');
       var doc = '';
@@ -1237,14 +1237,14 @@ tbe.configInteractions = function configInteractions() {
     })
     .on('up', function(event) {
       var block = thisTbe.elementToBlock(event.target);
-      if(block.rect.top > window.innerHeight - 100 && !block.isPaletteBlock){
+      if (block.rect.top > window.innerHeight - 100 && !block.isPaletteBlock) {
         event.interaction.stop();
         block.setDraggingState(false);
-        if(block.isLoopHead()){
+        if (block.isLoopHead()) {
           block.next.markSelected(true);
           block.markSelected(true);
           tbe.deleteChunk(block, block.last);
-        } else if(block.isLoopTail()){
+        } else if (block.isLoopTail()) {
           tbe.deleteChunk(block.flowHead, block.last);
         } else{
           tbe.deleteChunk(block, block.last);
@@ -1260,8 +1260,8 @@ tbe.configInteractions = function configInteractions() {
          return;
        }
 
-       /*if(!block.isPaletteBlock){
-         if(!block.isCommented()){
+       /*if (!block.isPaletteBlock) {
+         if (!block.isCommented()) {
            block.svgRect.classList.add('commented');
          } else{
            block.svgRect.classList.remove('commented');
@@ -1273,7 +1273,7 @@ tbe.configInteractions = function configInteractions() {
     .on('move', function(event) {
       var interaction = event.interaction;
       var block = thisTbe.elementToBlock(event.target);
-      if(block.name === 'tail'){
+      if (block.name === 'tail') {
         block = block.flowHead;
       }
       // If the pointer was moved while being held down
@@ -1286,7 +1286,7 @@ tbe.configInteractions = function configInteractions() {
           var next = block;
           var prev = block;
           var animationState = {};
-          if(block.nesting > 0 && notIsolated && !block.isGroupSelected()){
+          if (block.nesting > 0 && notIsolated && !block.isGroupSelected()) {
             next = block.next;
             prev = block.prev;
             block.next.prev = prev;
@@ -1296,10 +1296,10 @@ tbe.configInteractions = function configInteractions() {
             if (next !== null) {
               tbe.animateMove(next, next.last, -block.width, 0, 10);
             }
-          } else if(block.nesting > 0 && notIsolated && block.isGroupSelected()) {
+          } else if (block.nesting > 0 && notIsolated && block.isGroupSelected()) {
             next = block;
             prev = block.prev;
-            while(next.next !== null && next.next.isSelected()){
+            while(next.next !== null && next.next.isSelected()) {
               next = next.next;
             }
             var nextCopy = next.next;
@@ -1380,7 +1380,7 @@ tbe.configInteractions = function configInteractions() {
 
         // Puts the blocks being dragged at the top
         var temp = block;
-        while(temp !== null){
+        while(temp !== null) {
           tbe.svg.appendChild(temp.svgGroup);
           temp = temp.next;
         }
@@ -1416,11 +1416,11 @@ tbe.diagramChanged = function diagramChanged() {
     tbe.currentUndoIndex += 1;
     tbe.undoArray[tbe.currentUndoIndex] = text;
     // Truncates the rest of the array if change is made before the end of the array
-    if(tbe.currentUndoIndex < tbe.undoArray.length - 1){
+    if (tbe.currentUndoIndex < tbe.undoArray.length - 1) {
       // console.log(tbe.undoArray[tbe.currentUndoIndex] + "\n<\n" + text + ">");
 
       var temp = [];
-      for(var i = 0; i <= tbe.currentUndoIndex; i++){
+      for(var i = 0; i <= tbe.currentUndoIndex; i++) {
         temp[i] = tbe.undoArray[i];
         // console.log(temp[i], i);
       }
@@ -1430,19 +1430,19 @@ tbe.diagramChanged = function diagramChanged() {
   }
 
   // as long as the index is more than 0
-  if(tbe.currentUndoIndex < 0){
+  if (tbe.currentUndoIndex < 0) {
     tbe.currentUndoIndex = 0;
   }
 };
 
 tbe.blocksOnScreen = function() {
   var toReturn = false;
-  tbe.forEachDiagramBlock( function(block){
-    if(block.isOnScreen()){
+  tbe.forEachDiagramBlock( function(block) {
+    if (block.isOnScreen()) {
       toReturn = true;
     }
   });
-  if(Object.keys(tbe.diagramBlocks).length === 0){
+  if (Object.keys(tbe.diagramBlocks).length === 0) {
     return false;
   }
   return toReturn;
@@ -1451,22 +1451,22 @@ tbe.blocksOnScreen = function() {
 tbe.undoAction = function() {
   tbe.clearStates(undefined, false);
 
-  if(tbe.currentUndoIndex > 0){
+  if (tbe.currentUndoIndex > 0) {
     tbe.internalClearDiagramBlocks();
     tbe.currentUndoIndex -= 1;
   }
 
-  if(tbe.undoArray[tbe.currentUndoIndex] !== undefined) {
+  if (tbe.undoArray[tbe.currentUndoIndex] !== undefined) {
     teakText.textToBlocks(tbe, tbe.undoArray[tbe.currentUndoIndex].toString());
   }
 };
 
 tbe.redoAction = function() {
-  if(tbe.currentUndoIndex < tbe.undoArray.length - 1) {
+  if (tbe.currentUndoIndex < tbe.undoArray.length - 1) {
     //tbe.clearStates();
     tbe.internalClearDiagramBlocks();
     tbe.currentUndoIndex += 1;
-    if(tbe.undoArray[tbe.currentUndoIndex] !== undefined) {
+    if (tbe.undoArray[tbe.currentUndoIndex] !== undefined) {
       teakText.textToBlocks(tbe, tbe.undoArray[tbe.currentUndoIndex].toString());
     }
   }

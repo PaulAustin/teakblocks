@@ -126,7 +126,7 @@ module.exports = function () {
 
           if (block2 !== null) {
             tbe.deleteChunk(block2, block1);
-          } else{
+          } else {
             tbe.deleteChunk(block1, endBlock);
           }
         }
@@ -165,7 +165,7 @@ module.exports = function () {
       // Start animation to hide the form.
       if(isSelectedGroup){
         div = this.groupDiv;
-      } else{
+      } else {
         div = this.commonDiv;
       }
       div.style.transition = 'all 0.2s ease';
@@ -210,7 +210,7 @@ module.exports = function () {
       } else if(block.name === 'loop'){
         block.markSelected(true);
         block.flowTail.markSelected(true);
-      } else{
+      } else {
         block.markSelected(true);
       }
       setTimeout(function() { blockSettings.showActive(); }, 400);
@@ -224,7 +224,7 @@ module.exports = function () {
       } else if(block.name === 'loop'){
         block.markSelected(true);
         block.flowTail.markSelected(true);
-      } else{
+      } else {
         block.markSelected(true);
       }
       this.activeBlock = block;

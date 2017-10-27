@@ -86,7 +86,7 @@ module.exports = function () {
         group.appendChild(svgCircle);
         group.appendChild(svgText);
         group.appendChild(svgText2);
-      } else{
+      } else {
         svgText = svgb.createText('fa action-dot-text', x + tweakx, 53, label);
         group.appendChild(svgCircle);
         group.appendChild(svgText);
@@ -168,7 +168,7 @@ module.exports = function () {
       console.log(label, label.match(/[a-z]/i));
       if(label.match(/[a-z]/i) !== null){
         newButtons[i] = this.addButton(label, x, y, tbe, buttons[i].command, undefined, 'dropdown-buttons', 'text-buttons');
-      } else{
+      } else {
         newButtons[i] = this.addButton(label, x, y, tbe, buttons[i].command, undefined, 'dropdown-buttons');
       }
     }

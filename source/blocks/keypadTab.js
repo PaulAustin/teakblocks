@@ -151,14 +151,14 @@ module.exports = function () {
               if(increment === "-"){
                 if(parseInt(num, 10)-parseInt(strNum, 10) >= min){
                   num = (parseInt(num, 10)-parseInt(strNum, 10)).toString();
-                } else{
+                } else {
                   num = min;
                   display.classList.add("error");
                 }
               } else if(increment === "+"){ //Otherwise, add
                 if(parseInt(num, 10)+parseInt(strNum, 10) <= max){
                   num = (parseInt(num, 10)+parseInt(strNum, 10)).toString();
-                } else{
+                } else {
                   num = max;
                   display.classList.add("error");
                 }
@@ -173,7 +173,7 @@ module.exports = function () {
                 display.classList.remove("error");
                 if(num.substring(0, 1) === "-"){
                   num = num.substring(1);
-                } else{
+                } else {
                   num = "-" + num;
                 }
               } else if(num === "0" && !isNegate){ // If the number is 0, replace it

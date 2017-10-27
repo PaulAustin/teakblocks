@@ -109,7 +109,7 @@ module.exports = function () {
             conductor.playOne(block);
             if(conductor.count > 1){
               conductor.count -= 1;
-            } else{
+            } else {
               conductor.runningBlocks[i] = block.next;
               conductor.count = null;
             }
