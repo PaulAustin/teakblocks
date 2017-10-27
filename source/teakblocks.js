@@ -270,15 +270,7 @@ tbe.deleteChunk = function(block, endBlock){
   // Slide any remaining blocks over to the left.
   // The links have already been fixed.
   if (tail !== null) {
-    var frameCount = 10;
-    var animationState = {
-        adx: -deleteWidth / frameCount,
-        ady: 0,
-        frame: frameCount,
-        chunkStart: tail,
-        chunkEnd: tail.last,
-      };
-    tbe.animateMove(animationState);
+    tbe.animateMove(tail, tail.last, -deleteWidth, 0, 10);
   }
 };
 
@@ -895,43 +887,19 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
       this.snapTarget.prev = thisLast;
 
       // Set up animation to slide down old blocks.
-      var animateInsert = {
-        frame: frameCount,
-        adx: width / frameCount,
-        ady: 0,
-        chunkStart: this.snapTarget,
-        chunkEnd: this.snapTarget.last
-      };
-      tbe.animateMove(animateInsert);
+      tbe.animateMove(this.snapTarget, this.snapTarget.last, width, 0, 10);
     }
 
     // Set up an animation to move the dragging blocks to new location.
     dx = targx - this.left;
     dy = this.snapTarget.top - this.top;
-
-
-      // TODO: Base frame count on distance to final location.
-      // The model snaps directly to the target location
-      // but the view eases to it.
-    var animateSlideDown = {
-      frame: frameCount,
-      adx: dx / frameCount,
-      ady: dy / frameCount,
-      chunkStart: this,
-      chunkEnd: thisLast
-    };
-    tbe.animateMove(animateSlideDown);
+    // The model snaps directly to the target location
+    // but the view eases to it.
+    tbe.animateMove(this, thisLast, dx, dy, 10);
   } else if(this.snapOpen !== null) {
     dx = Math.round(this.snapOpen.left - this.rect.left);
     dy = Math.round(this.snapOpen.top - this.rect.top);
-    var animationSlide = {
-      frame: frameCount,
-      adx: dx / frameCount,
-      ady: dy / frameCount,
-      chunkStart: this,
-      chunkEnd: thisLast
-    };
-    tbe.animateMove(animationSlide);
+    tbe.animateMove(this, thisLast, dx, dy, 10);
   } else {
     // Nothing to snap to so leave it where is ended up.
     // still need sound though
@@ -948,15 +916,24 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
 
 // animateMove -- move a chunk of block to its new location. The prev and next
 // links should already be set up for the final location.
-// TODO, need ease in/out
-tbe.animateMove = function animateMove(state) {
-  //console.log("hi");
+tbe.animateMove = function (firstBlock, lastBlock, dx, dy, frames) {
+  var state = {
+    frame: frames,
+    adx: dx / frames,
+    ady: dy / frames,
+    chunkStart: firstBlock,
+    chunkEnd: lastBlock
+  };
+  tbe.animateMoveCore(state);
+};
+
+tbe.animateMoveCore = function (state) {
   var frame = state.frame;
   state.chunkStart.dmove(state.adx, state.ady, (frame === 1), state.chunkEnd);
   state.chunkStart.fixupChainCrossBlockSvg();
   if (frame > 1) {
     state.frame = frame - 1;
-    requestAnimationFrame(function() { animateMove(state); });
+    requestAnimationFrame(function() { tbe.animateMoveCore(state); });
   } else {
     // Once animation is over shadows are covered, remove them.
     tbe.audio.playSound(tbe.audio.shortClick);
@@ -1138,14 +1115,7 @@ document.body.addEventListener("keydown", function(e){
         if (clone.top < 140) {
           dy = 140;
         }
-        var animateClone = {
-          frame: 20,
-          adx: 0,
-          ady: dy / 20,
-          chunkStart: clone,
-          chunkEnd: clone.last
-        };
-        tbe.animateMove(animateClone);
+        tbe.animateMove(clone, clone.last, 0, dy, 20);
       }
     } else if( key === 32 ) {
       tbe.clearAllBlocks();
@@ -1315,7 +1285,6 @@ tbe.configInteractions = function configInteractions() {
           var notIsolated = (block.next !== null && block.prev !== null);
           var next = block;
           var prev = block;
-          var frameCount = 10;
           var animationState = {};
           if(block.nesting > 0 && notIsolated && !block.isGroupSelected()){
             next = block.next;
@@ -1325,17 +1294,9 @@ tbe.configInteractions = function configInteractions() {
             block.next = null;
             block.prev = null;
             if (next !== null) {
-              frameCount = 10;
-              animationState = {
-                  adx: -block.width / frameCount,
-                  ady: 0,
-                  frame: frameCount,
-                  chunkStart: next,
-                  chunkEnd: next.last,
-                };
-              tbe.animateMove(animationState);
+              tbe.animateMove(next, next.last, -block.width, 0, 10);
             }
-          } else if(block.nesting > 0 && notIsolated && block.isGroupSelected()){
+          } else if(block.nesting > 0 && notIsolated && block.isGroupSelected()) {
             next = block;
             prev = block.prev;
             while(next.next !== null && next.next.isSelected()){
@@ -1347,33 +1308,23 @@ tbe.configInteractions = function configInteractions() {
             next.next = null;
             block.prev = null;
             if (next !== null) {
-              frameCount = 10;
-              animationState = {
-                  adx: -block.chainWidth / frameCount,
-                  ady: 0,
-                  frame: frameCount,
-                  chunkStart: nextCopy,
-                  chunkEnd: nextCopy.last,
-                };
-              tbe.animateMove(animationState);
+              tbe.animateMove(nextCopy, nextCopy.last, -block.chainWidth, 0, 10);
             }
           }
 
-            // If coming from palette, or if coming from shift drag...
-            if (block.isPaletteBlock || event.shiftKey) {
-              block = thisTbe.replicateChunk(block);
-              targetToDrag = block.svgGroup;
-            }
+          // If coming from palette, or if coming from shift drag...
+          if (block.isPaletteBlock || event.shiftKey) {
+            block = thisTbe.replicateChunk(block);
+            targetToDrag = block.svgGroup;
+          }
 
-            // Start a drag interaction targeting the clone.
-            block.setDraggingState(true);
+          // Start a drag interaction targeting the clone.
+          block.setDraggingState(true);
 
-            tbe.clearStates();
-            interaction.start({ name: 'drag' },
-                              event.interactable,
-                              targetToDrag);
-          //}
-
+          tbe.clearStates();
+          interaction.start({ name: 'drag' },
+                            event.interactable,
+                            targetToDrag);
         }
       } else {
         tbe.pointerDownObject = null;
@@ -1403,7 +1354,7 @@ tbe.configInteractions = function configInteractions() {
         if (block === null)
           return;
 
-        if(block.dragging) {
+        if (block.dragging) {
           // If snap happens in coastin-move
           // the chain will no longer be dragging.
           block.moveToPossibleTarget();

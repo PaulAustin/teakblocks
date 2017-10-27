@@ -96,15 +96,7 @@ module.exports = function () {
           if (clone.top < 140) {
             dy = 140;
           }
-          var animateClone = {
-            frame: 20,
-            adx: 0,
-            ady: dy / 20,
-            chunkStart: clone,
-            chunkEnd: clone.last
-          };
-          tbe.animateMove(animateClone);
-          //clone.dmove(0, -140, true);
+          tbe.animateMove(clone, clone.last, 0, dy, 20);
         }
       };
 
