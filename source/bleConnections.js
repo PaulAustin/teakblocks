@@ -59,6 +59,8 @@ if (typeof ble !== 'undefined') {
 }
 
 var pbi = 0;
+
+// fake list of beacons for testing.
 var pseudoBeacons = [
  {name:'BBC micro:bit [aragorn]', mac:'0000000A', delay:500},
  {name:'puck.js 4e75', mac:'00004e75', delay:500},
@@ -144,11 +146,27 @@ bleConnection.cullList = function() {
 
 bleConnection.startObserving = function () {
   bleConnection.scanning = true;
-  if (this.bleApi === null) {
+
+  console.log(' BLE?', navigator.bluetooth);
+
+  if (navigator.bluetooth !== null && navigator.bluetooth !== undefined) {
+    console.log ('using w3c Web bluetooth');
+    let options = {
+        filters: [{services: ['generic_attribute']},{namePrefix: 'BBC micro:bit'}]
+    };
+    navigator.bluetooth.requestDevice(options)
+      .then(function(device) {
+        console.log('> device:', device);
+      })
+      .catch(function(error) {
+        console.log('cancel or error :' + error);
+      });
+  } else if (this.bleApi === null) {
+    console.log ('simulated bluetooth scan');
     bleConnection.psedoScan();
-  } else {
-    // TODO identityBlock.ble.stopScan();
-    console.log('starting scan');
+  } else {  // bleAPI is not null looks like cordova model.
+    console.log ('cordova based bluetooth scan');
+    // using the cordova stle BLE connection
     this.bleApi.startScanWithOptions(
       [/*nordicUARTservice.serviceUUID*/], { reportDuplicates: true },
       function(device) {

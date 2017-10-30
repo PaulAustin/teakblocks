@@ -99,6 +99,7 @@ module.exports = function () {
     // Connect the dataBinding.
     ko.applyBindings(identityBlock, div);
 
+    // Set up a callback to get notified when when devices show up.
     identityBlock.refreshList(ble.devices);
     ble.observeDevices(identityBlock.refreshList);
     ble.startObserving();

@@ -221,14 +221,14 @@ tbe.deleteChunk = function(block, endBlock) {
     tbe.clearStates();
     if (block.prev !== null) {
       block.next.prev = block.prev;
-    } else{
+    } else {
       block.next.prev = null;
     }
     block.next = null;
 
     if (endBlock.next !== null) {
       endBlock.prev.next = endBlock.next;
-    } else{
+    } else {
       endBlock.prev.next = null;
     }
     endBlock.prev = null;
@@ -248,7 +248,7 @@ tbe.deleteChunk = function(block, endBlock) {
     endBlock.svgRect = null;
     endBlock.next = null;
     endBlock.prev = null;
-  } else{
+  } else {
     // Delete the chunk.
     tbe.clearStates();
 
@@ -808,7 +808,7 @@ tbe.FunctionBlock.prototype.insertTargetShadows = function(target, action) {
   while (block !== null) {
     if (action === 'outsnap') {
       shadow = svgb.createRect('shadow-block shadow-block-outsnap', x, y, block.width, block.height, 10);
-    } else{
+    } else {
       shadow = svgb.createRect('shadow-block', x, y, block.width, block.height, 10);
     }
     tbe.svg.insertBefore(shadow, tbe.background.nextSibling);
@@ -827,7 +827,7 @@ tbe.FunctionBlock.prototype.removeTargetShadows = function() {
       shadowsToRemove.push(shadow);
       if (block.snapAction === 'outsnap') {
         shadow.setAttribute('class', 'shadow-block-leave shadow-block-leave-outsnap');
-      } else{
+      } else {
         shadow.setAttribute('class', 'shadow-block-leave');
       }
       block.targetShadow = null;
@@ -1018,7 +1018,7 @@ tbe.autoPlace = function autoPlace(block) {
   // If one exists, move the block next to it
   if (foundBlock === null) {
     block.dmove(dx, dy);
-  } else{
+  } else {
     block.dmove(dx + foundBlock.right - x, dy);
     foundBlock.next = block;
     block.prev = foundBlock;
@@ -1246,7 +1246,7 @@ tbe.configInteractions = function configInteractions() {
           tbe.deleteChunk(block, block.last);
         } else if (block.isLoopTail()) {
           tbe.deleteChunk(block.flowHead, block.last);
-        } else{
+        } else {
           tbe.deleteChunk(block, block.last);
         }
       }
@@ -1263,7 +1263,7 @@ tbe.configInteractions = function configInteractions() {
        /*if (!block.isPaletteBlock) {
          if (!block.isCommented()) {
            block.svgRect.classList.add('commented');
-         } else{
+         } else {
            block.svgRect.classList.remove('commented');
          }
        }*/
