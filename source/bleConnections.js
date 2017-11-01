@@ -152,11 +152,33 @@ bleConnection.startObserving = function () {
   if (navigator.bluetooth !== null && navigator.bluetooth !== undefined) {
     console.log ('using w3c Web bluetooth');
     let options = {
-        filters: [{services: ['generic_attribute']},{namePrefix: 'BBC micro:bit'}]
+        filters: [{services: ['generic_attribute']},{namePrefix: 'BBC micro:bit'}],
+        optionalServices: [nordicUARTservice.serviceUUID]
     };
     navigator.bluetooth.requestDevice(options)
       .then(function(device) {
         console.log('> device:', device);
+        return device.gatt.connect();
+      })
+      .then(function(server) {
+        console.log('> primary service:', server);
+        return server.getPrimaryService(nordicUARTservice.serviceUUID);
+      })
+      .then (function(primaryService) {
+        console.log('> primary Service:', primaryService);
+        // Calling getCharacteristics wiht no parameters
+        // should return the one associated with the primary service
+        // ( the tx and rx service)
+        return primaryService.getCharacteristics();
+      })
+      .then (function(characteristics) {
+        // testin this in chrome has worked.
+        // Could add validation code to confirm nothing has changes
+        // [0].uuid = 6e400002-... (tx)
+        // [1].uuid = 6e400003-... (rx)
+        console.log('> characteristics:', characteristics);
+
+        // Now set up some communication to test I/O
       })
       .catch(function(error) {
         console.log('cancel or error :' + error);
