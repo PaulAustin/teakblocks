@@ -36,17 +36,19 @@ module.exports = function(){
       <p class='splashTitle'>Teak blocks<p>
       <p class='splashBody'>A block sequencing tool for simple programs.<p>
       <br>
-      <br>
       <p class='splashBody'>This site uses cookies and local storage to maintain your settings.<p>
       <div>
-        <input id='noLaunchSplash' type='checkbox' class='splashBody'>
-        <label for='noLaunchSplash' class='splashBody'>Show this box at launch.</lable>
+        <label class='splashBody'>
+        <input id='noLaunchSplash' type='checkbox'>
+        <span class='label-text'> Show this box at launch. </span>
+        </label>
       <div>
       <br>
       <p class='splashBody'>© 2017 Paul Austin and Sidharth Srinivasan. All rights reserved.<p>
       </div>
     </div>`;
     var exitButton = document.getElementById('splashOverlay');
+    // TODO add exit button.
     exitButton.onclick = splashOverlay.exit;
   };
 
