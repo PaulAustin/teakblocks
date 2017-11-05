@@ -43,15 +43,35 @@ module.exports = function () {
   conductor.activeBits = [];
 
   conductor.attachToScoreEditor = function(tbe) {
+    console.log('attached to ', tbe);
     conductor.tbe = tbe;
     conductor.linkHeartBeat();
+    conductor.ble.connectionChanged.subscribe(conductor.updateIndentiyBlocks);
+  };
+
+  // If there is a change in connections update teh indentity blocks
+  // TODO this linkage is ver much a bit of a hack.
+  conductor.updateIndentiyBlocks = function() {
+    console.log(' updating identity blocks');
+    var blockChainIterator  = conductor.tbe.forEachDiagramChain;
+    blockChainIterator(function(chainStart) {
+      if (chainStart.name === 'identity') {
+        var botName = chainStart.controllerSettings.data.deviceName;
+        var status = conductor.ble.connectionStatus(botName);
+        if (status === conductor.ble.statusEnum.BEACON) {
+          // Try to connect ot it.
+          conductor.ble.connect(botName);
+        }
+        chainStart.updateSvg();
+      }
+    });
   };
 
   conductor.linkHeartBeat = function() {
     conductor.hbTimer = 0;
 
     // Visit all chains and see if any have changed connection states.
-    conductor.checkAllIdentityBlocks();
+    // conductor.checkAllIdentityBlocks();
 
     // Set all of the blocks to a regular state.
     conductor.tbe.forEachDiagramBlock(function(b){
@@ -69,9 +89,9 @@ module.exports = function () {
           if (block.name === 'tail' && conductor.loopCount > 1) {
             block = block.flowHead;
             conductor.loopCount -= 1;
-          } else if(block.name === 'tail' && conductor.loopCount === 1) {
+          } else if (block.name === 'tail' && conductor.loopCount === 1) {
             conductor.loopCount = undefined;
-            if(block.next !== null){
+            if (block.next !== null) {
               block = block.next;
             } else {
               conductor.stopAll();
@@ -82,23 +102,23 @@ module.exports = function () {
             block = block.next;
           }
           // If this is a new block, get its duration
-          if(conductor.count === null){
+          if (conductor.count === null) {
             conductor.count = block.controllerSettings.data.duration;
           }
 
           // If it does not have a duration or it has a duration of 0
           // then set its duration to 1
-          if(conductor.count === undefined || conductor.count === '0'){
+          if (conductor.count === undefined || conductor.count === '0') {
             conductor.count = 1;
           }
           console.log(conductor.count);
 
-          if (block !== null){
+          if (block !== null) {
             conductor.count = parseInt(conductor.count, 10);
 
             // Mark the current block as running
             var id = block.first;
-            if(id.name === 'identity'){ // && !block.isCommented()
+            if (id.name === 'identity') { // && !block.isCommented()
               conductor.tbe.svg.appendChild(block.svgGroup);
               block.svgRect.classList.add('running-block');
             }
@@ -107,7 +127,7 @@ module.exports = function () {
             // continue playing the block.
             // Otherwise, get the next block ready and set count to null.
             conductor.playOne(block);
-            if(conductor.count > 1){
+            if (conductor.count > 1) {
               conductor.count -= 1;
             } else {
               conductor.runningBlocks[i] = block.next;
@@ -120,46 +140,19 @@ module.exports = function () {
     conductor.hbTimer = setTimeout(function() { conductor.linkHeartBeat(); }, 1000);
   };
 
-  conductor.checkAllIdentityBlocks = function() {
-
-    var blockChainIterator  = conductor.tbe.forEachDiagramChain;
-    blockChainIterator(function(chainStart) {
-      var botsToConnect = [];
-      // Ignore chains that don't start with an identity block.
-      if (chainStart.name === 'identity') {
-        var botName = chainStart.controllerSettings.data.deviceName;
-        var status = conductor.ble.checkDeviceStatus(botName);
-        if (!chainStart.statusIs(status)) {
-          chainStart.controllerSettings.status = status;
-          chainStart.updateSvg();
-        }
-        if (status === 1) {
-          botsToConnect.push(botName);
-        }
-      }
-      // If any bots are found that are not yet connected, connect to them.
-      // If connected ones exist that are not still needed, disconnect them.
-      for (var i = 0; i < botsToConnect.length; i++) {
-        conductor.ble.connect(botsToConnect[i]);
-      }
-    });
-  };
-
+  // Find all start all blocks and start them running.
   conductor.playAll = function() {
     conductor.runningBlocks = [];
-    console.log('play all');
     var blockChainIterator  = conductor.tbe.forEachDiagramChain;
     blockChainIterator(function(chainStart) {
-      var cs = chainStart.controllerSettings;
       // Ignore chains that don't start with an identity block.
-      if (chainStart.name === 'identity' && cs.data.deviceName !== '-?-' && cs.status === 3) {
+      if (chainStart.name === 'identity') {
         conductor.runningBlocks.push(chainStart.next);
       }
     });
-
-    console.log('blocks to run', conductor.runningBlocks);
   };
 
+  // Stop all running chains.
   conductor.stopAll = function() {
     var blockChainIterator  = conductor.tbe.forEachDiagramChain;
     var botName = '';
@@ -183,14 +176,9 @@ module.exports = function () {
   conductor.playOne = function(block) {
     var first = block.first;
 
-    //if(block.isCommented()){
-    //  return;
-    //}
-
     if (first.name === 'identity') {
       var botName = first.controllerSettings.data.deviceName;
       var message = '';
-      var message2 = '';
       var d = block.controllerSettings.data;
       if (block.name === 'picture') {
         var imageData = d.pix;
@@ -204,20 +192,10 @@ module.exports = function () {
         message = '(m:(1 2) d:' + d.speed + ');'; // +' b:' + d.duration
       } else if (block.name === 'sound') {
         message = '(nt:' + d.description + ':' + 1 + ');';
-        console.log('msg ', message);
-      } else if(block.name === 'wait') {
+      } else if (block.name === 'wait') {
         message = '';
-        conductor.ble.write(botName, message);
       }
-
-      if (message !== '') {
-        console.log ('block message', message);
-        conductor.ble.write(botName, message);
-      }
-      if(message2 !== ''){
-        console.log ('block message', message2);
-        conductor.ble.write(botName, message2);
-      }
+      conductor.ble.write(botName, message);
     }
     // Single step, find target and head of chain and run the single block.
   };

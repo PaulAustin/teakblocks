@@ -22,13 +22,24 @@ SOFTWARE.
 
 // Module for managing BLE connections and lists of devices found.
 module.exports = function factory(){
+  var ko = require('knockout');
 
-var bleConnection = {};
-bleConnection.messages = [];
-bleConnection.observerCallback = null;
-bleConnection.accelerometer = 0;
-bleConnection.compass = 0;
-bleConnection.temp = 0;
+  var bleConnection = {};
+  bleConnection.connectionChanged = ko.observable({});
+  bleConnection.connectionChanged.extend({ notify: 'always' });
+  bleConnection.messages = [];
+  bleConnection.accelerometer = 0;
+  bleConnection.compass = 0;
+  bleConnection.temp = 0;
+
+// State enumeration for conections.
+bleConnection.statusEnum = {
+  NOT_THERE : 0,
+  BEACON : 1,
+  CONNECTING : 2,
+  CONNECTED : 3,
+  CONNECTION_ERROR : 4
+};
 
 // GUIDs for Nordic BLE UART services.
 var nordicUARTservice = {
@@ -51,11 +62,19 @@ function bufferToString(buffer) {
   return String.fromCharCode.apply(null, new Uint8Array(buffer));
 }
 
+// Sniff out which BLE API to use. The order of testing is important
 if (typeof ble !== 'undefined') {
-  // ble is defined by the environment.
-  bleConnection.bleApi = ble; // eslint-disable-line no-undef
+  // First, look for a cordova based one. Its based on a global
+  bleConnection.appBLE = ble; // eslint-disable-line no-undef
+  bleConnection.webBLE = null;
+} else if (navigator.bluetooth !== null && navigator.bluetooth !== undefined) {
+  // Second, see if ther appears to be a web bluetooth implmentation.
+  bleConnection.appBLE = null;
+  bleConnection.webBLE = navigator.bluetooth;
 } else {
-  bleConnection.bleApi = null;
+  // None found.
+  bleConnection.appBLE = null;
+  bleConnection.webBLE = null;
 }
 
 var pbi = 0;
@@ -88,14 +107,10 @@ bleConnection.psedoScan = function () {
   }
 };
 
-bleConnection.observeDevices = function(callback) {
-  this.observerCallback = callback;
-};
-
 bleConnection.stopObserving = function () {
   bleConnection.scanning = true;
-  if (bleConnection.bleApi !== null) {
-    this.bleApi.stopScan();
+  if (bleConnection.appBLE) {
+    bleConnection.appBLE.stopScan();
   }
 };
 
@@ -109,14 +124,31 @@ bleConnection.findDeviceByMac = function(mac) {
   return null;
 };
 
+// strip down the name to the core 5 character name
+bleConnection.bleNameToBotName = function(rawName) {
+  if (rawName.startsWith('BBC micro:bit [')) {
+    return rawName.split('[', 2)[1].split(']',1)[0];
+  } else {
+    return null;
+  }
+};
+
+// A Device has been seen.
 bleConnection.beaconReceived = function(beaconInfo) {
   if (beaconInfo.name !== undefined) {
-    if (beaconInfo.name.startsWith('BBC micro:bit [')) {
-      var botName = beaconInfo.name.split('[', 2)[1].split(']',1)[0];
+    var botName = bleConnection.bleNameToBotName(beaconInfo.name);
+
+    // If its a legit name make sure it is in the list or devices.
+    if (botName !== null) {
 
       // Merge into list
       if (!this.devices.hasOwnProperty(botName)) {
-        this.devices[botName] = { mac:beaconInfo.id, status:1 };
+        this.devices[botName] = {
+           name: botName,
+           mac: beaconInfo.id,
+          };
+          // Now set the status and trigger observers
+          bleConnection.setConnectionStatus(botName, bleConnection.statusEnum.BEACON);
       }
 
       // Update last-seen time stamp, signal strength
@@ -133,98 +165,130 @@ bleConnection.cullList = function() {
   var now = Date.now();
   for (var botName in bleConnection.devices) {
     var botInfo = bleConnection.devices[botName];
+
     // Per ECMAScript 5.1 standard section 12.6.4 it is OK to delete while
     // iterating through a an object.
-    if ((botInfo.status === 1) && (now - botInfo.ts) > 4000) {
+    if ((botInfo.status === bleConnection.statusEnum.BEACON) && (now - botInfo.ts) > 4000) {
       delete bleConnection.devices[botName];
     }
   }
-  if ((this.observerCallback !== null) && bleConnection.scanning) {
-    this.observerCallback(bleConnection.devices);
-  }
+
+  // Let observers know something about the list of devices has changed.
+  bleConnection.connectionChanged(bleConnection.devices);
 };
 
 bleConnection.startObserving = function () {
   bleConnection.scanning = true;
 
-  console.log(' BLE?', navigator.bluetooth);
-
-  if (navigator.bluetooth !== null && navigator.bluetooth !== undefined) {
-    console.log ('using w3c Web bluetooth');
-    let options = {
-        filters: [{services: ['generic_attribute']},{namePrefix: 'BBC micro:bit'}],
-        optionalServices: [nordicUARTservice.serviceUUID]
-    };
-    navigator.bluetooth.requestDevice(options)
-      .then(function(device) {
-        console.log('> device:', device);
-        return device.gatt.connect();
-      })
-      .then(function(server) {
-        console.log('> primary service:', server);
-        return server.getPrimaryService(nordicUARTservice.serviceUUID);
-      })
-      .then (function(primaryService) {
-        console.log('> primary Service:', primaryService);
-        // Calling getCharacteristics wiht no parameters
-        // should return the one associated with the primary service
-        // ( the tx and rx service)
-        return primaryService.getCharacteristics();
-      })
-      .then (function(characteristics) {
-        // testin this in chrome has worked.
-        // Could add validation code to confirm nothing has changes
-        // [0].uuid = 6e400002-... (tx)
-        // [1].uuid = 6e400003-... (rx)
-        console.log('> characteristics:', characteristics);
-
-        // Now set up some communication to test I/O
-      })
-      .catch(function(error) {
-        console.log('cancel or error :' + error);
-      });
-  } else if (this.bleApi === null) {
-    console.log ('simulated bluetooth scan');
-    bleConnection.psedoScan();
-  } else {  // bleAPI is not null looks like cordova model.
-    console.log ('cordova based bluetooth scan');
-    // using the cordova stle BLE connection
-    this.bleApi.startScanWithOptions(
-      [/*nordicUARTservice.serviceUUID*/], { reportDuplicates: true },
+  if (bleConnection.webBLE) {
+    bleConnection.webBTConnect();
+  } else if (bleConnection.appBLE) {
+    bleConnection.appBLE.startScanWithOptions([], { reportDuplicates: true },
       function(device) {
         bleConnection.beaconReceived(device);
       },
       function(errorCode) {
         console.log('error1:' + errorCode);
       });
+  } else {  // bleAPI is not null looks like cordova model.
+    console.log ('simulated bluetooth scan');
+    bleConnection.psedoScan();
   }
 };
 
-bleConnection.checkDeviceStatus = function (name) {
-  if (name === '-?-') {
-    return 0;  // TODO a bit hard coded.
-  } else if (bleConnection.devices.hasOwnProperty(name)) {
+// For Web bluetooth use the promises style of chaining callbacks.
+// It looks a bit like one function, but it is a chain of 'then'
+// call backs
+bleConnection.webBTConnect = function () {
+
+  let options = {
+      filters: [
+        {services: ['generic_attribute']},
+        {namePrefix: 'BBC micro:bit'}
+      ],
+      optionalServices: [nordicUARTservice.serviceUUID]
+  };
+
+  // requestDevice will trigger a browse dialog once back to the browser loop.
+  // When a user selects one the then is called. Since the user has already
+  // selected on at that point, add it to the list and select.
+  navigator.bluetooth.requestDevice(options)
+    .then(function(device) {
+      console.log('> device:', device);
+      var beaconInfo = {
+        name : device.name,     // Should be in 'BBC micro:bit [xxxxx]' format
+        id: device.id,          // looks like a hast of mac id perhaps
+        rssi: -1,               // signal strength is not shared with JS code
+        autoSelect: true        // indicate that the app should now connect.
+      };
+      bleConnection.beaconReceived(beaconInfo);
+      return device.gatt.connect();
+    })
+    .then(function(server) {
+      console.log('> primary service:', server);
+      return server.getPrimaryService(nordicUARTservice.serviceUUID);
+    })
+    .then (function(primaryService) {
+      console.log('> primary Service:', primaryService);
+      // Calling getCharacteristics with no parameters
+      // should return the one associated with the primary service
+      // ( the tx and rx service)
+      return primaryService.getCharacteristics();
+    })
+    .then (function(characteristics) {
+      var rawName = characteristics[0].service.device.name;
+      console.log('> characteristics:', rawName, characteristics);
+      var botName = bleConnection.bleNameToBotName(rawName);
+      bleConnection.setConnectionStatus(botName, bleConnection.statusEnum.CONNECTED);
+      // testing this in chrome has worked.
+      // Could add validation code to confirm nothing has changes
+      // [0].uuid = 6e400002-... (tx)
+      // [1].uuid = 6e400003-... (rx)
+    })
+    .catch(function(error) {
+      console.log('cancel or error :' + error);
+    });
+};
+
+// Determine the status of a named connection.
+bleConnection.connectionStatus = function (name) {
+  if (bleConnection.devices.hasOwnProperty(name)) {
     return bleConnection.devices[name].status;
+  } else {
+    return bleConnection.statusEnum.NOT_THERE;
   }
-  return 0;
 };
 
+// Change a devices status and trigger observers
+bleConnection.setConnectionStatus = function (name, status) {
+  //
+  bleConnection.devices[name].status = status;
+  // Trigger notifications.
+  bleConnection.connectionChanged(bleConnection.devices);
+};
+
+// NOT uSED, TODO where should it be used.
 bleConnection.disconnect = function(mac) {
-  if (bleConnection.bleApi !== null) {
-    this.bleApi.disconnect(mac);
+  // TODO need to resolve where MAC vs name is used.
+  if (bleConnection.appBLE) {
+    bleConnection.appBLE.disconnect(mac);
   }
 };
 
 bleConnection.connect = function(name) {
-  if (this.devices.hasOwnProperty(name)) {
-    var mac = this.devices[name].mac;
+  if (bleConnection.devices.hasOwnProperty(name)) {
+    var mac = bleConnection.devices[name].mac;
 
-    if (bleConnection.bleApi === null) {
-      bleConnection.devices[name].status = 3;
-    } else {
-      bleConnection.devices[name].status = 2;
-      bleConnection.bleApi.connect(mac, bleConnection.onConnect,
+    if (bleConnection.appBLE) {
+      bleConnection.setConnectionStatus(name, bleConnection.statusEnum.CONNECTING);
+      bleConnection.appBLE.connect(mac, bleConnection.onConnect,
         bleConnection.onDisconnect, bleConnection.onError);
+    } else if (bleConnection.webBLE) {
+      // Should already be connected.
+      // TODO, no the connection can be postponed until needed (perhaps)
+    } else {
+      // For no BLE present, pretend the device is connected.
+      bleConnection.setConnectionStatus(name, bleConnection.statusEnum.CONNECTED);
     }
   }
 };
@@ -232,7 +296,7 @@ bleConnection.connect = function(name) {
 bleConnection.onConnect = function(info) {
   console.log('On Connected:', info.name, info);
   // If connection works, then start listening for incomming messages.
-  bleConnection.bleApi.startNotification(info.id,
+  bleConnection.appBLE.startNotification(info.id,
      nordicUARTservice.serviceUUID,
      nordicUARTservice.rxCharacteristic,
      function (data) { bleConnection.onData(info.name, data); },
@@ -240,7 +304,7 @@ bleConnection.onConnect = function(info) {
 
   var dev = bleConnection.findDeviceByMac(info.id);
   if (dev !== null) {
-    dev.status = 3;
+    bleConnection.setConnectionStatus(dev.name, bleConnection.statusEnum.CONNECTED);
   }
 };
 
@@ -266,15 +330,15 @@ bleConnection.onError = function(reason) {
 };
 
 bleConnection.write = function(name, message) {
-  if (this.devices.hasOwnProperty(name)) {
-    var mac = this.devices[name].mac;
+  console.log('ble write', name, message);
+  if (bleConnection.devices.hasOwnProperty(name)) {
+    var mac = bleConnection.devices[name].mac;
 
-    console.log('ble write', name, mac, message);
-    if (bleConnection.bleApi !== null) {
+    if (bleConnection.appBLE) {
       var buffer = stringToBuffer(message);
 
       // Break the message into smaller sections.
-      bleConnection.bleApi.write(mac,
+      bleConnection.appBLE.write(mac,
         nordicUARTservice.serviceUUID,
         nordicUARTservice.txCharacteristic,
         buffer,

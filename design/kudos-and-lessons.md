@@ -473,7 +473,7 @@ There is quite likely a hint of smalltalk here.
  var.subscribe  // trigger on new value?
  var.state  // => static, idle, time-dependent, world-dependent,...
 
-### signign an alpha app.
+### signing an alpha app.
 
 [stackoverflow discussion](http://stackoverflow.com/questions/26449512/how-to-create-a-signed-apk-file-using-cordova-command-line-interface)
 
@@ -504,3 +504,24 @@ After a comment perhaps a preprocessor can guess at the sections intent.
  (d) object   -
  (e) function flow (body of function that explains how it works)
  (f) lambdas (perhaps)
+
+## November
+Work on BT in browser, and general clean ups.
+The BT connection class now support web Bluetooth discovery. Read/write still to be added. ONe bit that came out of this is a bit of complexity that the connection system has. Now that the underlying APIs are butter understood perhaps its time to revist the
+over all system.
+
+1. The bleConnection system will have alist of all robots that the app know about, this can inlcude BLE, USB, simulated
+or network connections. The name of this class will change.
+
+2. The sub systems can map a name to a connectionIfo Object that knows the connections status
+to the connection. Note, its is possible for a device to change underlying connections tools. so primary read/Write operatiosn are
+on the conection system not on a connection.
+
+3. Devices come and go the connection manager will let the ( editor know of changes) the conductor will see the changes
+by observing changes in the editor objects.
+
+4. If device dissapeared and then show up again. If there is a block that is paired to that robot it will try to reconnect to it.
+(does this make sense?)
+
+5. The app should have a simple means to turn off all connections this makes it easy to share  bot wiht others.  When turne back on
+it will try to reconnect to bots the diagram is connected to.

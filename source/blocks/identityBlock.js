@@ -24,7 +24,6 @@ module.exports = function () {
   var svgb = require('./../svgbuilder.js');
   var ble = require('./../bleConnections.js');
   var ko = require('knockout');
-  //var seen = [];
 
   var pb = svgb.pathBuilder;
   var identityBlock = {};
@@ -32,6 +31,7 @@ module.exports = function () {
   // Items for selecting a device from a list.
   identityBlock.devices = ko.observableArray([]);
 
+  // When an item is clicked on select that device.
   identityBlock.onDeviceClick = function() {
     // Ah JavaScript... 'this' is NOT identityBlock.
     // It is the knockout item in the observable array.
@@ -55,6 +55,7 @@ module.exports = function () {
       }
       // Move the selected name into the object.
       block.controllerSettings.data.deviceName = newBotName;
+
       block.updateSvg();
     }
   };
@@ -94,37 +95,40 @@ module.exports = function () {
               <span data-bind= "text:name, click:$parent.onDeviceClick"></span>
             </li>
           </ul>
-      </div>`; //, style:{color: colorName, backgroundColor:back}
+      </div>`;
 
     // Connect the dataBinding.
     ko.applyBindings(identityBlock, div);
 
     // Set up a callback to get notified when when devices show up.
     identityBlock.refreshList(ble.devices);
-    ble.observeDevices(identityBlock.refreshList);
+    identityBlock.watch = ble.connectionChanged.subscribe(identityBlock.refreshList);
     ble.startObserving();
   };
 
+  // Update the list of devices in the configuration box
   identityBlock.refreshList = function (bots) {
     // TODO, might be able to use data binding to do this as well.
     identityBlock.devices.removeAll();
     for (var key in bots) {
       if (bots.hasOwnProperty(key)) {
-        identityBlock.addItem(key); //, bots[key].mac, bots[key].ts
+        identityBlock.addItem(key);
       }
-    }
-    if (identityBlock.activeBlock) {
-      identityBlock.activeBlock.updateSvg();
     }
   };
 
+  // Close the identity blocks and clean up hooks related to it.
   identityBlock.configuratorClose = function(div) {
-    ble.observeDevices(null);
     ble.stopObserving();
+    // Stop observing the list of visible devices.
+    identityBlock.watch.dispose();
+    identityBlock.watch = null;
     identityBlock.activeBlock = null;
     ko.cleanNode(div);
   };
 
+  // Buid an SVG for the block that indicates the device name
+  // and connection status
   identityBlock.svg = function(root, block) {
     var pathd = '';
     pathd =  pb.move(31, 11);
@@ -143,18 +147,19 @@ module.exports = function () {
     text.setAttribute('text-anchor', 'middle');
     root.appendChild(text);
 
+    var status = ble.connectionStatus(botName);
     if (botName !== '-?-') {
       var statusClass = 0;
       // Connection status dot
-      if (block.statusIs(0)) { //controllerSettings.status === 0
+      if (status === ble.statusEnum.NOT_THERE) {
         statusClass = 'block-bot-not-found';
-      } else if (block.statusIs(1)) {
+      } else if (status === ble.statusEnum.BEACON) {
         statusClass = 'block-bot-visible';
-      } else if (block.statusIs(2)) {
+      } else if (status === ble.statusEnum.CONNECTING) {
         statusClass = 'block-bot-connecting';
-      } else if (block.statusIs(3)) {
+      } else if (status === ble.statusEnum.CONNECTED) {
         statusClass = 'block-bot-connected';
-      } else if (block.controllerSettings.status < 0 ) {
+      } else {
         // Connected but with protocol errors. Might be wrong FW
         // or not really a teakblocks device.
         statusClass = 'block-bot-connection-error';
@@ -163,15 +168,13 @@ module.exports = function () {
     }
   };
 
-  identityBlock.addItem = function (botName) { //, mac, ts
+  identityBlock.addItem = function (botName) {
     var block = identityBlock.activeBlock;
     if (block !== null) {
       var targetName = block.controllerSettings.data.deviceName;
       var item = ko.observable({
         name: botName,
-        selected: ko.observable(botName === targetName)//,
-        //colorName: color,
-        //back: back
+        selected: ko.observable(botName === targetName)
       });
       identityBlock.devices.unshift(item);
     }

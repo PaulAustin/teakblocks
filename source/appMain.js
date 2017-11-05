@@ -189,6 +189,8 @@ module.exports = function () {
     actionButtons.addActionButtons(actionButtonObj, tbe);
     document.body.onresize = tbe.updateScreenSizes; // Buttons/screen resizing
 
+    app.conductor.attachToScoreEditor(tbe);
+
     if (app.splashOverlay.showLaunchAboutBox()) {
       app.doCommand('splashOverlay');
     }

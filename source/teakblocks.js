@@ -407,10 +407,22 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
 
 // Create an image for the block base on its type.
 tbe.FunctionBlock.prototype.updateSvg = function() {
+
   // Remove the old custom image if they exist.
   if (this.svgCustomGroup !== null) {
     this.svgGroup.removeChild(this.svgCustomGroup);
-}
+  }
+
+  // Build custom image for this block.
+  this.svgCustomGroup = svgb.createGroup('', 0, 0);
+  if (typeof this.funcs.svg === 'function' ) {
+    this.funcs.svg(this.svgCustomGroup, this);
+  }
+
+  // Add it to doc's SVG tree.
+  this.svgGroup.appendChild(this.svgCustomGroup);
+};
+
 // Checks if block passed in is in the same chain as this.
 tbe.FunctionBlock.prototype.chainContainsBlock = function(other) {
   // Block is the first block of the chain.
@@ -425,14 +437,6 @@ tbe.FunctionBlock.prototype.chainContainsBlock = function(other) {
   }
   // If no blocks that were the same were found, return false.
   return false;
-};
-
-  // Build custom image for this block.
-  this.svgCustomGroup = svgb.createGroup('', 0, 0);
-  if (typeof this.funcs.svg === 'function' ) {
-    this.funcs.svg(this.svgCustomGroup, this);
-  }
-  this.svgGroup.appendChild(this.svgCustomGroup);
 };
 
 tbe.FunctionBlock.prototype.refreshNesting = function() {
@@ -583,10 +587,6 @@ tbe.FunctionBlock.prototype.isLoopTail = function() {
 
 tbe.FunctionBlock.prototype.isCommented = function() {
   return (this.svgRect.classList.contains('commented'));
-};
-
-tbe.FunctionBlock.prototype.statusIs = function(status) {
-  return this.controllerSettings.status === status;
 };
 
 // Checks if a selected loop is the only thing selected.
