@@ -1,3 +1,102 @@
+/*
+Copyright (c) 2017 Paul Austin - SDG
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+/*
+Copyright (c) 2017 Paul Austin - SDG
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+label input {
+  margin: 15
+  cursor: pointer;
+  /* prevent selecting text in control captions */
+  -webkit-user-select: none;
+  user-select: none;
+}
+label input[type="checkbox"] {
+  display: none;
+}
+label input[type="checkbox"] + .label-text:before {
+  content: "\f096";
+  font-family: "FontAwesome";
+  speak: none;
+  font-size: 25px;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  width: 1em;
+  display: inline-block;
+  margin-right: 5px;
+  animation: toUnchecked 200ms ease-in;
+}
+label input[type="checkbox"]:checked + .label-text:before {
+  content: "\f046";
+  color: #06a3e9;
+  animation: toChecked 200ms ease-in;
+}
+label input[type="checkbox"]:disabled + .label-text {
+  color: #aaa;
+}
+label input[type="checkbox"]:disabled + .label-text:before {
+  content: "f096";
+  /* square-o */
+  color: #ccc;
+}
+@keyframes toUnchecked {
+  0% {
+    transform: scale(0.9);
+  }
+  60% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes toChecked {
+  0% {
+    transform: scale(0.9);
+  }
+  60% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
 .function-text {
   width: 80px;
   height: 80px;
@@ -273,7 +372,7 @@
   font-family: "helvetica";
 }
 .splashBody {
-  font-size: 16px;
+  font-size: 18px;
   font-family: "helvetica";
 }
 html,
@@ -441,67 +540,6 @@ body {
 }
 .palette-button:active {
   background-color: #1E8449;
-}
-label {
-  margin: 15
-  cursor: pointer;
-  /* prevent selecting text in control captions */
-  -webkit-user-select: none;
-  user-select: none;
-}
-label input[type="checkbox"] {
-  display: none;
-}
-label input[type="checkbox"] + .label-text:before {
-  content: "\f096";
-  font-family: "FontAwesome";
-  speak: none;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  font-size: 25px;
-  text-transform: none;
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-  width: 1em;
-  display: inline-block;
-  margin-right: 5px;
-  animation: toUnchecked 200ms ease-in;
-}
-label input[type="checkbox"]:checked + .label-text:before {
-  content: "\f046";
-  color: #06a3e9;
-  animation: toChecked 200ms ease-in;
-}
-label input[type="checkbox"]:disabled + .label-text {
-  color: #aaa;
-}
-label input[type="checkbox"]:disabled + .label-text:before {
-  content: "f096";
-  /* square-o */
-  color: #ccc;
-}
-@keyframes toUnchecked {
-  0% {
-    transform: scale(0.9);
-  }
-  60% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-@keyframes toChecked {
-  0% {
-    transform: scale(0.9);
-  }
-  60% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
 }
 /* teak form is for system wide dialogs that slide in from the top */
 .pulldown {
