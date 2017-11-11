@@ -37,25 +37,30 @@ module.exports = function () {
     var groupDiv = document.createElement("div");
     commonDiv.innerHTML =
     `<div id="block-settings" class="block-config-form blockform">
-        <div class="block-settings-editops"><button class="block-run">
-            <i class="fa fa-step-forward" aria-hidden="true"></i>
-          </button><button class="block-clone">
-            <i class="fa fa-clone" aria-hidden="true"></i>
-          </button><button class="block-clear">
-            <i class="fa fa-trash-o" aria-hidden="true"></i>
-          </button></div>
-        <div id="block-settings-custom"></div>
-        <div id="block-controller-tabs"></div>
-    </div>`;//TABS - uncomment html
+      <div class="group-div">
+        <button class="block-run width-third">
+          <i class="fa fa-step-forward" aria-hidden="true"></i>
+        </button>
+        <button class="block-clone width-third">
+          <i class="fa fa-clone" aria-hidden="true"></i>
+        </button>
+        <button class="block-clear width-third">
+          <i class="fa fa-trash-o" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div id="block-settings-custom"></div>
+      <div id="block-controller-tabs"></div>
+    </div>`;
     groupDiv.innerHTML =
     `<div id="block-settings" class="block-config-form blockform">
-        <div class="block-settings-editops"><button class="block-run">
-            <i class="fa fa-step-forward" aria-hidden="true"></i>
-          </button><button class="block-clone">
-            <i class="fa fa-clone" aria-hidden="true"></i>
-          </button><button class="block-clear">
-            <i class="fa fa-trash-o" aria-hidden="true"></i>
-          </button></div>
+      <div class="group-div"><button class="block-run">
+          <i class="fa fa-step-forward" aria-hidden="true"></i>
+        </button><button class="block-clone">
+          <i class="fa fa-clone" aria-hidden="true"></i>
+        </button><button class="block-clear">
+          <i class="fa fa-trash-o" aria-hidden="true"></i>
+        </button>
+      </div>
     </div>`;
     domRoot.appendChild(commonDiv);
     domRoot.appendChild(groupDiv);

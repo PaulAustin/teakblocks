@@ -23,6 +23,41 @@ SOFTWARE.
 // Styles for standard UI components
 // Check boxes, radio buttons, etc.
 
+.width-third {
+  // Less than 33.3 because of margin.
+  width:31.6%;
+}
+.width-half {
+  // Less than 33.3 because of margin.
+  width:50.0%;
+}
+.width-whole {
+  width:100.0%;
+}
+
+/* Buttons for the bock config edit operations run, copy, delete */
+.group-div {
+  padding:5px;
+}
+button {
+  touch-action: none; /* prevents any screen bounce on android */
+}
+textarea {
+  touch-action: none; /* prevents any screen bounce on android */
+}
+button {
+  font-size:20px;
+  border: 2px solid #81C784;
+  border-radius: 6px;
+  background-color: #81C784;
+  user-select: none;
+  outline: none;
+  padding: 1px;
+  height: 30px;
+}
+button:active {
+  background-color: #4CAF50;
+}
 label input {
   margin: 15
   cursor: pointer;

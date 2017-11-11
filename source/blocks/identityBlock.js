@@ -24,7 +24,7 @@ module.exports = function () {
   var svgb = require('./../svgbuilder.js');
   var ble = require('./../bleConnections.js');
   var ko = require('knockout');
-
+  var faBlueTooth = '\uf294';
   var pb = svgb.pathBuilder;
   var identityBlock = {};
 
@@ -89,21 +89,61 @@ module.exports = function () {
   identityBlock.configuratorOpen = function(div, block) {
     identityBlock.activeBlock = block;
     div.innerHTML =
-      `<div class='list-box-shell'>
-          <ul class='list-box' data-bind='foreach: devices'>
-            <li data-bind= "css:{'list-item-selected':selected()}">
-              <span data-bind= "text:name, click:$parent.onDeviceClick"></span>
-            </li>
-          </ul>
+      `<div class='group-div'>
+        <div class='list-box-shell'>
+            <ul class='list-box' data-bind='foreach: devices'>
+              <li data-bind= "css:{'list-item-selected':selected()}">
+                <span data-bind= "text:name, click:$parent.onDeviceClick"></span>
+              </li>
+            </ul>
+        </div>
+        <button id='bt-scan' class='width-whole'>
+        </button>
       </div>`;
 
     // Connect the dataBinding.
     ko.applyBindings(identityBlock, div);
 
-    // Set up a callback to get notified when when devices show up.
-    identityBlock.refreshList(ble.devices);
-    identityBlock.watch = ble.connectionChanged.subscribe(identityBlock.refreshList);
-    ble.startObserving();
+    identityBlock.scanButton = document.getElementById('bt-scan');
+    identityBlock.scanButton.onclick = identityBlock.toggleBtScan;
+
+    if (!ble.scanUsesHostDialog && !ble.scannning) {
+      // If scanning is unobtrusive, start it when the form is shown.
+      identityBlock.toggleBtScan();
+    } else {
+      // Otherwise at least fix up the button label.
+      identityBlock.configBtnScan(false);
+    }
+  };
+
+  // Turn on Scanning
+  identityBlock.configBtnScan = function(scanning) {
+    console.log('config scaning button', scanning);
+    var button= identityBlock.scanButton;
+    if (scanning) {
+      // Turn on scanning.
+      button.innerHTML =
+      "<span>Looking for bots <i class='fa fa-spinner fa-pulse fa-fw'></i></span>";
+    } else {
+      // Turn off back scanning
+      button.innerHTML = "<span>Look for bots </span>";
+    }
+  };
+
+  identityBlock.toggleBtScan = function() {
+    if (ble.scannning) {
+      // Turn off back scanning
+      ble.stopScanning();
+      identityBlock.watch.dispose();
+      identityBlock.watch = null;
+    } else {
+      // Turn on scanning.
+      // Set up a callback to get notified when when devices show up.
+      identityBlock.refreshList(ble.devices);
+      identityBlock.watch = ble.connectionChanged.subscribe(identityBlock.refreshList);
+      ble.startScanning();
+    }
+    identityBlock.configBtnScan(ble.scanning);
   };
 
   // Update the list of devices in the configuration box
@@ -115,14 +155,19 @@ module.exports = function () {
         identityBlock.addItem(key);
       }
     }
+
+    // If scanning has stopped update the button.
+    if (!ble.scanning) {
+      identityBlock.configBtnScan(false);
+    }
   };
 
   // Close the identity blocks and clean up hooks related to it.
   identityBlock.configuratorClose = function(div) {
-    ble.stopObserving();
-    // Stop observing the list of visible devices.
-    identityBlock.watch.dispose();
-    identityBlock.watch = null;
+    // Stop looking for visible devices.
+    if (ble.scannning) {
+      identityBlock.toggleBtScan();
+    }
     identityBlock.activeBlock = null;
     ko.cleanNode(div);
   };
@@ -173,7 +218,7 @@ module.exports = function () {
     if (block !== null) {
       var targetName = block.controllerSettings.data.deviceName;
       var item = ko.observable({
-        name: botName,
+        name: botName + faBlueTooth,
         selected: ko.observable(botName === targetName)
       });
       identityBlock.devices.unshift(item);

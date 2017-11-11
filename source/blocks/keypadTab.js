@@ -30,10 +30,8 @@ module.exports = function () {
       object.inner =
           `<div id='keypadDiv' class='editorDiv'>
               <div id="numeric-display" class = "numeric-display-half svg-clear selectedDisplay" width='80px' height='80px' data-bind='text: keyPadValue'>
-
               </div>
               <div id="beats-display" class = "beats-display svg-clear" width='80px' height='80px' data-bind='text: beatsValue'>
-
               </div>
               <svg id="keypadSvg" class='area' width='225px' height='200px' xmlns='http://www.w3.org/2000/svg'></svg>
               <svg id="beatsSvg" class='area' width='225px' height='200px' xmlns='http://www.w3.org/2000/svg'></svg>
@@ -83,7 +81,6 @@ module.exports = function () {
         div.innerHTML =
             `<div id='keypadDiv' class='editorDiv'>
                 <div id="numeric-display" class = "numeric-display svg-clear" width='80px' height='80px' data-bind='text: keyPadValue'>
-
                 </div>
                 <svg id="keypadSvg" class='area' width='225px' height='200px' xmlns='http://www.w3.org/2000/svg'></svg>
             </div>`;

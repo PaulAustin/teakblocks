@@ -77,6 +77,9 @@ if (typeof ble !== 'undefined') {
   bleConnection.webBLE = null;
 }
 
+//
+bleConnection.scanUsesHostDialog = bleConnection.webBLE;
+
 var pbi = 0;
 
 // fake list of beacons for testing.
@@ -107,8 +110,8 @@ bleConnection.psedoScan = function () {
   }
 };
 
-bleConnection.stopObserving = function () {
-  bleConnection.scanning = true;
+bleConnection.stopScanning = function () {
+  bleConnection.scanning = false;
   if (bleConnection.appBLE) {
     bleConnection.appBLE.stopScan();
   }
@@ -177,7 +180,7 @@ bleConnection.cullList = function() {
   bleConnection.connectionChanged(bleConnection.devices);
 };
 
-bleConnection.startObserving = function () {
+bleConnection.startScanning = function () {
   bleConnection.scanning = true;
 
   if (bleConnection.webBLE) {
@@ -239,6 +242,7 @@ bleConnection.webBTConnect = function () {
       var rawName = characteristics[0].service.device.name;
       console.log('> characteristics:', rawName, characteristics);
       var botName = bleConnection.bleNameToBotName(rawName);
+      bleConnection.scanning = false;
       bleConnection.setConnectionStatus(botName, bleConnection.statusEnum.CONNECTED);
       // testing this in chrome has worked.
       // Could add validation code to confirm nothing has changes
@@ -246,6 +250,8 @@ bleConnection.webBTConnect = function () {
       // [1].uuid = 6e400003-... (rx)
     })
     .catch(function(error) {
+      bleConnection.scanning = false;
+      bleConnection.connectionChanged(bleConnection.devices);
       console.log('cancel or error :' + error);
     });
 };

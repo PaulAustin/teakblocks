@@ -65,7 +65,8 @@ module.exports = function () {
       save: '\uf0c7',
       gamepad: '\uf11b',
       debug: '\uf120',
-      camera: '\uf030'
+      camera: '\uf030',
+      bluetooth: '\uf294'
     };
 
     // Configuration components for the app and blocks
