@@ -40,6 +40,40 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+.width-third {
+  width: 31.6%;
+}
+.width-half {
+  width: 50.0%;
+}
+.width-whole {
+  width: 100.0%;
+}
+/* Buttons for the bock config edit operations run, copy, delete */
+.group-div {
+  padding: 5px;
+}
+button {
+  touch-action: none;
+  /* prevents any screen bounce on android */
+}
+textarea {
+  touch-action: none;
+  /* prevents any screen bounce on android */
+}
+button {
+  font-size: 20px;
+  border: 2px solid #81C784;
+  border-radius: 6px;
+  background-color: #81C784;
+  user-select: none;
+  outline: none;
+  padding: 1px;
+  height: 30px;
+}
+button:active {
+  background-color: #4CAF50;
+}
 label input {
   margin: 15
   cursor: pointer;
@@ -216,7 +250,7 @@ label input[type="checkbox"]:disabled + .label-text:before {
 }
 .block-identity-text {
   /* For name of connected device */
-  font-family: "helvetica";
+  font-family: 'FontAwesome', "helvetica";
   text-align: center;
   font-size: 20px;
   fill: #FFB74D;
@@ -463,27 +497,8 @@ body {
   stroke: #1E88E5;
   animation: selectionFadeIn 0.3s ease;
 }
-/* Buttons for the bock config edit operations run, copy, delete */
-.block-settings-editops {
-  padding: 2px;
-}
-.block-settings-editops button {
-  margin: 2px;
-  width: 31.6%;
-  font-size: 20px;
-  border: 2px solid #81C784;
-  border-radius: 6px;
-  background-color: #81C784;
-  user-select: none;
-  outline: none;
-}
-.block-settings-editops button:active {
-  background-color: #4CAF50;
-}
 /* Controller settings for the block. */
 #block-settings-custom {
-  /* Ensure rom on left and right */
-  margin: 0px 5px 0px 5px;
   /* All editors should be the same height */
   height: 175px;
 }
@@ -511,14 +526,6 @@ body {
   user-select: none;
   -webkit-user-select: none;
   /* Chrome/Safari */
-}
-button {
-  touch-action: none;
-  /* prevents any screen bounce on android */
-}
-textarea {
-  touch-action: none;
-  /* prevents any screen bounce on android */
 }
 body {
   margin: 0;
@@ -576,13 +583,11 @@ body {
   outline: none;
 }
 .list-box-shell {
-  font-family: "helvetica";
-  height: 97%;
+  font-family: 'FontAwesome', "helvetica";
+  height: 129px;
   border-radius: 6px;
-  margin-left: -1px;
-  margin-right: -1px;
+  margin-top: -5px;
   margin-bottom: 5px;
-  /* margin-right: -1px; */
   border: 3px solid #81C784;
   background-color: #C8E6C9;
   color: #33691E;
