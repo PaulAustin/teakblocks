@@ -48,6 +48,9 @@ var nordicUARTservice = {
     rxCharacteristic: '6e400003-b5a3-f393-e0a9-e50e24dcca9e'  // receive is from the phone's perspective
 };
 
+bleConnection.webBLERead = null;
+bleConnection.webBLEWrite = null;
+
 // Convert a string to an array of int (int8s).
 function stringToBuffer(str) {
   var array = new Uint8Array(str.length);
@@ -248,6 +251,8 @@ bleConnection.webBTConnect = function () {
       // Could add validation code to confirm nothing has changes
       // [0].uuid = 6e400002-... (tx)
       // [1].uuid = 6e400003-... (rx)
+      bleConnection.webBLERead = characteristics[1];
+      bleConnection.webBLEWrite = characteristics[0];
     })
     .catch(function(error) {
       bleConnection.scanning = false;
@@ -273,7 +278,7 @@ bleConnection.setConnectionStatus = function (name, status) {
   bleConnection.connectionChanged(bleConnection.devices);
 };
 
-// NOT uSED, TODO where should it be used.
+// NOT USED, TODO where should it be used.
 bleConnection.disconnect = function(mac) {
   // TODO need to resolve where MAC vs name is used.
   if (bleConnection.appBLE) {
@@ -339,9 +344,10 @@ bleConnection.write = function(name, message) {
   console.log('ble write', name, message);
   if (bleConnection.devices.hasOwnProperty(name)) {
     var mac = bleConnection.devices[name].mac;
+    var buffer = stringToBuffer(message);
 
     if (bleConnection.appBLE) {
-      var buffer = stringToBuffer(message);
+      buffer = stringToBuffer(message);
 
       // Break the message into smaller sections.
       bleConnection.appBLE.write(mac,
@@ -350,6 +356,15 @@ bleConnection.write = function(name, message) {
         buffer,
         bleConnection.onWriteOK,
         bleConnection.onWriteFail);
+    } else if (bleConnection.webBLE) {
+
+      if (bleConnection.webBLEWrite) {
+        console.log('web ble write', bleConnection.webBLEWrite.writeValue);
+        bleConnection.webBLEWrite.writeValue(buffer);
+        //var bleConnection.webBLERead = null;
+      }
+      //var bleConnection.webBLEWrite = null;
+
     }
   }
 };

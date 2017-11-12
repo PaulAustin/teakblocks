@@ -218,7 +218,7 @@ module.exports = function () {
     if (block !== null) {
       var targetName = block.controllerSettings.data.deviceName;
       var item = ko.observable({
-        name: botName + faBlueTooth,
+        name: botName, //+ faBlueTooth,
         selected: ko.observable(botName === targetName)
       });
       identityBlock.devices.unshift(item);
