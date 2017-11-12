@@ -73,13 +73,17 @@ module.exports = function(){
   };
 
   driveMode.findConnectedDevice = function() {
-    var id = null;
+    var botName = null;
     app.tbe.forEachDiagramBlock( function(block){
-      if(block.name === 'identity' && block.statusIs(3)){
-        id = block.controllerSettings.data.deviceName;
+      if (block.name === 'identity'){
+        botName = block.controllerSettings.data.deviceName;
+        var status = ble.connectionStatus(botName);
+        if (status !== ble.statusEnum.CONNECTED) {
+          botName = null;
+        }
       }
     });
-    return id;
+    return botName;
   };
 
   driveMode.sliderInteract = function sliderInteract(eltClass) {
