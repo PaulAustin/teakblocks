@@ -247,12 +247,19 @@ bleConnection.webBTConnect = function () {
       var botName = bleConnection.bleNameToBotName(rawName);
       bleConnection.scanning = false;
       bleConnection.setConnectionStatus(botName, bleConnection.statusEnum.CONNECTED);
+
       // testing this in chrome has worked.
       // Could add validation code to confirm nothing has changes
       // [0].uuid = 6e400002-... (tx)
       // [1].uuid = 6e400003-... (rx)
-      bleConnection.webBLERead = characteristics[1];
       bleConnection.webBLEWrite = characteristics[0];
+      bleConnection.webBLERead = characteristics[1];
+      bleConnection.webBLERead.startNotifications()
+      .then(function() {
+          console.log ('adding event listener');
+          bleConnection.webBLERead.addEventListener('characteristicvaluechanged',
+          bleConnection.onValChange);
+      });
     })
     .catch(function(error) {
       bleConnection.scanning = false;
@@ -336,6 +343,12 @@ bleConnection.onData = function(name, data) {
   }
 };
 
+bleConnection.onValChange = function (event) {
+  let value = event.target.value;
+  var str = bufferToString(value.buffer);
+  console.log('BLE message recieved', str);
+};
+
 bleConnection.onError = function(reason) {
   console.log('Error2:', reason);
 };
@@ -360,11 +373,15 @@ bleConnection.write = function(name, message) {
 
       if (bleConnection.webBLEWrite) {
         console.log('web ble write', bleConnection.webBLEWrite.writeValue);
-        bleConnection.webBLEWrite.writeValue(buffer);
-        //var bleConnection.webBLERead = null;
+        bleConnection.webBLEWrite.writeValue(buffer)
+        .then(function() {
+          console.log('write complete');
+        })
+        .catch(function(error) {
+          console.log('write failed', error);
+        });
       }
       //var bleConnection.webBLEWrite = null;
-
     }
   }
 };
