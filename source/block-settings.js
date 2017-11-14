@@ -25,6 +25,8 @@ module.exports = function () {
   var tbe = require('./teakblocks.js');
   var conductor = require('./conductor.js');
 
+  var moveUp = 0;
+
   // Bindable properties
   var blockSettings = {
     visible: ko.observable(true),
@@ -94,12 +96,25 @@ module.exports = function () {
             }
           }
           var clone = tbe.replicateChunk(startBlock, endBlock);
-
           // move it to some open space
           // TODO use more logic to find a good place to put the block.
-          var dy = -140;
-          if (clone.top < 140) {
-            dy = 140;
+          var dy = 0;
+          if(moveUp === 0){
+            dy = -120;
+            moveUp = dy;
+          } else if(moveUp < 0){
+            dy = -40 + moveUp;
+            moveUp = dy;
+          } else if(moveUp > 0){
+            dy = 40 + moveUp;
+            moveUp = dy;
+          }
+          if (clone.top < -dy) {
+            dy = 120;
+            moveUp = dy;
+          } else if(clone.bottom > window.innerHeight - moveUp - 80){
+            dy = 120;
+            moveUp = dy;
           }
           tbe.animateMove(clone, clone.last, 0, dy, 20);
         }
