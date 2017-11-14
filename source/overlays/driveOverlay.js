@@ -39,17 +39,18 @@ module.exports = function(){
   };
 
   driveMode.buildSlider = function() {
+    // TODO need to upate value as they change
     app.overlayDom.innerHTML = `
     <div id='driverBackground' class='fullScreenSlideIn'>
       <div class='slider sliderRight' data-value='0'></div>
       <div class='slider sliderLeft' data-value='0'></div>
       <div id='drive-diagnostics' class='drive-diagnostics'>
-        <h1 class='connected-brick svg-clear'>Connected Bot: -?-</h1>
+        <!--h1 class='connected-brick svg-clear'>Connected Bot: -?-</h1>
         <h1 class="drive-accelerometer svg-clear">Accelerometer: 100</h1>
         <h1 class="drive-compass svg-clear">Compass: 100</h1>
         <h1 class="drive-temperature svg-clear">Temperature: 100</h1>
         <h1 class="drive-encoderL svg-clear">Left Encoder: 100</h1>
-        <h1 class="drive-encoderR svg-clear">Right Encoder: 100</h1>
+        <h1 class="drive-encoderR svg-clear">Right Encoder: 100</h1-->
       </div>
       <div id='exitGroup' class ='exitGroup'>
         <div id='driver-exit' class ='driver-exit'>
@@ -68,7 +69,6 @@ module.exports = function(){
     exitButton.onclick = driveMode.exit;
 
     // TODO connect the stop button
-
     driveMode.sliderInteract('slider');
   };
 
@@ -133,6 +133,7 @@ module.exports = function(){
 
   driveMode.updateSlider = function() {
     var id = driveMode.activeDivice;
+    console.log('updTE', id);
     //var changed = driveMode.displayLeft !== driveMode.pastLeft || driveMode.displayRight !== driveMode.pastRight;
     if (id !== null && id !== '-?-') {
       if (driveMode.displayLeft !== undefined && driveMode.displayLeft !== driveMode.pastLeft) {
