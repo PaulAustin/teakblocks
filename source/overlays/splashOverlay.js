@@ -35,11 +35,12 @@ module.exports = function(){
       <div id='splashOverlay'>
       <p class='splashTitle'>Teak blocks<p>
       <p class='splashBody'>A block sequencing tool for simple programs.<p>
+      <p class='splashBody'>Click to dismiss.<p>
       <br>
       <p class='splashBody'>This site uses cookies and local storage to maintain your settings.<p>
       <div>
         <label class='splashBody'>
-        <input id='noLaunchSplash' type='checkbox'>
+        <input checked='true' id='noLaunchSplash' type='checkbox'>
         <span class='label-text'> Show this box at launch. </span>
         </label>
       <div>
@@ -57,14 +58,22 @@ module.exports = function(){
     return (value === null) || (value === true);
   };
 
-  splashOverlay.exit = function () {
-    // Record that the box has been shown.
-    app.storage.setItem('teakBlockShowAboutBox', false);
+  splashOverlay.exit = function (event) {
+    // Get the checkbox and its label text
+    var labelText = document.getElementsByClassName('label-text');
+    var checkbox = document.getElementById('noLaunchSplash');
 
     // TODO should be done by application class.
     var overlay = document.getElementById('overlayFrame');
-    if (overlay !== null) {
+
+    // Check if the spot clicked on is not the checkbox or its label
+    if (overlay !== null && event.target !== checkbox && event.target !== labelText[0]) {
       overlay.className = 'fullScreenSlideOut';
+
+      // If the checkbox is checked, should store into local memory
+      if(!checkbox.checked){
+        app.storage.setItem('teakBlockShowAboutBox', false);
+      }
     }
   };
 
