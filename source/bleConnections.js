@@ -176,6 +176,13 @@ bleConnection.cullList = function() {
     // iterating through a an object.
     if ((botInfo.status === bleConnection.statusEnum.BEACON) && (now - botInfo.ts) > 4000) {
       delete bleConnection.devices[botName];
+    } else if (botInfo.status === bleConnection.statusEnum.NOT_THERE) {
+      console.log('culling missing bot');
+      delete bleConnection.devices[botName];
+    } else if (botInfo.status === bleConnection.statusEnum.CONNECTING) {
+      // If it is stuck in connecting then drop it.
+      console.log('culling hung connection');
+      delete bleConnection.devices[botName];
     }
   }
 
@@ -228,7 +235,7 @@ bleConnection.webBTConnect = function () {
         autoSelect: true        // indicate that the app should now connect.
       };
       bleConnection.beaconReceived(beaconInfo);
-      device.addEventListener('gattserverdisconnected', bleConnection.onDisconnected);
+      device.addEventListener('gattserverdisconnected', bleConnection.onDisconnecWebBLE);
       return device.gatt.connect();
     })
     .then(function(server) {
@@ -269,8 +276,18 @@ bleConnection.webBTConnect = function () {
     });
 };
 
-bleConnection.onDisconnected = function(event) {
-  console.log('disconnected ', event);
+bleConnection.onDisconnectAppBLE = function(info) {
+  console.log('onDisconnectAppBLE:', info);
+  var botName = bleConnection.bleNameToBotName(info.name);
+  bleConnection.setConnectionStatus(botName, bleConnection.statusEnum.NOT_THERE);
+  bleConnection.cullList();
+};
+
+bleConnection.onDisconnecWebBLE = function(event) {
+  console.log('onDisconnecWebBLE:', event.target.name);
+  var botName = bleConnection.bleNameToBotName(event.target.name);
+  bleConnection.setConnectionStatus(botName, bleConnection.statusEnum.NOT_THERE);
+  bleConnection.cullList();
 };
 
 // Determine the status of a named connection.
@@ -285,7 +302,12 @@ bleConnection.connectionStatus = function (name) {
 // Change a devices status and trigger observers
 bleConnection.setConnectionStatus = function (name, status) {
   //
-  bleConnection.devices[name].status = status;
+  console.log('SCS', bleConnection.devices);
+  var dev = bleConnection.devices[name];
+  if (dev !== null) {
+    dev.status = status;
+  }
+  // bleConnection.devices[name].status = status;
   // Trigger notifications.
   bleConnection.connectionChanged(bleConnection.devices);
 };
@@ -305,7 +327,7 @@ bleConnection.connect = function(name) {
     if (bleConnection.appBLE) {
       bleConnection.setConnectionStatus(name, bleConnection.statusEnum.CONNECTING);
       bleConnection.appBLE.connect(mac, bleConnection.onConnect,
-        bleConnection.onDisconnect, bleConnection.onError);
+        bleConnection.onDisconnectAppBLE, bleConnection.onError);
     } else if (bleConnection.webBLE) {
       // Should already be connected.
       // TODO, no the connection can be postponed until needed (perhaps)
@@ -329,10 +351,6 @@ bleConnection.onConnect = function(info) {
   if (dev !== null) {
     bleConnection.setConnectionStatus(dev.name, bleConnection.statusEnum.CONNECTED);
   }
-};
-
-bleConnection.onDisconnect = function(info) {
-  console.log('On Disconnect:' + info.name);
 };
 
 bleConnection.onData = function(name, data) {
@@ -359,7 +377,6 @@ bleConnection.onError = function(reason) {
 };
 
 bleConnection.write = function(name, message) {
-  console.log('ble write', name, message);
   if (bleConnection.devices.hasOwnProperty(name)) {
     var mac = bleConnection.devices[name].mac;
     var buffer = stringToBuffer(message);
@@ -377,7 +394,6 @@ bleConnection.write = function(name, message) {
     } else if (bleConnection.webBLE) {
 
       if (bleConnection.webBLEWrite) {
-        console.log('web ble write', bleConnection.webBLEWrite.writeValue);
         bleConnection.webBLEWrite.writeValue(buffer)
         .then(function() {
           console.log('write complete');

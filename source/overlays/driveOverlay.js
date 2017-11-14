@@ -148,7 +148,7 @@ module.exports = function(){
       driveMode.pastRight = driveMode.displayRight;
       driveMode.pastLeft = driveMode.displayLeft;
     }
-
+/*
     var accel = document.getElementsByClassName("drive-accelerometer")[0];
     accel.innerHTML = "Accelerometer:" + ble.accelerometer;
 
@@ -157,7 +157,7 @@ module.exports = function(){
 
     var temp = document.getElementsByClassName("drive-temperature")[0];
     temp.innerHTML = "Temperature:" + ble.temp;
-
+*/
     driveMode.timer = setTimeout( function() {
       driveMode.updateSlider();
     }

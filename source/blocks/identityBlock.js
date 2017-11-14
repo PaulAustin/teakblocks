@@ -24,7 +24,9 @@ module.exports = function () {
   var svgb = require('./../svgbuilder.js');
   var ble = require('./../bleConnections.js');
   var ko = require('knockout');
-  var faBlueTooth = '\uf294';
+  // TODO the link type could show up on the icon
+  // to indicate how it is connected
+  // var faBlueTooth = '\uf294';
   var pb = svgb.pathBuilder;
   var identityBlock = {};
 
@@ -188,11 +190,15 @@ module.exports = function () {
 
     // Add identity name
     var botName = block.controllerSettings.data.deviceName;
+    var status = ble.connectionStatus(botName);
+    if (status === ble.statusEnum.NOT_THERE) {
+      botName = '-?-';
+      block.controllerSettings.data.deviceName = botName;
+    }
     var text = svgb.createText('block-identity-text svg-clear', 40, 50, botName);
     text.setAttribute('text-anchor', 'middle');
     root.appendChild(text);
 
-    var status = ble.connectionStatus(botName);
     if (botName !== '-?-') {
       var statusClass = 0;
       // Connection status dot
