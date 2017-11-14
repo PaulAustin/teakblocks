@@ -47,9 +47,11 @@ tbSelecton.init = function(tbe) {
       },
       onend: function() {
         // Remove the selection rectangle
-        tbe.svg.removeChild(tbSelecton.selectionSvg);
-        tbSelecton.selectionSvg = null;
-        tbSelecton.currentChain = null;
+        if(tbSelecton.selectionSvg !== null){
+          tbe.svg.removeChild(tbSelecton.selectionSvg);
+          tbSelecton.selectionSvg = null;
+          tbSelecton.currentChain = null;
+        }
       },
       onmove: function (event) {
         // Determine the top left and the width height based on the pointer
