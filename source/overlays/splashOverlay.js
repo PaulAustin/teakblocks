@@ -36,7 +36,9 @@ module.exports = function(){
       <p class='splashTitle'>Teak blocks<p>
       <p class='splashBody'>A block sequencing tool for simple programs.<p>
       <p class='splashBody'>Click to dismiss.<p>
-      <br>
+      <div>
+        <button id='clearAllBlocksButton' type='button'>Start clean!</button>
+      </div>
       <p class='splashBody'>This site uses cookies and local storage to maintain your settings.<p>
       <div>
         <label class='splashBody'>
@@ -51,6 +53,10 @@ module.exports = function(){
     var exitButton = document.getElementById('splashOverlay');
     // TODO add exit button.
     exitButton.onclick = splashOverlay.exit;
+
+    // Get the clear button and clear the blocks if it is pressed.
+    var clearAllButton = document.getElementById('clearAllBlocksButton');
+    clearAllButton.onclick = app.tbe.clearAllBlocks;
   };
 
   splashOverlay.showLaunchAboutBox = function() {
