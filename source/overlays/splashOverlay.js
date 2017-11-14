@@ -35,19 +35,20 @@ module.exports = function(){
       <div id='splashOverlay'>
       <p class='splashTitle'>Teak blocks<p>
       <p class='splashBody'>A block sequencing tool for simple programs.<p>
-      <p class='splashBody'>Click to dismiss.<p>
-      <div>
+      <p class='splashBody'> This site uses cookies and local storage to maintain your settings.<p>
+      <p class='splashBody'> © 2017 Paul Austin and Sidharth Srinivasan. All rights reserved.<p>
+      <br>
+      <div class='margin:20'>
         <button id='clearAllBlocksButton' type='button'>Start clean!</button>
+        <button id='clearAllBlocksButton' type='button'>Close</button>
       </div>
-      <p class='splashBody'>This site uses cookies and local storage to maintain your settings.<p>
+      <br>
       <div>
         <label class='splashBody'>
         <input checked='true' id='noLaunchSplash' type='checkbox'>
         <span class='label-text'> Show this box at launch. </span>
         </label>
       <div>
-      <br>
-      <p class='splashBody'>© 2017 Paul Austin and Sidharth Srinivasan. All rights reserved.<p>
       </div>
     </div>`;
     var exitButton = document.getElementById('splashOverlay');
