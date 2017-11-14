@@ -212,7 +212,7 @@ bleConnection.webBTConnect = function () {
         {services: ['generic_attribute']},
         {namePrefix: 'BBC micro:bit'}
       ],
-      optionalServices: [nordicUARTservice.serviceUUID]
+      optionalServices: [nordicUARTservice.serviceUUID, 'link_loss']
   };
 
   // requestDevice will trigger a browse dialog once back to the browser loop.
@@ -228,20 +228,21 @@ bleConnection.webBTConnect = function () {
         autoSelect: true        // indicate that the app should now connect.
       };
       bleConnection.beaconReceived(beaconInfo);
+      device.addEventListener('gattserverdisconnected', bleConnection.onDisconnected);
       return device.gatt.connect();
     })
     .then(function(server) {
       console.log('> primary service:', server);
       return server.getPrimaryService(nordicUARTservice.serviceUUID);
     })
-    .then (function(primaryService) {
+    .then(function(primaryService) {
       console.log('> primary Service:', primaryService);
       // Calling getCharacteristics with no parameters
       // should return the one associated with the primary service
       // ( the tx and rx service)
       return primaryService.getCharacteristics();
     })
-    .then (function(characteristics) {
+    .then(function(characteristics) {
       var rawName = characteristics[0].service.device.name;
       console.log('> characteristics:', rawName, characteristics);
       var botName = bleConnection.bleNameToBotName(rawName);
@@ -266,6 +267,10 @@ bleConnection.webBTConnect = function () {
       bleConnection.connectionChanged(bleConnection.devices);
       console.log('cancel or error :' + error);
     });
+};
+
+bleConnection.onDisconnected = function(event) {
+  console.log('disconnected ', event);
 };
 
 // Determine the status of a named connection.
