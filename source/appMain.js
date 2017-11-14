@@ -180,7 +180,7 @@ module.exports = function () {
      {'alignment': 'M', 'position': 1, 'label': fastr.gamepad, 'command': 'driveOverlay'},
      {'alignment': 'M', 'position': 2, 'label': fastr.debug, 'command': 'debugOverlay'},
      {'alignment': 'M', 'position': 3, 'label': fastr.folder, 'command': 'pages'},
-     {'alignment': 'M', 'position': 4, 'label': fastr.camera, 'command': 'docSnapShot'},
+  //   {'alignment': 'M', 'position': 4, 'label': fastr.camera, 'command': 'docSnapShot'},
      {'alignment': 'M', 'position': 5, 'label': fastr.edit, 'command': 'edit'}
     // {'alignment': 'R', 'position': 2, 'label': fastr.redo, 'command': 'redo'},
     // {'alignment': 'R', 'position': 1, 'label': fastr.undo, 'command': 'undo'}
