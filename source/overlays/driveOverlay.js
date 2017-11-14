@@ -57,11 +57,11 @@ module.exports = function(){
           <i class='fa fa-times driver-x svg-clear' aria-hidden='true'></i>
         </div>
       </div>
-      <div id='stopGroup' class='stopGroup'>
+      <!--div id='stopGroup' class='stopGroup'>
         <div id='driver-stop' class='driver-stop' text-anchor='middle'>
           <i class='fa fa-stop driver-stop-icon svg-clear' aria-hidden='true'></i>
         </div>
-      </div>
+      </div-->
     </div>
     `;
 
