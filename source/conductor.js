@@ -23,7 +23,7 @@ SOFTWARE.
 module.exports = function () {
   var conductor = {};
 
-  conductor.ble = require('./bleConnections.js');
+  conductor.cxn = require('./cxn.js');
   conductor.tbe = null;
   conductor.hbTimer = 0;
   conductor.runningBlocks = [];
@@ -46,7 +46,7 @@ module.exports = function () {
     console.log('attached to ', tbe);
     conductor.tbe = tbe;
     conductor.linkHeartBeat();
-    conductor.ble.connectionChanged.subscribe(conductor.updateIndentiyBlocks);
+    conductor.cxn.connectionChanged.subscribe(conductor.updateIndentiyBlocks);
   };
 
   // If there is a change in connections update teh indentity blocks
@@ -57,10 +57,10 @@ module.exports = function () {
     blockChainIterator(function(chainStart) {
       if (chainStart.name === 'identity') {
         var botName = chainStart.controllerSettings.data.deviceName;
-        var status = conductor.ble.connectionStatus(botName);
-        if (status === conductor.ble.statusEnum.BEACON) {
+        var status = conductor.cxn.connectionStatus(botName);
+        if (status === conductor.cxn.statusEnum.BEACON) {
           // Try to connect ot it.
-          conductor.ble.connect(botName);
+          conductor.cxn.connect(botName);
         }
         chainStart.updateSvg();
       }
@@ -163,8 +163,8 @@ module.exports = function () {
       // Ignore chains that don't start with an identity block.
       if (chainStart.name === 'identity') {
         botName = chainStart.controllerSettings.data.deviceName;
-        conductor.ble.write(botName, message);
-        conductor.ble.write(botName, message2);
+        conductor.cxn.write(botName, message);
+        conductor.cxn.write(botName, message2);
       }
     });
     conductor.count = null;
@@ -195,7 +195,7 @@ module.exports = function () {
       } else if (block.name === 'wait') {
         message = '';
       }
-      conductor.ble.write(botName, message);
+      conductor.cxn.write(botName, message);
     }
     // Single step, find target and head of chain and run the single block.
   };

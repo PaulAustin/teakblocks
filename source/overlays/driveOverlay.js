@@ -27,7 +27,7 @@ module.exports = function(){
   var interact = require('interact.js');
   var conductor = require('./../conductor.js');
   var app = require('./../appMain.js');
-  var ble = require('./../bleConnections.js');
+  var cxn = require('./../cxn.js');
 
   driveMode.pastRight = 0;
   driveMode.pastLeft = 0;
@@ -77,8 +77,8 @@ module.exports = function(){
     app.tbe.forEachDiagramBlock( function(block){
       if (block.name === 'identity'){
         botName = block.controllerSettings.data.deviceName;
-        var status = ble.connectionStatus(botName);
-        if (status !== ble.statusEnum.CONNECTED) {
+        var status = cxn.connectionStatus(botName);
+        if (status !== cxn.statusEnum.CONNECTED) {
           botName = null;
         }
       }
@@ -138,11 +138,11 @@ module.exports = function(){
     if (id !== null && id !== '-?-') {
       if (driveMode.displayLeft !== undefined && driveMode.displayLeft !== driveMode.pastLeft) {
         var message2 = '(m:1 d:' + driveMode.displayLeft + ');';
-        conductor.ble.write(id, message2);
+        conductor.cxn.write(id, message2);
       }
       if (driveMode.displayRight !== undefined && driveMode.displayRight !== driveMode.pastRight) {
         var message1 = '(m:2 d:' + driveMode.displayRight + ');';
-        conductor.ble.write(id, message1);
+        conductor.cxn.write(id, message1);
       }
 
       driveMode.pastRight = driveMode.displayRight;
@@ -150,13 +150,13 @@ module.exports = function(){
     }
 /*
     var accel = document.getElementsByClassName("drive-accelerometer")[0];
-    accel.innerHTML = "Accelerometer:" + ble.accelerometer;
+    accel.innerHTML = "Accelerometer:" + cxn.accelerometer;
 
     var compass = document.getElementsByClassName("drive-compass")[0];
-    compass.innerHTML = "Compass:" + ble.compass;
+    compass.innerHTML = "Compass:" + cxn.compass;
 
     var temp = document.getElementsByClassName("drive-temperature")[0];
-    temp.innerHTML = "Temperature:" + ble.temp;
+    temp.innerHTML = "Temperature:" + cxn.temp;
 */
     driveMode.timer = setTimeout( function() {
       driveMode.updateSlider();

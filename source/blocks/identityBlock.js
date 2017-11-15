@@ -22,7 +22,7 @@ SOFTWARE.
 
 module.exports = function () {
   var svgb = require('./../svgbuilder.js');
-  var ble = require('./../bleConnections.js');
+  var cxn = require('./../cxn.js');
   var ko = require('knockout');
   // TODO the link type could show up on the icon
   // to indicate how it is connected
@@ -109,7 +109,7 @@ module.exports = function () {
     identityBlock.scanButton = document.getElementById('bt-scan');
     identityBlock.scanButton.onclick = identityBlock.toggleBtScan;
 
-    if (!ble.scanUsesHostDialog && !ble.scannning) {
+    if (!cxn.scanUsesHostDialog && !cxn.scannning) {
       // If scanning is unobtrusive, start it when the form is shown.
       identityBlock.toggleBtScan();
     } else {
@@ -133,19 +133,19 @@ module.exports = function () {
   };
 
   identityBlock.toggleBtScan = function() {
-    if (ble.scannning) {
+    if (cxn.scannning) {
       // Turn off back scanning
-      ble.stopScanning();
+      cxn.stopScanning();
       identityBlock.watch.dispose();
       identityBlock.watch = null;
     } else {
       // Turn on scanning.
       // Set up a callback to get notified when when devices show up.
-      identityBlock.refreshList(ble.devices);
-      identityBlock.watch = ble.connectionChanged.subscribe(identityBlock.refreshList);
-      ble.startScanning();
+      identityBlock.refreshList(cxn.devices);
+      identityBlock.watch = cxn.connectionChanged.subscribe(identityBlock.refreshList);
+      cxn.startScanning();
     }
-    identityBlock.configBtnScan(ble.scanning);
+    identityBlock.configBtnScan(cxn.scanning);
   };
 
   // Update the list of devices in the configuration box
@@ -159,7 +159,7 @@ module.exports = function () {
     }
 
     // If scanning has stopped update the button.
-    if (!ble.scanning) {
+    if (!cxn.scanning) {
       identityBlock.configBtnScan(false);
     }
   };
@@ -167,7 +167,7 @@ module.exports = function () {
   // Close the identity blocks and clean up hooks related to it.
   identityBlock.configuratorClose = function(div) {
     // Stop looking for visible devices.
-    if (ble.scannning) {
+    if (cxn.scannning) {
       identityBlock.toggleBtScan();
     }
     identityBlock.activeBlock = null;
@@ -190,8 +190,8 @@ module.exports = function () {
 
     // Add identity name
     var botName = block.controllerSettings.data.deviceName;
-    var status = ble.connectionStatus(botName);
-    if (status === ble.statusEnum.NOT_THERE) {
+    var status = cxn.connectionStatus(botName);
+    if (status === cxn.statusEnum.NOT_THERE) {
       botName = '-?-';
       block.controllerSettings.data.deviceName = botName;
     }
@@ -202,13 +202,13 @@ module.exports = function () {
     if (botName !== '-?-') {
       var statusClass = 0;
       // Connection status dot
-      if (status === ble.statusEnum.NOT_THERE) {
+      if (status === cxn.statusEnum.NOT_THERE) {
         statusClass = 'block-bot-not-found';
-      } else if (status === ble.statusEnum.BEACON) {
+      } else if (status === cxn.statusEnum.BEACON) {
         statusClass = 'block-bot-visible';
-      } else if (status === ble.statusEnum.CONNECTING) {
+      } else if (status === cxn.statusEnum.CONNECTING) {
         statusClass = 'block-bot-connecting';
-      } else if (status === ble.statusEnum.CONNECTED) {
+      } else if (status === cxn.statusEnum.CONNECTED) {
         statusClass = 'block-bot-connected';
       } else {
         // Connected but with protocol errors. Might be wrong FW

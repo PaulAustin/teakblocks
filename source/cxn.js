@@ -24,16 +24,16 @@ SOFTWARE.
 module.exports = function factory(){
   var ko = require('knockout');
 
-  var bleConnection = {};
-  bleConnection.connectionChanged = ko.observable({});
-  bleConnection.connectionChanged.extend({ notify: 'always' });
-  bleConnection.messages = [];
-  bleConnection.accelerometer = 0;
-  bleConnection.compass = 0;
-  bleConnection.temp = 0;
+  var cxn = {};
+  cxn.connectionChanged = ko.observable({});
+  cxn.connectionChanged.extend({ notify: 'always' });
+  cxn.messages = [];
+  cxn.accelerometer = 0;
+  cxn.compass = 0;
+  cxn.temp = 0;
 
 // State enumeration for conections.
-bleConnection.statusEnum = {
+cxn.statusEnum = {
   NOT_THERE : 0,
   BEACON : 1,
   CONNECTING : 2,
@@ -48,8 +48,8 @@ var nordicUARTservice = {
     rxCharacteristic: '6e400003-b5a3-f393-e0a9-e50e24dcca9e'  // receive is from the phone's perspective
 };
 
-bleConnection.webBLERead = null;
-bleConnection.webBLEWrite = null;
+cxn.webBLERead = null;
+cxn.webBLEWrite = null;
 
 // Convert a string to an array of int (int8s).
 function stringToBuffer(str) {
@@ -68,20 +68,20 @@ function bufferToString(buffer) {
 // Sniff out which BLE API to use. The order of testing is important
 if (typeof ble !== 'undefined') {
   // First, look for a cordova based one. Its based on a global
-  bleConnection.appBLE = ble; // eslint-disable-line no-undef
-  bleConnection.webBLE = null;
+  cxn.appBLE = ble; // eslint-disable-line no-undef
+  cxn.webBLE = null;
 } else if (navigator.bluetooth !== null && navigator.bluetooth !== undefined) {
   // Second, see if ther appears to be a web bluetooth implmentation.
-  bleConnection.appBLE = null;
-  bleConnection.webBLE = navigator.bluetooth;
+  cxn.appBLE = null;
+  cxn.webBLE = navigator.bluetooth;
 } else {
   // None found.
-  bleConnection.appBLE = null;
-  bleConnection.webBLE = null;
+  cxn.appBLE = null;
+  cxn.webBLE = null;
 }
 
 //
-bleConnection.scanUsesHostDialog = bleConnection.webBLE;
+cxn.scanUsesHostDialog = cxn.webBLE;
 
 var pbi = 0;
 
@@ -99,30 +99,30 @@ var pseudoBeacons = [
  {name:'BBC micro:bit [zorgav]', mac:'000000FF', delay:500}
 ];
 
-bleConnection.devices = {};
-bleConnection.scanning = false;
-bleConnection.psedoScan = function () {
+cxn.devices = {};
+cxn.scanning = false;
+cxn.psedoScan = function () {
   if (pbi >= pseudoBeacons.length) {
     pbi = 0;
   }
   var beaconInfo = pseudoBeacons[pbi];
-  bleConnection.beaconReceived(beaconInfo);
+  cxn.beaconReceived(beaconInfo);
   pbi += 1;
-  if (bleConnection.scanning) {
-    setTimeout(function() { bleConnection.psedoScan(); }, beaconInfo.delay);
+  if (cxn.scanning) {
+    setTimeout(function() { cxn.psedoScan(); }, beaconInfo.delay);
   }
 };
 
-bleConnection.stopScanning = function () {
-  bleConnection.scanning = false;
-  if (bleConnection.appBLE) {
-    bleConnection.appBLE.stopScan();
+cxn.stopScanning = function () {
+  cxn.scanning = false;
+  if (cxn.appBLE) {
+    cxn.appBLE.stopScan();
   }
 };
 
-bleConnection.findDeviceByMac = function(mac) {
-  for (var deviceName in bleConnection.devices) {
-    var device = bleConnection.devices[deviceName];
+cxn.findDeviceByMac = function(mac) {
+  for (var deviceName in cxn.devices) {
+    var device = cxn.devices[deviceName];
     if (mac === device.mac) {
       return device;
     }
@@ -131,7 +131,7 @@ bleConnection.findDeviceByMac = function(mac) {
 };
 
 // strip down the name to the core 5 character name
-bleConnection.bleNameToBotName = function(rawName) {
+cxn.bleNameToBotName = function(rawName) {
   if (rawName.startsWith('BBC micro:bit [')) {
     return rawName.split('[', 2)[1].split(']',1)[0];
   } else {
@@ -140,9 +140,9 @@ bleConnection.bleNameToBotName = function(rawName) {
 };
 
 // A Device has been seen.
-bleConnection.beaconReceived = function(beaconInfo) {
+cxn.beaconReceived = function(beaconInfo) {
   if (beaconInfo.name !== undefined) {
-    var botName = bleConnection.bleNameToBotName(beaconInfo.name);
+    var botName = cxn.bleNameToBotName(beaconInfo.name);
 
     // If its a legit name make sure it is in the list or devices.
     if (botName !== null) {
@@ -154,7 +154,7 @@ bleConnection.beaconReceived = function(beaconInfo) {
            mac: beaconInfo.id,
           };
           // Now set the status and trigger observers
-          bleConnection.setConnectionStatus(botName, bleConnection.statusEnum.BEACON);
+          cxn.setConnectionStatus(botName, cxn.statusEnum.BEACON);
       }
 
       // Update last-seen time stamp, signal strength
@@ -167,52 +167,52 @@ bleConnection.beaconReceived = function(beaconInfo) {
   }
 };
 
-bleConnection.cullList = function() {
+cxn.cullList = function() {
   var now = Date.now();
-  for (var botName in bleConnection.devices) {
-    var botInfo = bleConnection.devices[botName];
+  for (var botName in cxn.devices) {
+    var botInfo = cxn.devices[botName];
 
     // Per ECMAScript 5.1 standard section 12.6.4 it is OK to delete while
     // iterating through a an object.
-    if ((botInfo.status === bleConnection.statusEnum.BEACON) && (now - botInfo.ts) > 4000) {
-      delete bleConnection.devices[botName];
-    } else if (botInfo.status === bleConnection.statusEnum.NOT_THERE) {
+    if ((botInfo.status === cxn.statusEnum.BEACON) && (now - botInfo.ts) > 4000) {
+      delete cxn.devices[botName];
+    } else if (botInfo.status === cxn.statusEnum.NOT_THERE) {
       console.log('culling missing bot');
-      delete bleConnection.devices[botName];
-    } else if (botInfo.status === bleConnection.statusEnum.CONNECTING) {
+      delete cxn.devices[botName];
+    } else if (botInfo.status === cxn.statusEnum.CONNECTING) {
       // If it is stuck in connecting then drop it.
       console.log('culling hung connection');
-      delete bleConnection.devices[botName];
+      delete cxn.devices[botName];
     }
   }
 
   // Let observers know something about the list of devices has changed.
-  bleConnection.connectionChanged(bleConnection.devices);
+  cxn.connectionChanged(cxn.devices);
 };
 
-bleConnection.startScanning = function () {
-  bleConnection.scanning = true;
+cxn.startScanning = function () {
+  cxn.scanning = true;
 
-  if (bleConnection.webBLE) {
-    bleConnection.webBTConnect();
-  } else if (bleConnection.appBLE) {
-    bleConnection.appBLE.startScanWithOptions([], { reportDuplicates: true },
+  if (cxn.webBLE) {
+    cxn.webBTConnect();
+  } else if (cxn.appBLE) {
+    cxn.appBLE.startScanWithOptions([], { reportDuplicates: true },
       function(device) {
-        bleConnection.beaconReceived(device);
+        cxn.beaconReceived(device);
       },
       function(errorCode) {
         console.log('error1:' + errorCode);
       });
   } else {  // bleAPI is not null looks like cordova model.
     console.log ('simulated bluetooth scan');
-    bleConnection.psedoScan();
+    cxn.psedoScan();
   }
 };
 
 // For Web bluetooth use the promises style of chaining callbacks.
 // It looks a bit like one function, but it is a chain of 'then'
 // call backs
-bleConnection.webBTConnect = function () {
+cxn.webBTConnect = function () {
 
   let options = {
       filters: [
@@ -234,8 +234,8 @@ bleConnection.webBTConnect = function () {
         rssi: -1,               // signal strength is not shared with JS code
         autoSelect: true        // indicate that the app should now connect.
       };
-      bleConnection.beaconReceived(beaconInfo);
-      device.addEventListener('gattserverdisconnected', bleConnection.onDisconnecWebBLE);
+      cxn.beaconReceived(beaconInfo);
+      device.addEventListener('gattserverdisconnected', cxn.onDisconnecWebBLE);
       return device.gatt.connect();
     })
     .then(function(server) {
@@ -252,149 +252,149 @@ bleConnection.webBTConnect = function () {
     .then(function(characteristics) {
       var rawName = characteristics[0].service.device.name;
       console.log('> characteristics:', rawName, characteristics);
-      var botName = bleConnection.bleNameToBotName(rawName);
-      bleConnection.scanning = false;
-      bleConnection.setConnectionStatus(botName, bleConnection.statusEnum.CONNECTED);
+      var botName = cxn.bleNameToBotName(rawName);
+      cxn.scanning = false;
+      cxn.setConnectionStatus(botName, cxn.statusEnum.CONNECTED);
 
       // testing this in chrome has worked.
       // Could add validation code to confirm nothing has changes
       // [0].uuid = 6e400002-... (tx)
       // [1].uuid = 6e400003-... (rx)
-      bleConnection.webBLEWrite = characteristics[0];
-      bleConnection.webBLERead = characteristics[1];
-      bleConnection.webBLERead.startNotifications()
+      cxn.webBLEWrite = characteristics[0];
+      cxn.webBLERead = characteristics[1];
+      cxn.webBLERead.startNotifications()
       .then(function() {
           console.log ('adding event listener');
-          bleConnection.webBLERead.addEventListener('characteristicvaluechanged',
-          bleConnection.onValChange);
+          cxn.webBLERead.addEventListener('characteristicvaluechanged',
+          cxn.onValChange);
       });
     })
     .catch(function(error) {
-      bleConnection.scanning = false;
-      bleConnection.connectionChanged(bleConnection.devices);
+      cxn.scanning = false;
+      cxn.connectionChanged(cxn.devices);
       console.log('cancel or error :' + error);
     });
 };
 
-bleConnection.onDisconnectAppBLE = function(info) {
+cxn.onDisconnectAppBLE = function(info) {
   console.log('onDisconnectAppBLE:', info);
-  var botName = bleConnection.bleNameToBotName(info.name);
-  bleConnection.setConnectionStatus(botName, bleConnection.statusEnum.NOT_THERE);
-  bleConnection.cullList();
+  var botName = cxn.bleNameToBotName(info.name);
+  cxn.setConnectionStatus(botName, cxn.statusEnum.NOT_THERE);
+  cxn.cullList();
 };
 
-bleConnection.onDisconnecWebBLE = function(event) {
+cxn.onDisconnecWebBLE = function(event) {
   console.log('onDisconnecWebBLE:', event.target.name);
-  var botName = bleConnection.bleNameToBotName(event.target.name);
-  bleConnection.setConnectionStatus(botName, bleConnection.statusEnum.NOT_THERE);
-  bleConnection.cullList();
+  var botName = cxn.bleNameToBotName(event.target.name);
+  cxn.setConnectionStatus(botName, cxn.statusEnum.NOT_THERE);
+  cxn.cullList();
 };
 
 // Determine the status of a named connection.
-bleConnection.connectionStatus = function (name) {
-  if (bleConnection.devices.hasOwnProperty(name)) {
-    return bleConnection.devices[name].status;
+cxn.connectionStatus = function (name) {
+  if (cxn.devices.hasOwnProperty(name)) {
+    return cxn.devices[name].status;
   } else {
-    return bleConnection.statusEnum.NOT_THERE;
+    return cxn.statusEnum.NOT_THERE;
   }
 };
 
 // Change a devices status and trigger observers
-bleConnection.setConnectionStatus = function (name, status) {
+cxn.setConnectionStatus = function (name, status) {
   //
-  console.log('SCS', bleConnection.devices);
-  var dev = bleConnection.devices[name];
+  console.log('SCS', cxn.devices);
+  var dev = cxn.devices[name];
   if (dev !== null) {
     dev.status = status;
   }
-  // bleConnection.devices[name].status = status;
+  // cxn.devices[name].status = status;
   // Trigger notifications.
-  bleConnection.connectionChanged(bleConnection.devices);
+  cxn.connectionChanged(cxn.devices);
 };
 
 // NOT USED, TODO where should it be used.
-bleConnection.disconnect = function(mac) {
+cxn.disconnect = function(mac) {
   // TODO need to resolve where MAC vs name is used.
-  if (bleConnection.appBLE) {
-    bleConnection.appBLE.disconnect(mac);
+  if (cxn.appBLE) {
+    cxn.appBLE.disconnect(mac);
   }
 };
 
-bleConnection.connect = function(name) {
-  if (bleConnection.devices.hasOwnProperty(name)) {
-    var mac = bleConnection.devices[name].mac;
+cxn.connect = function(name) {
+  if (cxn.devices.hasOwnProperty(name)) {
+    var mac = cxn.devices[name].mac;
 
-    if (bleConnection.appBLE) {
-      bleConnection.setConnectionStatus(name, bleConnection.statusEnum.CONNECTING);
-      bleConnection.appBLE.connect(mac, bleConnection.onConnect,
-        bleConnection.onDisconnectAppBLE, bleConnection.onError);
-    } else if (bleConnection.webBLE) {
+    if (cxn.appBLE) {
+      cxn.setConnectionStatus(name, cxn.statusEnum.CONNECTING);
+      cxn.appBLE.connect(mac, cxn.onConnect,
+        cxn.onDisconnectAppBLE, cxn.onError);
+    } else if (cxn.webBLE) {
       // Should already be connected.
       // TODO, no the connection can be postponed until needed (perhaps)
     } else {
       // For no BLE present, pretend the device is connected.
-      bleConnection.setConnectionStatus(name, bleConnection.statusEnum.CONNECTED);
+      cxn.setConnectionStatus(name, cxn.statusEnum.CONNECTED);
     }
   }
 };
 
-bleConnection.onConnect = function(info) {
+cxn.onConnect = function(info) {
   console.log('On Connected:', info.name, info);
   // If connection works, then start listening for incomming messages.
-  bleConnection.appBLE.startNotification(info.id,
+  cxn.appBLE.startNotification(info.id,
      nordicUARTservice.serviceUUID,
      nordicUARTservice.rxCharacteristic,
-     function (data) { bleConnection.onData(info.name, data); },
-     bleConnection.onError);
+     function (data) { cxn.onData(info.name, data); },
+     cxn.onError);
 
-  var dev = bleConnection.findDeviceByMac(info.id);
+  var dev = cxn.findDeviceByMac(info.id);
   if (dev !== null) {
-    bleConnection.setConnectionStatus(dev.name, bleConnection.statusEnum.CONNECTED);
+    cxn.setConnectionStatus(dev.name, cxn.statusEnum.CONNECTED);
   }
 };
 
-bleConnection.onData = function(name, data) {
+cxn.onData = function(name, data) {
   var str = bufferToString(data);
   console.log('On Data:', name, str);
-  bleConnection.messages.push(name + ':' + str);
+  cxn.messages.push(name + ':' + str);
   if(str.includes('accel')){
-    bleConnection.accelerometer = str.substring(7, str.length - 2);
+    cxn.accelerometer = str.substring(7, str.length - 2);
   } else if(str.includes('compass')){
-    bleConnection.compass = str.substring(9, str.length - 2);
+    cxn.compass = str.substring(9, str.length - 2);
   } else if(str.includes('temp')){
-    bleConnection.temp = str.substring(6, str.length - 2);
+    cxn.temp = str.substring(6, str.length - 2);
   }
 };
 
-bleConnection.onValChange = function (event) {
+cxn.onValChange = function (event) {
   let value = event.target.value;
   var str = bufferToString(value.buffer);
   console.log('BLE message recieved', str);
 };
 
-bleConnection.onError = function(reason) {
+cxn.onError = function(reason) {
   console.log('Error2:', reason);
 };
 
-bleConnection.write = function(name, message) {
-  if (bleConnection.devices.hasOwnProperty(name)) {
-    var mac = bleConnection.devices[name].mac;
+cxn.write = function(name, message) {
+  if (cxn.devices.hasOwnProperty(name)) {
+    var mac = cxn.devices[name].mac;
     var buffer = stringToBuffer(message);
 
-    if (bleConnection.appBLE) {
+    if (cxn.appBLE) {
       buffer = stringToBuffer(message);
 
       // Break the message into smaller sections.
-      bleConnection.appBLE.write(mac,
+      cxn.appBLE.write(mac,
         nordicUARTservice.serviceUUID,
         nordicUARTservice.txCharacteristic,
         buffer,
-        bleConnection.onWriteOK,
-        bleConnection.onWriteFail);
-    } else if (bleConnection.webBLE) {
+        cxn.onWriteOK,
+        cxn.onWriteFail);
+    } else if (cxn.webBLE) {
 
-      if (bleConnection.webBLEWrite) {
-        bleConnection.webBLEWrite.writeValue(buffer)
+      if (cxn.webBLEWrite) {
+        cxn.webBLEWrite.writeValue(buffer)
         .then(function() {
           console.log('write complete');
         })
@@ -402,17 +402,17 @@ bleConnection.write = function(name, message) {
           console.log('write failed', error);
         });
       }
-      //var bleConnection.webBLEWrite = null;
+      //var cxn.webBLEWrite = null;
     }
   }
 };
 
-bleConnection.onWriteOK = function (data) {
+cxn.onWriteOK = function (data) {
   console.log('write ok', data);
 };
-bleConnection.onWriteFail = function (data) {
+cxn.onWriteFail = function (data) {
   console.log('write fail', data);
 };
 
-return bleConnection;
+return cxn;
 }();

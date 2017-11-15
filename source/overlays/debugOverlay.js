@@ -25,7 +25,7 @@ SOFTWARE.
 module.exports = function () {
 
   var debugMode = {};
-  var ble = require('./../bleConnections.js');
+  var cxn = require('./../cxn.js');
   var app = require('./../appMain.js');
 
   // External function for putting it all together.
@@ -64,8 +64,8 @@ module.exports = function () {
     // debugMode.logElement.innerHTML = '';
 
     // Replace contents with existing list of messages.
-    for(var i = 0; i < ble.messages.length; i++) {
-      debugMode.log(ble.messages[i] + '\n');
+    for(var i = 0; i < cxn.messages.length; i++) {
+      debugMode.log(cxn.messages[i] + '\n');
     }
 
     // Prime the timer again.
