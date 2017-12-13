@@ -21,10 +21,13 @@ SOFTWARE.
 */
 
 module.exports = function () {
+  var log = require('./log.js');
+  log.trace('App main');
 
   // Starts as an object and will be mosty empty until start()
   // is called.
   var app = {};
+
 
   // Application main, called once shell is fully up.
   app.start = function () {
@@ -40,6 +43,7 @@ module.exports = function () {
     app.overlayDom = document.getElementById('overlayLayer');
     app.driverOverlay = require('./overlays/driveOverlay.js');
     app.debugOverlay = require('./overlays/debugOverlay.js');
+    // Add shortcut function to app
     app.fileOverlay = require('./overlays/fileOverlay.js');
     app.settingsOverlay = require('./overlays/settings.js');
     app.splashOverlay = require('./overlays/splashOverlay.js');
@@ -149,13 +153,11 @@ module.exports = function () {
       }
     });
     clipboard.on('success', function(e) {
-      console.log(e);
+      log.trace(e);
     });
     clipboard.on('error', function(e) {
-      console.log(e);
+      log.trace(e);
     });
-    //create a method to make a group
-    //
 
     // these could be loaded from JSON files/strings
     var package1 = {

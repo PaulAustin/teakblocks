@@ -22,6 +22,7 @@ SOFTWARE.
 
 module.exports = function () {
 
+var log = require('./log.js');
 var assert = require('assert');
 var interact = require('interact.js');
 var tf = require('./teak-forms.js');
@@ -121,7 +122,7 @@ tbe.init = function init(svg) {
 tbe.elementToBlock = function(el) {
     var text = el.getAttribute('interact-id');
     if (text === null) {
-      console.log('svg elt had no id:', el);
+      log.trace('svg elt had no id:', el);
       return null;
     }
     var values = text.split(':');
@@ -135,7 +136,7 @@ tbe.elementToBlock = function(el) {
       obj = null;
     }
     if (obj === null)  {
-      console.log('block not found, id was <', text, '>');
+      log.trace('block not found, id was <', text, '>');
     }
     return obj;
 };
@@ -216,7 +217,6 @@ tbe.deleteChunk = function(block, endBlock) {
   var deleteWidth = block.chainWidth;
   var tempBlock = null;
 
-  //console.log(block.next.svgRect.classList);
   if ((block.flowTail === endBlock) && (!block.isGroupSelected())) {
     tbe.clearStates();
     if (block.prev !== null) {
@@ -1035,9 +1035,9 @@ document.body.addEventListener("keydown", function(e) {
     var ctrl = e.ctrlKey ? e.ctrlKey : (key === 17);
 
     if ( key === 86 && ctrl ) {
-      console.log("Ctrl + V Pressed !");
+      log.trace("Ctrl + V Pressed !");
     } else if ( key === 67 && ctrl ) {
-      console.log("Ctrl + C Pressed !");
+      log.trace("Ctrl + C Pressed !");
       var array = [];
       tbe.forEachDiagramBlock( function(block) {
         if (block.isSelected()) {
@@ -1058,16 +1058,16 @@ document.body.addEventListener("keydown", function(e) {
       textArea.style.background = 'transparent';
       if (array.length >= 0) {
         textArea.value = teakText.chunkToText(tbe.findChunkStart(array[0]), null, '');
-        console.log(textArea);
+        log.trace(textArea);
         document.body.appendChild(textArea);
         textArea.select();
 
         try {
           var successful = document.execCommand('copy');
           var msg = successful ? 'successful' : 'unsuccessful';
-          console.log('Copying text command was ' + msg);
+          log.trace('Copying text command was ' + msg);
         } catch (err) {
-          console.log('Oops, unable to copy');
+          log.trace('Oops, unable to copy');
         }
       }
 
@@ -1412,17 +1412,14 @@ tbe.diagramChanged = function diagramChanged() {
 
   // Checks if the text to be added is the same as the last one added
   if (tbe.undoArray[tbe.currentUndoIndex] !== text) {
-    // console.log(tbe.undoArray[tbe.currentUndoIndex], text);
     tbe.currentUndoIndex += 1;
     tbe.undoArray[tbe.currentUndoIndex] = text;
     // Truncates the rest of the array if change is made before the end of the array
     if (tbe.currentUndoIndex < tbe.undoArray.length - 1) {
-      // console.log(tbe.undoArray[tbe.currentUndoIndex] + "\n<\n" + text + ">");
 
       var temp = [];
       for(var i = 0; i <= tbe.currentUndoIndex; i++) {
         temp[i] = tbe.undoArray[i];
-        // console.log(temp[i], i);
       }
       tbe.undoArray = temp;
     }

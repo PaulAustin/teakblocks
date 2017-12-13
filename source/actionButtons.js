@@ -165,7 +165,6 @@ module.exports = function () {
 
     for(var i = 0; i < buttons.length; i++){
       var label = buttons[i].label;
-      console.log(label, label.match(/[a-z]/i));
       if(label.match(/[a-z]/i) !== null){
         newButtons[i] = this.addButton(label, x, y, tbe, buttons[i].command, undefined, 'dropdown-buttons', 'text-buttons');
       } else {

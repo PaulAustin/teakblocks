@@ -86,7 +86,6 @@ tbSelecton.init = function(tbe) {
           right: left + width,
           bottom: top + height,
         };
-        //console.log(left, top, width, height, tbe);
         tbSelecton.checkForSelectedBlocks(rect, tbe);
       }
     });

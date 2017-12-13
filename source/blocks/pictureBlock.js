@@ -94,8 +94,7 @@ module.exports = function () {
 
   // Inject the HTML for the controller's editor.
   // TODO: pass in the controller. That might all move out of this class.
-  pictureBlock.configuratorClose = function(div, block) {
-    console.log('configurator closing', block);
+  pictureBlock.configuratorClose = function() {
   };
 
   pictureBlock.configuratorOpen = function(div, block) {

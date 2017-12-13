@@ -23,10 +23,10 @@ SOFTWARE.
 // An overlay to see log messages and communications
 // between the app and the robot.
 module.exports = function () {
-
-  var debugMode = {};
+  var log = require('./../log.js');
   var cxn = require('./../cxn.js');
   var app = require('./../appMain.js');
+  var debugMode = {};
 
   // External function for putting it all together.
   debugMode.start = function () {
@@ -34,10 +34,8 @@ module.exports = function () {
     // Construct the DOM for the overlay.
     app.overlayDom.innerHTML = `
       <div id='debugOverlay' class ='fullScreenSlideIn'>
-        <div id='overlayExitButton'>
-          <i class='fa fa-times driver-x-debug svg-clear' aria-hidden='true'></i>
-        </div>
         <div id='debugLogBackground'>
+          <i class='fa fa-times driver-x-debug svg-clear' aria-hidden='true' horizontal-align='middle'></i>
           <div id='debugLog'></div>
         </div>
       </div>`;
@@ -48,13 +46,7 @@ module.exports = function () {
 
     // Start update function.
     debugMode.updateDebug();
-    debugMode.log('> Hello');
-  };
-
-  // Add a messge to the log.
-  debugMode.log = function (text) {
-    debugMode.logElement.innerHTML += text;
-    // TODO need way to trim buffer to a max size (10K??)
+    log.trace('> Hello');
   };
 
   // Update the list of messages show in the display.
@@ -62,7 +54,6 @@ module.exports = function () {
 
     // Erase old text.
     // debugMode.logElement.innerHTML = '';
-
     // Replace contents with existing list of messages.
     for(var i = 0; i < cxn.messages.length; i++) {
       debugMode.log(cxn.messages[i] + '\n');

@@ -21,6 +21,7 @@ SOFTWARE.
 */
 
 module.exports = function () {
+  var log = require('./../log.js');
   var svgb = require('./../svgbuilder.js');
   var cxn = require('./../cxn.js');
   var ko = require('knockout');
@@ -120,7 +121,7 @@ module.exports = function () {
 
   // Turn on Scanning
   identityBlock.configBtnScan = function(scanning) {
-    console.log('config scaning button', scanning);
+    log.trace('config scaning button', scanning);
     var button= identityBlock.scanButton;
     if (scanning) {
       // Turn on scanning.

@@ -21,6 +21,7 @@ SOFTWARE.
 */
 
 module.exports = function () {
+  var log = require('./log.js');
   var conductor = {};
 
   conductor.cxn = require('./cxn.js');
@@ -43,7 +44,7 @@ module.exports = function () {
   conductor.activeBits = [];
 
   conductor.attachToScoreEditor = function(tbe) {
-    console.log('attached to ', tbe);
+    log.trace('attached to ', tbe);
     conductor.tbe = tbe;
     conductor.linkHeartBeat();
     conductor.cxn.connectionChanged.subscribe(conductor.updateIndentiyBlocks);
@@ -52,7 +53,7 @@ module.exports = function () {
   // If there is a change in connections update teh indentity blocks
   // TODO this linkage is ver much a bit of a hack.
   conductor.updateIndentiyBlocks = function() {
-    console.log(' updating identity blocks');
+    log.trace(' updating identity blocks');
     var blockChainIterator  = conductor.tbe.forEachDiagramChain;
     blockChainIterator(function(chainStart) {
       if (chainStart.name === 'identity') {
@@ -111,7 +112,7 @@ module.exports = function () {
           if (conductor.count === undefined || conductor.count === '0') {
             conductor.count = 1;
           }
-          console.log(conductor.count);
+          log.trace(conductor.count);
 
           if (block !== null) {
             conductor.count = parseInt(conductor.count, 10);
@@ -169,7 +170,7 @@ module.exports = function () {
     });
     conductor.count = null;
     conductor.runningBlocks = [];
-    console.log('stop all');
+    log.trace('stop all');
     // Single step, find target and head of chain, and run the single block.
   };
 
@@ -201,7 +202,7 @@ module.exports = function () {
   };
 
   conductor.playSingleChain = function() {
-    console.log('play single chain');
+    log.trace('play single chain');
     // The conductor starts one chain (part of the score).
   };
 
@@ -220,7 +221,6 @@ module.exports = function () {
         str = '0' + str;
       }
       pixStr += str;
-    //  console.log('image in hex',value,str);
     }
     return pixStr;
   };

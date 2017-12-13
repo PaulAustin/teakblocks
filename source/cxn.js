@@ -22,6 +22,7 @@ SOFTWARE.
 
 // Module for managing BLE connections and lists of devices found.
 module.exports = function factory(){
+  var log = require('./log.js');
   var ko = require('knockout');
 
   var cxn = {};
@@ -177,11 +178,11 @@ cxn.cullList = function() {
     if ((botInfo.status === cxn.statusEnum.BEACON) && (now - botInfo.ts) > 4000) {
       delete cxn.devices[botName];
     } else if (botInfo.status === cxn.statusEnum.NOT_THERE) {
-      console.log('culling missing bot');
+      log.trace('culling missing bot');
       delete cxn.devices[botName];
     } else if (botInfo.status === cxn.statusEnum.CONNECTING) {
       // If it is stuck in connecting then drop it.
-      console.log('culling hung connection');
+      log.trace('culling hung connection');
       delete cxn.devices[botName];
     }
   }
@@ -201,10 +202,10 @@ cxn.startScanning = function () {
         cxn.beaconReceived(device);
       },
       function(errorCode) {
-        console.log('error1:' + errorCode);
+        log.trace('error1:' + errorCode);
       });
   } else {  // bleAPI is not null looks like cordova model.
-    console.log ('simulated bluetooth scan');
+    log.trace ('simulated bluetooth scan');
     cxn.psedoScan();
   }
 };
@@ -227,7 +228,7 @@ cxn.webBTConnect = function () {
   // selected on at that point, add it to the list and select.
   navigator.bluetooth.requestDevice(options)
     .then(function(device) {
-      console.log('> device:', device);
+      log.trace('> device:', device);
       var beaconInfo = {
         name : device.name,     // Should be in 'BBC micro:bit [xxxxx]' format
         id: device.id,          // looks like a hast of mac id perhaps
@@ -239,11 +240,11 @@ cxn.webBTConnect = function () {
       return device.gatt.connect();
     })
     .then(function(server) {
-      console.log('> primary service:', server);
+      log.trace('> primary service:', server);
       return server.getPrimaryService(nordicUARTservice.serviceUUID);
     })
     .then(function(primaryService) {
-      console.log('> primary Service:', primaryService);
+      log.trace('> primary Service:', primaryService);
       // Calling getCharacteristics with no parameters
       // should return the one associated with the primary service
       // ( the tx and rx service)
@@ -251,7 +252,7 @@ cxn.webBTConnect = function () {
     })
     .then(function(characteristics) {
       var rawName = characteristics[0].service.device.name;
-      console.log('> characteristics:', rawName, characteristics);
+      log.trace('> characteristics:', rawName, characteristics);
       var botName = cxn.bleNameToBotName(rawName);
       cxn.scanning = false;
       cxn.setConnectionStatus(botName, cxn.statusEnum.CONNECTED);
@@ -264,7 +265,7 @@ cxn.webBTConnect = function () {
       cxn.webBLERead = characteristics[1];
       cxn.webBLERead.startNotifications()
       .then(function() {
-          console.log ('adding event listener');
+          log.trace ('adding event listener');
           cxn.webBLERead.addEventListener('characteristicvaluechanged',
           cxn.onValChange);
       });
@@ -272,19 +273,19 @@ cxn.webBTConnect = function () {
     .catch(function(error) {
       cxn.scanning = false;
       cxn.connectionChanged(cxn.devices);
-      console.log('cancel or error :' + error);
+      log.trace('cancel or error :' + error);
     });
 };
 
 cxn.onDisconnectAppBLE = function(info) {
-  console.log('onDisconnectAppBLE:', info);
+  log.trace('onDisconnectAppBLE:', info);
   var botName = cxn.bleNameToBotName(info.name);
   cxn.setConnectionStatus(botName, cxn.statusEnum.NOT_THERE);
   cxn.cullList();
 };
 
 cxn.onDisconnecWebBLE = function(event) {
-  console.log('onDisconnecWebBLE:', event.target.name);
+  log.trace('onDisconnecWebBLE:', event.target.name);
   var botName = cxn.bleNameToBotName(event.target.name);
   cxn.setConnectionStatus(botName, cxn.statusEnum.NOT_THERE);
   cxn.cullList();
@@ -302,7 +303,7 @@ cxn.connectionStatus = function (name) {
 // Change a devices status and trigger observers
 cxn.setConnectionStatus = function (name, status) {
   //
-  console.log('SCS', cxn.devices);
+  log.trace('SCS', cxn.devices);
   var dev = cxn.devices[name];
   if (dev !== null) {
     dev.status = status;
@@ -339,7 +340,7 @@ cxn.connect = function(name) {
 };
 
 cxn.onConnect = function(info) {
-  console.log('On Connected:', info.name, info);
+  log.trace('On Connected:', info.name, info);
   // If connection works, then start listening for incomming messages.
   cxn.appBLE.startNotification(info.id,
      nordicUARTservice.serviceUUID,
@@ -355,7 +356,7 @@ cxn.onConnect = function(info) {
 
 cxn.onData = function(name, data) {
   var str = bufferToString(data);
-  console.log('On Data:', name, str);
+  log.trace('On Data:', name, str);
   cxn.messages.push(name + ':' + str);
   if(str.includes('accel')){
     cxn.accelerometer = str.substring(7, str.length - 2);
@@ -369,11 +370,11 @@ cxn.onData = function(name, data) {
 cxn.onValChange = function (event) {
   let value = event.target.value;
   var str = bufferToString(value.buffer);
-  console.log('BLE message recieved', str);
+  log.trace('BLE message recieved', str);
 };
 
 cxn.onError = function(reason) {
-  console.log('Error2:', reason);
+  log.trace('Error2:', reason);
 };
 
 cxn.write = function(name, message) {
@@ -396,10 +397,10 @@ cxn.write = function(name, message) {
       if (cxn.webBLEWrite) {
         cxn.webBLEWrite.writeValue(buffer)
         .then(function() {
-          console.log('write complete');
+          log.trace('write complete');
         })
         .catch(function(error) {
-          console.log('write failed', error);
+          log.trace('write failed', error);
         });
       }
       //var cxn.webBLEWrite = null;
@@ -408,10 +409,10 @@ cxn.write = function(name, message) {
 };
 
 cxn.onWriteOK = function (data) {
-  console.log('write ok', data);
+  log.trace('write ok', data);
 };
 cxn.onWriteFail = function (data) {
-  console.log('write fail', data);
+  log.trace('write fail', data);
 };
 
 return cxn;

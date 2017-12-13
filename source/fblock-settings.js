@@ -21,7 +21,7 @@ SOFTWARE.
 */
 
 module.exports = function () {
-
+var log = require('./log.js');
 var svgb = require('./svgbuilder.js');
 var b = {};
 
@@ -30,7 +30,7 @@ b.bind = function(style){
   var def = this[key];
   if (def === undefined) {
     def = this.unknownBlock;
-    console.log('cant find style for ', key);
+    log.trace('cant find style for ', key);
   }
   return def;
 };

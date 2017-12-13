@@ -21,8 +21,9 @@ SOFTWARE.
 */
 
 module.exports = function (){
-var teakText = {};
-var teak = require('teak');
+  var log = require('./log.js');
+  var teak = require('teak');
+  var teakText = {};
 
 //------------------------------------------------------------------------------
 teakText.blocksToText = function(blockChainIterator) {
@@ -92,7 +93,7 @@ teakText.valueToText = function(value) {
 
 //------------------------------------------------------------------------------
 teakText.textToBlocks = function(tbe, text) {
-  console.log('new loader');
+  log.trace('new loader');
   var state = {};
   // Visitor pattern may be better, a lot better.
   var teakJSO = teak.parse(text, state, function(name) { return name; });
@@ -100,19 +101,19 @@ teakText.textToBlocks = function(tbe, text) {
 };
 
 teakText.loadJsoTeak = function(tbe, jsoTeak) {
-  console.log(' loadJSO', jsoTeak);
+  log.trace(' loadJSO', jsoTeak);
   if (Array.isArray(jsoTeak)) {
     let i = 0;
     for (i = 0; i < jsoTeak.length; i++) {
       var jsoChain = jsoTeak[i];
       if (jsoChain._0 !== 'chain') {
-        console.log(' unrecognized chain section');
+        log.trace(' unrecognized chain section');
         return;
       } else {
         var x = jsoChain.x;
         var y = jsoChain.y;
         let jsoChainBlocks = jsoChain._3;
-        console.log(' TJDO', jsoChain, x, y);
+        log.trace(' TJDO', jsoChain, x, y);
         var chain = teakText.loadJsoTeakBlocks(tbe, jsoChainBlocks, x, y, null);
 
         // Refresh the graphics in each block in the chain.
@@ -125,7 +126,7 @@ teakText.loadJsoTeak = function(tbe, jsoTeak) {
       }
     }
   } else {
-    console.log(' unrecognized teak file');
+    log.trace(' unrecognized teak file');
     return;
   }
 };
@@ -136,7 +137,6 @@ teakText.loadJsoTeakBlocks = function(tbe, jsoBlocks, x, y, prev) {
   for (i = 0; i < jsoBlocks.length; i++) {
     const blockName = jsoBlocks[i]._0;
     const block = tbe.addBlock(x, y, blockName);
-    // console.log('adding block', x, y, blockName, prev);
     if (firstBlock === null) {
       firstBlock = block;
     }

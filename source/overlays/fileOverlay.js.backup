@@ -158,7 +158,6 @@ module.exports = function () {
 //    var base64 = unescape(encodeURIComponent(xmlText1));
 //    var dataText = 'data:image/svg+xml;base64,' + base64;
   //  var dataText = 'data:image/svg+xml,' + xmlText1;
-  //  console.log('serialized svg', dataText);
 
 //  image.src = dataText;
 

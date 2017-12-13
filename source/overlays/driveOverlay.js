@@ -22,12 +22,12 @@ SOFTWARE.
 
 // Drive mode overlay allows users to diretly control the motors and other IO.
 module.exports = function(){
-
-  var driveMode = {};
+  var log = require('./../log.js');
   var interact = require('interact.js');
   var conductor = require('./../conductor.js');
   var app = require('./../appMain.js');
   var cxn = require('./../cxn.js');
+  var driveMode = {};
 
   driveMode.pastRight = 0;
   driveMode.pastLeft = 0;
@@ -101,13 +101,11 @@ module.exports = function(){
         event.target.style.paddingTop = (value * 7) + 'em';
         var display = (100 - Math.round((value.toFixed(3)*200)));
         event.target.setAttribute('data-value', display);
-        //console.log(event.target.classList.contains('sliderRight'));
         if(event.target.classList.contains('sliderRight')) {
           driveMode.displayRight = display;
         } else if (event.target.classList.contains('sliderLeft')) {
           driveMode.displayLeft = display;
         }
-        //console.log(driveMode.displayRight, driveMode.displayLeft);
       })
     .on('dragend', function(event){
       event.target.style.paddingTop = (0.5 * 7) + 'em';
@@ -133,7 +131,7 @@ module.exports = function(){
 
   driveMode.updateSlider = function() {
     var id = driveMode.activeDivice;
-    console.log('updTE', id);
+    log.trace('updTE', id);
     //var changed = driveMode.displayLeft !== driveMode.pastLeft || driveMode.displayRight !== driveMode.pastRight;
     if (id !== null && id !== '-?-') {
       if (driveMode.displayLeft !== undefined && driveMode.displayLeft !== driveMode.pastLeft) {
