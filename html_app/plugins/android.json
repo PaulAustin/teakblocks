@@ -18,7 +18,17 @@
         },
         "cordova-plugin-compat": {
             "PACKAGE_NAME": "io.hld.teakblocks"
+        },
+        "phonegap-plugin-mobile-accessibility": {
+            "PACKAGE_NAME": "org.trashbots.teakblocks"
         }
     },
-    "dependent_plugins": {}
+    "dependent_plugins": {
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "org.trashbots.teakblocks"
+        },
+        "cordova-plugin-network-information": {
+            "PACKAGE_NAME": "org.trashbots.teakblocks"
+        }
+    }
 }

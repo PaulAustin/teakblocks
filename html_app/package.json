@@ -9,13 +9,17 @@
         ],
         "plugins": {
             "cordova-plugin-ble": {},
-            "cordova-plugin-whitelist": {}
+            "cordova-plugin-whitelist": {},
+            "phonegap-plugin-mobile-accessibility": {}
         }
     },
     "dependencies": {
+        "cordova-android": "~6.2.3",
         "cordova-ios": "^4.4.0",
         "cordova-plugin-ble": "1",
+        "cordova-plugin-device": "git+https://github.com/apache/cordova-plugin-device.git",
+        "cordova-plugin-network-information": "git+https://github.com/apache/cordova-plugin-network-information.git",
         "cordova-plugin-whitelist": "1",
-        "cordova-android": "~6.2.3"
+        "phonegap-plugin-mobile-accessibility": "git+https://github.com/phonegap/phonegap-mobile-accessibility.git"
     }
 }

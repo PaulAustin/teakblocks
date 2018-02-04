@@ -22,4 +22,5 @@
     <engine name="ios" spec="^4.4.0" />
     <plugin name="cordova-plugin-ble" spec="1" />
     <plugin name="cordova-plugin-whitelist" spec="1" />
+    <plugin name="phonegap-plugin-mobile-accessibility" spec="git+https://github.com/phonegap/phonegap-mobile-accessibility.git" />
 </widget>

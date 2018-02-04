@@ -108,14 +108,43 @@ module.exports = function () {
     ko.applyBindings(identityBlock, div);
 
     identityBlock.scanButton = document.getElementById('bt-scan');
-    identityBlock.scanButton.onclick = identityBlock.toggleBtScan;
+    identityBlock.scanButton.onclick = identityBlock.handleScanButton;
 
+    // If currently connected then disconnect and let them choose the same again
+    // or pick another.
+    var currentBotName = block.controllerSettings.data.deviceName;
+    log.trace('currently connected to', currentBotName);
+    /*
+    var dev = cxn.devices[currentBotName];
+    if (dev !== undefined) {
+      var mac = cxn.devices[currentBotName].mac;
+      log.trace('current mac', mac);
+      cxn.disconnect(mac, currentBotName);
+    }
+    */
     if (!cxn.scanUsesHostDialog && !cxn.scannning) {
       // If scanning is unobtrusive, start it when the form is shown.
       identityBlock.toggleBtScan();
     } else {
       // Otherwise at least fix up the button label.
       identityBlock.configBtnScan(false);
+    }
+  };
+
+  identityBlock.handleScanButton = function() {
+    if(cxn.scanning){
+      console.log('disconnect block');
+      var block = identityBlock.activeBlock;
+      var currentBotName = block.controllerSettings.data.deviceName;
+      var dev = cxn.devices[currentBotName];
+      if (dev !== undefined) {
+        var mac = cxn.devices[currentBotName].mac;
+        log.trace('disconnect from current mac', mac);
+        cxn.disconnect(mac, currentBotName);
+      }
+    } else{
+      console.log('go to toggleBtScan');
+      identityBlock.toggleBtScan();
     }
   };
 
@@ -140,6 +169,7 @@ module.exports = function () {
       identityBlock.watch.dispose();
       identityBlock.watch = null;
     } else {
+      console.log('in theory start scanning');
       // Turn on scanning.
       // Set up a callback to get notified when when devices show up.
       identityBlock.refreshList(cxn.devices);

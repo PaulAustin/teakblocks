@@ -32,6 +32,7 @@ module.exports = function factory(){
   cxn.accelerometer = 0;
   cxn.compass = 0;
   cxn.temp = 0;
+  cxn.connectingTimeout = 0;
 
 // State enumeration for conections.
 cxn.statusEnum = {
@@ -176,14 +177,18 @@ cxn.cullList = function() {
     // Per ECMAScript 5.1 standard section 12.6.4 it is OK to delete while
     // iterating through a an object.
     if ((botInfo.status === cxn.statusEnum.BEACON) && (now - botInfo.ts) > 4000) {
+      log.trace('culling beacon thath has not been refreshed for a long while.');
       delete cxn.devices[botName];
     } else if (botInfo.status === cxn.statusEnum.NOT_THERE) {
       log.trace('culling missing bot');
       delete cxn.devices[botName];
     } else if (botInfo.status === cxn.statusEnum.CONNECTING) {
       // If it is stuck in connecting then drop it.
-      log.trace('culling hung connection');
-      delete cxn.devices[botName];
+      // This is probably too quick. should do disconnect as well.
+      log.trace('culling hung connection', cxn.connectingTimeout);
+      if ( Date.now() - cxn.connectingStart > 10000 ) {
+        delete cxn.devices[botName];
+      }
     }
   }
 
@@ -314,20 +319,35 @@ cxn.setConnectionStatus = function (name, status) {
 };
 
 // NOT USED, TODO where should it be used.
-cxn.disconnect = function(mac) {
+cxn.disconnect = function(mac, name) {
   // TODO need to resolve where MAC vs name is used.
   if (cxn.appBLE) {
+    console.log ('disconnecting appble', mac);
     cxn.appBLE.disconnect(mac);
+    cxn.setConnectionStatus(name, cxn.statusEnum.NOT_THERE);
+    cxn.cullList();
+  } else if (cxn.webBLE) {
+    // Not really set up to manage multiple connections. yet
+    console.log ('cxn.webBLEWrite', cxn.webBLEWrite);
+    var dev = cxn.webBLEWrite.service.device;
+    console.log ('existing device', dev);
+    if (dev.gatt.connected) {
+        console.log ('disconnecting');
+        dev.gatt.disconnect();
+    }
+    cxn.webBLEWrite = null;
+    cxn.webBLERead = null;
   }
 };
 
 cxn.connect = function(name) {
+  cxn.connectingStart =  Date.now();
   if (cxn.devices.hasOwnProperty(name)) {
     var mac = cxn.devices[name].mac;
 
     if (cxn.appBLE) {
       cxn.setConnectionStatus(name, cxn.statusEnum.CONNECTING);
-      cxn.appBLE.connect(mac, cxn.onConnect,
+      cxn.appBLE.connect(mac, cxn.onConnectAppBLE,
         cxn.onDisconnectAppBLE, cxn.onError);
     } else if (cxn.webBLE) {
       // Should already be connected.
@@ -339,7 +359,7 @@ cxn.connect = function(name) {
   }
 };
 
-cxn.onConnect = function(info) {
+cxn.onConnectAppBLE = function(info) {
   log.trace('On Connected:', info.name, info);
   // If connection works, then start listening for incomming messages.
   cxn.appBLE.startNotification(info.id,

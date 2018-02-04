@@ -51,6 +51,10 @@ module.exports = function () {
     // fileOverlay will provide some from of localStorage, even if faked.
     app.storage = app.fileOverlay.localStorage();
 
+    if (window.MobileAccessibility) {
+      window.MobileAccessibility.usePreferredTextZoom(false);
+    }
+
     // Unicode charcodes for FontAwesome symbols.
     var fastr = {
       play: '\uf04b',
