@@ -55,11 +55,14 @@ module.exports = function () {
     </div>`;
     groupDiv.innerHTML =
     `<div id="block-settings" class="block-config-form blockform">
-      <div class="group-div"><button class="block-run">
+      <div class="group-div">
+        <button class="block-run width-third">
           <i class="fa fa-step-forward" aria-hidden="true"></i>
-        </button><button class="block-clone">
+        </button>
+        <button class="block-clone width-third">
           <i class="fa fa-clone" aria-hidden="true"></i>
-        </button><button class="block-clear">
+        </button>
+        <button class="block-clear width-third">
           <i class="fa fa-trash-o" aria-hidden="true"></i>
         </button>
       </div>
