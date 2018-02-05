@@ -36,7 +36,7 @@ module.exports = function () {
     // Return a new object with settings for the controller
     return {
       // and the data that goes with that editor.
-      data:{'description':'C4', 'period':'1/4'},
+      data:{'description':'C4', 'period':'1/4', 's':1 },
       // Indicate what controller is active. This may affect the data format.
       controller:'pianoKeyboard',
     };
@@ -44,20 +44,20 @@ module.exports = function () {
 
   var keyInfo = [
     // Naturals 8
-    { name:'C4', f:261.6 }, //0
-    { name:'D4', f:293.7 },
-    { name:'E4', f:329.6 },
-    { name:'F4', f:349.2 },
-    { name:'G4', f:392.0 }, //4
-    { name:'A4', f:440.0 },
-    { name:'B4', f:493.9 },
-    { name:'C5', f:523.2 }, //7
+    { name:'C4', f:261.6, s:1}, //0
+    { name:'D4', f:293.7, s:3 },
+    { name:'E4', f:329.6, s:5 },
+    { name:'F4', f:349.2, s:6 },
+    { name:'G4', f:392.0, s:8 }, //4
+    { name:'A4', f:440.0, s:10 },
+    { name:'B4', f:493.9, s:12 },
+    { name:'C5', f:523.2, s:13 }, //7
     // Accidentals, its easier to not to interleave them.
-    { name:'C#4', f:277.2, keyShift:-3 },
-    { name:'D#4', f:311.1, keyShift:3  },
-    { name:'F#4', f:370.0, keyShift:-4 },
-    { name:'G#4', f:415.3, keyShift:0  },
-    { name:'A#4', f:466.1, keyShift:4  }
+    { name:'C#4', f:277.2, keyShift:-3, s:2 },
+    { name:'D#4', f:311.1, keyShift:3, s:4  },
+    { name:'F#4', f:370.0, keyShift:-4, s:7 },
+    { name:'G#4', f:415.3, keyShift:0, s:9  },
+    { name:'A#4', f:466.1, keyShift:4, s:11  }
   ];
 
   soundBlock.configuratorOpen = function(div, block) {
@@ -153,6 +153,7 @@ module.exports = function () {
 
     // Update block
     soundBlock.activeBlock.controllerSettings.data.description = keyInfo[keyIndex].name;
+    soundBlock.activeBlock.controllerSettings.data.s = keyInfo[keyIndex].s;
     soundBlock.activeBlock.updateSvg();
   };
 

@@ -197,6 +197,7 @@ cxn.cullList = function() {
 };
 
 cxn.startScanning = function () {
+  cxn.connectingStart =  Date.now();  // a bit of a hack
   cxn.scanning = true;
 
   if (cxn.webBLE) {

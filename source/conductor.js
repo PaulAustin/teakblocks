@@ -192,7 +192,9 @@ module.exports = function () {
       } else if (block.name === 'twoMotor') {
         message = '(m:(1 2) d:' + d.speed + ');'; // +' b:' + d.duration
       } else if (block.name === 'sound') {
-        message = '(nt:' + d.description + ':' + 1 + ');';
+        // pass the Solfege index
+        message = '(nt:' + d.s + ');';
+        console.log('message', message);
       } else if (block.name === 'wait') {
         message = '';
       }
