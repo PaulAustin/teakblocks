@@ -63,8 +63,8 @@ module.exports = function () {
   soundBlock.configuratorOpen = function(div, block) {
     soundBlock.activeBlock = block;
     div.innerHTML =
-        `<div id='pictureEditorDiv'>
-          <svg id='pianoSvg'width=231px height=145px xmlns='http://www.w3.org/2000/svg'>
+        `<div id='pictureEditorDiv' class='editorDiv'>
+          <svg id='pianoSvg' width=231px height=145px xmlns='http://www.w3.org/2000/svg'>
             <rect id='pictureRect' y=40px width=231px height=100px rx=4 ry=4 class='block-sound-piano'/>
           </svg>
         </div>`;
