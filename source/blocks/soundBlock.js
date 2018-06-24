@@ -36,7 +36,7 @@ module.exports = function () {
     // Return a new object with settings for the controller
     return {
       // and the data that goes with that editor.
-      data:{'description':'C4', 'period':'1/4', 's':1 },
+      data:{'description':'', 'period':'1/4', 's':'', 'duration': 4},
       // Indicate what controller is active. This may affect the data format.
       controller:'pianoKeyboard',
     };
@@ -64,8 +64,8 @@ module.exports = function () {
     soundBlock.activeBlock = block;
     div.innerHTML =
         `<div id='pictureEditorDiv' class='editorDiv'>
-          <svg id='pianoSvg' width=231px height=145px xmlns='http://www.w3.org/2000/svg'>
-            <rect id='pictureRect' y=40px width=231px height=100px rx=4 ry=4 class='block-sound-piano'/>
+          <svg id='pianoSvg' width=231px height=175px xmlns='http://www.w3.org/2000/svg'>
+            <rect id='pictureRect' y=10px width=231px height=100px rx=4 ry=4 class='block-sound-piano'/>
           </svg>
         </div>`;
 
@@ -73,7 +73,7 @@ module.exports = function () {
     var svg = document.getElementById('pianoSvg');
     var keyIndex = 0;
     for (var iwKey = 0; iwKey < 8; iwKey++) {
-      var wkey = svgb.createRect('piano-key block-sound-piano-w', 4+(iwKey*28), 53, 27, 84, 3);
+      var wkey = svgb.createRect('piano-key block-sound-piano-w', 4+(iwKey*28), 23, 27, 84, 3);
       wkey.setAttribute('key', keyIndex);
       keyIndex += 1;
       svg.appendChild(wkey);
@@ -81,14 +81,26 @@ module.exports = function () {
     for (var ibKey = 0; ibKey < 7; ibKey++) {
       if (ibKey !== 2 && ibKey !== 6) {
         var left = 21+(ibKey*28) + keyInfo[keyIndex].keyShift;
-        var bkey = svgb.createRect('piano-key block-sound-piano-b', left, 53, 22, 45, 3);
+        var bkey = svgb.createRect('piano-key block-sound-piano-b', left, 23, 22, 45, 3);
         bkey.setAttribute('key', keyIndex);
         keyIndex += 1;
         svg.appendChild(bkey);
       }
     }
-    var r = svgb.createRect('svg-clear block-sound-piano', 0, 40, 231, 15, 4);
+    var r = svgb.createRect('svg-clear block-sound-piano', 0, 10, 231, 15, 4);
     svg.appendChild(r);
+
+    var textData = soundBlock.activeBlock.controllerSettings.data.description.split(" ");
+    for(var itxtBox = 0; itxtBox < 4; itxtBox++){
+      var txtBox = svgb.createRect('svg-clear block-sound-txtBox', 5+(itxtBox*60), 120, 40, 40, 3);
+      svg.appendChild(txtBox);
+      var txt = svgb.createText('svg-clear block-sound-text', 13+(itxtBox*60), 148, '__');
+      if(textData[itxtBox] !== undefined && textData[itxtBox] !== ""){
+        txt.innerHTML = textData[itxtBox];
+      }
+      txt.setAttribute('box', itxtBox);
+      svg.appendChild(txt);
+    }
 
     // Create audio context for generating tones.
     soundBlock.audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -152,8 +164,27 @@ module.exports = function () {
     }, 400);
 
     // Update block
-    soundBlock.activeBlock.controllerSettings.data.description = keyInfo[keyIndex].name;
-    soundBlock.activeBlock.controllerSettings.data.s = keyInfo[keyIndex].s;
+    var arr = document.getElementsByClassName('block-sound-text');
+    var data1 = soundBlock.activeBlock.controllerSettings.data.description;
+    var data2 = soundBlock.activeBlock.controllerSettings.data.s;
+    for(var i = 0; i < 4; i++){
+      if(arr[i].innerHTML === '__'){
+        arr[i].innerHTML = keyInfo[keyIndex].name;
+        if(data1 === '' || data2 === ''){
+          data1 = arr[i].innerHTML;
+          data2 = String(keyInfo[keyIndex].s);
+        } else{
+          data1 = data1 + " " + arr[i].innerHTML;
+          data2 = data2 + " " + keyInfo[keyIndex].s;
+        }
+        break;
+      }
+    }
+
+    soundBlock.activeBlock.controllerSettings.data.description = data1;
+
+    soundBlock.activeBlock.controllerSettings.data.s = data2;
+
     soundBlock.activeBlock.updateSvg();
   };
 
@@ -194,10 +225,18 @@ module.exports = function () {
     root.appendChild(soundPath);
 
     // Description such as note name.
-    var name = block.controllerSettings.data.description;
-    var text = svgb.createText('block-identity-text svg-clear', 40, 70, name);
-    text.setAttribute('text-anchor', 'middle');
-    root.appendChild(text);
+    if(block.controllerSettings.data.s !== ''){
+      var name = block.controllerSettings.data.s.split(' ');
+      var s = '';
+      s += svgb.pathBuilder.move(8, 75);
+      for(var i = 0; i < name.length; i++){
+        s += svgb.pathBuilder.move(5, 0 - (name[i]*1.5));
+        s += svgb.pathBuilder.line(10, 0);
+        s += svgb.pathBuilder.move(0, (name[i]*1.5));
+        var line = svgb.createPath('svg-clear block-stencil', s);
+        root.appendChild(line);
+      }
+    }
 
     return root;
   };

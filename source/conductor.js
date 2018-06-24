@@ -193,7 +193,7 @@ module.exports = function () {
         message = '(m:(1 2) d:' + d.speed + ');'; // +' b:' + d.duration
       } else if (block.name === 'sound') {
         // pass the Solfege index
-        message = '(nt:' + d.s + ');';
+        message = '(nt:' + d.s.split(" ")[0] + ');';
         console.log('message', message);
       } else if (block.name === 'wait') {
         message = '';
