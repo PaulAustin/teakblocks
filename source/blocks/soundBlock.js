@@ -65,7 +65,7 @@ module.exports = function () {
     div.innerHTML =
         `<div id='pictureEditorDiv' class='editorDiv'>
           <svg id='pianoSvg' width=231px height=175px xmlns='http://www.w3.org/2000/svg'>
-            <rect id='pictureRect' y=10px width=231px height=100px rx=4 ry=4 class='block-sound-piano'/>
+            <rect id='pictureRect' y=2px width=231px height=100px rx=4 ry=4 class='block-sound-piano'/>
           </svg>
         </div>`;
 
@@ -73,7 +73,7 @@ module.exports = function () {
     var svg = document.getElementById('pianoSvg');
     var keyIndex = 0;
     for (var iwKey = 0; iwKey < 8; iwKey++) {
-      var wkey = svgb.createRect('piano-key block-sound-piano-w', 4+(iwKey*28), 23, 27, 84, 3);
+      var wkey = svgb.createRect('piano-key block-sound-piano-w', 4+(iwKey*28), 15, 27, 84, 3);
       wkey.setAttribute('key', keyIndex);
       keyIndex += 1;
       svg.appendChild(wkey);
@@ -81,26 +81,31 @@ module.exports = function () {
     for (var ibKey = 0; ibKey < 7; ibKey++) {
       if (ibKey !== 2 && ibKey !== 6) {
         var left = 21+(ibKey*28) + keyInfo[keyIndex].keyShift;
-        var bkey = svgb.createRect('piano-key block-sound-piano-b', left, 23, 22, 45, 3);
+        var bkey = svgb.createRect('piano-key block-sound-piano-b', left, 15, 22, 45, 3);
         bkey.setAttribute('key', keyIndex);
         keyIndex += 1;
         svg.appendChild(bkey);
       }
     }
-    var r = svgb.createRect('svg-clear block-sound-piano', 0, 10, 231, 15, 4);
+    var r = svgb.createRect('svg-clear block-sound-piano', 0, 2, 231, 15, 4);
     svg.appendChild(r);
 
     var textData = soundBlock.activeBlock.controllerSettings.data.description.split(" ");
     for(var itxtBox = 0; itxtBox < 4; itxtBox++){
-      var txtBox = svgb.createRect('svg-clear block-sound-txtBox', 5+(itxtBox*60), 120, 40, 40, 3);
+      var txtBox = svgb.createRect('svg-clear block-sound-txtBox block-sound-noteBox', 5+(itxtBox*60), 108, 40, 30, 3);
       svg.appendChild(txtBox);
-      var txt = svgb.createText('svg-clear block-sound-text', 13+(itxtBox*60), 148, '__');
+      var txt = svgb.createText('svg-clear block-sound-text block-sound-noteTxt', 13+(itxtBox*60), 130, '__');
       if(textData[itxtBox] !== undefined && textData[itxtBox] !== ""){
         txt.innerHTML = textData[itxtBox];
       }
       txt.setAttribute('box', itxtBox);
       svg.appendChild(txt);
     }
+
+    var clearBox = svgb.createRect('block-sound-txtBox block-sound-clearBox', 75, 145, 80, 25, 3);
+    svg.appendChild(clearBox);
+    var clearTxt = svgb.createText('svg-clear block-sound-text block-sound-clearTxt', 90, 165, 'Clear');
+    svg.appendChild(clearTxt);
 
     // Create audio context for generating tones.
     soundBlock.audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -120,8 +125,18 @@ module.exports = function () {
     })
     .on('up', function () {
       soundBlock.stopCurrentKey();
-    })
-    ;
+    });
+
+    interact('.block-sound-clearBox', {context:svg})
+    .on('down', function() {
+      soundBlock.activeBlock.controllerSettings.data.description = "";
+      soundBlock.activeBlock.controllerSettings.data.s = "";
+      var text = document.getElementsByClassName('block-sound-noteTxt');
+      for(var i = 0; i < 4; i++){
+        text[i].innerHTML = '__';
+      }
+      soundBlock.activeBlock.updateSvg();
+    });
   };
 
   // Release the audioContext.

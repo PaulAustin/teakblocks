@@ -41,24 +41,27 @@
     },
     "phonegap-plugin-mobile-accessibility": {
         "source": {
-            "type": "registry",
-            "id": "https://github.com/phonegap/phonegap-mobile-accessibility.git"
+            "type": "git",
+            "url": "https://github.com/phonegap/phonegap-mobile-accessibility.git",
+            "subdir": "."
         },
         "is_top_level": true,
         "variables": {}
     },
     "cordova-plugin-device": {
         "source": {
-            "type": "registry",
-            "id": "https://github.com/apache/cordova-plugin-device.git"
+            "type": "git",
+            "url": "https://github.com/apache/cordova-plugin-device.git",
+            "subdir": "."
         },
         "is_top_level": false,
         "variables": {}
     },
     "cordova-plugin-network-information": {
         "source": {
-            "type": "registry",
-            "id": "https://github.com/apache/cordova-plugin-network-information.git"
+            "type": "git",
+            "url": "https://github.com/apache/cordova-plugin-network-information.git",
+            "subdir": "."
         },
         "is_top_level": false,
         "variables": {}
