@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2017 Paul Austin - SDG
+Copyright (c) 2018 Trashbots - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,8 @@ module.exports = function factory(){
   cxn.connectionChanged = ko.observable({});
   cxn.connectionChanged.extend({ notify: 'always' });
   cxn.messages = [];
-  cxn.accelerometer = 0;
+  cxn.accelerometerBig = null;
+  cxn.accelerometerSmall = null;
   cxn.compass = 0;
   cxn.temp = 0;
   cxn.connectingTimeout = 0;
@@ -380,7 +381,9 @@ cxn.onData = function(name, data) {
   log.trace('On Data:', name, str);
   cxn.messages.push(name + ':' + str);
   if(str.includes('accel')){
-    cxn.accelerometer = str.substring(7, str.length - 2);
+    var accelData = str.substring(7, str.length - 1);
+    cxn.accelerometerSmall = parseInt(accelData.split(" ")[0], 10);
+    cxn.accelerometerBig = parseInt(accelData.split(" ")[1], 10);
   } else if(str.includes('compass')){
     cxn.compass = str.substring(9, str.length - 2);
   } else if(str.includes('temp')){
@@ -392,6 +395,7 @@ cxn.onValChange = function (event) {
   let value = event.target.value;
   var str = bufferToString(value.buffer);
   log.trace('BLE message recieved', str);
+  cxn.onData('Accelerometer', value.buffer);
 };
 
 cxn.onError = function(reason) {

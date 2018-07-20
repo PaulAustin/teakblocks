@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2017 Paul Austin - SDG
+Copyright (c) 2018 Trashbots - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,10 +23,13 @@ SOFTWARE.
 module.exports = function () {
   var log = require('./log.js');
   var conductor = {};
+  var cxnButton = require('./cxnButton.js');
+  var cxn = require('./cxn.js');
 
   conductor.cxn = require('./cxn.js');
   conductor.tbe = null;
   conductor.hbTimer = 0;
+  conductor.sensorTimer = 0;
   conductor.runningBlocks = [];
   conductor.count = null;
   conductor.defaultPix = '0000000000';
@@ -47,17 +50,17 @@ module.exports = function () {
     log.trace('attached to ', tbe);
     conductor.tbe = tbe;
     conductor.linkHeartBeat();
-    conductor.cxn.connectionChanged.subscribe(conductor.updateIndentiyBlocks);
+    conductor.cxn.connectionChanged.subscribe(conductor.updateIndentityBlocks);
   };
 
   // If there is a change in connections update teh indentity blocks
   // TODO this linkage is ver much a bit of a hack.
-  conductor.updateIndentiyBlocks = function() {
+  conductor.updateIndentityBlocks = function() {
     log.trace(' updating identity blocks');
     var blockChainIterator  = conductor.tbe.forEachDiagramChain;
     blockChainIterator(function(chainStart) {
-      if (chainStart.name === 'identity') {
-        var botName = chainStart.controllerSettings.data.deviceName;
+      if (chainStart.name === 'identity' || chainStart.name === 'identityAccelerometer') {
+        var botName = cxnButton.deviceName;
         var status = conductor.cxn.connectionStatus(botName);
         if (status === conductor.cxn.statusEnum.BEACON) {
           // Try to connect ot it.
@@ -119,7 +122,7 @@ module.exports = function () {
 
             // Mark the current block as running
             var id = block.first;
-            if (id.name === 'identity') { // && !block.isCommented()
+            if (id.name === 'identity' || id.name === 'identityAccelerometer') { // && !block.isCommented()
               conductor.tbe.svg.appendChild(block.svgGroup);
               block.svgRect.classList.add('running-block');
             }
@@ -149,8 +152,40 @@ module.exports = function () {
       // Ignore chains that don't start with an identity block.
       if (chainStart.name === 'identity') {
         conductor.runningBlocks.push(chainStart.next);
+      } else if(chainStart.name === 'identityAccelerometer') {
+        chainStart.controllerSettings.data.run = "yes";
+        conductor.checkSensorIdentity(chainStart);
       }
     });
+  };
+
+  conductor.satisfiesStart = function(big, small, block) {
+    if(block.controllerSettings.data.comparison === '<'){
+      // small is less than value
+      return small < parseInt(block.controllerSettings.data.value, 10);
+    } else if(block.controllerSettings.data.comparison === '>'){
+      return big > parseInt(block.controllerSettings.data.value, 10);
+    } else if(block.controllerSettings.data.comparison === '='){
+      return (small < parseInt(block.controllerSettings.data.value, 10) && big > parseInt(block.controllerSettings.data.value, 10) );
+    }
+    return null;
+  };
+
+  conductor.checkSensorIdentity = function(block) {
+    conductor.sensorTimer = 0;
+    var data = block.controllerSettings.data;
+    conductor.cxn.write(cxnButton.deviceName, '(accel);');
+
+    if(block.name === 'identityAccelerometer' && cxn.accelerometerBig !== null && cxn.accelerometerSmall !== null) {
+      var big = cxn.accelerometerBig;
+      var small = cxn.accelerometerSmall;
+      console.log("Accelerometer Range", big, small);
+      if(conductor.satisfiesStart(big, small, block) && data.run === "yes"){
+        conductor.runningBlocks.push(block.next);
+        data.run = "no";
+      }
+    }
+    conductor.sensorTimer = setTimeout(function() { conductor.checkSensorIdentity(block); }, 500);
   };
 
   // Stop all running chains.
@@ -162,8 +197,8 @@ module.exports = function () {
     blockChainIterator(function(chainStart) {
       chainStart.svgRect.classList.remove('running-block');
       // Ignore chains that don't start with an identity block.
-      if (chainStart.name === 'identity') {
-        botName = chainStart.controllerSettings.data.deviceName;
+      if (chainStart.name === 'identity' || chainStart.name === 'identityAccelerometer') {
+        botName = cxnButton.deviceName;
         conductor.cxn.write(botName, message);
         conductor.cxn.write(botName, message2);
       }
@@ -177,8 +212,8 @@ module.exports = function () {
   conductor.playOne = function(block) {
     var first = block.first;
 
-    if (first.name === 'identity') {
-      var botName = first.controllerSettings.data.deviceName;
+    if (first.name === 'identity' || first.name === 'identityAccelerometer') {
+      var botName = cxnButton.deviceName;
       var message = '';
       var d = block.controllerSettings.data;
       if (block.name === 'picture') {

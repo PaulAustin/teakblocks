@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2017 Paul Austin - SDG
+Copyright (c) 2018 Trashbots - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,21 +21,21 @@ SOFTWARE.
 */
 
 module.exports = function () {
-  var log = require('./../log.js');
+  //var log = require('./../log.js');
   var svgb = require('./../svgbuilder.js');
-  var cxn = require('./../cxn.js');
+  //var cxn = require('./../cxn.js');
   var ko = require('knockout');
   // TODO the link type could show up on the icon
   // to indicate how it is connected
   // var faBlueTooth = '\uf294';
-  var pb = svgb.pathBuilder;
+  //var pb = svgb.pathBuilder;
   var identityBlock = {};
 
   // Items for selecting a device from a list.
-  identityBlock.devices = ko.observableArray([]);
+  //identityBlock.devices = ko.observableArray([]);
 
   // When an item is clicked on select that device.
-  identityBlock.onDeviceClick = function() {
+  /*identityBlock.onDeviceClick = function() {
     // Ah JavaScript... 'this' is NOT identityBlock.
     // It is the knockout item in the observable array.
 
@@ -69,7 +69,7 @@ module.exports = function () {
     //'event': '<i class="fa fa-bolt" aria-hidden="true"></i>',
     //'target-bt': '<i class="fa fa-bluetooth-b" aria-hidden="true"></i>',
     //'target-usb': '<i class="fa fa-usb" aria-hidden="true"></i>',
-  };
+  };*/
 
   // Initial settings for blocks of this type.
   identityBlock.defaultSettings = function() {
@@ -77,15 +77,15 @@ module.exports = function () {
     return {
       data:{
         // What triggers this chain, mouse click, button, message,...
-        start:'click',
+        start:true,
         // Device name
-        deviceName:'-?-',
+        //deviceName:'-?-',
         // Connection mechanism
-        bus:'ble',
+        //bus:'ble',
       },
       // Indicate what controller is active. This may affect the data format.
-      controller:'target-bt',
-      status:0,
+      //controller:'target-bt',
+      //status:0,
     };
   };
 
@@ -93,7 +93,8 @@ module.exports = function () {
     identityBlock.activeBlock = block;
     div.innerHTML =
       `<div class='group-div'>
-        <div class='list-box-shell'>
+        <div class='svg-clear'>Play upon program run<div/>
+        <!--<div class='list-box-shell'>
             <ul class='list-box' data-bind='foreach: devices'>
               <li data-bind= "css:{'list-item-selected':selected()}">
                 <span data-bind= "text:name, click:$parent.onDeviceClick"></span>
@@ -101,19 +102,19 @@ module.exports = function () {
             </ul>
         </div>
         <button id='bt-scan' class='width-whole'>
-        </button>
+        </button>-->
       </div>`;
 
     // Connect the dataBinding.
     ko.applyBindings(identityBlock, div);
 
-    identityBlock.scanButton = document.getElementById('bt-scan');
-    identityBlock.scanButton.onclick = identityBlock.handleScanButton;
+    //identityBlock.scanButton = document.getElementById('bt-scan');
+    //identityBlock.scanButton.onclick = identityBlock.handleScanButton;
 
     // If currently connected then disconnect and let them choose the same again
     // or pick another.
-    var currentBotName = block.controllerSettings.data.deviceName;
-    log.trace('currently connected to', currentBotName);
+    //var currentBotName = block.controllerSettings.data.deviceName;
+    //log.trace('currently connected to', currentBotName);
     /*
     var dev = cxn.devices[currentBotName];
     if (dev !== undefined) {
@@ -121,17 +122,17 @@ module.exports = function () {
       log.trace('current mac', mac);
       cxn.disconnect(mac, currentBotName);
     }
-    */
+
     if (!cxn.scanUsesHostDialog && !cxn.scannning) {
       // If scanning is unobtrusive, start it when the form is shown.
       identityBlock.toggleBtScan();
     } else {
       // Otherwise at least fix up the button label.
       identityBlock.configBtnScan(false);
-    }
+    }*/
   };
 
-  identityBlock.handleScanButton = function() {
+  /*identityBlock.handleScanButton = function() {
     if(cxn.scanning){
       console.log('disconnect block');
       var block = identityBlock.activeBlock;
@@ -193,14 +194,14 @@ module.exports = function () {
     if (!cxn.scanning) {
       identityBlock.configBtnScan(false);
     }
-  };
+  };*/
 
   // Close the identity blocks and clean up hooks related to it.
   identityBlock.configuratorClose = function(div) {
     // Stop looking for visible devices.
-    if (cxn.scannning) {
-      identityBlock.toggleBtScan();
-    }
+    //if (cxn.scannning) {
+    //  identityBlock.toggleBtScan();
+    //}
     identityBlock.activeBlock = null;
     ko.cleanNode(div);
   };
@@ -208,7 +209,7 @@ module.exports = function () {
   // Buid an SVG for the block that indicates the device name
   // and connection status
   identityBlock.svg = function(root, block) {
-    var pathd = '';
+    /*var pathd = '';
     pathd =  pb.move(31, 11);
     pathd += pb.hline(18);
     pathd += pb.arc(9, 180, 0, 1, 0, 18);
@@ -217,11 +218,11 @@ module.exports = function () {
     var path = svgb.createPath('svg-clear block-stencil', pathd);
     root.appendChild(path);
     root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 31, 20, 2));
-    root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 49, 20, 2));
+    root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 49, 20, 2));*/
 
     // Add identity name
-    var botName = block.controllerSettings.data.deviceName;
-    var status = cxn.connectionStatus(botName);
+    //var botName = block.controllerSettings.data.deviceName;
+    /*var status = cxn.connectionStatus(botName);
     if (status === cxn.statusEnum.NOT_THERE) {
       botName = '-?-';
       block.controllerSettings.data.deviceName = botName;
@@ -247,10 +248,13 @@ module.exports = function () {
         statusClass = 'block-bot-connection-error';
       }
       root.appendChild(svgb.createCircle('svg-clear ' + statusClass, 40, 65, 5));
-    }
+    }*/
+    var play = svgb.createText('svg-clear block-identity-text', 20, 60, '\uf04b');
+    //play.setAttribute('style', 'font-family: FontAwesome;');
+    root.appendChild(play);
   };
 
-  identityBlock.addItem = function (botName) {
+/*identityBlock.addItem = function (botName) {
     var block = identityBlock.activeBlock;
     if (block !== null) {
       var targetName = block.controllerSettings.data.deviceName;
@@ -260,7 +264,7 @@ module.exports = function () {
       });
       identityBlock.devices.unshift(item);
     }
-  };
+  };*/
 
   return identityBlock;
   }();

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2017 Paul Austin - SDG
+Copyright (c) 2018 Trashbots - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -74,7 +74,8 @@ module.exports = function () {
       gamepad: '\uf11b',
       debug: '\uf120',
       camera: '\uf030',
-      bluetooth: '\uf294'
+      bluetooth: '\uf294',
+      connect: '\uf1e6'
     };
 
     // Configuration components for the app and blocks
@@ -116,7 +117,7 @@ module.exports = function () {
       {'label': fastr.copy, 'command': 'copy'},
       {'label': fastr.paste, 'command': 'paste'},
       {'label': fastr.save, 'command': 'save'},
-      {'label': fastr.settings, 'command': 'splashOverlay'}
+      {'label': fastr.settings, 'command': 'splashOverlay'},
     ];
 
     tbe.deleteRay = null;
@@ -147,7 +148,8 @@ module.exports = function () {
       'save': function() {
         var currentDocText = teaktext.blocksToText(tbe.forEachDiagramChain);
         app.fileOverlay.saveFile(tbe.currentDoc, currentDocText);
-      }
+      },
+      'connect': function(button) { tbe.openConnectionMenu(button); }
     };
 
     // Construct the clipboard
@@ -174,7 +176,9 @@ module.exports = function () {
         'twoMotor':{},
         //'servo':{},
         'wait':{},
-        'loop':{}
+        'loop':{},
+        'identityAccelerometer':{}
+        //'identityEncoder':{}
       }
     };
 
@@ -183,13 +187,13 @@ module.exports = function () {
     var actionButtonObj = [
      {'alignment': 'L', 'position': 1, 'label': fastr.play, 'command': 'play', 'tweakx': 4},
      {'alignment': 'L', 'position': 2, 'label': fastr.stop, 'command': 'stop'},
-     {'alignment': 'M', 'position': 1, 'label': fastr.gamepad, 'command': 'driveOverlay'},
-     {'alignment': 'M', 'position': 2, 'label': fastr.debug, 'command': 'debugOverlay'},
-     {'alignment': 'M', 'position': 3, 'label': fastr.folder, 'command': 'pages'},
+     {'alignment': 'L', 'position': 3, 'label': fastr.gamepad, 'command': 'driveOverlay'},
+     {'alignment': 'M', 'position': 1, 'label': fastr.debug, 'command': 'debugOverlay'},
+     {'alignment': 'M', 'position': 2, 'label': fastr.folder, 'command': 'pages'},
   //   {'alignment': 'M', 'position': 4, 'label': fastr.camera, 'command': 'docSnapShot'},
-     {'alignment': 'M', 'position': 5, 'label': fastr.edit, 'command': 'edit'}
-    // {'alignment': 'R', 'position': 2, 'label': fastr.redo, 'command': 'redo'},
-    // {'alignment': 'R', 'position': 1, 'label': fastr.undo, 'command': 'undo'}
+     {'alignment': 'M', 'position': 3, 'label': fastr.edit, 'command': 'edit'},
+     {'alignment': 'R', 'position': 3, 'label': '', 'command': 'connect'},
+     //{'alignment': 'R', 'position': 2, 'label': '', 'command': ''},
     ];
 
     tbe.actionButtons = actionButtonObj;
@@ -203,10 +207,10 @@ module.exports = function () {
     }
   };
 
-  app.doCommand = function(commandName) {
+  app.doCommand = function(commandName, button) {
     var cmdFunction = app.tbe.commands[commandName];
     if (typeof cmdFunction === 'function') {
-      cmdFunction();
+      cmdFunction(button);
     }
   };
 

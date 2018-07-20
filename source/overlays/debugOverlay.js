@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2017 Paul Austin - SDG
+Copyright (c) 2018 Trashbots - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,7 @@ module.exports = function () {
     app.overlayDom.innerHTML = `
       <div id='debugOverlay' class ='fullScreenSlideIn'>
         <div id='debugLogBackground'>
-          <i class='fa fa-times driver-x-debug svg-clear' aria-hidden='true' horizontal-align='middle'></i>
+          <i class='fa fa-times driver-x-debug' id="overlayExitButton" aria-hidden='true' horizontal-align='middle'></i>
           <div id='debugLog'></div>
         </div>
       </div>`;
@@ -46,6 +46,13 @@ module.exports = function () {
 
     // Start update function.
     debugMode.updateDebug();
+    log.trace('> Hello');
+  };
+
+  // Add a messge to the log.
+  debugMode.log = function (text) {
+    debugMode.logElement.innerHTML += text;
+    // TODO need way to trim buffer to a max size (10K??)
     log.trace('> Hello');
   };
 

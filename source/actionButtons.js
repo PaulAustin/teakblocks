@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2017 Paul Austin - SDG
+Copyright (c) 2018 Trashbots - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@ SOFTWARE.
 module.exports = function () {
   var actionButtons = {};
   var svgb = require('./svgbuilder.js');
+  var cxnButton = require('./cxnButton.js');
 
   actionButtons.addActionButtons = function(buttons, tbe) {
     var position = null;
@@ -90,6 +91,14 @@ module.exports = function () {
         svgText = svgb.createText('fa action-dot-text', x + tweakx, 53, label);
         group.appendChild(svgCircle);
         group.appendChild(svgText);
+      }
+
+      if (command === 'connect') {
+        var dLabel = actionButtons.addLabel(svgCircle, 160, "bot: " + cxnButton.deviceName, 'device-name-label');
+        group.appendChild(dLabel);
+        group.setAttribute('class', 'buttonGroup action-dot');
+        svgCircle.setAttribute('class', '');
+        group.setAttribute('command', command);
       }
 
       tbe.svg.appendChild(group);
@@ -238,6 +247,24 @@ module.exports = function () {
     group.appendChild(svgCircle);
     group.appendChild(svgText);
     tbe.svg.appendChild(group);
+    return group;
+  };
+
+  actionButtons.addLabel = function(circle, width, label, idName){
+    var x = parseInt(circle.getAttribute('cx'), 10);
+    var y = parseInt(circle.getAttribute('cy'), 10);
+    var r = parseInt(circle.getAttribute('r'), 10);
+
+    var group = svgb.createGroup('buttonGroup', 0, 0);
+
+    var rect = svgb.createRect('', x, y-r, width, r*2);
+    var cir = svgb.createCircle('', x+width, y, r);
+    var txt = svgb.createText('svg-clear action-dot-text', x+80, y-(r/3), label);
+    txt.setAttribute('style', 'dominant-baseline: hanging;');
+    txt.setAttribute('id', idName);
+    group.appendChild(rect);
+    group.appendChild(cir);
+    group.appendChild(txt);
     return group;
   };
 

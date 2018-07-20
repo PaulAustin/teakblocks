@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2016 Paul Austin - SDG
+Copyright (c) 2018 Trashbots - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -56,6 +56,7 @@ b.loopBlock = flowBlocks.flowBlockHead;  // TODO name change
 b.tailBlock = flowBlocks.flowBlockTail;  // TODO name change
 b.motorBlock = require('./blocks/motorBlock.js');
 b.twoMotorBlock = require('./blocks/twoMotorBlock.js');
+b.identityAccelerometerBlock = require('./blocks/identityAccelerometerBlock.js');
 
 b.digitalWriteBlock = {
   svg: function(root) {

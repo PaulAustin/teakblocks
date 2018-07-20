@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2016 Paul Austin - SDG
+Copyright (c) 2018 Trashbots - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -35,6 +35,7 @@ var actionButtons = require('./actionButtons.js');
 var defaultFiles = require('./defaultFiles.js');
 var conductor = require('./conductor.js');
 var app = require('./appMain.js');
+var cxnButton = require('./cxnButton.js');
 
 var tbe = {};
 
@@ -172,6 +173,10 @@ tbe.loadDoc = function(docName) {
       teakText.textToBlocks(tbe, loadedDocText);
     }
   }
+};
+
+tbe.openConnectionMenu = function(button) {
+  cxnButton.configuratorOpen(button, tbe);
 };
 
 tbe.nextBlockId = function(prefix) {
@@ -1163,7 +1168,7 @@ tbe.configInteractions = function configInteractions() {
   })
   .on('up', function (event) {
     var cmd = event.currentTarget.getAttribute('command');
-    app.doCommand(cmd);
+    app.doCommand(cmd, event);
     event.currentTarget.classList.toggle('switch-bg');
   });
 
