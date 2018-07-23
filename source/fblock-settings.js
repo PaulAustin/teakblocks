@@ -45,7 +45,7 @@ b.unknownBlock = {
   }
 };
 
-b.identityBlock = require('./blocks/identityBlock.js');
+b.identityBlock = require('./blocks/identityBlocks/identityBlock.js');
 b.pictureBlock = require('./blocks/pictureBlock.js');
 b.soundBlock = require('./blocks/soundBlock.js');
 b.servoBlock = require('./blocks/servoBlock.js');
@@ -56,7 +56,7 @@ b.loopBlock = flowBlocks.flowBlockHead;  // TODO name change
 b.tailBlock = flowBlocks.flowBlockTail;  // TODO name change
 b.motorBlock = require('./blocks/motorBlock.js');
 b.twoMotorBlock = require('./blocks/twoMotorBlock.js');
-b.identityAccelerometerBlock = require('./blocks/identityAccelerometerBlock.js');
+b.identityAccelerometerBlock = require('./blocks/identityBlocks/identityAccelerometerBlock.js');
 
 b.digitalWriteBlock = {
   svg: function(root) {

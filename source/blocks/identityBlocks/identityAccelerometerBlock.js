@@ -22,10 +22,10 @@ SOFTWARE.
 
 module.exports = function () {
   //var log = require('./../log.js');
-  var svgb = require('./../svgbuilder.js');
+  var svgb = require('./../../svgbuilder.js');
   //var cxn = require('./../cxn.js');
   var ko = require('knockout');
-  var keypad = require('./keypadTab.js');
+  var keypad = require('./../keypadTab.js');
   // TODO the link type could show up on the icon
   // to indicate how it is connected
   // var faBlueTooth = '\uf294';
