@@ -59,7 +59,7 @@ module.exports = function () {
     log.trace(' updating identity blocks');
     var blockChainIterator  = conductor.tbe.forEachDiagramChain;
     blockChainIterator(function(chainStart) {
-      if (chainStart.name === 'identity' || chainStart.name === 'identityAccelerometer') {
+      if (chainStart.name.startsWith('identity')) {
         var botName = cxnButton.deviceName;
         var status = conductor.cxn.connectionStatus(botName);
         if (status === conductor.cxn.statusEnum.BEACON) {
@@ -122,7 +122,7 @@ module.exports = function () {
 
             // Mark the current block as running
             var id = block.first;
-            if (id.name === 'identity' || id.name === 'identityAccelerometer') { // && !block.isCommented()
+            if (id.name.startsWith('identity')) { // && !block.isCommented()
               conductor.tbe.svg.appendChild(block.svgGroup);
               block.svgRect.classList.add('running-block');
             }
@@ -152,8 +152,11 @@ module.exports = function () {
       // Ignore chains that don't start with an identity block.
       if (chainStart.name === 'identity') {
         conductor.runningBlocks.push(chainStart.next);
-      } else if(chainStart.name === 'identityAccelerometer') {
+      } else if(chainStart.name === 'identityAccelerometer' || chainStart.name === 'identityButton') {
         chainStart.controllerSettings.data.run = "yes";
+        cxn.buttonA = null;
+        cxn.buttonB = null;
+        cxn.buttonAB = null;
         conductor.checkSensorIdentity(chainStart);
       }
     });
@@ -176,16 +179,30 @@ module.exports = function () {
     var data = block.controllerSettings.data;
     conductor.cxn.write(cxnButton.deviceName, '(accel);');
 
-    if(block.name === 'identityAccelerometer' && cxn.accelerometerBig !== null && cxn.accelerometerSmall !== null) {
+    if(block.name === 'identityAccelerometer' && cxn.accelerometerBig !== null && cxn.accelerometerSmall !== null && data.run === "yes") {
       var big = cxn.accelerometerBig;
       var small = cxn.accelerometerSmall;
-      console.log("Accelerometer Range", big, small);
-      if(conductor.satisfiesStart(big, small, block) && data.run === "yes"){
+      //console.log("Accelerometer Range", big, small);
+      if(conductor.satisfiesStart(big, small, block)){
         conductor.runningBlocks.push(block.next);
         data.run = "no";
       }
+    } else if (block.name === 'identityButton' && data.run === "yes") {
+      if(data.button === 'A' && cxn.buttonA){
+        conductor.runningBlocks.push(block.next);
+        // data.run = "no";
+        cxn.buttonA = null;
+      } else if(data.button === 'B' && cxn.buttonB){
+        conductor.runningBlocks.push(block.next);
+        cxn.buttonB = null;
+        // data.run = "no";
+      } else if(data.button === 'A+B' && cxn.buttonAB){
+        conductor.runningBlocks.push(block.next);
+        cxn.buttonAB = null;
+        // data.run = "no";
+      }
     }
-    conductor.sensorTimer = setTimeout(function() { conductor.checkSensorIdentity(block); }, 500);
+    conductor.sensorTimer = setTimeout(function() { conductor.checkSensorIdentity(block); }, 1000);
   };
 
   // Stop all running chains.
@@ -197,7 +214,7 @@ module.exports = function () {
     blockChainIterator(function(chainStart) {
       chainStart.svgRect.classList.remove('running-block');
       // Ignore chains that don't start with an identity block.
-      if (chainStart.name === 'identity' || chainStart.name === 'identityAccelerometer') {
+      if (chainStart.name.startsWith('identity')) {
         botName = cxnButton.deviceName;
         conductor.cxn.write(botName, message);
         conductor.cxn.write(botName, message2);
@@ -212,7 +229,7 @@ module.exports = function () {
   conductor.playOne = function(block) {
     var first = block.first;
 
-    if (first.name === 'identity' || first.name === 'identityAccelerometer') {
+    if (first.name.startsWith('identity')) {
       var botName = cxnButton.deviceName;
       var message = '';
       var d = block.controllerSettings.data;

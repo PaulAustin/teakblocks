@@ -64,9 +64,9 @@ module.exports = function () {
       'numArray': ["-10", "C", "+10", "-100", undefined, "+100"],
       'calcLayout': 'simple',
       'inner': `<div id='keypadDiv' class='editorDiv'>
-          <div class="idAccel-txt svg-clear">accel
+          <div class="dropdown-label-txt svg-clear">accel
           </div>
-          <select class="idAccel-comparison" id="dropdown-comparison">
+          <select class="dropdown-comparison" id="dropdown-comparison">
             <option value="=" id="idAccel-equals">=</option>
             <option value=">" id="idAccel-greater">></option>
             <option value="<" id="idAccel-less"><</option>

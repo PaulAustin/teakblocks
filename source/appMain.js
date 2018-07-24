@@ -177,7 +177,8 @@ module.exports = function () {
         //'servo':{},
         'wait':{},
         'loop':{},
-        'identityAccelerometer':{}
+        'identityAccelerometer':{},
+        'identityButton': {}
         //'identityEncoder':{}
       }
     };

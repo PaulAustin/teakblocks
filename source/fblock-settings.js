@@ -57,6 +57,7 @@ b.tailBlock = flowBlocks.flowBlockTail;  // TODO name change
 b.motorBlock = require('./blocks/motorBlock.js');
 b.twoMotorBlock = require('./blocks/twoMotorBlock.js');
 b.identityAccelerometerBlock = require('./blocks/identityBlocks/identityAccelerometerBlock.js');
+b.identityButtonBlock = require('./blocks/identityBlocks/identityButtonBlock.js');
 
 b.digitalWriteBlock = {
   svg: function(root) {

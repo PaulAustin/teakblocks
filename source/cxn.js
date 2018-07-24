@@ -29,11 +29,15 @@ module.exports = function factory(){
   cxn.connectionChanged = ko.observable({});
   cxn.connectionChanged.extend({ notify: 'always' });
   cxn.messages = [];
-  cxn.accelerometerBig = null;
-  cxn.accelerometerSmall = null;
   cxn.compass = 0;
   cxn.temp = 0;
   cxn.connectingTimeout = 0;
+
+  cxn.accelerometerBig = null;
+  cxn.accelerometerSmall = null;
+  cxn.buttonA = null;
+  cxn.buttonB = null;
+  cxn.buttonAB = null;
 
 // State enumeration for conections.
 cxn.statusEnum = {
@@ -384,6 +388,12 @@ cxn.onData = function(name, data) {
     var accelData = str.substring(7, str.length - 1);
     cxn.accelerometerSmall = parseInt(accelData.split(" ")[0], 10);
     cxn.accelerometerBig = parseInt(accelData.split(" ")[1], 10);
+  } else if(str.includes('(a)')){
+    cxn.buttonA = true;
+  } else if(str.includes('(b)')){
+    cxn.buttonB = true;
+  } else if(str.includes('(ab)')){
+    cxn.buttonAB = true;
   } else if(str.includes('compass')){
     cxn.compass = str.substring(9, str.length - 2);
   } else if(str.includes('temp')){
@@ -395,7 +405,7 @@ cxn.onValChange = function (event) {
   let value = event.target.value;
   var str = bufferToString(value.buffer);
   log.trace('BLE message recieved', str);
-  cxn.onData('Accelerometer', value.buffer);
+  cxn.onData('Received', value.buffer);
 };
 
 cxn.onError = function(reason) {
