@@ -190,9 +190,6 @@ tbe.addBlock = function(x, y, name) {
    block.isPaletteBlock = false;
    block.interactId = tbe.nextBlockId('d:');
    this.diagramBlocks[block.interactId] = block;
-   if(block.name.startsWith('identity')){
-     block.svgRect.setAttribute('class', 'function-block identity-block');
-   }
    return block;
 };
 
@@ -402,6 +399,9 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   };
   this.svgGroup = svgb.createGroup('drag-group', 0, 0);
   this.svgRect = svgb.createRect('function-block', 0, 0, width, 80, 10);
+  if(blockName.startsWith('identity')){
+    this.svgRect.setAttribute('class', 'function-block identity-block');
+  }
   this.svgGroup.appendChild(this.svgRect);
   this.svgCustomGroup = null; // see updateSvg()
   this.updateSvg();
@@ -1531,9 +1531,6 @@ tbe.addPalette = function addPalette(palette) {
         block.flowTail = blockTail;
         blockTail.flowHead = block;
         blockTail.fixupChainCrossBlockSvg();
-      }
-      if(block.name.startsWith('identity')){
-        block.svgRect.setAttribute('class', 'function-block identity-block');
       }
       indent += block.chainWidth + 10;
     }
