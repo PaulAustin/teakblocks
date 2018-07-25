@@ -169,7 +169,7 @@ module.exports = function () {
     } else if(block.controllerSettings.data.comparison === '>'){
       return big > parseInt(block.controllerSettings.data.value, 10);
     } else if(block.controllerSettings.data.comparison === '='){
-      return (small < parseInt(block.controllerSettings.data.value, 10) && big > parseInt(block.controllerSettings.data.value, 10) );
+      return (small === parseInt(block.controllerSettings.data.value, 10) || big === parseInt(block.controllerSettings.data.value, 10) );
     }
     return null;
   };
@@ -182,10 +182,10 @@ module.exports = function () {
     if(block.name === 'identityAccelerometer' && cxn.accelerometerBig !== null && cxn.accelerometerSmall !== null && data.run === "yes") {
       var big = cxn.accelerometerBig;
       var small = cxn.accelerometerSmall;
-      //console.log("Accelerometer Range", big, small);
+      console.log("Accelerometer Range", big, small);
       if(conductor.satisfiesStart(big, small, block)){
         conductor.runningBlocks.push(block.next);
-        data.run = "no";
+        // data.run = "no";
       }
     } else if (block.name === 'identityButton' && data.run === "yes") {
       if(data.button === 'A' && cxn.buttonA){
@@ -202,7 +202,7 @@ module.exports = function () {
         // data.run = "no";
       }
     }
-    conductor.sensorTimer = setTimeout(function() { conductor.checkSensorIdentity(block); }, 1000);
+    conductor.sensorTimer = setTimeout(function() { conductor.checkSensorIdentity(block); }, 500);
   };
 
   // Stop all running chains.
