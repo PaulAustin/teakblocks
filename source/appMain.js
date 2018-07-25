@@ -170,15 +170,15 @@ module.exports = function () {
     name:'A',
     blocks:{
         'identity':{},
+        'identityAccelerometer':{},
+        'identityButton': {},
         'picture':{},
         'sound':{},
         'motor':{},
         'twoMotor':{},
         //'servo':{},
         'wait':{},
-        'loop':{},
-        'identityAccelerometer':{},
-        'identityButton': {}
+        'loop':{}
         //'identityEncoder':{}
       }
     };
