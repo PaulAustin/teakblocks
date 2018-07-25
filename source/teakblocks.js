@@ -190,6 +190,9 @@ tbe.addBlock = function(x, y, name) {
    block.isPaletteBlock = false;
    block.interactId = tbe.nextBlockId('d:');
    this.diagramBlocks[block.interactId] = block;
+   if(block.name.startsWith('identity')){
+     block.svgRect.setAttribute('class', 'function-block identity-block');
+   }
    return block;
 };
 
@@ -1528,6 +1531,9 @@ tbe.addPalette = function addPalette(palette) {
         block.flowTail = blockTail;
         blockTail.flowHead = block;
         blockTail.fixupChainCrossBlockSvg();
+      }
+      if(block.name.startsWith('identity')){
+        block.svgRect.setAttribute('class', 'function-block identity-block');
       }
       indent += block.chainWidth + 10;
     }
