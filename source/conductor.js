@@ -176,6 +176,16 @@ module.exports = function () {
     return null;
   };
 
+  conductor.runningBlockIsNotInChain = function(block) {
+    while(block !== null){
+      if(block.svgRect.classList.contains('running-block')) {
+        return false;
+      }
+      block = block.next;
+    }
+    return true;
+  };
+
   conductor.checkSensorIdentity = function(block) {
     conductor.sensorTimer = 0;
     var data = block.controllerSettings.data;
