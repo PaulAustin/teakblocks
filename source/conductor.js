@@ -33,6 +33,7 @@ module.exports = function () {
   conductor.runningBlocks = [];
   conductor.count = null;
   conductor.defaultPix = '0000000000';
+  conductor.run = false;
 
   // Once the conductor system is connected to the editor,
   // it will ping the target device to determine
@@ -147,12 +148,14 @@ module.exports = function () {
   // Find all start all blocks and start them running.
   conductor.playAll = function() {
     conductor.runningBlocks = [];
+    conductor.run = true;
     var blockChainIterator  = conductor.tbe.forEachDiagramChain;
     blockChainIterator(function(chainStart) {
       // Ignore chains that don't start with an identity block.
       if (chainStart.name === 'identity') {
         conductor.runningBlocks.push(chainStart.next);
       } else if(chainStart.name === 'identityAccelerometer' || chainStart.name === 'identityButton' || chainStart.name === 'identityTemperature') {
+        //chainStart.controllerSettings.data.run = "yes";
         cxn.buttonA = null;
         cxn.buttonB = null;
         cxn.buttonAB = null;
@@ -176,29 +179,32 @@ module.exports = function () {
   conductor.checkSensorIdentity = function(block) {
     conductor.sensorTimer = 0;
     var data = block.controllerSettings.data;
-    conductor.cxn.write(cxnButton.deviceName, '(accel);');
-
-    if(block.name === 'identityAccelerometer' && cxn.accelerometerBig !== null && cxn.accelerometerSmall !== null && data.run === "yes") {
-      var big = cxn.accelerometerBig;
-      var small = cxn.accelerometerSmall;
-      console.log("Accelerometer Range", big, small);
-      if(conductor.satisfiesStart(big, small, block)){
-        conductor.runningBlocks.push(block.next);
-        // data.run = "no";
-      }
-    } else if (block.name === 'identityButton' && data.run === "yes") {
-      if(data.button === 'A' && cxn.buttonA){
-        conductor.runningBlocks.push(block.next);
-        // data.run = "no";
-        cxn.buttonA = null;
-      } else if(data.button === 'B' && cxn.buttonB){
-        conductor.runningBlocks.push(block.next);
-        cxn.buttonB = null;
-        // data.run = "no";
-      } else if(data.button === 'A+B' && cxn.buttonAB){
-        conductor.runningBlocks.push(block.next);
-        cxn.buttonAB = null;
-        // data.run = "no";
+    //conductor.cxn.write(cxnButton.deviceName, '(sensor);');
+    if(conductor.run){
+      if(block.name === 'identityAccelerometer' && cxn.accelerometer !== null) {
+        var accel = cxn.accelerometer;
+        console.log("Accelerometer", accel);
+        if(conductor.satisfiesStart(accel, block, 32) && conductor.runningBlockIsNotInChain(block)){
+          conductor.runningBlocks.push(block.next);
+        }
+      } else if(block.name === 'identityTemperature' && cxn.temperature !== null) {
+        var temp = cxn.temperature;
+        console.log("Temperature", temp);
+        if(conductor.satisfiesStart(temp, block, 0)){
+          conductor.runningBlocks.push(block.next);
+        }
+      } else if (block.name === 'identityButton') {
+        //console.log(data.button);
+        if(data.button === 'A' && cxn.buttonA){
+          conductor.runningBlocks.push(block.next);
+          cxn.buttonA = null;
+        } else if(data.button === 'B' && cxn.buttonB){
+          conductor.runningBlocks.push(block.next);
+          cxn.buttonB = null;
+        } else if(data.button === 'A+B' && cxn.buttonAB){
+          conductor.runningBlocks.push(block.next);
+          cxn.buttonAB = null;
+        }
       }
     }
     conductor.sensorTimer = setTimeout(function() { conductor.checkSensorIdentity(block); }, 500);
@@ -210,6 +216,7 @@ module.exports = function () {
     var botName = '';
     var message = '(m:(1 2) d:0);';
     var message2 = '(px:' + conductor.defaultPix + ');';
+    conductor.run = false;
     blockChainIterator(function(chainStart) {
       chainStart.svgRect.classList.remove('running-block');
       // Ignore chains that don't start with an identity block.

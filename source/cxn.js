@@ -404,7 +404,6 @@ cxn.onData = function(name, data) {
 
 cxn.onValChange = function (event) {
   let value = event.target.value;
-  var str = bufferToString(value.buffer);
   log.trace('BLE message recieved', str);
   cxn.onData('Received', value.buffer);
 };

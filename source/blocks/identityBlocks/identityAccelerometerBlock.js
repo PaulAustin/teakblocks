@@ -45,8 +45,7 @@ module.exports = function () {
         // What comparison: =, <, >
         comparison:'=',
         // Value
-        value:0,
-        run: "yes"
+        value:0
       },
     };
   };
@@ -58,8 +57,8 @@ module.exports = function () {
       'type':identityAccelerometer,
       'div': div,
       'block': block,
-      'min':-2048,
-      'max':2048,
+      'min':-2000,
+      'max':2000,
       'suffix':"",
       'numArray': ["-10", "C", "+10", "-100", undefined, "+100"],
       'calcLayout': 'simple',

@@ -40,10 +40,9 @@ module.exports = function () {
     return {
       data:{
         // What comparison: A, B, A+B
-        button:'A',
+        button:'A'
         // Value
         //value:0,
-        run: "yes"
       },
     };
   };
