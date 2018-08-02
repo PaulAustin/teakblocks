@@ -164,14 +164,19 @@ module.exports = function () {
     });
   };
 
-  conductor.satisfiesStart = function(big, small, block) {
+  conductor.satisfiesStart = function(val, block, error) {
+    var blockValue = parseInt(block.controllerSettings.data.value, 10);
     if(block.controllerSettings.data.comparison === '<'){
-      // small is less than value
-      return small < parseInt(block.controllerSettings.data.value, 10);
+      return val < blockValue;
     } else if(block.controllerSettings.data.comparison === '>'){
-      return big > parseInt(block.controllerSettings.data.value, 10);
+      return val > blockValue;
     } else if(block.controllerSettings.data.comparison === '='){
-      return (small === parseInt(block.controllerSettings.data.value, 10) || big === parseInt(block.controllerSettings.data.value, 10) );
+      if(val === blockValue){
+        return true;
+      } else if(val + error > blockValue && val - error < blockValue) {
+        return true;
+      }
+      return false;
     }
     return null;
   };
