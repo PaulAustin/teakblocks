@@ -33,8 +33,8 @@ module.exports = function factory(){
   cxn.temp = 0;
   cxn.connectingTimeout = 0;
 
-  cxn.accelerometerBig = null;
-  cxn.accelerometerSmall = null;
+  cxn.accelerometer = null;
+  cxn.temperature = null;
   cxn.buttonA = null;
   cxn.buttonB = null;
   cxn.buttonAB = null;
@@ -386,8 +386,7 @@ cxn.onData = function(name, data) {
   cxn.messages.push(name + ':' + str);
   if(str.includes('accel')){
     var accelData = str.substring(7, str.length - 1);
-    cxn.accelerometerSmall = parseInt(accelData.split(" ")[0], 10);
-    cxn.accelerometerBig = parseInt(accelData.split(" ")[1], 10);
+    cxn.accelerometer = parseInt(accelData, 10);
   } else if(str.includes('(a)')){
     cxn.buttonA = true;
   } else if(str.includes('(b)')){
@@ -397,7 +396,9 @@ cxn.onData = function(name, data) {
   } else if(str.includes('compass')){
     cxn.compass = str.substring(9, str.length - 2);
   } else if(str.includes('temp')){
-    cxn.temp = str.substring(6, str.length - 2);
+    var tempData = str.substring(6, str.length - 1);
+    var fData = (1.8*parseInt(tempData, 10))+32;
+    cxn.temperature = fData;
   }
 };
 

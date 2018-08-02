@@ -152,8 +152,7 @@ module.exports = function () {
       // Ignore chains that don't start with an identity block.
       if (chainStart.name === 'identity') {
         conductor.runningBlocks.push(chainStart.next);
-      } else if(chainStart.name === 'identityAccelerometer' || chainStart.name === 'identityButton') {
-        chainStart.controllerSettings.data.run = "yes";
+      } else if(chainStart.name === 'identityAccelerometer' || chainStart.name === 'identityButton' || chainStart.name === 'identityTemperature') {
         cxn.buttonA = null;
         cxn.buttonB = null;
         cxn.buttonAB = null;

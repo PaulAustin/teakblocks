@@ -172,6 +172,7 @@ module.exports = function () {
         'identity':{},
         'identityAccelerometer':{},
         'identityButton': {},
+        'identityTemperature': {},
         'picture':{},
         'sound':{},
         'motor':{},
