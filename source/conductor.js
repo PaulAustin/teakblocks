@@ -25,6 +25,7 @@ module.exports = function () {
   var conductor = {};
   var cxnButton = require('./overlays/cxnButton.js');
   var cxn = require('./cxn.js');
+  var variables = require('./variables.js');
 
   conductor.cxn = require('./cxn.js');
   conductor.tbe = null;
@@ -149,6 +150,7 @@ module.exports = function () {
   conductor.playAll = function() {
     conductor.runningBlocks = [];
     conductor.run = true;
+    variables.resetVars();
     var blockChainIterator  = conductor.tbe.forEachDiagramChain;
     blockChainIterator(function(chainStart) {
       // Ignore chains that don't start with an identity block.
@@ -270,6 +272,10 @@ module.exports = function () {
         console.log('message', message);
       } else if (block.name === 'wait') {
         message = '';
+      } else if (block.name === 'variableSet'){
+        variables.setVal(d.variable, d.value);
+      } else if (block.name === 'variableAdd'){
+        variables.incdec(d.variable, d.incdec, d.value);
       }
       conductor.cxn.write(botName, message);
     }
