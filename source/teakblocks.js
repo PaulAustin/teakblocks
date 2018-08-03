@@ -35,7 +35,7 @@ var actionButtons = require('./actionButtons.js');
 var defaultFiles = require('./defaultFiles.js');
 var conductor = require('./conductor.js');
 var app = require('./appMain.js');
-var cxnButton = require('./cxnButton.js');
+var cxnButton = require('./overlays/cxnButton.js');
 
 var tbe = {};
 

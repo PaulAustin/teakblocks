@@ -23,7 +23,7 @@ SOFTWARE.
 module.exports = function () {
   var actionButtons = {};
   var svgb = require('./svgbuilder.js');
-  var cxnButton = require('./cxnButton.js');
+  var cxnButton = require('./overlays/cxnButton.js');
 
   actionButtons.addActionButtons = function(buttons, tbe) {
     var position = null;

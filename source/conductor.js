@@ -23,7 +23,7 @@ SOFTWARE.
 module.exports = function () {
   var log = require('./log.js');
   var conductor = {};
-  var cxnButton = require('./cxnButton.js');
+  var cxnButton = require('./overlays/cxnButton.js');
   var cxn = require('./cxn.js');
 
   conductor.cxn = require('./cxn.js');

@@ -21,8 +21,8 @@ SOFTWARE.
 */
 
 module.exports = function () {
-  var log = require('./log.js');
-  var cxn = require('./cxn.js');
+  var log = require('./../log.js');
+  var cxn = require('./../cxn.js');
   var ko = require('knockout');
 
   var cxnButton =  {};
