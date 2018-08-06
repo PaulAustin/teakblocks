@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2017 Paul Austin - SDG
+Copyright (c) 2018 Trashbots - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ module.exports = function () {
     // Return a new object with settings for the controller
     return {
       // and the data that goes with that editor.
-      data:{'description':'', 'period':'1/4', 's':'', 'duration': 4},
+      data:{'description':'', 'period':'1/4', 's':'', 'duration': 0},
       // Indicate what controller is active. This may affect the data format.
       controller:'pianoKeyboard',
     };
@@ -135,6 +135,7 @@ module.exports = function () {
       for(var i = 0; i < 4; i++){
         text[i].innerHTML = '__';
       }
+      soundBlock.activeBlock.controllerSettings.data.duration = 0;
       soundBlock.activeBlock.updateSvg();
     });
   };
@@ -192,6 +193,7 @@ module.exports = function () {
           data1 = data1 + " " + arr[i].innerHTML;
           data2 = data2 + " " + keyInfo[keyIndex].s;
         }
+        soundBlock.activeBlock.controllerSettings.data.duration += 1;
         break;
       }
     }
