@@ -30,15 +30,15 @@ module.exports = function () {
   // to indicate how it is connected
   // var faBlueTooth = '\uf294';
   var pb = svgb.pathBuilder;
-  var identityAccelerometer = {};
+  var identityAccelerometerBlock = {};
 
   // Items for selecting a device from a list.
   //identityAccelerometer.devices = ko.observableArray([]);
-  identityAccelerometer.keyPadValue = ko.observable(0);
+  identityAccelerometerBlock.keyPadValue = ko.observable(0);
 
 
   // Initial settings for blocks of this type.
-  identityAccelerometer.defaultSettings = function() {
+  identityAccelerometerBlock.defaultSettings = function() {
     // Return a new object with settings for the controller.
     return {
       data:{
@@ -50,11 +50,11 @@ module.exports = function () {
     };
   };
 
-  identityAccelerometer.configuratorOpen = function(div, block) {
+  identityAccelerometerBlock.configuratorOpen = function(div, block) {
     keypad.openTabs({
       'getValue': function() { return block.controllerSettings.data.value; },
       'setValue': function(value) { block.controllerSettings.data.value = value; },
-      'type':identityAccelerometer,
+      'type':identityAccelerometerBlock,
       'div': div,
       'block': block,
       'min':-2000,
@@ -87,7 +87,7 @@ module.exports = function () {
   };
 
   // Close the identity blocks and clean up hooks related to it.
-  identityAccelerometer.configuratorClose = function(div, block) {
+  identityAccelerometerBlock.configuratorClose = function(div, block) {
     var comparison = document.getElementById('dropdown-comparison');
     var index = comparison.selectedIndex;
     block.controllerSettings.data.comparison = comparison.options[index].value;
@@ -96,7 +96,7 @@ module.exports = function () {
 
   // Buid an SVG for the block that indicates the device name
   // and connection status
-  identityAccelerometer.svg = function(root, block) {
+  identityAccelerometerBlock.svg = function(root, block) {
     var pathd = '';
     pathd += pb.move(38, 40);
     pathd += pb.vline(-20);
@@ -145,5 +145,5 @@ module.exports = function () {
     root.appendChild(soundPath);*/
   };
 
-  return identityAccelerometer;
+  return identityAccelerometerBlock;
   }();

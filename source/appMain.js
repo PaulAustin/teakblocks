@@ -175,6 +175,7 @@ module.exports = function () {
         'identityTemperature': {},
         'variableSet': {},
         'variableAdd': {},
+        'print': {},
         'picture':{},
         'sound':{},
         'motor':{},

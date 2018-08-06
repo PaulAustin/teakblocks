@@ -29,17 +29,17 @@ module.exports = function () {
   // TODO the link type could show up on the icon
   // to indicate how it is connected
   // var faBlueTooth = '\uf294';
-  var pb = svgb.pathBuilder;
-  var variableSet = {};
+  // var pb = svgb.pathBuilder;
+  var variableSetBlock = {};
   // var variables = require('./../../variables.js');
 
   // Items for selecting a device from a list.
   //identityAccelerometer.devices = ko.observableArray([]);
-  variableSet.keyPadValue = ko.observable(0);
+  variableSetBlock.keyPadValue = ko.observable(0);
 
 
   // Initial settings for blocks of this type.
-  variableSet.defaultSettings = function() {
+  variableSetBlock.defaultSettings = function() {
     // Return a new object with settings for the controller.
     return {
       data:{
@@ -51,11 +51,11 @@ module.exports = function () {
     };
   };
 
-  variableSet.configuratorOpen = function(div, block) {
+  variableSetBlock.configuratorOpen = function(div, block) {
     keypad.openTabs({
       'getValue': function() { return block.controllerSettings.data.value; },
       'setValue': function(value) { block.controllerSettings.data.value = value; },
-      'type':variableSet,
+      'type':variableSetBlock,
       'div': div,
       'block': block,
       'min':-100,
@@ -88,7 +88,7 @@ module.exports = function () {
   };
 
   // Close the identity blocks and clean up hooks related to it.
-  variableSet.configuratorClose = function(div, block) {
+  variableSetBlock.configuratorClose = function(div, block) {
     var vars = document.getElementById('dropdown-comparison');
     var index = vars.selectedIndex;
     block.controllerSettings.data.variable = vars.options[index].value;
@@ -98,7 +98,7 @@ module.exports = function () {
 
   // Buid an SVG for the block that indicates the device name
   // and connection status
-  variableSet.svg = function(root, block) {
+  variableSetBlock.svg = function(root, block) {
     var variable = block.controllerSettings.data.variable;
     var text = svgb.createText('svg-clear block-identity-text', 40, 50, variable);
     text.setAttribute('text-anchor', 'middle');
@@ -110,5 +110,5 @@ module.exports = function () {
     root.appendChild(num);
   };
 
-  return variableSet;
+  return variableSetBlock;
   }();

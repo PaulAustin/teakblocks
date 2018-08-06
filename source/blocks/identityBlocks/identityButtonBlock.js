@@ -28,14 +28,14 @@ module.exports = function () {
   // TODO the link type could show up on the icon
   // to indicate how it is connected
   // var faBlueTooth = '\uf294';
-  var identityButton = {};
+  var identityButtonBlock = {};
 
   // Items for selecting a device from a list.
   //identityAccelerometer.devices = ko.observableArray([]);
 
 
   // Initial settings for blocks of this type.
-  identityButton.defaultSettings = function() {
+  identityButtonBlock.defaultSettings = function() {
     // Return a new object with settings for the controller.
     return {
       data:{
@@ -47,8 +47,8 @@ module.exports = function () {
     };
   };
 
-  identityButton.configuratorOpen = function(div, block) {
-    identityButton.activeBlock = block;
+  identityButtonBlock.configuratorOpen = function(div, block) {
+    identityButtonBlock.activeBlock = block;
     div.innerHTML =
       `<div class='editorDiv'>
           <div class="dropdown-label-txt svg-clear idButton-comparison-label">button:
@@ -74,18 +74,18 @@ module.exports = function () {
   };
 
   // Close the identity blocks and clean up hooks related to it.
-  identityButton.configuratorClose = function(div, block) {
+  identityButtonBlock.configuratorClose = function(div, block) {
     var comparison = document.getElementById('dropdown-comparison');
     var index = comparison.selectedIndex;
     block.controllerSettings.data.button = comparison.options[index].value;
-    identityButton.activeBlock = null;
+    identityButtonBlock.activeBlock = null;
     block.updateSvg();
     //keypad.closeTabs({'div': div});
   };
 
   // Buid an SVG for the block that indicates the device name
   // and connection status
-  identityButton.svg = function(root, block) {
+  identityButtonBlock.svg = function(root, block) {
     var buttonBack = svgb.createRect('svg-clear block-idButton-back', 15, 10, 50, 50, 3);
     root.appendChild(buttonBack);
 
@@ -107,5 +107,5 @@ module.exports = function () {
     root.appendChild(txt);
   };
 
-  return identityButton;
+  return identityButtonBlock;
   }();

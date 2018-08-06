@@ -30,16 +30,16 @@ module.exports = function () {
   // to indicate how it is connected
   // var faBlueTooth = '\uf294';
   var pb = svgb.pathBuilder;
-  var variableAdd = {};
+  var variableAddBlock = {};
   // var variables = require('./../../variables.js');
 
   // Items for selecting a device from a list.
   //identityAccelerometer.devices = ko.observableArray([]);
-  variableAdd.keyPadValue = ko.observable(0);
+  variableAddBlock.keyPadValue = ko.observable(0);
 
 
   // Initial settings for blocks of this type.
-  variableAdd.defaultSettings = function() {
+  variableAddBlock.defaultSettings = function() {
     // Return a new object with settings for the controller.
     return {
       data:{
@@ -52,7 +52,7 @@ module.exports = function () {
     };
   };
 
-  variableAdd.configuratorOpen = function(div, block) {
+  variableAddBlock.configuratorOpen = function(div, block) {
     keypad.openTabs({
       'getValue': function() { return block.controllerSettings.data.value; },
       'setValue': function(value) {
@@ -65,7 +65,7 @@ module.exports = function () {
           block.controllerSettings.data.incdec = '+';
         }
       },
-      'type':variableAdd,
+      'type':variableAddBlock,
       'div': div,
       'block': block,
       'min':-100,
@@ -98,7 +98,7 @@ module.exports = function () {
   };
 
   // Close the identity blocks and clean up hooks related to it.
-  variableAdd.configuratorClose = function(div, block) {
+  variableAddBlock.configuratorClose = function(div, block) {
     var vars = document.getElementById('dropdown-comparison');
     var index = vars.selectedIndex;
     block.controllerSettings.data.variable = vars.options[index].value;
@@ -109,7 +109,7 @@ module.exports = function () {
 
   // Buid an SVG for the block that indicates the device name
   // and connection status
-  variableAdd.svg = function(root, block) {
+  variableAddBlock.svg = function(root, block) {
     var variable = block.controllerSettings.data.variable;
     var text = svgb.createText('svg-clear block-identity-text', 40, 50, variable);
     text.setAttribute('text-anchor', 'middle');
@@ -122,5 +122,5 @@ module.exports = function () {
     root.appendChild(num);
   };
 
-  return variableAdd;
+  return variableAddBlock;
   }();

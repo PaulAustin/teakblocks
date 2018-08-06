@@ -276,10 +276,33 @@ module.exports = function () {
         variables.setVal(d.variable, d.value);
       } else if (block.name === 'variableAdd'){
         variables.incdec(d.variable, d.incdec, d.value);
+      } else if(block.name === 'print'){
+        var val = conductor.getPrintVal(d);
+        message = '(pr:' + val + ');';
       }
       conductor.cxn.write(botName, message);
     }
     // Single step, find target and head of chain and run the single block.
+  };
+
+  conductor.getPrintVal = function(d){
+    var val = 0;
+    if(d.print === 'var'){
+      if(d.variable === 'A'){
+        val = variables.a;
+      } else if(d.variable === 'B'){
+        val = variables.b;
+      } else if(d.variable === 'C'){
+        val = variables.c;
+      }
+    } else if(d.print === 'sensor'){
+      if(d.sensor === 'accel'){
+        val = cxn.accelerometer;
+      } else if(d.sensor === 'temp'){
+        val = cxn.temperature;
+      }
+    }
+    return val;
   };
 
   conductor.playSingleChain = function() {

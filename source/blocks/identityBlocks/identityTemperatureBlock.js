@@ -29,16 +29,16 @@ module.exports = function () {
   // TODO the link type could show up on the icon
   // to indicate how it is connected
   // var faBlueTooth = '\uf294';
-  var pb = svgb.pathBuilder;
-  var identityTemperature = {};
+  // var pb = svgb.pathBuilder;
+  var identityTemperatureBlock = {};
 
   // Items for selecting a device from a list.
   //identityAccelerometer.devices = ko.observableArray([]);
-  identityTemperature.keyPadValue = ko.observable(0);
+  identityTemperatureBlock.keyPadValue = ko.observable(0);
 
 
   // Initial settings for blocks of this type.
-  identityTemperature.defaultSettings = function() {
+  identityTemperatureBlock.defaultSettings = function() {
     // Return a new object with settings for the controller.
     return {
       data:{
@@ -50,11 +50,11 @@ module.exports = function () {
     };
   };
 
-  identityTemperature.configuratorOpen = function(div, block) {
+  identityTemperatureBlock.configuratorOpen = function(div, block) {
     keypad.openTabs({
       'getValue': function() { return block.controllerSettings.data.value; },
       'setValue': function(value) { block.controllerSettings.data.value = value; },
-      'type':identityTemperature,
+      'type':identityTemperatureBlock,
       'div': div,
       'block': block,
       'min':20,
@@ -87,7 +87,7 @@ module.exports = function () {
   };
 
   // Close the identity blocks and clean up hooks related to it.
-  identityTemperature.configuratorClose = function(div, block) {
+  identityTemperatureBlock.configuratorClose = function(div, block) {
     var comparison = document.getElementById('dropdown-comparison');
     var index = comparison.selectedIndex;
     block.controllerSettings.data.comparison = comparison.options[index].value;
@@ -96,11 +96,11 @@ module.exports = function () {
 
   // Buid an SVG for the block that indicates the device name
   // and connection status
-  identityTemperature.svg = function(root, block) {
+  identityTemperatureBlock.svg = function(root, block) {
     var text = svgb.createText('svg-clear block-identity-text', 42, 60, '\uf2c9');
     text.setAttribute('text-anchor', 'middle');
     root.appendChild(text);
   };
 
-  return identityTemperature;
+  return identityTemperatureBlock;
   }();

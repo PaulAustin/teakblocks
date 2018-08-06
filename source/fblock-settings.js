@@ -61,6 +61,7 @@ b.identityButtonBlock = require('./blocks/identityBlocks/identityButtonBlock.js'
 b.identityTemperatureBlock = require('./blocks/identityBlocks/identityTemperatureBlock.js');
 b.variableSetBlock = require('./blocks/variables/variableSetBlock.js');
 b.variableAddBlock = require('./blocks/variables/variableAddBlock.js');
+b.printBlock = require('./blocks/printBlock.js');
 
 b.digitalWriteBlock = {
   svg: function(root) {
