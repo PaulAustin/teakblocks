@@ -64,7 +64,7 @@ module.exports = function () {
       'numArray': ["-1", "C", "+1", "-10", undefined, "+10"],
       'calcLayout': 'simple',
       'inner': `<div id='keypadDiv' class='editorDiv'>
-          <select class="dropdown-comparison" id="dropdown-comparison">
+          <select class="dropdown-comparison vars-dropdown-comparison" id="dropdown-comparison">
             <option value="A">A</option>
             <option value="B">B</option>
             <option value="C">C</option>
