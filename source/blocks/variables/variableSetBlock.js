@@ -65,11 +65,11 @@ module.exports = function () {
       'calcLayout': 'simple',
       'inner': `<div id='keypadDiv' class='editorDiv'>
           <select class="dropdown-comparison" id="dropdown-comparison">
-            <option value="A" id="idAccel-equals">A</option>
-            <option value="B" id="idAccel-greater">B</option>
-            <option value="C" id="idAccel-less">C</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
           </select>
-          <div class="dropdown-label-txt svg-clear">=
+          <div class="dropdown-label-txt varSet-label-txt svg-clear">=
           </div>
           <div id="numeric-display" class = "numeric-display-third svg-clear" width='30px' height='80px' data-bind='text: keyPadValue'>
           </div>
