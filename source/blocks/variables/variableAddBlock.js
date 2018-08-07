@@ -64,6 +64,7 @@ module.exports = function () {
         } else if(block.controllerSettings.data.value > 0) {
           block.controllerSettings.data.incdec = '+';
         }
+        document.getElementById('varAdd-incdec').innerHTML = block.controllerSettings.data.incdec;
       },
       'type':variableAddBlock,
       'div': div,
@@ -79,7 +80,7 @@ module.exports = function () {
             <option value="B" id="idAccel-greater">B</option>
             <option value="C" id="idAccel-less">C</option>
           </select>
-          <div class="dropdown-label-txt svg-clear" id="varAdd-incdec">=
+          <div class="dropdown-label-txt svg-clear" id="varAdd-incdec">+
           </div>
           <div id="numeric-display" class = "numeric-display-third svg-clear" width='30px' height='80px' data-bind='text: keyPadValue'>
           </div>
