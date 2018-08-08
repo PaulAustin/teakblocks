@@ -26,10 +26,10 @@ module.exports = function () {
   //var cxn = require('./../cxn.js');
   var ko = require('knockout');
   var keypad = require('./../keypadTab.js');
+  var icons = require('./../icons.js');
   // TODO the link type could show up on the icon
   // to indicate how it is connected
   // var faBlueTooth = '\uf294';
-  var pb = svgb.pathBuilder;
   var identityAccelerometerBlock = {};
 
   // Items for selecting a device from a list.
@@ -96,53 +96,9 @@ module.exports = function () {
 
   // Buid an SVG for the block that indicates the device name
   // and connection status
-  identityAccelerometerBlock.svg = function(root, block) {
-    var pathd = '';
-    pathd += pb.move(38, 40);
-    pathd += pb.vline(-20);
-    pathd += pb.hline(-5);
-    pathd += pb.line(6, -10);
-    pathd += pb.line(6, 10);
-    pathd += pb.hline(-5);
-    pathd += pb.vline(20);
-
-    pathd += pb.line(15, 10);
-    pathd += pb.line(5, -5);
-    pathd += pb.line(2, 11);
-    pathd += pb.line(-11, -2);
-    pathd += pb.line(5, -5);
-    pathd += pb.line(-15, -10);
-
-    pathd += pb.move(-3, 0);
-    pathd += pb.line(-15, 10);
-    pathd += pb.line(5, 5);
-    pathd += pb.line(-11, 2);
-    pathd += pb.line(2, -11);
-    pathd += pb.line(5, 5);
-    pathd += pb.line(15, -10);
-    /*pathd =  pb.move(40, 10);
-    pathd += pb.arc(12, 90, 0, 1, 12, 7);
-    pathd += pb.vline(21);
-    pathd += pb.hline(-5);
-    pathd += pb.line(-7, -4);
-    pathd += pb.line(-7, 4);
-    pathd += pb.hline(-5);
-    pathd += pb.vline(-21);
-    pathd += pb.arc(12, 90, 0, 1, 12, -7);
-    pathd += pb.close();*/
-    var path = svgb.createPath('svg-clear block-stencil-fill', pathd);
+  identityAccelerometerBlock.svg = function(root) {
+    var path = icons.accelerometer(1, 'svg-clear block-stencil-fill', 38, 40);
     root.appendChild(path);
-
-    /*pathd = '';
-    pathd =  pb.move(45, 45);
-    pathd += pb.arc(7, 90, 0, 1, -10, 0);
-    pathd += pb.move(15, 7);
-    pathd += pb.arc(15, 90, 0, 1, -20, 0);
-    pathd += pb.move(25, 7);
-    pathd += pb.arc(23, 90, 0, 1, -30, 0);
-    var soundPath = svgb.createPath('svg-clear block-stencil', pathd);
-    soundPath.setAttribute('stroke-linecap', 'round');
-    root.appendChild(soundPath);*/
   };
 
   return identityAccelerometerBlock;

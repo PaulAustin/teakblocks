@@ -26,6 +26,7 @@ module.exports = function () {
   //var cxn = require('./../cxn.js');
   var ko = require('knockout');
   var keypad = require('./../keypadTab.js');
+  var icons = require('./../icons.js');
   // TODO the link type could show up on the icon
   // to indicate how it is connected
   // var faBlueTooth = '\uf294';
@@ -99,13 +100,12 @@ module.exports = function () {
   // Buid an SVG for the block that indicates the device name
   // and connection status
   variableSetBlock.svg = function(root, block) {
-    var variable = block.controllerSettings.data.variable;
-    var text = svgb.createText('svg-clear block-identity-text', 40, 50, variable);
-    text.setAttribute('text-anchor', 'middle');
-    root.appendChild(text);
+    var varData = block.controllerSettings.data.variable;
+    var variable = icons.variable(1, 0, 0, varData);
+    root.appendChild(variable);
 
     var val = block.controllerSettings.data.value;
-    var num = svgb.createText('svg-clear block-wait-text block-stencil-fill', 40, 70, String(val));
+    var num = svgb.createText('svg-clear vars-bottom-txt', 40, 75, String(val));
     num.setAttribute('text-anchor', 'middle');
     root.appendChild(num);
   };

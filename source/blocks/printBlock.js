@@ -27,6 +27,7 @@ module.exports = function () {
   //var cxn = require('./../cxn.js');
   var ko = require('knockout');
   var keypad = require('./keypadTab.js');
+  var icons = require('./icons.js');
   // TODO the link type could show up on the icon
   // to indicate how it is connected
   // var faBlueTooth = '\uf294';
@@ -139,23 +140,26 @@ module.exports = function () {
   // Buid an SVG for the block that indicates the device name
   // and connection status
   printBlock.svg = function(root, block) {
-    var text = svgb.createText('svg-clear printBlock-icon', 40, 62.5, '\uf15b');
-    text.setAttribute('text-anchor', 'middle');
-    root.appendChild(text);
+    var board = icons.pictureNumeric(1, 27, 10);
+    board.setAttribute('text-anchor', 'middle');
+    root.appendChild(board);
 
-    var print1 = block.controllerSettings.data.print;
-    var print2 = '';
-    if(print1 === 'var'){
-      print2 = block.controllerSettings.data.variable;
-    } else if(print1 === 'sensor'){
-      print2 = block.controllerSettings.data.sensor;
+    var print = block.controllerSettings.data.print;
+    if(print === 'var'){
+      var varData = block.controllerSettings.data.variable;
+      var variable = icons.variable(0.5, 20, 45, varData);
+      root.appendChild(variable);
+    } else if(print === 'sensor'){
+      var sensor = block.controllerSettings.data.sensor;
+      if(sensor === 'accel'){
+        var accel = icons.accelerometer(0.55, 'svg-clear block-stencil-fill', 73, 120);
+        root.appendChild(accel);
+      } else if (sensor === 'temp'){
+        var temp = svgb.createText('svg-clear block-identity-text', 75, 160, '\uf2c9');
+        temp.setAttribute('transform', 'scale(0.45)');
+        root.appendChild(temp);
+      }
     }
-    var p1 = svgb.createText('svg-clear printBlock-text', 40, 45, print1);
-    p1.setAttribute('text-anchor', 'middle');
-    root.appendChild(p1);
-    var p2 = svgb.createText('svg-clear printBlock-text', 40, 65, print2);
-    p2.setAttribute('text-anchor', 'middle');
-    root.appendChild(p2);
   };
 
   return printBlock;

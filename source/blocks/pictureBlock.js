@@ -24,6 +24,7 @@ module.exports = function () {
   var interact = require('interact.js');
   var svgb = require('./../svgbuilder.js');
   var pictureBlock = {};
+  var icons = require('./icons.js');
 
   // Use CSS clases for LED lit state.
   function setPicturePixel(svgPixel, state) {
@@ -74,21 +75,7 @@ module.exports = function () {
   // Generate an SVG based image for a specific block.
   pictureBlock.svg= function(svg, block) {
     var pix = block.controllerSettings.data.pix;
-    var group = svgb.createGroup('svg-clear', 26, 15);
-    var box = svgb.createRect('svg-clear block-picture-board', -7, -7, 42, 42, 4);
-    group.appendChild(box);
-    for (var iy = 0; iy < 5; iy++) {
-      for (var ix = 0; ix < 5; ix++) {
-        var style = '';
-        if (pix[ix + (iy * 5)] === 0) {
-          style = 'svg-clear block-picture-led-off';
-        } else {
-          style = 'svg-clear block-picture-led-on';
-        }
-        var led = svgb.createCircle(style, (ix*7), (iy*7), 3);
-        group.appendChild(led);
-      }
-    }
+    var group = icons.picture(1.4, 15, 14, pix);
     svg.appendChild(group);
   };
 
