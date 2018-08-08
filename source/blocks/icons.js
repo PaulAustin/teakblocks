@@ -107,5 +107,54 @@ module.exports = function () {
     return group;
   };
 
+  icons.motor = function(scale, x, y, doScale) {
+    var group = svgb.createGroup('svg-clear', 0, 0);
+    var motor = svgb.createCircle('svg-clear block-motor-body', 40, 30, 20);
+    group.appendChild(motor);
+    var shaft = svgb.createCircle('svg-clear block-motor-shaft', 40, 30, 4);
+    group.appendChild(shaft);
+
+    if(doScale !== false){
+      group.setAttribute('style', 'transform: translate(' + x + 'px, ' + y + 'px) scale(' + scale + ');');
+    }
+    return group;
+  };
+
+  icons.motorWithDial = function(scale, x, y, data) {
+    var group = svgb.createGroup('svg-clear', 0, 0);
+
+    var motorBody = icons.motor(scale, x, y, false);
+    group.appendChild(motorBody);
+
+    var data1 = data;
+    var rotate = (data1/100)*180;
+    var dx = Math.cos((rotate) * (Math.PI/180));
+    var dy = Math.sin((rotate) * (Math.PI/180));
+    var spread = 1;
+    if(rotate < 0){
+      spread = 0;
+    }
+    var pathd = '';
+    pathd = pb.move(40, 30);
+    pathd += pb.line(0, -20);
+    pathd += pb.arc(20, rotate, 0, spread, (dy*20), -((dx*20)-20));
+    pathd += pb.close();
+    var path = svgb.createPath('svg-clear block-stencil-fill-back', pathd);
+    group.appendChild(path);
+    pathd = '';
+    pathd =  pb.move(37, 30);
+    pathd +=  pb.line(2.5, -19);
+    pathd +=  pb.hline(1);
+    pathd +=  pb.line(2.5, 19);
+    pathd += pb.arc(3.0, 180, 1, 1, -6, 0);
+    pathd +=  pb.close();
+    path = svgb.createPath('svg-clear block-stencil-fill', pathd);
+    path.setAttribute('transform', "rotate(" + rotate + " 40 30)"); //rotate
+    group.appendChild(path);
+
+    group.setAttribute('style', 'transform: translate(' + x + 'px, ' + y + 'px) scale(' + scale + ');');
+    return group;
+  };
+
   return icons;
 }();

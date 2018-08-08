@@ -24,6 +24,7 @@ module.exports = function () {
   var svgb = require('./../svgbuilder.js');
   var keypad = require('./keypadTab.js');
   var ko = require('knockout');
+  var icons = require('./icons.js');
   //var formTools = require('./../block-settings.js');
   var pb = svgb.pathBuilder;
   var motorBlock = {};
@@ -53,36 +54,9 @@ module.exports = function () {
   motorBlock.svg = function(root, block) {
     // The graphic is a composite concept of a motor/wheel. In many cases
     // students might only see the wheel.
-    var motor = svgb.createCircle('svg-clear block-motor-body', 40, 30, 20);
+    var data = block.controllerSettings.data.speed;
+    var motor = icons.motorWithDial(1, 0, 0, data);
     root.appendChild(motor);
-    var shaft = svgb.createCircle('svg-clear block-motor-shaft', 40, 30, 4);
-    root.appendChild(shaft);
-
-    var data1 = block.controllerSettings.data.speed;
-    var rotate = (data1/100)*180;
-    var dx = Math.cos((rotate) * (Math.PI/180));
-    var dy = Math.sin((rotate) * (Math.PI/180));
-    var spread = 1;
-    if(rotate < 0){
-      spread = 0;
-    }
-    var pathd = '';
-    pathd = pb.move(40, 30);
-    pathd += pb.line(0, -20);
-    pathd += pb.arc(20, rotate, 0, spread, (dy*20), -((dx*20)-20));
-    pathd += pb.close();
-    var path = svgb.createPath('svg-clear block-stencil-fill-back', pathd);
-    root.appendChild(path);
-    pathd = '';
-    pathd =  pb.move(37, 30);
-    pathd +=  pb.line(2.5, -19);
-    pathd +=  pb.hline(1);
-    pathd +=  pb.line(2.5, 19);
-    pathd += pb.arc(3.0, 180, 1, 1, -6, 0);
-    pathd +=  pb.close();
-    path = svgb.createPath('svg-clear block-stencil-fill', pathd);
-    path.setAttribute('transform', "rotate(" + rotate + " 40 30)"); //rotate
-    root.appendChild(path);
 
     var data2 = block.controllerSettings.data.duration;
     var textToDisplay = svgb.createGroup('displayText', 0, 0);
