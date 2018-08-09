@@ -101,11 +101,11 @@ module.exports = function () {
   // and connection status
   variableSetBlock.svg = function(root, block) {
     var varData = block.controllerSettings.data.variable;
-    var variable = icons.variable(1, 0, 0, varData);
+    var variable = icons.variable(1, 13, 5, varData);
     root.appendChild(variable);
 
     var val = block.controllerSettings.data.value;
-    var num = svgb.createText('svg-clear vars-bottom-txt', 40, 75, String(val));
+    var num = svgb.createText('svg-clear vars-bottom-txt', 40, 71, String(val));
     num.setAttribute('text-anchor', 'middle');
     root.appendChild(num);
   };

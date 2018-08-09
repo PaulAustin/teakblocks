@@ -140,14 +140,14 @@ module.exports = function () {
   // Buid an SVG for the block that indicates the device name
   // and connection status
   printBlock.svg = function(root, block) {
-    var board = icons.pictureNumeric(1, 27, 10);
+    var board = icons.pictureNumeric(1, 27, 15);
     board.setAttribute('text-anchor', 'middle');
     root.appendChild(board);
 
     var print = block.controllerSettings.data.print;
     if(print === 'var'){
       var varData = block.controllerSettings.data.variable;
-      var variable = icons.variable(0.5, 20, 45, varData);
+      var variable = icons.variable(0.5, 27, 52, varData);
       root.appendChild(variable);
     } else if(print === 'sensor'){
       var sensor = block.controllerSettings.data.sensor;

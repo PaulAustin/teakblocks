@@ -92,14 +92,39 @@ module.exports = function () {
 
   icons.variable = function(scale, x, y, data) {
     var group = svgb.createGroup('svg-clear', 0, 0);
-    var buttonFront = svgb.createRect('svg-clear vars-back-fill', 30, -26, 40, 40, 6);
-    group.appendChild(buttonFront);
 
-    var buttonBack = svgb.createRect('svg-clear vars-front-fill', 35, -21, 30, 30, 6);
-    group.appendChild(buttonBack);
+    var pathd = '';
+    pathd += pb.move(13, 5);
+    pathd += pb.hline(30);
+    pathd += pb.line(15, 20);
+    pathd += pb.line(-15, 20);
+    pathd += pb.hline(-30);
+    pathd += pb.line(-15, -20);
+    pathd += pb.line(15, -20);
+
+    var path = svgb.createPath('svg-clear vars-back-fill', pathd);
+    group.appendChild(path);
+
+    pathd = '';
+    pathd += pb.move(15, 10);
+    pathd += pb.hline(25);
+    pathd += pb.line(11, 15);
+    pathd += pb.line(-11, 15);
+    pathd += pb.hline(-25);
+    pathd += pb.line(-11, -15);
+    pathd += pb.line(11, -15);
+
+    path = svgb.createPath('svg-clear vars-front-fill', pathd);
+    group.appendChild(path);
+
+    //var buttonFront = svgb.createRect('svg-clear vars-back-fill', 30, -26, 40, 40, 6);
+    //group.appendChild(buttonFront);
+
+    //var buttonBack = svgb.createRect('svg-clear vars-front-fill', 35, -21, 30, 30, 6);
+    //group.appendChild(buttonBack);
 
     var variable = data;
-    var text = svgb.createText('svg-clear vars-var-text', 40, 40, variable);
+    var text = svgb.createText('svg-clear vars-var-text', 27, 35, variable);
     text.setAttribute('text-anchor', 'middle');
     group.appendChild(text);
 
