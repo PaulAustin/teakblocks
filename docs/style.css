@@ -46,6 +46,9 @@ SOFTWARE.
 .width-half {
   width: 50.0%;
 }
+.width-twothirds {
+  width: 66.6%;
+}
 .width-whole {
   width: 100.0%;
 }
@@ -252,8 +255,151 @@ label input[type="checkbox"]:disabled + .label-text:before {
   /* For name of connected device */
   font-family: 'FontAwesome', "helvetica";
   text-align: center;
+  font-size: 60px;
+  fill: #FFB74D;
+}
+.cxnButton-x {
+  float: right;
+  font-size: 22px;
+  background-color: #ef5b5b;
+  border-color: #ef5b5b;
+}
+.cxnButton-x:active {
+  background-color: #ea4848;
+  border-color: #ea4848;
+}
+.cxnButton-x i {
+  margin-top: -5px;
+  text-anchor: middle;
+}
+.dropdown-comparison {
+  background-color: #C8E6C9;
+  border-color: #81C784;
+  border-width: 2px;
+  float: left;
+  width: 65px;
+  height: 30px;
+  font-family: helvetica;
+  font-size: 22px;
+  text-align-last: center;
+  margin-left: 20px;
+  text-align: center;
+}
+.vars-dropdown-comparison {
+  margin-left: 5px;
+  width: 75px;
+}
+.vars-var-text {
+  font-family: 'FontAwesome', "helvetica";
+  text-align: center;
+  font-size: 30px;
+  fill: #FFF;
+}
+.vars-front-fill {
+  stroke-width: 2;
+  stroke: #0087d6;
+  /* 00a0ff */
+  fill: #0087d6;
+  stroke-linejoin: round;
+}
+.vars-back-fill {
+  stroke-width: 2;
+  stroke: #005789;
+  /* 0074BA */
+  fill: #005789;
+  stroke-linejoin: round;
+}
+.vars-bottom-txt {
+  font-family: 'FontAwesome', "helvetica";
   font-size: 20px;
   fill: #FFB74D;
+  stroke-width: 0;
+}
+.printBlock-var-text {
+  font-family: 'FontAwesome', "helvetica";
+  text-align: center;
+  font-size: 20px;
+  fill: #FFF;
+}
+.dropdown-label-txt {
+  float: left;
+  padding-left: 20px;
+  padding-top: 5px;
+}
+.idButton-comparison-label {
+  padding-left: 40px;
+}
+.idButton-comparison {
+  width: 85px;
+}
+.block-idButton-back {
+  fill: #777777;
+}
+.block-idButton-screw {
+  fill: #555555;
+}
+.block-idButton-button {
+  fill: #FF0040;
+}
+.block-idButton-label {
+  font-size: 15px;
+  font-family: 'Helvetica';
+}
+.printBlock-buttons {
+  float: left;
+  background-color: #81C784;
+  margin-left: 5px;
+  margin-top: 0px;
+  height: 170px;
+  border-radius: 10px;
+}
+.printBlock-option {
+  border: solid #000;
+  border-width: 3px;
+  border-radius: 10px;
+  margin: 10px 8px;
+  padding: 5px 7px;
+  background-color: #FFF8E1;
+  font-size: 25px;
+}
+.printBlock-icon {
+  font-family: 'FontAwesome', "helvetica";
+  text-align: center;
+  font-size: 65px;
+  fill: #FFB74D;
+}
+.printBlock-text {
+  font-family: helvetica;
+  text-align: center;
+  font-size: 15px;
+  fill: #795548;
+}
+.printBlock-selected {
+  background-color: #4CAF50;
+}
+.printBlock-dropdown {
+  border-width: 6px;
+  float: left;
+  width: 120px;
+  height: 60px;
+  font-family: helvetica;
+  font-size: 30px;
+  text-align-last: center;
+  margin-left: 30px;
+  text-align: center;
+}
+.varAdd-label-txt {
+  padding-left: 30px;
+  font-family: "FontAwesome";
+  font-size: 30px;
+  padding-top: 0px;
+}
+.varSet-label-txt {
+  padding-left: 30px;
+  font-weight: bold;
+  font-size: 40px;
+  padding-top: 0px;
+  margin-top: -10px;
 }
 .block-picture-board {
   fill: #332222;
@@ -319,6 +465,11 @@ label input[type="checkbox"]:disabled + .label-text:before {
 .block-sound-piano {
   fill: #3E2723;
   stroke: #3E2723;
+  stroke-width: 2px;
+}
+.block-sound-txtBox {
+  fill: #81C784;
+  stroke: #81C784;
   stroke-width: 2px;
 }
 .block-motor-text {
@@ -726,7 +877,7 @@ body {
 }
 .action-dot-text {
   fill: #FF7043;
-  font-family: FontAwesome;
+  font-family: FontAwesome, helvetica;
   font-size: 36px;
   text-anchor: middle;
   pointer-events: none;
@@ -753,6 +904,17 @@ body {
   display: inline-block;
   float: left;
   width: 110px;
+  height: 30px;
+  border-radius: 8px;
+  background-color: #c4c4c4;
+  font-size: 24px;
+  pointer-events: auto;
+}
+.numeric-display-third {
+  display: inline-block;
+  float: right;
+  margin-right: 5px;
+  width: 75px;
   height: 30px;
   border-radius: 8px;
   background-color: #c4c4c4;
@@ -838,7 +1000,7 @@ body {
   position: absolute;
   top: 20px;
   float: left;
-  left: 40%;
+  left: calc(50% - 150px);
   position: relative;
   height: 100px;
   width: 100px;

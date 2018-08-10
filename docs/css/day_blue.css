@@ -8,6 +8,9 @@
   stroke: #873600;
   transition: stroke 0.3s ease;
 }
+.identity-block {
+  fill: #492f27;
+}
 .running-block{
   stroke-width: 4;
   stroke: #3300ff;
