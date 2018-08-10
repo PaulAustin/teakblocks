@@ -64,7 +64,6 @@ module.exports = function () {
           <div class='printBlock-buttons' y="100%">
             <div class='printBlock-option' value='A'><span class="svg-clear">A</span></div>
             <div class='printBlock-option' value='B'><span class="svg-clear">B</span></div>
-            <!--div class='printBlock-option' id='printBlock-button-b'>B</div-->
           </div>
           <div class="vert-line"></div>
           <div id='printBlock-editor'>
