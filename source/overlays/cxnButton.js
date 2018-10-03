@@ -93,7 +93,7 @@ module.exports = function () {
               </li>
             </ul>
         </div>
-        <button id='bt-scan' class='width-twothirds'>
+        <button id='bt-scan' class='width-twothirds searching-button'>
         </button>
         <button class='width-third cxnButton-x' id="cxnButton-x">
           <i class="fa fa-times" class="svg-clear"></i>
@@ -101,7 +101,7 @@ module.exports = function () {
 
       </div>`;
 
-    div.setAttribute('style', 'transition: all 0.2s ease;left: 600px; top:260px;position: absolute;width: 240px;transform: scale(3.5, 3.5);pointer-events: all;');
+    div.setAttribute('style', 'transition: all 0.2s ease;left: 42%; top:35%;position: absolute;width: 240px;transform: scale(3.0, 3.0);pointer-events: all;');
     div.setAttribute('class', 'block-config-form blockform');
     div.setAttribute('id', 'bot-search-overlay');
 
