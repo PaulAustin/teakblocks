@@ -96,7 +96,7 @@ module.exports = function () {
         <button id='bt-scan' class='width-twothirds searching-button'>
         </button>
         <button class='width-third cxnButton-x' id="cxnButton-x">
-          <i class="fa fa-times" class="svg-clear"></i>
+          <i class="fa fa-check" class="svg-clear"></i>
         </button>
 
       </div>`;
