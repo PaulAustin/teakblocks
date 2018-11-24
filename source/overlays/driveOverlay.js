@@ -26,14 +26,13 @@ module.exports = function(){
   var interact = require('interact.js');
   var conductor = require('./../conductor.js');
   var app = require('./../appMain.js');
-  var cxn = require('./../cxn.js');
+  var cxnButton = require('./cxnButton.js');
   var driveMode = {};
 
   driveMode.pastRight = 0;
   driveMode.pastLeft = 0;
 
   driveMode.start = function() {
-    driveMode.activeDivice = driveMode.findConnectedDevice();
     driveMode.buildSlider(app.overlayDom);
     driveMode.updateSlider();
   };
@@ -70,20 +69,6 @@ module.exports = function(){
 
     // TODO connect the stop button
     driveMode.sliderInteract('slider');
-  };
-
-  driveMode.findConnectedDevice = function() {
-    var botName = null;
-    app.tbe.forEachDiagramBlock( function(block){
-      if (block.name === 'identity'){
-        botName = block.controllerSettings.data.deviceName;
-        var status = cxn.connectionStatus(botName);
-        if (status !== cxn.statusEnum.CONNECTED) {
-          botName = null;
-        }
-      }
-    });
-    return botName;
   };
 
   driveMode.sliderInteract = function sliderInteract(eltClass) {
@@ -130,7 +115,7 @@ module.exports = function(){
   };
 
   driveMode.updateSlider = function() {
-    var id = driveMode.activeDivice;
+    var id = cxnButton.deviceName;
     log.trace('updTE', id);
     //var changed = driveMode.displayLeft !== driveMode.pastLeft || driveMode.displayRight !== driveMode.pastRight;
     if (id !== null && id !== '-?-') {
