@@ -263,9 +263,9 @@ module.exports = function () {
       } else if (block.name === 'servo') {
         message = '(sr:' + 50 + ');';
       } else if (block.name === 'motor') {
-        message = '(m:'+ d.motor + ' d:' + d.speed +' b:' + d.duration + ');';
+        message = '(m:'+ d.motor + ' d:' + -d.speed +' b:' + d.duration + ');';
       } else if (block.name === 'twoMotor') {
-        message = '(m:(1 2) d:' + d.speed + ');'; // +' b:' + d.duration
+        message = '(m:(1 2) d:' + -d.speed + ');'; // +' b:' + d.duration
       } else if (block.name === 'sound') {
         // pass the Solfege index
         message = '(nt:' + d.s.split(" ")[0] + ');';

@@ -120,11 +120,11 @@ module.exports = function(){
     //var changed = driveMode.displayLeft !== driveMode.pastLeft || driveMode.displayRight !== driveMode.pastRight;
     if (id !== null && id !== '-?-') {
       if (driveMode.displayLeft !== undefined && driveMode.displayLeft !== driveMode.pastLeft) {
-        var message2 = '(m:1 d:' + driveMode.displayLeft + ');';
+        var message2 = '(m:1 d:' + -driveMode.displayLeft + ' b:1);';
         conductor.cxn.write(id, message2);
       }
       if (driveMode.displayRight !== undefined && driveMode.displayRight !== driveMode.pastRight) {
-        var message1 = '(m:2 d:' + driveMode.displayRight + ');';
+        var message1 = '(m:2 d:' + -driveMode.displayRight + ');';
         conductor.cxn.write(id, message1);
       }
 
