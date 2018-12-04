@@ -198,6 +198,11 @@ tbe.addPaletteBlock = function(x, y, name) {
    block.isPaletteBlock = true;
    block.interactId = tbe.nextBlockId('p:');
    this.paletteBlocks[block.interactId] = block;
+   tbe.svg.removeChild(block.svgGroup);
+   if(block.rect.right + 30 > window.innerWidth){
+     block.svgGroup.setAttribute('class', 'drag-group hiddenPaletteBlock');
+   }
+   tbe.paletteGroup.appendChild(block.svgGroup);
    return block;
 };
 
@@ -1498,13 +1503,72 @@ tbe.sizePaletteToWindow = function sizePaletteToWindow () {
 
 tbe.initPaletteBox = function initPaletteBox() {
   document.body.onresize = this.sizePaletteToWindow;
-  this.dropAreaGroup = svgb.createGroup("", 0, 0);
-  this.dropArea = svgb.createRect('dropArea', 0, 0, window.innerWidth, 100, 0);
-  this.dropAreaGroup.appendChild(this.dropArea);
+  this.dropAreaGroup = tbe.tabbedDropArea(2);
+  this.dropArea = this.dropAreaGroup.childNodes[this.dropAreaGroup.childNodes.length - 1];
   this.svg.appendChild(this.dropAreaGroup);
+
+  this.paletteGroup = svgb.createGroup('paletteGroup', 0, 0, 0, 0);
+  this.svg.appendChild(this.paletteGroup);
 
   this.tabs = [];
   this.sizePaletteToWindow();
+};
+
+tbe.tabbedDropArea = function tabbedDropArea(number) {
+  var dropAreaGroup = svgb.createGroup("dropAreaGroup", 0, 0);
+  var names = ["Identity", "Other"];
+  for(var i = number-1; i >=0; i--){
+    var group = svgb.createGroup("dropArea", 0, 0);
+    var className = 'area'+String(i+1);
+    var rect = svgb.createRect('dropArea '+className, 0, 0, window.innerWidth, 100, 0);
+    var tab = svgb.createRect('dropArea '+className, 10+(160*i), -30, 150, 40, 5);
+    var text = svgb.createText('dropArea', 20+(160*i), -10, names[i]);
+    group.setAttribute('tab', String(i+1));
+    group.appendChild(tab);
+    group.appendChild(rect);
+    group.appendChild(text);
+    dropAreaGroup.appendChild(group);
+  }
+  interact('.dropArea')
+    .on('down', function (event) {
+      tbe.dropAreaGroup.appendChild(event.target.parentNode);
+      this.dropArea = event.target.parentNode;
+      tbe.evaluateBlocks(this.dropArea);
+    });
+  return dropAreaGroup;
+};
+
+tbe.evaluateBlocks = function evaluateBlocks(tab) {
+  var tabNum = parseInt(tab.getAttribute('tab'), 10);
+  if(tabNum === 1){
+    tbe.hidePaletteBlocks();
+    tbe.showIdentityBlocks();
+  } else if(tabNum === 2){
+    tbe.hidePaletteBlocks();
+    tbe.showPaletteBlocks();
+  }
+};
+
+tbe.hidePaletteBlocks = function hidePaletteBlocks() {
+  tbe.forEachPalette(function(block){
+    block.svgGroup.classList.add('hiddenPaletteBlock');
+  });
+};
+
+tbe.showIdentityBlocks = function showIdentityBlocks() {
+  tbe.forEachPalette(function(block){
+    if(block.svgRect.classList.contains('identity-block')){
+      block.svgGroup.setAttribute('class', 'drag-group');
+    }
+  });
+};
+
+tbe.showPaletteBlocks = function showPaletteBlocks() {
+  tbe.forEachPalette(function(block){
+    if(!block.svgRect.classList.contains('identity-block')){
+      block.svgGroup.setAttribute('class', 'drag-group');
+    }
+  });
 };
 
 tbe.updateScreenSizes = function() {
@@ -1518,10 +1582,15 @@ tbe.addPalette = function addPalette(palette) {
   this.tabs.push(palette);
 
   var indent = 10;
+  var indentReset = true;
   var blocks = palette.blocks;
   var blockTop = window.innerHeight - 90;
   for (var key in blocks) {
     if (blocks.hasOwnProperty(key)) {
+      if(!key.includes('identity') && indentReset === true){
+        indent = 10;
+        indentReset = false;
+      }
       var block = this.addPaletteBlock(indent, blockTop, key);
       if (key === 'loop') {
         var blockTail = this.addPaletteBlock(block.right, blockTop, 'tail');
@@ -1535,6 +1604,7 @@ tbe.addPalette = function addPalette(palette) {
       indent += block.chainWidth + 10;
     }
   }
+  tbe.evaluateBlocks(this.dropArea);
 };
 
 return tbe;
