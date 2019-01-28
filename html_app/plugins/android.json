@@ -1,34 +1,34 @@
 {
-    "prepare_queue": {
-        "installed": [],
-        "uninstalled": []
+  "prepare_queue": {
+    "installed": [],
+    "uninstalled": []
+  },
+  "config_munge": {
+    "files": {}
+  },
+  "installed_plugins": {
+    "cordova-plugin-ble": {
+      "PACKAGE_NAME": "co.trashbots.tblocks"
     },
-    "config_munge": {
-        "files": {}
+    "cordova-plugin-ble-central": {
+      "PACKAGE_NAME": "co.trashbots.tblocks"
     },
-    "installed_plugins": {
-        "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "io.hld.teakblocks"
-        },
-        "cordova-plugin-ble-central": {
-            "PACKAGE_NAME": "io.hld.teakblocks"
-        },
-        "cordova-plugin-ble": {
-            "PACKAGE_NAME": "io.hld.teakblocks"
-        },
-        "cordova-plugin-compat": {
-            "PACKAGE_NAME": "io.hld.teakblocks"
-        },
-        "phonegap-plugin-mobile-accessibility": {
-            "PACKAGE_NAME": "org.trashbots.teakblocks"
-        }
+    "cordova-plugin-compat": {
+      "PACKAGE_NAME": "co.trashbots.tblocks"
     },
-    "dependent_plugins": {
-        "cordova-plugin-device": {
-            "PACKAGE_NAME": "org.trashbots.teakblocks"
-        },
-        "cordova-plugin-network-information": {
-            "PACKAGE_NAME": "org.trashbots.teakblocks"
-        }
+    "cordova-plugin-whitelist": {
+      "PACKAGE_NAME": "co.trashbots.tblocks"
+    },
+    "phonegap-plugin-mobile-accessibility": {
+      "PACKAGE_NAME": "co.trashbots.tblocks"
     }
+  },
+  "dependent_plugins": {
+    "cordova-plugin-device": {
+      "PACKAGE_NAME": "co.trashbots.tblocks"
+    },
+    "cordova-plugin-network-information": {
+      "PACKAGE_NAME": "co.trashbots.tblocks"
+    }
+  }
 }

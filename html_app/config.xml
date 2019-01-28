@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="org.trashbots.teakblocks" version="0.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Teak Blocks</name>
+<widget id="co.trashbots.tblocks" version="0.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>TBlocks</name>
     <description>
-        A block editor for Trasbots.
+        A cool programmming tool.
     </description>
-    <author email="paul@trashbots.org" href="http://trashbots.org">
-        Paul Austin
+    <author email="info@trashbots.co" href="http://trashbots.co">
+        TBlock team
     </author>
     <icon src="res/app-icon.png" />
     <content src="index.html" />
@@ -18,9 +18,9 @@
     </platform>
     <platform name="ios">
     </platform>
-    <engine name="android" spec="~6.2.3" />
-    <engine name="ios" spec="^4.4.0" />
     <plugin name="cordova-plugin-ble" spec="1" />
     <plugin name="cordova-plugin-whitelist" spec="1" />
     <plugin name="phonegap-plugin-mobile-accessibility" spec="git+https://github.com/phonegap/phonegap-mobile-accessibility.git" />
+    <engine name="android" spec="^7.1.4" />
+    <engine name="ios" spec="^4.5.5" />
 </widget>
