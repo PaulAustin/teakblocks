@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="co.trashbots.tblocks" version="0.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="co.trashbots.tblocks" ios-CFBundleVersion="0.1.3" version="0.0.5" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>TBlocks</name>
     <description>
         A cool programmming tool.
@@ -7,20 +7,35 @@
     <author email="info@trashbots.co" href="http://trashbots.co">
         TBlock team
     </author>
-    <icon src="res/app-icon.png" />
     <content src="index.html" />
     <access origin="*" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="WebViewBounce" value="false" />
     <preference name="Orientation" value="landscape" />
     <platform name="android">
+        <icon src="res/app-icon.png" />
+        <splash src="res/screen/ios/Default@2x~universal~anyany.png" />
         <preference name="Fullscreen" value="true" />
     </platform>
     <platform name="ios">
+        <icon height="20" src="res/ios/icon-20.png" width="20" />
+        <icon height="40" src="res/ios/icon-20@2x.png" width="40" />
+        <icon height="60" src="res/ios/icon-20@3x.png" width="60" />
+        <icon height="29" src="res/ios/icon-29.png" width="29" />
+        <icon height="58" src="res/ios/icon-29@2x.png" width="58" />
+        <icon height="87" src="res/ios/icon-29@3x.png" width="87" />
+        <icon height="40" src="res/ios/icon-40.png" width="40" />
+        <icon height="80" src="res/ios/icon-40@2x.png" width="80" />
+        <icon height="120" src="res/ios/icon-40@3x.png" width="120" />
+        <icon height="120" src="res/ios/icon-60@2x.png" width="120" />
+        <icon height="180" src="res/ios/icon-60@3x.png" width="180" />
+        <splash src="res/ios/Default@2x~universal~anyany.png" />
+        <splash src="res/ios/Default@2x~universal~company.png" />
+        <splash src="res/ios/Default@2x~universal~comcom.png" />
     </platform>
     <plugin name="cordova-plugin-ble" spec="1" />
     <plugin name="cordova-plugin-whitelist" spec="1" />
     <plugin name="phonegap-plugin-mobile-accessibility" spec="git+https://github.com/phonegap/phonegap-mobile-accessibility.git" />
     <engine name="android" spec="^7.1.4" />
-    <engine name="ios" spec="^4.5.5" />
+    <engine name="ios" spec="~4.5.5" />
 </widget>
