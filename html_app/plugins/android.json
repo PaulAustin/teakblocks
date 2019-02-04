@@ -21,6 +21,9 @@
     },
     "phonegap-plugin-mobile-accessibility": {
       "PACKAGE_NAME": "co.trashbots.tblocks"
+    },
+    "cordova-plugin-splashscreen": {
+      "PACKAGE_NAME": "co.trashbots.tblocks"
     }
   },
   "dependent_plugins": {

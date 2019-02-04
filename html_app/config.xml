@@ -33,17 +33,26 @@
         <icon height="152" src="res/iOS/AppIcon.appiconset/TBlocksIcon-76@2x.png" width="152" />
         <icon height="167" src="res/iOS/AppIcon.appiconset/TBlocksIcon-83.5@2x.png" width="167" />
         <icon height="1024" src="res/iOS/AppIcon.appiconset/TBlocksIcon-1024.png" width="1024" />
-        <icon height="44" src="res/watchOS/AppIcon.appiconset/TBlocksIcon-44.png" width="44" />
-        <icon height="86" src="res/watchOS/AppIcon.appiconset/TBlocksIcon-86.png" width="44" />
-        <icon height="98" src="res/watchOS/AppIcon.appiconset/TBlocksIcon-98.png" width="44" />
-        <icon height="108" src="res/watchOS/AppIcon.appiconset/TBlocksIcon-108.png" width="44" />
+        <icon height="48" src="res/watchOS/AppIcon.appiconset/TBlocksIcon-24@2x.png" width="48" />
+        <icon height="72" src="res/watchOS/AppIcon.appiconset/TBlocksIcon-24@3x.png" width="72" />
+        <icon height="55" src="res/watchOS/AppIcon.appiconset/TBlocksIcon-27.5@2x.png" width="55" />
+        <icon height="80" src="res/watchOS/AppIcon.appiconset/TBlocksIcon-40@2x.png" width="80" />
+        <icon height="88" src="res/watchOS/AppIcon.appiconset/TBlocksIcon-44@2x.png" width="88" />
+        <icon height="100" src="res/watchOS/AppIcon.appiconset/TBlocksIcon-50@2x.png" width="100" />
+        <icon height="196" src="res/watchOS/AppIcon.appiconset/TBlocksIcon-98@2x.png" width="196" />
+        <icon height="172" src="res/watchOS/AppIcon.appiconset/TBlocksIcon-86@2x.png" width="172" />
+        <icon height="216" src="res/watchOS/AppIcon.appiconset/TBlocksIcon-108@2x.png" width="216" />
+        <splash height="1125" src="res/ios/TBlocksSplash-Landscape.png" />
+        <splash height="2436" src="res/ios/TBlocksSplash-Portrait.png" />
         <splash src="res/ios/Default@2x~universal~anyany.png" />
         <splash src="res/ios/Default@2x~universal~comany.png" />
+        <splash src="res/ios/Default@2x~universal~anycom.png" />
         <splash src="res/ios/Default@2x~universal~comcom.png" />
     </platform>
     <plugin name="cordova-plugin-ble" spec="1" />
     <plugin name="cordova-plugin-whitelist" spec="1" />
     <plugin name="phonegap-plugin-mobile-accessibility" spec="git+https://github.com/phonegap/phonegap-mobile-accessibility.git" />
+    <plugin name="cordova-plugin-splashscreen" spec="^5.0.2" />
     <engine name="android" spec="^7.1.4" />
-    <engine name="ios" spec="~4.5.5" />
+    <engine name="ios" spec="^4.5.5" />
 </widget>
