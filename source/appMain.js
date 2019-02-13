@@ -22,12 +22,13 @@ SOFTWARE.
 
 module.exports = function () {
   var log = require('./log.js');
-  log.trace('App main');
 
   // Starts as an object and will be mosty empty until start()
   // is called.
   var app = {};
 
+//  log.trace('TBlocks starting. Screen:', screen.width, screen.height);
+  log.trace('TBlocks starting. Screen:', window.innerWidth, window.innerHeight);
 
   // Application main, called once shell is fully up.
   app.start = function () {
@@ -235,16 +236,12 @@ module.exports = function () {
     app.tbe.saveCurrentDoc();
     app.tbe.clearStates();
 
-    console.log('showOverlay', overlay);
-
     var currentOverlay = app.overlay;
     if (app.overlay !== null) {
-        console.log('showOverlay - hide existing');
         // If one is up close it (might be toggle action)
         app.hideOverlay();
     }
     if (currentOverlay !== overlay) {
-        console.log('showOverlay - show new');
         // If it is a new one then show it.
         overlay.start();
         app.overlay = overlay;

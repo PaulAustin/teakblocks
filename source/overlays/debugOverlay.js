@@ -25,7 +25,7 @@ SOFTWARE.
 // between the app and the robot.
 module.exports = function () {
   var log = require('./../log.js');
-  var cxn = require('./../cxn.js');
+  // var cxn = require('./../cxn.js');
   var app = require('./../appMain.js');
   var debugMode = {};
 
@@ -44,25 +44,18 @@ module.exports = function () {
 
     // Start update function.
     debugMode.updateDebug();
-    log.trace('> Hello');
-  };
-
-  // Add a messge to the log.
-  debugMode.log = function (text) {
-    debugMode.logElement.innerHTML += text;
-    // TODO need way to trim buffer to a max size (10K??)
-    log.trace('> Hello');
+    log.trace('> Show debug overlay');
   };
 
   // Update the list of messages show in the display.
   debugMode.updateDebug = function() {
-
+    debugMode.logElement.innerHTML = log.buffer;
     // Erase old text.
     // debugMode.logElement.innerHTML = '';
     // Replace contents with existing list of messages.
-    for(var i = 0; i < cxn.messages.length; i++) {
-      debugMode.log(cxn.messages[i] + '\n');
-    }
+    // for(var i = 0; i < cxn.messages.length; i++) {
+    //    debugMode.log(cxn.messages[i] + '\n');
+    // }
 
     // Prime the timer again.
     debugMode.timer = setTimeout(function() { debugMode.updateDebug(); }, 2000);

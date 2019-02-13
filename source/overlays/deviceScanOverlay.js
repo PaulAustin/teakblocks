@@ -84,10 +84,6 @@ module.exports = function () {
   // External function for putting it all together.
   dso.start = function () {
 
-//      div.setAttribute('style', 'transition: all 0.2s ease;left: 42%; top:35%;position: absolute;width: 240px;transform: scale(3.0, 3.0);pointer-events: all;');
-//      div.setAttribute('class', 'block-config-form blockform');
-//      div.setAttribute('id', 'bot-search-overlay');
-
     // Construct the DOM for the overlay.
     app.overlayDom.innerHTML = `
       <div id='deviceScanOverlay' class ='fullScreenSlideIn'>
@@ -104,14 +100,6 @@ module.exports = function () {
         </div>
       </div>`;
 
-//zzz    var exitButton = document.getElementById('overlayExitButton');
-//ZZZ    exitButton.onclick = dso.exit;
-/* XXX
-    var xButton = document.getElementById('cxnButton-x');
-    xButton.addEventListener('click', function(){
-        cxnButton.configuratorClose(div);
-    });
-*/
     // Connect the dataBinding.
     ko.applyBindings(dso, app.overlayDom);
     dso.scanButton = document.getElementById('bt-scan');
