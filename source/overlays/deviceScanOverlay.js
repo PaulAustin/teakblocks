@@ -19,28 +19,32 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+
+// An overlay to see log messages and communications
+// between the app and the robot.
 module.exports = function () {
   var log = require('./../log.js');
   var cxn = require('./../cxn.js');
+  var app = require('./../appMain.js');
   var ko = require('knockout');
+  var deviceScanOverlay = {};
+  var dso = deviceScanOverlay;
 
-  var cxnButton =  {};
+  dso.devices = ko.observableArray([]);
+  dso.deviceName = '-?-';
 
-  cxnButton.devices = ko.observableArray([]);
-  cxnButton.deviceName = '-?-';
-
-  cxnButton.onDeviceClick = function() {
-    // Ah JavaScript... 'this' is NOT identityBlock.
+  dso.onDeviceClick = function() {
+    // Ah JavaScript... 'this' is NOT the deviceScanOverlay.
     // It is the knockout item in the observable array.
 
     var newBotName = this.name;
 
     if (typeof name === 'string') {
 
-      var currentBotName = cxnButton.deviceName;
+      var currentBotName = dso.deviceName;
       if (currentBotName !== newBotName) {
         // Find the current item, and mark it as unselected.
-        var match = ko.utils.arrayFirst(cxnButton.devices(), function(item) {
+        var match = ko.utils.arrayFirst(dso.devices(), function(item) {
           return (item().name === currentBotName);
         });
         if (match) {
@@ -50,18 +54,17 @@ module.exports = function () {
         this.selected(true);
       }
       // Move the selected name into the object.
-      cxnButton.deviceName = newBotName;
-      cxnButton.updateScreenName();
+      dso.deviceName = newBotName;
+      dso.updateScreenName();
     }
   };
 
-  cxnButton.updateScreenName = function() {
+  dso.updateScreenName = function() {
     var txt = document.getElementById('device-name-label');
-    txt.innerHTML = "bot: " + cxnButton.deviceName;
+    txt.innerHTML = "bot: " + dso.deviceName;
   };
 
-  // Initial settings for blocks of this type.
-  cxnButton.defaultSettings = function() {
+  dso.defaultSettings = function() {
     // Return a new object with settings for the controller.
     return {
       data:{
@@ -78,89 +81,83 @@ module.exports = function () {
     };
   };
 
-  cxnButton.configuratorOpen = function(button, tbe) {
-    if(document.getElementById('bot-search-overlay') !== null){
-      return;
-    }
-    var div = document.createElement('div');
-    div.innerHTML =
-      `<div class='group-div'>
-        <div class='list-box-shell'>
-            <ul class='list-box' data-bind='foreach: devices'>
-              <li data-bind= "css:{'list-item-selected':selected()}">
-                <span data-bind= "text:name, click:$parent.onDeviceClick"></span>
-              </li>
-            </ul>
-        </div>
-        <button id='bt-scan' class='width-twothirds searching-button'>
-        </button>
-        <button class='width-third cxnButton-x' id="cxnButton-x">
-          <i class="fa fa-check" class="svg-clear"></i>
-        </button>
+  // External function for putting it all together.
+  dso.start = function () {
 
+//      div.setAttribute('style', 'transition: all 0.2s ease;left: 42%; top:35%;position: absolute;width: 240px;transform: scale(3.0, 3.0);pointer-events: all;');
+//      div.setAttribute('class', 'block-config-form blockform');
+//      div.setAttribute('id', 'bot-search-overlay');
+
+    // Construct the DOM for the overlay.
+    app.overlayDom.innerHTML = `
+      <div id='deviceScanOverlay' class ='fullScreenSlideIn'>
+         <div class='group-div'>
+            <div class='dso-list-box-shell'>
+                <ul class='dso-list-box' data-bind='foreach: devices'>
+                  <li data-bind= "css:{'dso-list-item-selected':selected()}">
+                    <span data-bind= "text:name, click:$parent.onDeviceClick"></span>
+                  </li>
+                </ul>
+            </div>
+            <button id='bt-scan' class='width-twothirds searching-button'>
+            </button>
+        </div>
       </div>`;
 
-    div.setAttribute('style', 'transition: all 0.2s ease;left: 42%; top:35%;position: absolute;width: 240px;transform: scale(3.0, 3.0);pointer-events: all;');
-    div.setAttribute('class', 'block-config-form blockform');
-    div.setAttribute('id', 'bot-search-overlay');
-
-    //
-
-    var tbeForms = document.getElementById('tbe-forms');
-    tbeForms.appendChild(div);
-
+//zzz    var exitButton = document.getElementById('overlayExitButton');
+//ZZZ    exitButton.onclick = dso.exit;
+/* XXX
     var xButton = document.getElementById('cxnButton-x');
     xButton.addEventListener('click', function(){
         cxnButton.configuratorClose(div);
     });
-
+*/
     // Connect the dataBinding.
-    ko.applyBindings(cxnButton, div);
-
-    cxnButton.scanButton = document.getElementById('bt-scan');
-    cxnButton.scanButton.onclick = cxnButton.handleScanButton;
+    ko.applyBindings(dso, app.overlayDom);
+    dso.scanButton = document.getElementById('bt-scan');
+    dso.scanButton.onclick = dso.handleScanButton;
 
     // If currently connected then disconnect and let them choose the same again
     // or pick another.
-    var currentBotName = cxnButton.deviceName;
+    var currentBotName = dso.deviceName;
     log.trace('currently connected to', currentBotName);
-    /*
-    var dev = cxn.devices[currentBotName];
-    if (dev !== undefined) {
-      var mac = cxn.devices[currentBotName].mac;
-      log.trace('current mac', mac);
-      cxn.disconnect(mac, currentBotName);
-    }
-    */
-    if (!cxn.scanUsesHostDialog && !cxn.scannning) {
-      // If scanning is unobtrusive, start it when the form is shown.
-      cxnButton.toggleBtScan();
-    } else {
-      // Otherwise at least fix up the button label.
-      cxnButton.configBtnScan(false);
-    }
   };
 
-  cxnButton.handleScanButton = function() {
-    if(cxn.scanning){
+  // Close the overlay.
+  dso.exit = function() {
+    var overlay = document.getElementById('deviceScanOverlay');
+    if  (overlay !== null) {
+      overlay.className = 'fullScreenSlideOut';
+    }
+
+    if (cxn.scannning) {
+      dso.toggleBtScan();
+    }
+    ko.cleanNode(app.overlayDom);
+    // For now, leave the element there until the next overlay replaces it.
+    // app.overlayDom.innerHTML = '';
+  };
+
+  dso.handleScanButton = function() {
+    if (cxn.scanning) {
       console.log('disconnect block');
-      var currentBotName = cxnButton.deviceName;
+      var currentBotName = dso.deviceName;
       var dev = cxn.devices[currentBotName];
       if (dev !== undefined) {
         var mac = cxn.devices[currentBotName].mac;
         log.trace('disconnect from current mac', mac);
         cxn.disconnect(mac, currentBotName);
       }
-    } else{
+    } else {
       console.log('go to toggleBtScan');
-      cxnButton.toggleBtScan();
+      dso.toggleBtScan();
     }
   };
 
   // Turn on Scanning
-  cxnButton.configBtnScan = function(scanning) {
+  dso.configBtnScan = function(scanning) {
     log.trace('config scaning button', scanning);
-    var button= cxnButton.scanButton;
+    var button= dso.scanButton;
     if (scanning) {
       // Turn on scanning.
       button.innerHTML =
@@ -171,58 +168,47 @@ module.exports = function () {
     }
   };
 
-  cxnButton.toggleBtScan = function() {
+  dso.toggleBtScan = function() {
     if (cxn.scannning) {
       // Turn off back scanning
       cxn.stopScanning();
-      cxnButton.watch.dispose();
-      cxnButton.watch = null;
+      dso.watch.dispose();
+      dso.watch = null;
     } else {
       console.log('in theory start scanning');
       // Turn on scanning.
       // Set up a callback to get notified when when devices show up.
-      cxnButton.refreshList(cxn.devices);
-      cxnButton.watch = cxn.connectionChanged.subscribe(cxnButton.refreshList);
+      dso.refreshList(cxn.devices);
+      dso.watch = cxn.connectionChanged.subscribe(dso.refreshList);
       cxn.startScanning();
     }
-    cxnButton.configBtnScan(cxn.scanning);
+    dso.configBtnScan(cxn.scanning);
   };
 
   // Update the list of devices in the configuration box
-  cxnButton.refreshList = function (bots) {
+  dso.refreshList = function (bots) {
     // TODO, might be able to use data binding to do this as well.
-    cxnButton.devices.removeAll();
+    dso.devices.removeAll();
     for (var key in bots) {
       if (bots.hasOwnProperty(key)) {
-        cxnButton.addItem(key);
+        dso.addItem(key);
       }
     }
 
     // If scanning has stopped update the button.
     if (!cxn.scanning) {
-      cxnButton.configBtnScan(false);
+      dso.configBtnScan(false);
     }
   };
 
-  // Close the identity blocks and clean up hooks related to it.
-  cxnButton.configuratorClose = function(div) {
-    // Stop looking for visible devices.
-
-    if (cxn.scannning) {
-      cxnButton.toggleBtScan();
-    }
-    ko.cleanNode(div);
-    div.parentNode.removeChild(div);
-  };
-
-  cxnButton.addItem = function (botName) {
-    var targetName = cxnButton.deviceName;
+  dso.addItem = function (botName) {
+    var targetName = dso.deviceName;
     var item = ko.observable({
       name: botName, //+ faBlueTooth,
       selected: ko.observable(botName === targetName)
     });
-    cxnButton.devices.unshift(item);
+    dso.devices.unshift(item);
   };
 
-  return cxnButton;
+  return dso;
 }();

@@ -20,6 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+
 // An overlay to see log messages and communications
 // between the app and the robot.
 module.exports = function () {
@@ -35,13 +36,10 @@ module.exports = function () {
     app.overlayDom.innerHTML = `
       <div id='debugOverlay' class ='fullScreenSlideIn'>
         <div id='debugLogBackground'>
-          <i class='fa fa-times driver-x-debug' id="overlayExitButton" aria-hidden='true' horizontal-align='middle'></i>
           <div id='debugLog'></div>
         </div>
       </div>`;
 
-    var exitButton = document.getElementById('overlayExitButton');
-    exitButton.onclick = debugMode.exit;
     debugMode.logElement = document.getElementById('debugLog');
 
     // Start update function.

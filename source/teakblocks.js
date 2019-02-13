@@ -209,7 +209,6 @@ tbe.addPaletteBlock = function(x, y, name) {
 // Delete a chunk of blocks (typically one).
 tbe.deleteChunk = function(block, endBlock) {
 
-
   // Remember any tail so it can be slid over.
   var tail = endBlock.next;
 

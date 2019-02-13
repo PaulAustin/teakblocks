@@ -94,15 +94,6 @@ module.exports = function () {
     div.innerHTML =
       `<div class='group-div'>
         <div class='svg-clear'>Play upon program run<div/>
-        <!--<div class='list-box-shell'>
-            <ul class='list-box' data-bind='foreach: devices'>
-              <li data-bind= "css:{'list-item-selected':selected()}">
-                <span data-bind= "text:name, click:$parent.onDeviceClick"></span>
-              </li>
-            </ul>
-        </div>
-        <button id='bt-scan' class='width-whole'>
-        </button>-->
       </div>`;
 
     // Connect the dataBinding.

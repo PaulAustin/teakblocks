@@ -41,8 +41,12 @@ module.exports = function () {
     // Add major modules to the application object.
     var tbe = app.tbe;
     app.overlayDom = document.getElementById('overlayLayer');
+    app.overlay = null;
     app.driverOverlay = require('./overlays/driveOverlay.js');
     app.debugOverlay = require('./overlays/debugOverlay.js');
+    app.deviceOverlay = require('./overlays/debugOverlay.js');
+    app.deviceScanOverlay = require('./overlays/deviceScanOverlay.js');
+
     // Add shortcut function to app
     app.fileOverlay = require('./overlays/fileOverlay.js');
     app.settingsOverlay = require('./overlays/settings.js');
@@ -149,7 +153,8 @@ module.exports = function () {
         var currentDocText = teaktext.blocksToText(tbe.forEachDiagramChain);
         app.fileOverlay.saveFile(tbe.currentDoc, currentDocText);
       },
-      'connect': function(button) { tbe.openConnectionMenu(button); }
+
+      'connect': function() { app.showOverlay(app.deviceScanOverlay); }
     };
 
     // Construct the clipboard
@@ -207,7 +212,9 @@ module.exports = function () {
 
     app.conductor.attachToScoreEditor(tbe);
 
-    if (app.splashOverlay.showLaunchAboutBox()) {
+    var showSplashAtAlunch = app.isRegularBrowser;
+    showSplashAtAlunch = false; // For quick codova style test in browsers.
+    if (showSplashAtAlunch && app.splashOverlay.showLaunchAboutBox()) {
       app.doCommand('splashOverlay');
     }
   };
@@ -227,7 +234,28 @@ module.exports = function () {
     // First, save the current document.
     app.tbe.saveCurrentDoc();
     app.tbe.clearStates();
-    overlay.start();
+
+    console.log('showOverlay', overlay);
+
+    var currentOverlay = app.overlay;
+    if (app.overlay !== null) {
+        console.log('showOverlay - hide existing');
+        // If one is up close it (might be toggle action)
+        app.hideOverlay();
+    }
+    if (currentOverlay !== overlay) {
+        console.log('showOverlay - show new');
+        // If it is a new one then show it.
+        overlay.start();
+        app.overlay = overlay;
+    }
+  };
+
+  app.hideOverlay = function() {
+      if (app.overlay !== null) {
+          app.overlay.exit();
+          app.overlay = null;
+      }
   };
 
   return app;

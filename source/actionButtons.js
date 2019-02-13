@@ -23,7 +23,7 @@ SOFTWARE.
 module.exports = function () {
   var actionButtons = {};
   var svgb = require('./svgbuilder.js');
-  var cxnButton = require('./overlays/cxnButton.js');
+  var dso = require('./overlays/deviceScanOverlay.js');
 
   actionButtons.addActionButtons = function(buttons, tbe) {
     var position = null;
@@ -94,7 +94,7 @@ module.exports = function () {
       }
 
       if (command === 'connect') {
-        var dLabel = actionButtons.addLabel(svgCircle, 160, "bot: " + cxnButton.deviceName, 'device-name-label');
+        var dLabel = actionButtons.addLabel(svgCircle, 160, "bot: " + dso.deviceName, 'device-name-label');
         group.appendChild(dLabel);
         group.setAttribute('class', 'buttonGroup action-dot');
         svgCircle.setAttribute('class', '');

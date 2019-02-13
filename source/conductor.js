@@ -23,7 +23,7 @@ SOFTWARE.
 module.exports = function () {
   var log = require('./log.js');
   var conductor = {};
-  var cxnButton = require('./overlays/cxnButton.js');
+  var dso = require('./overlays/deviceScanOverlay.js');
   var cxn = require('./cxn.js');
   var variables = require('./variables.js');
 
@@ -62,7 +62,7 @@ module.exports = function () {
     var blockChainIterator  = conductor.tbe.forEachDiagramChain;
     blockChainIterator(function(chainStart) {
       if (chainStart.name.startsWith('identity')) {
-        var botName = cxnButton.deviceName;
+        var botName = dso.deviceName;
         var status = conductor.cxn.connectionStatus(botName);
         if (status === conductor.cxn.statusEnum.BEACON) {
           // Try to connect ot it.
@@ -238,7 +238,7 @@ module.exports = function () {
       chainStart.svgRect.classList.remove('running-block');
       // Ignore chains that don't start with an identity block.
       if (chainStart.name.startsWith('identity')) {
-        botName = cxnButton.deviceName;
+        botName = dso.deviceName;
         conductor.cxn.write(botName, message);
         conductor.cxn.write(botName, message2);
       }
@@ -253,7 +253,7 @@ module.exports = function () {
     var first = block.first;
 
     if (first.name.startsWith('identity')) {
-      var botName = cxnButton.deviceName;
+      var botName = dso.deviceName;
       var message = '';
       var d = block.controllerSettings.data;
       if (block.name === 'picture') {
