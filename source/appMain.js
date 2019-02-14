@@ -28,7 +28,11 @@ module.exports = function () {
   var app = {};
 
 //  log.trace('TBlocks starting. Screen:', screen.width, screen.height);
-  log.trace('TBlocks starting. Screen:', window.innerWidth, window.innerHeight);
+  log.trace('TBlocks starting.', new Date().toLocaleDateString());
+
+  app.windowEvent = function () {
+      log.trace('Screen Size:', window.innerWidth, window.innerHeight);
+  };
 
   // Application main, called once shell is fully up.
   app.start = function () {
@@ -55,6 +59,11 @@ module.exports = function () {
 
     // fileOverlay will provide some from of localStorage, even if faked.
     app.storage = app.fileOverlay.localStorage();
+
+    //Set the orientation and resize events, force one now.
+    window.addEventListener('orientationchange', app.windowEvent);
+    window.addEventListener("resize", app.windowEvent);
+    app.windowEvent();
 
     if (window.MobileAccessibility) {
       window.MobileAccessibility.usePreferredTextZoom(false);
