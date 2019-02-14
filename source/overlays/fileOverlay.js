@@ -58,9 +58,6 @@ module.exports = function () {
     // Construct the DOM for the overlay.
     app.overlayDom.innerHTML = `
       <div id='fileOverlay' class ='fullScreenSlideIn'>
-        <div id='overlayExitButton'>
-          <i class='fa fa-times driver-x-debug svg-clear' aria-hidden='true'></i>
-        </div>
         <div id='debugLogBackground'>
           <div id='debugLog'></div>
         </div>
