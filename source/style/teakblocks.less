@@ -46,6 +46,7 @@ SOFTWARE.
 
 @import "standardUI.less";
 @import "blocks.less";
+@import "overlay.less";
 @import "fileOverlay.less";
 @import "splashOverlay.less";
 @import "deviceScanOverlay.less";
@@ -373,14 +374,6 @@ body {
 .area{
   margin-top: 5px;
 }
-#driverBackground {
-  position: absolute;
-  left:0%;
-  width:100%;
-  height:100%;
-  background-color: @overlay-driver-backgroud;
-  overflow: hidden;
-}
 .exitGroup {
   background-color: @action-glyph-bcolor;
   position: absolute;
@@ -405,36 +398,6 @@ body {
   width: 100px;
   border-radius: 100px;
 }
-.drive-diagnostics {
-  font-family: 'helvetica';
-  position:absolute;
-  left:calc(~'50% - 150px');
-  top:200px;
-}
-
-// Full screen overlay common parts
-.fullScreenSlideIn {
-  top:80px;
-  animation: fullScreenSlideIn 0.5s ease;
-}
-.fullScreenSlideOut {
-  top:100%;
-  animation: fullScreenSlideOut 0.5s ease;
-}
-@keyframes fullScreenSlideIn  { from{ top:100%; }  to{ top:80px; } }
-@keyframes fullScreenSlideOut { from{ top:80px; }  to{ top:100%; } }
-
-#overlayExitButton {
-  background-color: #FF3F4A;
-  position: absolute;
-  top:5px;
-  left: 20px;
-  position: relative;
-  height:50px;
-  width: 50px;
-  border-radius: 100px;
-}
-
 // Debug window
 #overlayFrame {
   position: absolute;

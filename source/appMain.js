@@ -31,6 +31,7 @@ module.exports = function () {
   log.trace('TBlocks starting.', new Date().toLocaleDateString());
 
   app.windowEvent = function () {
+      // This is the logical size (used by SVG, etc) not retina pixels.
       log.trace('Screen Size:', window.innerWidth, window.innerHeight);
   };
 

@@ -57,19 +57,17 @@ module.exports = function () {
 
     // Construct the DOM for the overlay.
     app.overlayDom.innerHTML = `
-      <div id='fileOverlay' class ='fullScreenSlideIn'>
+      <div id='overlayRoot' class ='fullScreenSlideIn'>
         <div id='debugLogBackground'>
           <div id='debugLog'></div>
         </div>
       </div>`;
 
-    var exitButton = document.getElementById('overlayExitButton');
-    exitButton.onclick = fileOverlay.exit;
   };
 
   // Close the overlay.
   fileOverlay.exit = function() {
-    var overlay = document.getElementById('fileOverlay');
+    var overlay = document.getElementById('overlayRoot');
     if  (overlay !== null) {
       overlay.className = 'fullScreenSlideOut';
     }

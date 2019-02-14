@@ -86,7 +86,7 @@ module.exports = function () {
 
     // Construct the DOM for the overlay.
     app.overlayDom.innerHTML = `
-      <div id='deviceScanOverlay' class ='fullScreenSlideIn'>
+      <div id='overlayRoot' class ='fullScreenSlideIn'>
          <div class='group-div'>
             <div class='dso-list-box-shell'>
                 <ul class='dso-list-box' data-bind='foreach: devices'>
@@ -113,7 +113,7 @@ module.exports = function () {
 
   // Close the overlay.
   dso.exit = function() {
-    var overlay = document.getElementById('deviceScanOverlay');
+    var overlay = document.getElementById('overlayRoot');
     if  (overlay !== null) {
       overlay.className = 'fullScreenSlideOut';
     }

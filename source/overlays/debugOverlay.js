@@ -34,11 +34,13 @@ module.exports = function () {
 
     // Construct the DOM for the overlay.
     app.overlayDom.innerHTML = `
-      <div id='debugOverlay' class ='fullScreenSlideIn'>
+    <div id='overlayRoot' class ='fullScreenSlideIn'>
+      <div id='debugOverlay'>
         <div id='debugLogBackground'>
           <div id='debugLog'></div>
         </div>
-      </div>`;
+      </div>
+    </div>`;
 
     debugMode.logElement = document.getElementById('debugLog');
 
@@ -65,7 +67,7 @@ module.exports = function () {
   debugMode.exit = function() {
 
     clearTimeout(debugMode.timer);
-    var overlay = document.getElementById('debugOverlay');
+    var overlay = document.getElementById('overlayRoot');
     if  (overlay !== null) {
       overlay.className = 'fullScreenSlideOut';
     }

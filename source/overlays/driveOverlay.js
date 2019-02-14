@@ -40,7 +40,7 @@ module.exports = function(){
   driveMode.buildSlider = function() {
     // TODO need to upate value as they change
     app.overlayDom.innerHTML = `
-    <div id='driverBackground' class='fullScreenSlideIn'>
+    <div id='overlayRoot' class='fullScreenSlideIn'>
       <div class='slider sliderRight' data-value='0'></div>
       <div class='slider sliderLeft' data-value='0'></div>
       <div id='drive-diagnostics' class='drive-diagnostics'>
@@ -138,7 +138,7 @@ module.exports = function(){
   driveMode.exit = function() {
     clearTimeout(driveMode.timer);
 
-    var overlay = document.getElementById('driverBackground');
+    var overlay = document.getElementById('overlayRoot');
     if  (overlay !== null) {
       overlay.className = 'fullScreenSlideOut';
     }
