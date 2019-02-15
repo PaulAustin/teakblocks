@@ -205,7 +205,7 @@ module.exports = function () {
 
     // Add the main command buttons, to left, middle and right locations.
     tbe.addPalette(package1);
-    var actionButtonObj = [
+    var actionButtonDefs = [
      {'alignment': 'L', 'position': 1, 'label': fastr.play, 'command': 'play', 'tweakx': 4},
      {'alignment': 'L', 'position': 2, 'label': fastr.stop, 'command': 'stop'},
      {'alignment': 'L', 'position': 3, 'label': fastr.gamepad, 'command': 'driveOverlay'},
@@ -217,8 +217,8 @@ module.exports = function () {
      //{'alignment': 'R', 'position': 2, 'label': '', 'command': ''},
     ];
 
-    tbe.actionButtons = actionButtonObj;
-    actionButtons.addActionButtons(actionButtonObj, tbe);
+    tbe.actionButtonDefs = actionButtonDefs;
+    actionButtons.addActionButtons(actionButtonDefs, tbe);
     document.body.onresize = tbe.updateScreenSizes; // Buttons/screen resizing
 
     app.conductor.attachToScoreEditor(tbe);

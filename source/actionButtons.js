@@ -32,7 +32,6 @@ module.exports = function () {
     var tweakx = 0;
     var label = '';
     var numMiddle = 0;
-    var toReturn = [];
 
     var group = null;
     var svgCircle = null;
@@ -107,7 +106,6 @@ module.exports = function () {
       svgCircle.setAttribute('command', command);
 
       group.setAttribute('id', buttons[i].command + 'Command');
-      toReturn[buttons.length - i - 1] = [svgCircle, svgText];
     }
 
     var underlay = document.getElementsByClassName('buttonGroupUnderlay');
@@ -140,8 +138,6 @@ module.exports = function () {
     if(underlay[0] !== undefined){
       underlay[0].setAttribute('class', 'action-dot-rect-remove-edit');
     }
-
-    return toReturn;
   };
 
   actionButtons.createDropdown = function(buttons, tbe, changeText, id){
@@ -170,7 +166,6 @@ module.exports = function () {
     this.addButton(changeText, x, y, tbe, 'pullUp' + id, 'pullUp' + id);
     droppoint[0].parentNode.parentNode.removeChild(droppoint[0].parentNode);
     var newButtons = [];
-
 
     for(var i = 0; i < buttons.length; i++){
       var label = buttons[i].label;
@@ -284,5 +279,4 @@ module.exports = function () {
   };
 
   return actionButtons;
-
 }();

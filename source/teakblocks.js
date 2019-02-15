@@ -47,7 +47,7 @@ tbe.currentDoc = 'docA';
 tbe.undoArray = [];
 tbe.currentUndoIndex = 0;
 tbe.stopUndo = false;
-tbe.actionButtons = null;
+tbe.actionButtonDefs = null;
 tbe.draggingSelectionArea = null;
 tbe.defaultBlockLoc = [80, 240];
 
@@ -91,7 +91,7 @@ tbe.clearStates = function clearStates(block) {
   tf.hideOpenForm();
   this.components.blockSettings.hide(block);
   tbe.forEachDiagramBlock( function(b) { b.markSelected(false); });
-  actionButtons.addActionButtons(tbe.actionButtons, tbe);
+  actionButtons.addActionButtons(tbe.actionButtonDefs, tbe);
 };
 
 tbe.init = function init(svg) {
@@ -110,9 +110,9 @@ tbe.init = function init(svg) {
 
   teakselection.init(tbe);
   tbe.svg.onmousemove = function() {
-    for(var i = 0; i < tbe.actionButtons.length; i++) {
-      if (tbe.actionButtons[i].svgCircle.classList.contains('switch-bg')) {
-        tbe.actionButtons[i].svgCircle.classList.remove('switch-bg');
+    for(var i = 0; i < tbe.actionButtonDefs.length; i++) {
+      if (tbe.actionButtonDefs[i].svgCircle.classList.contains('switch-bg')) {
+        tbe.actionButtonDefs[i].svgCircle.classList.remove('switch-bg');
       }
     }
   };
@@ -1573,7 +1573,7 @@ tbe.showPaletteBlocks = function showPaletteBlocks() {
 tbe.updateScreenSizes = function() {
   // First resize palette and background then resize the action buttons
   tbe.sizePaletteToWindow();
-  actionButtons.addActionButtons(tbe.actionButtons, tbe);
+  actionButtons.addActionButtons(tbe.actionButtonDefs, tbe);
 };
 
 tbe.addPalette = function addPalette(palette) {
