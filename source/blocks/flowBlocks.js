@@ -43,10 +43,10 @@ module.exports = function () {
   flowBlockHead.keyPadValue = ko.observable(0+" times");
 
   flowBlockHead.svg = function (root, block) {
-    var loop = svgb.createText('svg-clear block-flowhead-loop', 10, 40, '\uf021');
+    var loop = svgb.createText('svg-clear block-flowhead-loop', 20, 40, '\uf021');
     root.appendChild(loop);
     var data = block.controllerSettings.data.duration;
-    var duration = svgb.createText('svg-clear block-flowhead-count block-stencil-fill', 25, 70, data); //
+    var duration = svgb.createText('svg-clear block-flowhead-count block-stencil-fill', 35, 70, data); //
     duration.setAttribute('text-anchor', 'middle');
     root.appendChild(duration);
     return root;

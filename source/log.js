@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2017 Paul Austin - SDG
+Copyright (c) 2019 Paul Austin - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,19 +21,39 @@ SOFTWARE.
 */
 
 module.exports = function () {
-
   var log = {};
+
+  log.buffer = "";
+
+  log.traceHL = function() {
+      var args = Array.prototype.slice.call(arguments);
+     // args.unshift('t:');
+      log.traceCore(args);
+  };
 
   log.trace = function() {
       var args = Array.prototype.slice.call(arguments);
-      args.unshift('t:');
-      console.log.apply(console, args);       // eslint-disable-line no-console
+     // args.unshift('t:');
+      log.traceCore(args);
   };
 
   log.error = function() {
       var args = Array.prototype.slice.call(arguments);
       args.unshift('e:');
-      console.log.apply(console, arguments);  // eslint-disable-line no-console
+      log.traceCore(args);
+  };
+
+  log.traceCore = function(args) {
+
+      var message = "";
+      var index = 0;
+      for (; index < args.length; ++index) {
+          message = message + args[index].valueOf() + " ";
+      }
+      message += "\n";
+      log.buffer += message;
+
+      console.log.apply(console, args);       // eslint-disable-line no-console
   };
 
   return log;

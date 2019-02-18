@@ -47,16 +47,16 @@ module.exports = function () {
   // Two Motor block
   twoMotorBlock.svg = function(root, block) {
     // Motor 1
-    var motor1 = icons.motor(1, -12, 0);
+    var motor1 = icons.motor(0.85, 3, 3);
     root.appendChild(motor1);
 
     var data = block.controllerSettings.data.speed;
-    var motor2 = icons.motorWithDial(1, 12, 0, data);
+    var motor2 = icons.motorWithDial(0.85, 23, 3, data);
     root.appendChild(motor2);
 
     var data2 = block.controllerSettings.data.duration;
     var textToDisplay = svgb.createGroup('displayText', 0, 0);
-    var duration = svgb.createText('svg-clear block-motor-text-duration block-stencil-fill', 40, 70, data2 + " \uf192"); //data2 + " \uf192"
+    var duration = svgb.createText('svg-clear block-motor-text-duration block-stencil-fill', 45, 70, data2 + " \uf192"); //data2 + " \uf192"
     textToDisplay.appendChild(duration);
     textToDisplay.setAttribute('text-anchor', 'middle');
     root.appendChild(textToDisplay);

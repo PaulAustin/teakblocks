@@ -23,7 +23,7 @@ SOFTWARE.
 module.exports = function () {
   var log = require('./log.js');
   var conductor = {};
-  var cxnButton = require('./overlays/cxnButton.js');
+  var dso = require('./overlays/deviceScanOverlay.js');
   var cxn = require('./cxn.js');
   var variables = require('./variables.js');
 
@@ -35,6 +35,7 @@ module.exports = function () {
   conductor.count = null;
   conductor.defaultPix = '0000000000';
   conductor.run = false;
+  conductor.soundCount = 0;
 
   // Once the conductor system is connected to the editor,
   // it will ping the target device to determine
@@ -62,7 +63,7 @@ module.exports = function () {
     var blockChainIterator  = conductor.tbe.forEachDiagramChain;
     blockChainIterator(function(chainStart) {
       if (chainStart.name.startsWith('identity')) {
-        var botName = cxnButton.deviceName;
+        var botName = dso.deviceName;
         var status = conductor.cxn.connectionStatus(botName);
         if (status === conductor.cxn.statusEnum.BEACON) {
           // Try to connect ot it.
@@ -74,6 +75,7 @@ module.exports = function () {
   };
 
   conductor.linkHeartBeat = function() {
+    var botName = cxnButton.deviceName;
     conductor.hbTimer = 0;
 
     // Visit all chains and see if any have changed connection states.
@@ -138,6 +140,7 @@ module.exports = function () {
             } else {
               conductor.runningBlocks[i] = block.next;
               conductor.count = null;
+              conductor.cxn.write(botName, '(m:(1 2) d:0);');
             }
           }
         }
@@ -201,7 +204,7 @@ module.exports = function () {
       if(block.name === 'identityAccelerometer' && cxn.accelerometer !== null) {
         var accel = cxn.accelerometer;
         console.log("Accelerometer", accel);
-        if(conductor.satisfiesStart(accel, block, 32) && conductor.runningBlockIsNotInChain(block)){
+        if(conductor.satisfiesStart(accel, block, 5) && conductor.runningBlockIsNotInChain(block)){
           conductor.runningBlocks.push(block.next);
         }
       } else if(block.name === 'identityTemperature' && cxn.temperature !== null) {
@@ -238,13 +241,14 @@ module.exports = function () {
       chainStart.svgRect.classList.remove('running-block');
       // Ignore chains that don't start with an identity block.
       if (chainStart.name.startsWith('identity')) {
-        botName = cxnButton.deviceName;
+        botName = dso.deviceName;
         conductor.cxn.write(botName, message);
         conductor.cxn.write(botName, message2);
       }
     });
     conductor.count = null;
     conductor.runningBlocks = [];
+    conductor.soundCount = 0;
     log.trace('stop all');
     // Single step, find target and head of chain, and run the single block.
   };
@@ -253,7 +257,7 @@ module.exports = function () {
     var first = block.first;
 
     if (first.name.startsWith('identity')) {
-      var botName = cxnButton.deviceName;
+      var botName = dso.deviceName;
       var message = '';
       var d = block.controllerSettings.data;
       if (block.name === 'picture') {
@@ -268,7 +272,12 @@ module.exports = function () {
         message = '(m:(1 2) d:' + -d.speed + ');'; // +' b:' + d.duration
       } else if (block.name === 'sound') {
         // pass the Solfege index
-        message = '(nt:' + d.s.split(" ")[0] + ');';
+        message = '(nt:' + d.s.split(" ")[conductor.soundCount] + ');';
+        if(conductor.soundCount === d.duration-1){
+          conductor.soundCount = 0;
+        } else {
+          conductor.soundCount += 1;
+        }
         console.log('message', message);
       } else if (block.name === 'wait') {
         message = '';

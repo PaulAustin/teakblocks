@@ -139,22 +139,22 @@ module.exports = function () {
   // Buid an SVG for the block that indicates the device name
   // and connection status
   printBlock.svg = function(root, block) {
-    var board = icons.pictureNumeric(1, 27, 15);
+    var board = icons.pictureNumeric(1, 32, 15);
     board.setAttribute('text-anchor', 'middle');
     root.appendChild(board);
 
     var print = block.controllerSettings.data.print;
     if(print === 'var'){
       var varData = block.controllerSettings.data.variable;
-      var variable = icons.variable(0.5, 27, 52, varData);
+      var variable = icons.variable(0.5, 32, 52, varData);
       root.appendChild(variable);
     } else if(print === 'sensor'){
       var sensor = block.controllerSettings.data.sensor;
       if(sensor === 'accel'){
-        var accel = icons.accelerometer(0.55, 'svg-clear block-stencil-fill', 73, 120);
+        var accel = icons.accelerometer(0.50, 'svg-clear block-stencil-fill', 90, 135);
         root.appendChild(accel);
       } else if (sensor === 'temp'){
-        var temp = svgb.createText('svg-clear block-identity-text', 75, 160, '\uf2c9');
+        var temp = svgb.createText('svg-clear block-identity-text', 90, 160, '\uf2c9');
         temp.setAttribute('transform', 'scale(0.45)');
         root.appendChild(temp);
       }

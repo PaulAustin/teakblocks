@@ -119,7 +119,7 @@ tbSelecton.startSelectionBoxDrag = function(event) {
          intersecting.push(block);
          var tempBlock = block;
          if(block.isLoopHead()){
-           while(tempBlock !== null && !tempBlock.isLoopTail()){
+           while(tempBlock !== null ){ //&& !tempBlock.isLoopTail()
              intersecting.push(tempBlock);
              tempBlock = tempBlock.next;
            }

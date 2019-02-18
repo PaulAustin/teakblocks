@@ -94,15 +94,6 @@ module.exports = function () {
     div.innerHTML =
       `<div class='group-div'>
         <div class='svg-clear'>Play upon program run<div/>
-        <!--<div class='list-box-shell'>
-            <ul class='list-box' data-bind='foreach: devices'>
-              <li data-bind= "css:{'list-item-selected':selected()}">
-                <span data-bind= "text:name, click:$parent.onDeviceClick"></span>
-              </li>
-            </ul>
-        </div>
-        <button id='bt-scan' class='width-whole'>
-        </button>-->
       </div>`;
 
     // Connect the dataBinding.
@@ -249,9 +240,11 @@ module.exports = function () {
       }
       root.appendChild(svgb.createCircle('svg-clear ' + statusClass, 40, 65, 5));
     }*/
-    var play = svgb.createText('svg-clear block-identity-text', 20, 60, '\uf04b');
+    var arrowHead = svgb.createText('svg-clear block-identity-text', 40, 55, '\uf04b');
+    var arrowBody = svgb.createRect('svg-clear block-identity-text', 10, 35, 40, 10, 5);
     //play.setAttribute('style', 'font-family: FontAwesome;');
-    root.appendChild(play);
+    root.appendChild(arrowHead);
+    root.appendChild(arrowBody);
   };
 
 /*identityBlock.addItem = function (botName) {

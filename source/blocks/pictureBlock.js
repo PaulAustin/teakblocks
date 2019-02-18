@@ -75,7 +75,7 @@ module.exports = function () {
   // Generate an SVG based image for a specific block.
   pictureBlock.svg= function(svg, block) {
     var pix = block.controllerSettings.data.pix;
-    var group = icons.picture(1.4, 15, 14, pix);
+    var group = icons.picture(1.15, 25, 18, pix);
     svg.appendChild(group);
   };
 

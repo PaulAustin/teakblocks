@@ -58,6 +58,7 @@ b.motorBlock = require('./blocks/motorBlock.js');
 b.twoMotorBlock = require('./blocks/twoMotorBlock.js');
 b.identityAccelerometerBlock = require('./blocks/identityBlocks/identityAccelerometerBlock.js');
 b.identityButtonBlock = require('./blocks/identityBlocks/identityButtonBlock.js');
+b.identityGyroBlock = require('./blocks/identityBlocks/identityGyroBlock.js');
 b.identityTemperatureBlock = require('./blocks/identityBlocks/identityTemperatureBlock.js');
 b.variableSetBlock = require('./blocks/variables/variableSetBlock.js');
 b.variableAddBlock = require('./blocks/variables/variableAddBlock.js');

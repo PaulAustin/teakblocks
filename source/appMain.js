@@ -22,12 +22,18 @@ SOFTWARE.
 
 module.exports = function () {
   var log = require('./log.js');
-  log.trace('App main');
 
   // Starts as an object and will be mosty empty until start()
   // is called.
   var app = {};
 
+//  log.trace('TBlocks starting. Screen:', screen.width, screen.height);
+  log.trace('TBlocks starting.', new Date().toLocaleDateString());
+
+  app.windowEvent = function () {
+      // This is the logical size (used by SVG, etc) not retina pixels.
+      log.trace('Screen Size:', window.innerWidth, window.innerHeight);
+  };
 
   // Application main, called once shell is fully up.
   app.start = function () {
@@ -41,8 +47,12 @@ module.exports = function () {
     // Add major modules to the application object.
     var tbe = app.tbe;
     app.overlayDom = document.getElementById('overlayLayer');
+    app.overlay = null;
     app.driverOverlay = require('./overlays/driveOverlay.js');
     app.debugOverlay = require('./overlays/debugOverlay.js');
+    app.deviceOverlay = require('./overlays/debugOverlay.js');
+    app.deviceScanOverlay = require('./overlays/deviceScanOverlay.js');
+
     // Add shortcut function to app
     app.fileOverlay = require('./overlays/fileOverlay.js');
     app.settingsOverlay = require('./overlays/settings.js');
@@ -50,6 +60,11 @@ module.exports = function () {
 
     // fileOverlay will provide some from of localStorage, even if faked.
     app.storage = app.fileOverlay.localStorage();
+
+    //Set the orientation and resize events, force one now.
+    window.addEventListener('orientationchange', app.windowEvent);
+    window.addEventListener("resize", app.windowEvent);
+    app.windowEvent();
 
     if (window.MobileAccessibility) {
       window.MobileAccessibility.usePreferredTextZoom(false);
@@ -149,7 +164,8 @@ module.exports = function () {
         var currentDocText = teaktext.blocksToText(tbe.forEachDiagramChain);
         app.fileOverlay.saveFile(tbe.currentDoc, currentDocText);
       },
-      'connect': function(button) { tbe.openConnectionMenu(button); }
+
+      'connect': function() { app.showOverlay(app.deviceScanOverlay); }
     };
 
     // Construct the clipboard
@@ -189,7 +205,7 @@ module.exports = function () {
 
     // Add the main command buttons, to left, middle and right locations.
     tbe.addPalette(package1);
-    var actionButtonObj = [
+    var actionButtonDefs = [
      {'alignment': 'L', 'position': 1, 'label': fastr.play, 'command': 'play', 'tweakx': 4},
      {'alignment': 'L', 'position': 2, 'label': fastr.stop, 'command': 'stop'},
      {'alignment': 'L', 'position': 3, 'label': fastr.gamepad, 'command': 'driveOverlay'},
@@ -201,13 +217,15 @@ module.exports = function () {
      //{'alignment': 'R', 'position': 2, 'label': '', 'command': ''},
     ];
 
-    tbe.actionButtons = actionButtonObj;
-    actionButtons.addActionButtons(actionButtonObj, tbe);
+    tbe.actionButtonDefs = actionButtonDefs;
+    actionButtons.addActionButtons(actionButtonDefs, tbe);
     document.body.onresize = tbe.updateScreenSizes; // Buttons/screen resizing
 
     app.conductor.attachToScoreEditor(tbe);
 
-    if (app.splashOverlay.showLaunchAboutBox()) {
+    var showSplashAtAlunch = app.isRegularBrowser;
+    showSplashAtAlunch = false; // For quick codova style test in browsers.
+    if (showSplashAtAlunch && app.splashOverlay.showLaunchAboutBox()) {
       app.doCommand('splashOverlay');
     }
   };
@@ -227,7 +245,24 @@ module.exports = function () {
     // First, save the current document.
     app.tbe.saveCurrentDoc();
     app.tbe.clearStates();
-    overlay.start();
+
+    var currentOverlay = app.overlay;
+    if (app.overlay !== null) {
+        // If one is up close it (might be toggle action)
+        app.hideOverlay();
+    }
+    if (currentOverlay !== overlay) {
+        // If it is a new one then show it.
+        overlay.start();
+        app.overlay = overlay;
+    }
+  };
+
+  app.hideOverlay = function() {
+      if (app.overlay !== null) {
+          app.overlay.exit();
+          app.overlay = null;
+      }
   };
 
   return app;

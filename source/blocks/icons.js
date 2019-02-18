@@ -90,6 +90,51 @@ module.exports = function () {
     return group;
   };
 
+  icons.sound = function(scale, x, y) {
+    var group = svgb.createGroup('svg-clear', 0, 0);
+    var pathd = '';
+    pathd =  pb.move(x, y);
+    pathd += pb.hline(9);
+    pathd += pb.line(10, -10);
+    pathd += pb.vline(30);
+    pathd += pb.line(-10, -10);
+    pathd += pb.hline(-9);
+    pathd += pb.vline(-10);
+    pathd += pb.close();
+    var path = svgb.createPath('svg-clear block-stencil-fill', pathd);
+    group.appendChild(path);
+
+    // Sound wave arcs
+    pathd = '';
+    pathd =  pb.move(x+25, y);
+    pathd += pb.arc(12, 90, 0, 1, 0, 10);
+    pathd += pb.move(5, -15);
+    pathd += pb.arc(20, 90, 0, 1, 0, 20);
+    pathd += pb.move(5, -25);
+    pathd += pb.arc(28, 90, 0, 1, 0, 30);
+    var soundPath = svgb.createPath('svg-clear block-stencil', pathd);
+    soundPath.setAttribute('stroke-linecap', 'round');
+    group.appendChild(soundPath);
+    group.setAttribute('transform', 'scale(' + scale + ')');
+    return group;
+  };
+
+  icons.wait = function(scale, x, y) {
+    var group = svgb.createGroup('svg-group', 0, 0);
+    var pathd = '';
+    pathd =  pb.move(x, y);
+    pathd += pb.vline(-7);
+    pathd += pb.arc(19, 340, 1, 1, -12, 4);
+    pathd += pb.move(10.6, 16.5);
+    pathd += pb.arc(1.3, 300, 0, 0, 2.2, -0.8);
+    pathd += pb.line(-7.8, -10.5);
+    pathd += pb.close();
+    var path = svgb.createPath('svg-clear block-stencil', pathd);
+    group.appendChild(path);
+    group.setAttribute('transform', 'scale(' + scale + ')');
+    return group;
+  };
+
   icons.variable = function(scale, x, y, data) {
     var group = svgb.createGroup('svg-clear', 0, 0);
 
@@ -179,6 +224,39 @@ module.exports = function () {
 
     group.setAttribute('style', 'transform: translate(' + x + 'px, ' + y + 'px) scale(' + scale + ');');
     return group;
+  };
+
+  icons.paletteBlock = function(scale, classes, x, y, block) {
+    var width = block.width;
+    if(block.name.includes('identity')){
+      return icons.paletteBlockIdentity(scale, classes, x, y, width);
+    }
+    var pathd = '';
+    pathd += pb.move(x, y);
+    pathd += pb.hline(width);
+    pathd += pb.line(15, 40);
+    pathd += pb.line(-15, 40);
+    pathd += pb.hline(-width);
+    pathd += pb.line(15, -40);
+    pathd += pb.line(-15, -40);
+
+    var path = svgb.createPath(classes, pathd);
+    path.setAttribute('transform', 'scale(' + scale + ')');
+    return path;
+  };
+
+  icons.paletteBlockIdentity = function(scale, classes, x, y, width) {
+    var pathd = '';
+    pathd += pb.move(x, y);
+    pathd += pb.hline(width);
+    pathd += pb.line(15, 40);
+    pathd += pb.line(-15, 40);
+    pathd += pb.hline(-width);
+    pathd += pb.vline(-81);
+
+    var path = svgb.createPath(classes, pathd);
+    path.setAttribute('transform', 'scale(' + scale + ')');
+    return path;
   };
 
   return icons;

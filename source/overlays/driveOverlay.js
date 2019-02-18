@@ -26,7 +26,7 @@ module.exports = function(){
   var interact = require('interact.js');
   var conductor = require('./../conductor.js');
   var app = require('./../appMain.js');
-  var cxnButton = require('./cxnButton.js');
+  var dso = require('./deviceScanOverlay.js');
   var driveMode = {};
 
   driveMode.pastRight = 0;
@@ -40,7 +40,7 @@ module.exports = function(){
   driveMode.buildSlider = function() {
     // TODO need to upate value as they change
     app.overlayDom.innerHTML = `
-    <div id='driverBackground' class='fullScreenSlideIn'>
+    <div id='overlayRoot' class='fullScreenSlideIn'>
       <div class='slider sliderRight' data-value='0'></div>
       <div class='slider sliderLeft' data-value='0'></div>
       <div id='drive-diagnostics' class='drive-diagnostics'>
@@ -51,21 +51,8 @@ module.exports = function(){
         <h1 class="drive-encoderL svg-clear">Left Encoder: 100</h1>
         <h1 class="drive-encoderR svg-clear">Right Encoder: 100</h1-->
       </div>
-      <div id='exitGroup' class ='exitGroup'>
-        <div id='driver-exit' class ='driver-exit'>
-          <i class='fa fa-times driver-x svg-clear' aria-hidden='true'></i>
-        </div>
-      </div>
-      <!--div id='stopGroup' class='stopGroup'>
-        <div id='driver-stop' class='driver-stop' text-anchor='middle'>
-          <i class='fa fa-stop driver-stop-icon svg-clear' aria-hidden='true'></i>
-        </div>
-      </div-->
     </div>
     `;
-
-    var exitButton = document.getElementById('exitGroup');
-    exitButton.onclick = driveMode.exit;
 
     // TODO connect the stop button
     driveMode.sliderInteract('slider');
@@ -115,7 +102,7 @@ module.exports = function(){
   };
 
   driveMode.updateSlider = function() {
-    var id = cxnButton.deviceName;
+    var id = dso.deviceName;
     log.trace('updTE', id);
     //var changed = driveMode.displayLeft !== driveMode.pastLeft || driveMode.displayRight !== driveMode.pastRight;
     if (id !== null && id !== '-?-') {
@@ -151,7 +138,7 @@ module.exports = function(){
   driveMode.exit = function() {
     clearTimeout(driveMode.timer);
 
-    var overlay = document.getElementById('driverBackground');
+    var overlay = document.getElementById('overlayRoot');
     if  (overlay !== null) {
       overlay.className = 'fullScreenSlideOut';
     }

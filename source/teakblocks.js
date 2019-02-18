@@ -36,6 +36,7 @@ var defaultFiles = require('./defaultFiles.js');
 var conductor = require('./conductor.js');
 var app = require('./appMain.js');
 var cxnButton = require('./overlays/cxnButton.js');
+var icons = require('./blocks/icons.js');
 
 var tbe = {};
 
@@ -47,9 +48,10 @@ tbe.currentDoc = 'docA';
 tbe.undoArray = [];
 tbe.currentUndoIndex = 0;
 tbe.stopUndo = false;
-tbe.actionButtons = null;
+tbe.actionButtonDefs = null;
 tbe.draggingSelectionArea = null;
-tbe.defaultBlockLoc = [80, 240];
+tbe.defaultBlockLoc = [40, 120];
+tbe.identityIndent = 120;
 
 // Visitor for each block in the diagram
 tbe.forEachDiagramBlock = function (callBack) {
@@ -91,7 +93,7 @@ tbe.clearStates = function clearStates(block) {
   tf.hideOpenForm();
   this.components.blockSettings.hide(block);
   tbe.forEachDiagramBlock( function(b) { b.markSelected(false); });
-  actionButtons.addActionButtons(tbe.actionButtons, tbe);
+  actionButtons.addActionButtons(tbe.actionButtonDefs, tbe);
 };
 
 tbe.init = function init(svg) {
@@ -110,9 +112,9 @@ tbe.init = function init(svg) {
 
   teakselection.init(tbe);
   tbe.svg.onmousemove = function() {
-    for(var i = 0; i < tbe.actionButtons.length; i++) {
-      if (tbe.actionButtons[i].svgCircle.classList.contains('switch-bg')) {
-        tbe.actionButtons[i].svgCircle.classList.remove('switch-bg');
+    for(var i = 0; i < tbe.actionButtonDefs.length; i++) {
+      if (tbe.actionButtonDefs[i].svgCircle.classList.contains('switch-bg')) {
+        tbe.actionButtonDefs[i].svgCircle.classList.remove('switch-bg');
       }
     }
   };
@@ -208,7 +210,6 @@ tbe.addPaletteBlock = function(x, y, name) {
 
 // Delete a chunk of blocks (typically one).
 tbe.deleteChunk = function(block, endBlock) {
-
 
   // Remember any tail so it can be slid over.
   var tail = endBlock.next;
@@ -394,7 +395,7 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   // a rounded rect and a group that holds the custom graphics for the block.
   let width = this.controllerSettings.width;
   if (width === undefined) {
-    width = 80;
+    width = 70;
   }
   this.rect  = {
       left:   0,
@@ -403,9 +404,10 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
       bottom: 80,
   };
   this.svgGroup = svgb.createGroup('drag-group', 0, 0);
-  this.svgRect = svgb.createRect('function-block', 0, 0, width, 80, 10);
   if(blockName.startsWith('identity')){
-    this.svgRect.setAttribute('class', 'function-block identity-block');
+    this.svgRect = icons.paletteBlockIdentity(1, 'function-block identity-block', 0, 0, width);
+  } else {
+    this.svgRect = icons.paletteBlock(1, 'function-block', 0, 0, this);//svgb.createRect('function-block', 0, 0, width, 80, 10);
   }
   this.svgGroup.appendChild(this.svgRect);
   this.svgCustomGroup = null; // see updateSvg()
@@ -602,6 +604,10 @@ tbe.FunctionBlock.prototype.isCommented = function() {
   return (this.svgRect.classList.contains('commented'));
 };
 
+tbe.FunctionBlock.prototype.isIdentity = function() {
+  return (this.name.includes('identity'));
+};
+
 // Checks if a selected loop is the only thing selected.
 tbe.FunctionBlock.prototype.isIsolatedLoop = function() {
   if (this.isLoopHead() && this.isSelected()) {
@@ -754,21 +760,34 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
   // Refine the action based on geometery.
   if (target !== null) {
     if (self.left <= (target.left)) {
-      if (target.prev !== null) {
+      if (target.prev !== null && !self.name.includes('identity')) {
         action = 'insert';
-      } else {
+      } else if (!target.name.includes('identity')) {
         action = 'prepend';
       }
-    } else {
+    } else if (!self.name.includes('identity')) {
       action = 'append';
     }
-  } else {
-      action = 'outsnap';
-      //target = 0;  //?
   }
+
+  var shadowX = null;
+  var shadowY = null;
   var gridsize = 40;
-  var shadowX = Math.round(this.rect.top/gridsize)*gridsize;
-  var shadowY = Math.round(this.rect.left/gridsize)*gridsize;
+
+  if(action === null){
+    action = 'outsnap';
+    if(target !== null){
+      var diff = target.rect.bottom-this.rect.top;
+      shadowX = (Math.round((this.rect.top + diff)/gridsize)*gridsize);
+      shadowY = (Math.round(this.rect.left/gridsize)*gridsize);
+      target = null;
+    }
+  }
+
+  if(shadowX === null && shadowY === null){
+    shadowX = Math.round(this.rect.top/gridsize)*gridsize;
+    shadowY = Math.round(this.rect.left/gridsize)*gridsize;
+  }
 
   // Update shadows as needed.
   if ((this.snapTarget !== target || this.snapAction !== action)) {
@@ -820,9 +839,9 @@ tbe.FunctionBlock.prototype.insertTargetShadows = function(target, action) {
   var shadow = null;
   while (block !== null) {
     if (action === 'outsnap') {
-      shadow = svgb.createRect('shadow-block shadow-block-outsnap', x, y, block.width, block.height, 10);
+      shadow = icons.paletteBlock(1, 'shadow-block shadow-block-outsnap', x, y, block);//svgb.createRect('shadow-block shadow-block-outsnap', x, y, block.width, block.height, 10);
     } else {
-      shadow = svgb.createRect('shadow-block', x, y, block.width, block.height, 10);
+      shadow = icons.paletteBlock(1, 'shadow-block', x, y, block);//svgb.createRect('shadow-block', x, y, block.width, block.height, 10);
     }
     tbe.svg.insertBefore(shadow, tbe.background.nextSibling);
     block.targetShadow = shadow;
@@ -868,11 +887,10 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
   var frameCount = 10;
   var dx = 0;
   var dy = 0;
-
   assert(this.prev === null);
   assert(thisLast.next === null);
 
-  if (this.snapTarget !==  null && this.targetShadow !== null) {
+  if (this.snapTarget !== null) {
     // TODO:assert that chain we have has clean prev/next links
     // Append/Prepend the block(chain) to the list
     if (this.snapAction === 'prepend') {
@@ -1027,6 +1045,12 @@ tbe.autoPlace = function autoPlace(block) {
   var dx = Math.round(x-block.left);
   var dy = Math.round(y-block.top);
 
+  if(foundBlock !== null && block.isIdentity()){
+    block.dmove(dx, dy);
+    tbe.identityAutoPlace(block);
+    return;
+  }
+
   // Check if a chain currently exists
   // If one exists, move the block next to it
   if (foundBlock === null) {
@@ -1036,6 +1060,20 @@ tbe.autoPlace = function autoPlace(block) {
     foundBlock.next = block;
     block.prev = foundBlock;
   }
+};
+
+tbe.identityAutoPlace = function identityAutoPlace(block) {
+  tbe.forEachDiagramBlock(function(compare){
+    //console.log("compare", tbe.intersectingArea(compare, block));
+    if(tbe.intersectingArea(compare, block) > 100 && compare !== block && block.bottom + 120 < window.innerHeight - 150){
+      block.dmove(0, 120);
+      tbe.identityAutoPlace(block);
+      return;
+    } else if(block.bottom + 120 > window.innerHeight - 100) {
+      tbe.deleteChunk(block, block);
+    }
+    console.log(block.bottom + 120, window.innerHeight - 100);
+  });
 };
 
 document.body.addEventListener("keydown", function(e) {
@@ -1093,11 +1131,15 @@ document.body.addEventListener("keydown", function(e) {
       var todelete = [];
       tbe.forEachDiagramBlock( function(block) {
         if (block.isSelected()) {
+          console.log(block);
           todelete.push(block);
+          tbe.deleteChunk(block, block);
         }
       });
       if (todelete.length !== 0) {
-        tbe.deleteChunk(todelete[0], todelete[todelete.length - 1]);
+        log.trace('1', todelete[0], todelete[0].endBlock);
+        //tbe.deleteChunk(todelete[0], todelete[0].endBlock);
+        //todelete[0], todelete[todelete.length - 1]
       }
     } else if ( key === 49 ) {
       tbe.loadDoc('docA');
@@ -1503,7 +1545,7 @@ tbe.sizePaletteToWindow = function sizePaletteToWindow () {
 
 tbe.initPaletteBox = function initPaletteBox() {
   document.body.onresize = this.sizePaletteToWindow;
-  this.dropAreaGroup = tbe.tabbedDropArea(2);
+  this.dropAreaGroup = tbe.tabbedDropArea(3);
   this.dropArea = this.dropAreaGroup.childNodes[this.dropAreaGroup.childNodes.length - 1];
   this.svg.appendChild(this.dropAreaGroup);
 
@@ -1516,7 +1558,7 @@ tbe.initPaletteBox = function initPaletteBox() {
 
 tbe.tabbedDropArea = function tabbedDropArea(number) {
   var dropAreaGroup = svgb.createGroup("dropAreaGroup", 0, 0);
-  var names = ["Identity", "Other"];
+  var names = ["Start", "Action", "Control"];
   for(var i = number-1; i >=0; i--){
     var group = svgb.createGroup("dropArea", 0, 0);
     var className = 'area'+String(i+1);
@@ -1542,10 +1584,13 @@ tbe.evaluateBlocks = function evaluateBlocks(tab) {
   var tabNum = parseInt(tab.getAttribute('tab'), 10);
   if(tabNum === 1){
     tbe.hidePaletteBlocks();
-    tbe.showIdentityBlocks();
+    tbe.showStartBlocks();
   } else if(tabNum === 2){
     tbe.hidePaletteBlocks();
-    tbe.showPaletteBlocks();
+    tbe.showActionBlocks();
+  } else if(tabNum === 3){
+    tbe.hidePaletteBlocks();
+    tbe.showControlBlocks();
   }
 };
 
@@ -1555,7 +1600,7 @@ tbe.hidePaletteBlocks = function hidePaletteBlocks() {
   });
 };
 
-tbe.showIdentityBlocks = function showIdentityBlocks() {
+tbe.showStartBlocks = function showStartBlocks() {
   tbe.forEachPalette(function(block){
     if(block.svgRect.classList.contains('identity-block')){
       block.svgGroup.setAttribute('class', 'drag-group');
@@ -1563,9 +1608,20 @@ tbe.showIdentityBlocks = function showIdentityBlocks() {
   });
 };
 
-tbe.showPaletteBlocks = function showPaletteBlocks() {
+tbe.showActionBlocks = function showActionBlocks() {
   tbe.forEachPalette(function(block){
-    if(!block.svgRect.classList.contains('identity-block')){
+    var control = block.name === 'wait' || block.name === 'loop' || block.name === 'tail';
+    if(!block.svgRect.classList.contains('identity-block') && !control){
+      console.log(block);
+      block.svgGroup.setAttribute('class', 'drag-group');
+    }
+  });
+};
+
+tbe.showControlBlocks = function showControlBlocks() {
+  tbe.forEachPalette(function(block){
+    var control = block.name === 'wait' || block.name === 'loop' || block.name === 'tail';
+    if(control){
       block.svgGroup.setAttribute('class', 'drag-group');
     }
   });
@@ -1574,7 +1630,7 @@ tbe.showPaletteBlocks = function showPaletteBlocks() {
 tbe.updateScreenSizes = function() {
   // First resize palette and background then resize the action buttons
   tbe.sizePaletteToWindow();
-  actionButtons.addActionButtons(tbe.actionButtons, tbe);
+  actionButtons.addActionButtons(tbe.actionButtonDefs, tbe);
 };
 
 tbe.addPalette = function addPalette(palette) {
@@ -1582,14 +1638,14 @@ tbe.addPalette = function addPalette(palette) {
   this.tabs.push(palette);
 
   var indent = 10;
-  var indentReset = true;
+  var increment = 30;
   var blocks = palette.blocks;
   var blockTop = window.innerHeight - 90;
   for (var key in blocks) {
     if (blocks.hasOwnProperty(key)) {
-      if(!key.includes('identity') && indentReset === true){
+      if(key.includes('variableSet') || key.includes('wait')){
         indent = 10;
-        indentReset = false;
+        increment = 15;
       }
       var block = this.addPaletteBlock(indent, blockTop, key);
       if (key === 'loop') {
@@ -1601,7 +1657,7 @@ tbe.addPalette = function addPalette(palette) {
         blockTail.flowHead = block;
         blockTail.fixupChainCrossBlockSvg();
       }
-      indent += block.chainWidth + 10;
+      indent += block.chainWidth + increment;
     }
   }
   tbe.evaluateBlocks(this.dropArea);

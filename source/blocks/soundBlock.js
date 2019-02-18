@@ -25,6 +25,7 @@ module.exports = function () {
   var svgb = require('./../svgbuilder.js');
   var pb = svgb.pathBuilder;
   var soundBlock = {};
+  var icons = require('./icons.js');
 
   // List of HTML snippets used for controller tabs.
   soundBlock.tabs= {
@@ -217,28 +218,7 @@ module.exports = function () {
   // Sound block to make a joyful noise.
   soundBlock.svg = function(root, block) {
     // Speaker
-    var pathd = '';
-    pathd =  pb.move(20, 25);
-    pathd += pb.hline(9);
-    pathd += pb.line(10, -10);
-    pathd += pb.vline(30);
-    pathd += pb.line(-10, -10);
-    pathd += pb.hline(-9);
-    pathd += pb.vline(-10);
-    pathd += pb.close();
-    var path = svgb.createPath('svg-clear block-stencil-fill', pathd);
-    root.appendChild(path);
-
-    // Sound wave arcs
-    pathd = '';
-    pathd =  pb.move(45, 25);
-    pathd += pb.arc(12, 90, 0, 1, 0, 10);
-    pathd += pb.move(5, -15);
-    pathd += pb.arc(20, 90, 0, 1, 0, 20);
-    pathd += pb.move(5, -25);
-    pathd += pb.arc(28, 90, 0, 1, 0, 30);
-    var soundPath = svgb.createPath('svg-clear block-stencil', pathd);
-    soundPath.setAttribute('stroke-linecap', 'round');
+    var soundPath = icons.sound(1.15, 20, 20);
     root.appendChild(soundPath);
 
     // Description such as note name.

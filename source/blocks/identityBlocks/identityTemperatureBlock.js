@@ -97,7 +97,7 @@ module.exports = function () {
   // Buid an SVG for the block that indicates the device name
   // and connection status
   identityTemperatureBlock.svg = function(root, block) {
-    var text = svgb.createText('svg-clear block-identity-text', 42, 60, '\uf2c9');
+    var text = svgb.createText('svg-clear block-temperature-text block-identity-text', 42, 60, '\uf2c9');
     text.setAttribute('text-anchor', 'middle');
     root.appendChild(text);
   };

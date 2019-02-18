@@ -43,7 +43,7 @@ module.exports = function () {
     return {
       data:{
         // What comparison: =, <, >
-        comparison:'=',
+        comparison:'>',
         // Value
         value:0
       },
@@ -57,18 +57,18 @@ module.exports = function () {
       'type':identityAccelerometerBlock,
       'div': div,
       'block': block,
-      'min':-2000,
-      'max':2000,
+      'min':-100,
+      'max':100,
       'suffix':"",
-      'numArray': ["-10", "C", "+10", "-100", undefined, "+100"],
+      'numArray': ["-10", "C", "+10", "-50", undefined, "+50"],
       'calcLayout': 'simple',
       'inner': `<div id='keypadDiv' class='editorDiv'>
           <div class="dropdown-label-txt svg-clear">accel
           </div>
           <select class="dropdown-comparison" id="dropdown-comparison">
-            <option value="=" id="idAccel-equals">=</option>
             <option value=">" id="idAccel-greater">></option>
             <option value="<" id="idAccel-less"><</option>
+            <option value="=" id="idAccel-equals">=</option>
           </select>
           <div id="numeric-display" class = "numeric-display-third svg-clear" width='30px' height='80px' data-bind='text: keyPadValue'>
           </div>

@@ -1,7 +1,7 @@
 {
-    "name": "org.trashbots.teakblocks",
+    "name": "co.trashbots.tblocks",
     "version": "0.0.2",
-    "displayName": "Teak Blocks",
+    "displayName": "TBlocks",
     "cordova": {
         "platforms": [
             "android",
@@ -10,15 +10,17 @@
         "plugins": {
             "cordova-plugin-ble": {},
             "cordova-plugin-whitelist": {},
-            "phonegap-plugin-mobile-accessibility": {}
+            "phonegap-plugin-mobile-accessibility": {},
+            "cordova-plugin-splashscreen": {}
         }
     },
     "dependencies": {
-        "cordova-android": "~6.2.3",
-        "cordova-ios": "^4.4.0",
+        "cordova-android": "^7.1.4",
+        "cordova-ios": "^4.5.5",
         "cordova-plugin-ble": "1",
         "cordova-plugin-device": "git+https://github.com/apache/cordova-plugin-device.git",
         "cordova-plugin-network-information": "git+https://github.com/apache/cordova-plugin-network-information.git",
+        "cordova-plugin-splashscreen": "^5.0.2",
         "cordova-plugin-whitelist": "1",
         "phonegap-plugin-mobile-accessibility": "git+https://github.com/phonegap/phonegap-mobile-accessibility.git"
     }

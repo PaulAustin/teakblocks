@@ -381,12 +381,13 @@ cxn.onConnectAppBLE = function(info) {
 };
 
 cxn.onData = function(name, data) {
+  // (A T B G)
   var str = bufferToString(data);
   log.trace('On Data:', name, str);
   cxn.messages.push(name + ':' + str);
   if(str.includes('accel')){
     var accelData = str.substring(7, str.length - 1);
-    cxn.accelerometer = parseInt(accelData, 10);
+    cxn.accelerometer = parseInt(accelData, 10)/20;
   } else if(str.includes('(a)')){
     cxn.buttonA = true;
   } else if(str.includes('(b)')){
@@ -432,7 +433,7 @@ cxn.write = function(name, message) {
       if (cxn.webBLEWrite) {
         cxn.webBLEWrite.writeValue(buffer)
         .then(function() {
-          log.trace('write complete');
+          //log.trace('write complete');
         })
         .catch(function(error) {
           log.trace('write failed', error);

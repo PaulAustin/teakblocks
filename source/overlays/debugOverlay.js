@@ -20,11 +20,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+
 // An overlay to see log messages and communications
 // between the app and the robot.
 module.exports = function () {
   var log = require('./../log.js');
-  var cxn = require('./../cxn.js');
+  // var cxn = require('./../cxn.js');
   var app = require('./../appMain.js');
   var debugMode = {};
 
@@ -33,38 +34,30 @@ module.exports = function () {
 
     // Construct the DOM for the overlay.
     app.overlayDom.innerHTML = `
-      <div id='debugOverlay' class ='fullScreenSlideIn'>
+    <div id='overlayRoot' class ='fullScreenSlideIn'>
+      <div id='debugOverlay'>
         <div id='debugLogBackground'>
-          <i class='fa fa-times driver-x-debug' id="overlayExitButton" aria-hidden='true' horizontal-align='middle'></i>
           <div id='debugLog'></div>
         </div>
-      </div>`;
+      </div>
+    </div>`;
 
-    var exitButton = document.getElementById('overlayExitButton');
-    exitButton.onclick = debugMode.exit;
     debugMode.logElement = document.getElementById('debugLog');
 
     // Start update function.
     debugMode.updateDebug();
-    log.trace('> Hello');
-  };
-
-  // Add a messge to the log.
-  debugMode.log = function (text) {
-    debugMode.logElement.innerHTML += text;
-    // TODO need way to trim buffer to a max size (10K??)
-    log.trace('> Hello');
+    log.trace('> Show debug overlay');
   };
 
   // Update the list of messages show in the display.
   debugMode.updateDebug = function() {
-
+    debugMode.logElement.innerHTML = log.buffer;
     // Erase old text.
     // debugMode.logElement.innerHTML = '';
     // Replace contents with existing list of messages.
-    for(var i = 0; i < cxn.messages.length; i++) {
-      debugMode.log(cxn.messages[i] + '\n');
-    }
+    // for(var i = 0; i < cxn.messages.length; i++) {
+    //    debugMode.log(cxn.messages[i] + '\n');
+    // }
 
     // Prime the timer again.
     debugMode.timer = setTimeout(function() { debugMode.updateDebug(); }, 2000);
@@ -74,7 +67,7 @@ module.exports = function () {
   debugMode.exit = function() {
 
     clearTimeout(debugMode.timer);
-    var overlay = document.getElementById('debugOverlay');
+    var overlay = document.getElementById('overlayRoot');
     if  (overlay !== null) {
       overlay.className = 'fullScreenSlideOut';
     }
