@@ -75,7 +75,7 @@ module.exports = function () {
   };
 
   conductor.linkHeartBeat = function() {
-    var botName = cxnButton.deviceName;
+    var botName = dso.deviceName;
     conductor.hbTimer = 0;
 
     // Visit all chains and see if any have changed connection states.
