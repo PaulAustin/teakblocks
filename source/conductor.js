@@ -199,7 +199,7 @@ module.exports = function () {
   conductor.checkSensorIdentity = function(block) {
     conductor.sensorTimer = 0;
     var data = block.controllerSettings.data;
-    //conductor.cxn.write(cxnButton.deviceName, '(sensor);');
+    //conductor.cxn.write(dso.deviceName, '(sensor);');
     if(conductor.run){
       if(block.name === 'identityAccelerometer' && cxn.accelerometer !== null) {
         var accel = cxn.accelerometer;

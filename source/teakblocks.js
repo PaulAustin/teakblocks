@@ -35,7 +35,6 @@ var actionButtons = require('./actionButtons.js');
 var defaultFiles = require('./defaultFiles.js');
 var conductor = require('./conductor.js');
 var app = require('./appMain.js');
-var cxnButton = require('./overlays/cxnButton.js');
 var icons = require('./blocks/icons.js');
 
 var tbe = {};
@@ -97,6 +96,8 @@ tbe.clearStates = function clearStates(block) {
 };
 
 tbe.init = function init(svg) {
+  this.width = window.innerWidth;
+  this.height = window.innerHeight;
   this.svg = svg;
   this.background = svgb.createRect('editor-background', 0, 0, 20, 20, 0);
   this.svg.appendChild(this.background);
@@ -177,10 +178,6 @@ tbe.loadDoc = function(docName) {
   }
 };
 
-tbe.openConnectionMenu = function(button) {
-  cxnButton.configuratorOpen(button, tbe);
-};
-
 tbe.nextBlockId = function(prefix) {
   var blockId = prefix + String(tbe.blockIdSequence);
   tbe.blockIdSequence += 1;
@@ -201,7 +198,7 @@ tbe.addPaletteBlock = function(x, y, name) {
    block.interactId = tbe.nextBlockId('p:');
    this.paletteBlocks[block.interactId] = block;
    tbe.svg.removeChild(block.svgGroup);
-   if(block.rect.right + 30 > window.innerWidth){
+   if(block.rect.right + 30 > tbe.width){
      block.svgGroup.setAttribute('class', 'drag-group hiddenPaletteBlock');
    }
    tbe.paletteGroup.appendChild(block.svgGroup);
@@ -654,8 +651,8 @@ tbe.FunctionBlock.prototype.isGroupSelected = function() {
 
 tbe.FunctionBlock.prototype.isOnScreen = function() {
   if (this.rect !== null) {
-    if (this.rect.left+this.width >= 0 && this.rect.right-this.width <= window.innerWidth) {
-      if (this.rect.top+this.height >= 0 && this.rect.bottom-this.height <= window.innerHeight) {
+    if (this.rect.left+this.width >= 0 && this.rect.right-this.width <= tbe.width) {
+      if (this.rect.top+this.height >= 0 && this.rect.bottom-this.height <= tbe.height) {
         return true;
       }
     }
@@ -1065,14 +1062,14 @@ tbe.autoPlace = function autoPlace(block) {
 tbe.identityAutoPlace = function identityAutoPlace(block) {
   tbe.forEachDiagramBlock(function(compare){
     //console.log("compare", tbe.intersectingArea(compare, block));
-    if(tbe.intersectingArea(compare, block) > 100 && compare !== block && block.bottom + 120 < window.innerHeight - 150){
+    if(tbe.intersectingArea(compare, block) > 100 && compare !== block && block.bottom + 120 < tbe.height - 150){
       block.dmove(0, 120);
       tbe.identityAutoPlace(block);
       return;
-    } else if(block.bottom + 120 > window.innerHeight - 100) {
+    } else if(block.bottom + 120 > tbe.height - 100) {
       tbe.deleteChunk(block, block);
     }
-    console.log(block.bottom + 120, window.innerHeight - 100);
+    console.log(block.bottom + 120, tbe.height - 100);
   });
 };
 
@@ -1292,7 +1289,7 @@ tbe.configInteractions = function configInteractions() {
     })
     .on('up', function(event) {
       var block = thisTbe.elementToBlock(event.target);
-      if (block.rect.top > window.innerHeight - 100 && !block.isPaletteBlock) {
+      if (block.rect.top > tbe.height - 100 && !block.isPaletteBlock) {
         event.interaction.stop();
         block.setDraggingState(false);
         if (block.isLoopHead()) {
@@ -1528,8 +1525,8 @@ tbe.buildSvgTabs = function buildSvgTabs() {
 };
 
 tbe.sizePaletteToWindow = function sizePaletteToWindow () {
-  var w = window.innerWidth;
-  var h = window.innerHeight;
+  var w = tbe.width;
+  var h = tbe.height;
 
   svgb.translateXY(tbe.dropAreaGroup, 0, (h - 100));
   svgb.resizeRect(tbe.dropArea, w, 100);
@@ -1544,7 +1541,6 @@ tbe.sizePaletteToWindow = function sizePaletteToWindow () {
 };
 
 tbe.initPaletteBox = function initPaletteBox() {
-  document.body.onresize = this.sizePaletteToWindow;
   this.dropAreaGroup = tbe.tabbedDropArea(3);
   this.dropArea = this.dropAreaGroup.childNodes[this.dropAreaGroup.childNodes.length - 1];
   this.svg.appendChild(this.dropAreaGroup);
@@ -1553,7 +1549,6 @@ tbe.initPaletteBox = function initPaletteBox() {
   this.svg.appendChild(this.paletteGroup);
 
   this.tabs = [];
-  this.sizePaletteToWindow();
 };
 
 tbe.tabbedDropArea = function tabbedDropArea(number) {
@@ -1562,7 +1557,7 @@ tbe.tabbedDropArea = function tabbedDropArea(number) {
   for(var i = number-1; i >=0; i--){
     var group = svgb.createGroup("dropArea", 0, 0);
     var className = 'area'+String(i+1);
-    var rect = svgb.createRect('dropArea '+className, 0, 0, window.innerWidth, 100, 0);
+    var rect = svgb.createRect('dropArea '+className, 0, 0, tbe.width, 100, 0);
     var tab = svgb.createRect('dropArea '+className, 10+(160*i), -30, 150, 40, 5);
     var text = svgb.createText('dropArea', 20+(160*i), -10, names[i]);
     group.setAttribute('tab', String(i+1));
@@ -1627,7 +1622,11 @@ tbe.showControlBlocks = function showControlBlocks() {
   });
 };
 
-tbe.updateScreenSizes = function() {
+tbe.updateScreen = function() {
+  // This is the logical size (used by SVG, etc) not retina pixels.
+  log.trace('Screen Size:', window.innerWidth, window.innerHeight);
+  tbe.width = window.innerWidth;
+  tbe.height = window.innerHeight;
   // First resize palette and background then resize the action buttons
   tbe.sizePaletteToWindow();
   actionButtons.addActionButtons(tbe.actionButtonDefs, tbe);
@@ -1640,7 +1639,7 @@ tbe.addPalette = function addPalette(palette) {
   var indent = 10;
   var increment = 30;
   var blocks = palette.blocks;
-  var blockTop = window.innerHeight - 90;
+  var blockTop = tbe.height - 90;
   for (var key in blocks) {
     if (blocks.hasOwnProperty(key)) {
       if(key.includes('variableSet') || key.includes('wait')){

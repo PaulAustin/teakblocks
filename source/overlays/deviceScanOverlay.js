@@ -182,7 +182,6 @@ module.exports = function () {
         dso.addItem(key);
       }
     }
-
     // If scanning has stopped update the button.
     if (!cxn.scanning) {
       dso.configBtnScan(false);

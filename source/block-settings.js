@@ -115,7 +115,7 @@ module.exports = function () {
           if (clone.top < -dy) {
             dy = 120;
             moveUp = dy;
-          } else if(clone.bottom > window.innerHeight - moveUp - 80){
+          } else if(clone.bottom > tbe.height - moveUp - 80){
             dy = 120;
             moveUp = dy;
           }
@@ -383,12 +383,12 @@ module.exports = function () {
     } else {
       settingsHeight = 220;
     }
-    if(x-80 < 0){
+    if(x-80 < 0) {
       tweakx = 85-x;
-    } else if(x+160 > window.innerWidth){
-      tweakx = window.innerWidth - (x+165);
+  } else if(x+160 > tbe.width){
+      tweakx = tbe.width - (x+165);
     }
-    if(y+settingsHeight > window.innerHeight && (!block.isGroupSelected() || block.isIsolatedLoop())){
+    if(y+settingsHeight > tbe.height && (!block.isGroupSelected() || block.isIsolatedLoop())){
       tweaky = -settingsHeight -10 - block.height;
     }
     div.style.transition = 'all 0.0s ease';

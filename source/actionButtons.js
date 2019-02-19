@@ -54,8 +54,8 @@ module.exports = function () {
       }
     }
 
-    var half = window.innerWidth/2;
-    var middleLeft = half - ((numMiddle + 1) * 0.05 * window.innerWidth);
+    var half = tbe.width/2;
+    var middleLeft = half - ((numMiddle + 1) * 0.05 * tbe.width);
     var x = 0;
 
     for (var i = buttons.length - 1; i >= 0; i--) {
@@ -69,11 +69,11 @@ module.exports = function () {
       label = buttons[i].label;
 
       if (alignment === 'L') {
-        x = ((0.1 * window.innerWidth) * position);
+        x = ((0.1 * tbe.width) * position);
       } else if(alignment === 'M') {
-        x = middleLeft + ((0.1 * window.innerWidth) * position);
+        x = middleLeft + ((0.1 * tbe.width) * position);
       } else if (alignment === 'R') {
-        x = window.innerWidth - ((0.1 * window.innerWidth) * position);
+        x = tbe.width - ((0.1 * tbe.width) * position);
       }
 
       group = svgb.createGroup('buttonGroup', 0, 0);

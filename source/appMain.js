@@ -27,13 +27,7 @@ module.exports = function () {
   // is called.
   var app = {};
 
-//  log.trace('TBlocks starting. Screen:', screen.width, screen.height);
   log.trace('TBlocks starting.', new Date().toLocaleDateString());
-
-  app.windowEvent = function () {
-      // This is the logical size (used by SVG, etc) not retina pixels.
-      log.trace('Screen Size:', window.innerWidth, window.innerHeight);
-  };
 
   // Application main, called once shell is fully up.
   app.start = function () {
@@ -60,11 +54,6 @@ module.exports = function () {
 
     // fileOverlay will provide some from of localStorage, even if faked.
     app.storage = app.fileOverlay.localStorage();
-
-    //Set the orientation and resize events, force one now.
-    window.addEventListener('orientationchange', app.windowEvent);
-    window.addEventListener("resize", app.windowEvent);
-    app.windowEvent();
 
     if (window.MobileAccessibility) {
       window.MobileAccessibility.usePreferredTextZoom(false);
@@ -211,15 +200,17 @@ module.exports = function () {
      {'alignment': 'L', 'position': 3, 'label': fastr.gamepad, 'command': 'driveOverlay'},
      {'alignment': 'M', 'position': 1, 'label': fastr.debug, 'command': 'debugOverlay'},
      {'alignment': 'M', 'position': 2, 'label': fastr.folder, 'command': 'pages'},
-  //   {'alignment': 'M', 'position': 4, 'label': fastr.camera, 'command': 'docSnapShot'},
+  // {'alignment': 'M', 'position': 4, 'label': fastr.camera, 'command': 'docSnapShot'},
      {'alignment': 'M', 'position': 3, 'label': fastr.edit, 'command': 'edit'},
      {'alignment': 'R', 'position': 3, 'label': '', 'command': 'connect'},
      //{'alignment': 'R', 'position': 2, 'label': '', 'command': ''},
     ];
 
     tbe.actionButtonDefs = actionButtonDefs;
-    actionButtons.addActionButtons(actionButtonDefs, tbe);
-    document.body.onresize = tbe.updateScreenSizes; // Buttons/screen resizing
+
+    // Connect to resize event for refresh. Make initial call
+    document.body.onresize = tbe.updateScreen;
+    tbe.updateScreen();
 
     app.conductor.attachToScoreEditor(tbe);
 

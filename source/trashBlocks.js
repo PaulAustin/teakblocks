@@ -23,33 +23,33 @@ SOFTWARE.
 module.exports = function (){
 
   // Move block across the screen on frame at a time.
-  function trashAnimate(block, editor) {
+  function trashAnimate(block, tbe) {
     if(block[0] === undefined) {
       var frame = block.animateState.frame;
       block.dmove(block.animateState.adx, block.animateState.ady, (frame === 1), block);
       block.animateState.count += 1;
 
-      if (editor.blocksOnScreen() && frame > 0) {
+      if (tbe.blocksOnScreen() && frame > 0) {
         // Queue up next animation frame.
         block.animateState.frame = frame - 1;
         requestAnimationFrame(function() {
-          trashAnimate(block, editor);
+          trashAnimate(block, tbe);
         });
       } else {
         // Animation is over, now delete the blocks..
-        editor.clearDiagramBlocks();
+        tbe.clearDiagramBlocks();
       }
     }
   }
 
 // Determine center of block chain, then have all blocks scatter.
-function trashBlocks(editor) {
+function trashBlocks(tbe) {
 
   // Calculate initial trajectory for blocks.
-  editor.forEachDiagramBlock(function(block) {
+  tbe.forEachDiagramBlock(function(block) {
       var frameCount = 100;
-      var xPos = block.left - (window.innerWidth/2);
-      var yPos = block.top - (window.innerHeight/2);
+      var xPos = block.left - (tbe.width/2);
+      var yPos = block.top - (tbe.height/2);
       // Need to find the hypotenuse then divide the xPos and yPos by it.
       var hyp = Math.sqrt((xPos * xPos) + (yPos * yPos));
       var getX = (xPos/hyp) * 8;
@@ -63,9 +63,9 @@ function trashBlocks(editor) {
     });
 
     // Play a sound and begin the animation.
-    editor.audio.playSound(editor.audio.poof);
-    editor.forEachDiagramBlock(function(block) {
-      trashAnimate(block, editor);
+    tbe.audio.playSound(tbe.audio.poof);
+    tbe.forEachDiagramBlock(function(block) {
+      trashAnimate(block, tbe);
     });
 }
 
