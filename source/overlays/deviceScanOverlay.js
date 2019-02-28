@@ -87,7 +87,7 @@ module.exports = function () {
     // Construct the DOM for the overlay.
     app.overlayDom.innerHTML = `
       <div id='overlayRoot' class ='fullScreenSlideIn'>
-         <div class='group-div'>
+        <div id='dsoOverlay'>
             <div class='dso-list-box-shell'>
                 <ul class='dso-list-box' data-bind='foreach: devices'>
                   <li data-bind= "css:{'dso-list-item-selected':selected()}">
@@ -95,14 +95,15 @@ module.exports = function () {
                   </li>
                 </ul>
             </div>
-            <button id='bt-scan' class='width-twothirds searching-button'>
+            <button id='dsoScan' class='dso-scan-button dso-scan-label'>
+             Search for TB1s from the broswer
             </button>
         </div>
       </div>`;
 
     // Connect the dataBinding.
     ko.applyBindings(dso, app.overlayDom);
-    dso.scanButton = document.getElementById('bt-scan');
+    dso.scanButton = document.getElementById('dsoScan');
     dso.scanButton.onclick = dso.handleScanButton;
 
     // If currently connected then disconnect and let them choose the same again

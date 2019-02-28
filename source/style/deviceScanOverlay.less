@@ -20,14 +20,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#dsoOverlay {
+  box-sizing: border-box;
+  width:100%;
+  height:100%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
 .dso-list-box-shell {
   font-family: 'FontAwesome', "helvetica";
-  //top: 100px;
-  height: 100px;
-  border-radius: 6px;
-  margin-top: -5px;
-  margin-bottom: 5px;
-  border: 3px solid #81C784;
+  flex: 1;
+  border-radius: 10px;
+  //margin-top: -5px;
+  //margin-bottom: 5px;
+  border: 5px solid #81C784;
   background-color: #C8E6C9;
   color: #33691E;
   font-size: 40px;
@@ -36,11 +43,25 @@ SOFTWARE.
   overflow:scroll;
 }
 .dso-list-item-selected {
-  background-color: #81C784;
-  color: #33691E;
+  background-color: #85C1E9  ;
+  color: #21618C;
 }
 .dso-list-box {
-  margin: 0px;
   list-style: none;
-  padding-left: 0px;
+  padding: 0px;
+  margin: 0px;
+}
+.dso-scan-button {
+  box-sizing: border-box;
+  margin-top: 5px;
+  font-size: 15px;
+  height: 60px;
+  width: 100%;
+  border-radius: 10px;
+}
+.dso-scan-label {
+  fill: @action-glyph-color;
+  font-family: "helvetica";
+  font-size: 24px;
+  text-anchor: middle;
 }
