@@ -20,9 +20,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-
-
-
 module.exports = function () {
   var actionButtons = {};
   var svgb = require('./svgbuilder.js');
@@ -174,39 +171,26 @@ module.exports = function () {
     */
   };
 
-  actionButtons.createDropdownNew = function(buttons, tbe, changeText, id){
+  actionButtons.createDropdown = function(buttons, tbe, changeText, id) {
+    // Find out where the drop down will be positioned.
+    // The is the center of the button
     var droppoint = document.getElementById(id + 'Command').childNodes;
     var x = droppoint[0].getAttribute('cx');
     var y = droppoint[0].getAttribute('cy');
 
     var group = svgb.createGroup('action-dot-dropdown', 0, 0);
-    // The top Circle
-    var svgCircle = svgb.createCircle('action-dot-dropdown', x, 40, 40);
-    svgCircle.setAttribute('transform', 'translate (0 0)');
+    var svgCircle = svgb.createRect('action-dot-rect-pages', x - 40, 0, 80, (buttons.length  + 1) * 80, 40);
     group.appendChild(svgCircle);
-    tbe.svg.appendChild(group);
-    var animateSlideDown = {
-      frame: 20,
-      adx: 0,
-      ady: (buttons.length*80)/20,
-    };
-    this.slideButton(animateSlideDown, group);
-    // The rectangle
-    var svgRect = svgb.createRect('action-dot-rect-' + id, x-40, 40, 80, buttons.length*80);
-    group = svgb.createGroup('action-dot-dropdown', 0, 0);
-    svgCircle = svgb.createCircle('action-dot-dropdown-bg', x, 40, 40);
-    svgCircle.setAttribute('transform', 'translate (0 0)');
-    group.appendChild(svgCircle);
-    tbe.svg.appendChild(group);
-    tbe.svg.appendChild(svgRect);
-    // The bottom Circle
-    this.addButton(changeText, x, y, tbe, 'pullUp' + id, 'pullUp' + id);
-    droppoint[0].parentNode.parentNode.removeChild(droppoint[0].parentNode);
-    var newButtons = [];
 
-    // The Buttons that go one the drop-down
+    // Add the dropdown behind the main button.
+    tbe.svg.insertBefore(group, droppoint[0].parentNode);
+    //droppoint[0].parentNode.parentNode.removeChild(droppoint[0].parentNode);
+
+    // Insert the buttons that go one the drop-down
+    var newButtons = [];
     for(var i = 0; i < buttons.length; i++){
       var label = buttons[i].label;
+      // This test is a bit wonky.
       if(label.match(/[a-z]/i) !== null){
         newButtons[i] = this.addButton(label, x, y, tbe, buttons[i].command, undefined, 'dropdown-buttons', 'text-buttons');
       } else {
@@ -214,6 +198,8 @@ module.exports = function () {
       }
     }
 
+    // Start all the animations that moce them into place.
+    var animateSlideDown = null;
     for(var k = 0; k < newButtons.length; k++){
       animateSlideDown = {
         frame: 20,
@@ -222,60 +208,6 @@ module.exports = function () {
       };
       this.slideButton(animateSlideDown, newButtons[k]);
     }
-
-    return newButtons;
-  };
-
-
-  actionButtons.createDropdown = function(buttons, tbe, changeText, id){
-    var droppoint = document.getElementById(id + 'Command').childNodes;
-    var x = droppoint[0].getAttribute('cx');
-    var y = droppoint[0].getAttribute('cy');
-
-    var group = svgb.createGroup('action-dot-dropdown', 0, 0);
-    // The top Circle
-    var svgCircle = svgb.createCircle('action-dot-dropdown', x, 40, 40);
-    svgCircle.setAttribute('transform', 'translate (0 0)');
-    group.appendChild(svgCircle);
-    tbe.svg.appendChild(group);
-    var animateSlideDown = {
-      frame: 20,
-      adx: 0,
-      ady: (buttons.length*80)/20,
-    };
-    this.slideButton(animateSlideDown, group);
-    // The rectangle
-    var svgRect = svgb.createRect('action-dot-rect-' + id, x-40, 40, 80, buttons.length*80);
-    group = svgb.createGroup('action-dot-dropdown', 0, 0);
-    svgCircle = svgb.createCircle('action-dot-dropdown-bg', x, 40, 40);
-    svgCircle.setAttribute('transform', 'translate (0 0)');
-    group.appendChild(svgCircle);
-    tbe.svg.appendChild(group);
-    tbe.svg.appendChild(svgRect);
-    // The bottom Circle
-    this.addButton(changeText, x, y, tbe, 'pullUp' + id, 'pullUp' + id);
-    droppoint[0].parentNode.parentNode.removeChild(droppoint[0].parentNode);
-    var newButtons = [];
-
-    // The Buttons that go one the drop-down
-    for(var i = 0; i < buttons.length; i++){
-      var label = buttons[i].label;
-      if(label.match(/[a-z]/i) !== null){
-        newButtons[i] = this.addButton(label, x, y, tbe, buttons[i].command, undefined, 'dropdown-buttons', 'text-buttons');
-      } else {
-        newButtons[i] = this.addButton(label, x, y, tbe, buttons[i].command, undefined, 'dropdown-buttons');
-      }
-    }
-
-    for(var k = 0; k < newButtons.length; k++){
-      animateSlideDown = {
-        frame: 20,
-        adx: 0,
-        ady: ((80 * (k+1)))/20,
-      };
-      this.slideButton(animateSlideDown, newButtons[k]);
-    }
-
     return newButtons;
   };
 
