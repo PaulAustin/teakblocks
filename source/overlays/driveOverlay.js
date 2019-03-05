@@ -33,7 +33,7 @@ module.exports = function(){
   driveMode.pastLeft = 0;
 
   driveMode.start = function() {
-    driveMode.buildSlider(app.overlayDom);
+    driveMode.buildSlider();
     driveMode.updateSlider();
   };
 
@@ -88,17 +88,9 @@ module.exports = function(){
         driveMode.displayLeft = 0;
       }
     });
-    interact(".stopGroup")
-      .on('tap', function(){
-        var sliders = document.getElementsByClassName('slider');
-        sliders[0].style.paddingTop = (0.5 * 7) + 'em';
-        sliders[0].setAttribute('data-value', 0);
-        sliders[1].style.paddingTop = (0.5 * 7) + 'em';
-        sliders[1].setAttribute('data-value', 0);
-        driveMode.displayRight = 0;
-        driveMode.displayLeft = 0;
-      });
-    interact.maxInteractions(Infinity);   // Allow multiple interactions
+
+    // Allow more thatn one slide to be used at a time (multiple fingers).
+    interact.maxInteractions(Infinity);
   };
 
   driveMode.updateSlider = function() {

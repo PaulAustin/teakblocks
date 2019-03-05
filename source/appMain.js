@@ -44,7 +44,6 @@ module.exports = function () {
     app.overlay = null;
     app.driverOverlay = require('./overlays/driveOverlay.js');
     app.debugOverlay = require('./overlays/debugOverlay.js');
-    app.deviceOverlay = require('./overlays/debugOverlay.js');
     app.deviceScanOverlay = require('./overlays/deviceScanOverlay.js');
 
     // Add shortcut function to app
@@ -142,6 +141,8 @@ module.exports = function () {
       'driveOverlay': function(){ app.showOverlay(app.driverOverlay); },
       'debugOverlay': function(){ app.showOverlay(app.debugOverlay); },
       'splashOverlay': function(){ app.showOverlay(app.splashOverlay); },
+      'connect': function() { app.showOverlay(app.deviceScanOverlay); },
+
       'settings': function() { tbe.loadSettings(); },
       'undo': function() { tbe.undoAction(); },
       'redo': function() { tbe.redoAction(); },
@@ -154,7 +155,6 @@ module.exports = function () {
         app.fileOverlay.saveFile(tbe.currentDoc, currentDocText);
       },
 
-      'connect': function() { app.showOverlay(app.deviceScanOverlay); }
     };
 
     // Construct the clipboard
@@ -203,7 +203,6 @@ module.exports = function () {
   // {'alignment': 'M', 'position': 4, 'label': fastr.camera, 'command': 'docSnapShot'},
      {'alignment': 'M', 'position': 3, 'label': fastr.edit, 'command': 'edit'},
      {'alignment': 'R', 'position': 3, 'label': '', 'command': 'connect'},
-     //{'alignment': 'R', 'position': 2, 'label': '', 'command': ''},
     ];
 
     tbe.actionButtonDefs = actionButtonDefs;
@@ -221,14 +220,15 @@ module.exports = function () {
     }
   };
 
-  app.doCommand = function(commandName, button) {
+  app.doCommand = function(commandName) {
     var cmdFunction = app.tbe.commands[commandName];
     if (typeof cmdFunction === 'function') {
-      cmdFunction(button);
+      cmdFunction();
     }
   };
 
   app.showOverlay = function(overlay) {
+    console.log('show overlay');
     // TODO modularized control of editor. Why is this part of the show overlay logic?
     app.tbe.undoArray = {}; // When we switch documents we want to clear undo history.
     app.tbe.undoTransactionIndex = 0;
@@ -239,6 +239,7 @@ module.exports = function () {
 
     var currentOverlay = app.overlay;
     if (app.overlay !== null) {
+        console.log('hide existing overlay');
         // If one is up close it (might be toggle action)
         app.hideOverlay();
     }

@@ -38,6 +38,7 @@ module.exports = function(){
     exitGroup.setAttribute('class', 'debugExitGroup');
     exitGroup.setAttribute('id', 'debugExitGroup');
 
+/*
     var exit = document.createElement('div');
     exit.setAttribute('class', 'debug-exit');
     exit.setAttribute('id', 'debug-exit');
@@ -46,6 +47,8 @@ module.exports = function(){
     exitGroup.appendChild(exit);
     exitGroup.innerHTML += `<i class="fa fa-times driver-x-debug svg-clear" aria-hidden="true"></i>`;
     overlayDom.appendChild(exitGroup);
+*/
+
 
     div = document.createElement('div');
     div.setAttribute('id', 'debugWindow');

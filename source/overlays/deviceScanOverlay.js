@@ -114,6 +114,7 @@ module.exports = function () {
 
   // Close the overlay.
   dso.exit = function() {
+      console.log('disconnect block');
     var overlay = document.getElementById('overlayRoot');
     if  (overlay !== null) {
       overlay.className = 'fullScreenSlideOut';

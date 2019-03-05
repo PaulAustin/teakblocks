@@ -27,8 +27,17 @@ SOFTWARE.
 
 // General IDE colors
 @canvas-backgound-color:#FFF8E1;
-@action-glyph-color:#FF7043;
-@action-glyph-bcolor:#F2CDB5;
+
+// Idle state of action dots
+@action-dot-color:#B2EBF2;              // background of dots
+@action-dot-dropdown-color:#80DEEA;     // background fodropdown
+@action-dot-stroke-color:#9CCC65;       // outline
+@action-dot-text-color:#9CCC65;         // text labels
+
+// Pressed / Turned on state for action buttons
+@action-dot-active-color:#00BCD4;
+@action-dot-active-stroke-color:#FFB300;
+@action-dot-active-text-color:#FFB300;
 
 // Block related Colors
 @block-running-color:#3300ff;
@@ -238,15 +247,33 @@ body {
 }
 /* actton dot are 'bottons' along the top of the canvas */
 .action-dot {
-  transition: fill 0.2s ease;
-  fill: #F6DDCC;
+    // There for event tracking
 }
-.action-dot-underlay {
+
+/*
+// Idle state of action dots
+@action-dot-color:#B2EBF2;              // background of dots
+@action-dot-dropdown-color:#80DEEA;     // background fodropdown
+@action-dot-stroke-color:#9CCC65;       // outline
+@action-dot-text-color:#9CCC65;         // text labels
+
+// Pressed / Turned on state for action buttons
+@action-dot-active-color:#00BCD4;
+@action-dot-active-stroke-color:#FFB300;
+@action-dot-active-text-color:#FFB300;
+*/
+
+
+.action-dot-bg {
   transition: fill 0.2s ease;
-  fill: @action-glyph-bcolor;
+  fill: @action-dot-color;
+}
+.action-dot-dropdown-bg {
+  transition: fill 0.2s ease;
+  fill: @action-dot-dropdown-color;
 }
 .action-dot-rect-pages{
-  fill: @action-glyph-bcolor;
+  fill: @action-dot-dropdown-color;
   height: 400px;
   -webkit-animation: outpages 0.4s ease; /* Safari 4.0 - 8.0 */
   animation: outpages 0.4s ease;
@@ -262,7 +289,7 @@ body {
   to {height:400px;}
 }
 .action-dot-rect-remove-pages {
-  fill: @action-glyph-bcolor;
+  fill: @action-dot-dropdown-color;
   height: 0px;
   -webkit-animation: inpages 0.45s ease; /* Safari 4.0 - 8.0 */
   animation: inpages 0.45s ease;
@@ -279,7 +306,7 @@ body {
 }
 
 .action-dot-rect-edit {
-  fill: @action-glyph-bcolor;
+  fill: @action-dot-dropdown-color;
   height: 400px;
   -webkit-animation: outedit 0.45s ease; /* Safari 4.0 - 8.0 */
   animation: outedit 0.45s ease;
@@ -295,7 +322,7 @@ body {
   to {height:400px;}
 }
 .action-dot-rect-remove-edit {
-  fill: @action-glyph-bcolor;
+  fill: @action-dot-dropdown-color;
   height: 0px;
   -webkit-animation: inedit 0.45s ease; /* Safari 4.0 - 8.0 */
   animation: inedit 0.45s ease;
@@ -310,24 +337,28 @@ body {
   from {height:400px;}
   to   {height:0px;}
 }
-.action-dot.switch-bg {
-  /*fill: #4DD0E1; */
-  fill: #B3E5FC;
+.action-dot.action-dot-active {
+    stroke: @action-dot-active-stroke-color;
+}
+.action-dot.action-dot-active-text {
+    stroke: @action-dot-active-stroke-color;
 }
 .action-dot-text {
-  fill: @action-glyph-color;
+  fill: @action-dot-text-color;
   font-family: FontAwesome, helvetica;
   font-size: 36px;
   text-anchor: middle;
   pointer-events: none;
 }
 .action-dot-doc-label {
-  fill: @action-glyph-color;
+  fill: @action-dot-text-color;
   font-family: "helvetica";
   font-size: 24px;
   text-anchor: middle;
   pointer-events: none;
 }
+
+
 .error {
   color: red;
 }
@@ -376,30 +407,6 @@ body {
 }
 .area {
   margin-top: 5px;
-}
-.exitGroup {
-  background-color: @action-glyph-bcolor;
-  position: absolute;
-  top:20px;
-  float: left;
-  //left: center;
-  left: calc(~'50% - 150px'); //50% - 50px; //calc(50% - 50px);
-  position: relative;
-  height:100px;
-  width: 100px;
-  border-radius: 100px;
-}
-.stopGroup {
-  background-color: @action-glyph-bcolor;
-  position: absolute;
-  top:20px;
-  float: right;
-  right: 40%;
-  //left: calc(~'50% - 150px'); //50% - 50px; //calc(50% - 50px);
-  position: relative;
-  height:100px;
-  width: 100px;
-  border-radius: 100px;
 }
 // Debug window
 #overlayFrame {

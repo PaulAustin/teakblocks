@@ -20,10 +20,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+
+
+
 module.exports = function () {
   var actionButtons = {};
   var svgb = require('./svgbuilder.js');
   var dso = require('./overlays/deviceScanOverlay.js');
+
+  actionButtons.cancelActionButtons = function(buttonDefs) {
+      for(var i = 0; i < buttonDefs.length; i++) {
+        if (buttonDefs.svgCircle.classList.contains('action-dot-active')) {
+          buttonDefs[i].svgCircle.classList.remove('action-dot-active');
+        }
+      }
+  };
+
+  actionButtons.activate = function(target) {
+      // The event target will be the top level SVG group.
+      target.classList.toggle('action-dot-active');
+  };
 
   actionButtons.addActionButtons = function(buttons, tbe) {
     var position = null;
@@ -34,11 +50,22 @@ module.exports = function () {
     var numMiddle = 0;
 
     var group = null;
-    var svgCircle = null;
+    var svgButtonBase = null;
     var svgText = null;
     var svgText2 = null;
     var existing = document.getElementsByClassName('buttonGroup');
     var dropLength = document.getElementsByClassName('dropdown-buttons').length;
+
+    var buttonR = 33;
+    var buttonFH = 53;
+    if (tbe.height < 300) {
+        buttonR = 20;
+        buttonFH = 30;
+    } else if (tbe.height < 450) {
+        buttonR = 25;
+        buttonFH = 40;
+    }
+    console.log('AAB:', dso.height, buttonR);
 
     // If action buttons exist, delete them.
     if(existing[0] !== undefined){
@@ -76,39 +103,44 @@ module.exports = function () {
         x = tbe.width - ((0.1 * tbe.width) * position);
       }
 
-      group = svgb.createGroup('buttonGroup', 0, 0);
-      svgCircle = svgb.createCircle('action-dot', x, 40, 33);
+      // The action-dot class is used for event dispatching. The overall
+      // group, but not the the interior items should have this class
+      group = svgb.createGroup('action-dot', 0, 0);
 
       //Check if character strings are more than one character to create a label on top of the usual label
-      if(label.length > 1){
-        svgText = svgb.createText('fa action-dot-text', x + tweakx, 53, label.substring(0, 1));
-        svgText2 = svgb.createText('action-dot-doc-label', x + tweakx, 53, label.substring(1));
-        group.appendChild(svgCircle);
+      if (command === 'connect') {
+        // For the connect label put the device name
+        svgButtonBase = svgb.createRect('action-dot-bg', x - 20, 8, 180, buttonR * 2, buttonR);
+        label = "bot: " + dso.deviceName;
+        svgText = svgb.createText('action-dot-text', x + 60, buttonFH, label);
+        svgText.setAttribute('id', 'device-name-label');
+        group.appendChild(svgButtonBase);
+        group.appendChild(svgText);
+      } else if (label.length > 1) {
+        // For files its the doc icon with letter inside. Only one text box has
+        // font awesome icon.
+        svgButtonBase = svgb.createCircle('action-dot-bg', x, 40, buttonR);
+        svgText = svgb.createText('fa action-dot-text', x + tweakx, buttonFH, label.substring(0, 1));
+        svgText2 = svgb.createText('action-dot-doc-label', x + tweakx, buttonFH, label.substring(1));
+        group.appendChild(svgButtonBase);
         group.appendChild(svgText);
         group.appendChild(svgText2);
       } else {
-        svgText = svgb.createText('fa action-dot-text', x + tweakx, 53, label);
-        group.appendChild(svgCircle);
+        // For simple buttons ther is just one font-awesome icon.
+        svgButtonBase = svgb.createCircle('action-dot-bg', x, 40, buttonR);
+        svgText = svgb.createText('fa action-dot-text', x + tweakx, buttonFH, label);
+        group.appendChild(svgButtonBase);
         group.appendChild(svgText);
-      }
-
-      if (command === 'connect') {
-        var dLabel = actionButtons.addLabel(svgCircle, 160, "bot: " + dso.deviceName, 'device-name-label');
-        group.appendChild(dLabel);
-        group.setAttribute('class', 'buttonGroup action-dot');
-        svgCircle.setAttribute('class', '');
-        group.setAttribute('command', command);
       }
 
       tbe.svg.appendChild(group);
       buttons[i].svgText = svgText;
-      buttons[i].svgCircle = svgCircle;
-      svgCircle.setAttribute('command', command);
-
+      buttons[i].svgCircle = svgButtonBase;
+      group.setAttribute('command', command);
       group.setAttribute('id', buttons[i].command + 'Command');
     }
 
-    var underlay = document.getElementsByClassName('buttonGroupUnderlay');
+    var underlay = document.getElementsByClassName('action-dot-dropdown');
     if(underlay[0] !== undefined){
       if(underlay[0].getAttribute('transform') === null){
         underlay[0].setAttribute('transform', 'translate (0 0)');
@@ -130,6 +162,7 @@ module.exports = function () {
       this.slideButton(animateSlide, underlay[1], "delete");
     }
 
+/*
     underlay = document.getElementsByClassName('action-dot-rect-pages');
     if(underlay[0] !== undefined){
       underlay[0].setAttribute('class', 'action-dot-rect-remove-pages');
@@ -138,15 +171,17 @@ module.exports = function () {
     if(underlay[0] !== undefined){
       underlay[0].setAttribute('class', 'action-dot-rect-remove-edit');
     }
+    */
   };
 
-  actionButtons.createDropdown = function(buttons, tbe, changeText, id){
+  actionButtons.createDropdownNew = function(buttons, tbe, changeText, id){
     var droppoint = document.getElementById(id + 'Command').childNodes;
     var x = droppoint[0].getAttribute('cx');
     var y = droppoint[0].getAttribute('cy');
 
-    var group = svgb.createGroup('buttonGroupUnderlay', 0, 0);
-    var svgCircle = svgb.createCircle('action-dot-underlay', x, 40, 40);
+    var group = svgb.createGroup('action-dot-dropdown', 0, 0);
+    // The top Circle
+    var svgCircle = svgb.createCircle('action-dot-dropdown', x, 40, 40);
     svgCircle.setAttribute('transform', 'translate (0 0)');
     group.appendChild(svgCircle);
     tbe.svg.appendChild(group);
@@ -156,17 +191,20 @@ module.exports = function () {
       ady: (buttons.length*80)/20,
     };
     this.slideButton(animateSlideDown, group);
+    // The rectangle
     var svgRect = svgb.createRect('action-dot-rect-' + id, x-40, 40, 80, buttons.length*80);
-    group = svgb.createGroup('buttonGroupUnderlay', 0, 0);
-    svgCircle = svgb.createCircle('action-dot-underlay', x, 40, 40);
+    group = svgb.createGroup('action-dot-dropdown', 0, 0);
+    svgCircle = svgb.createCircle('action-dot-dropdown-bg', x, 40, 40);
     svgCircle.setAttribute('transform', 'translate (0 0)');
     group.appendChild(svgCircle);
     tbe.svg.appendChild(group);
     tbe.svg.appendChild(svgRect);
+    // The bottom Circle
     this.addButton(changeText, x, y, tbe, 'pullUp' + id, 'pullUp' + id);
     droppoint[0].parentNode.parentNode.removeChild(droppoint[0].parentNode);
     var newButtons = [];
 
+    // The Buttons that go one the drop-down
     for(var i = 0; i < buttons.length; i++){
       var label = buttons[i].label;
       if(label.match(/[a-z]/i) !== null){
@@ -187,6 +225,60 @@ module.exports = function () {
 
     return newButtons;
   };
+
+
+  actionButtons.createDropdown = function(buttons, tbe, changeText, id){
+    var droppoint = document.getElementById(id + 'Command').childNodes;
+    var x = droppoint[0].getAttribute('cx');
+    var y = droppoint[0].getAttribute('cy');
+
+    var group = svgb.createGroup('action-dot-dropdown', 0, 0);
+    // The top Circle
+    var svgCircle = svgb.createCircle('action-dot-dropdown', x, 40, 40);
+    svgCircle.setAttribute('transform', 'translate (0 0)');
+    group.appendChild(svgCircle);
+    tbe.svg.appendChild(group);
+    var animateSlideDown = {
+      frame: 20,
+      adx: 0,
+      ady: (buttons.length*80)/20,
+    };
+    this.slideButton(animateSlideDown, group);
+    // The rectangle
+    var svgRect = svgb.createRect('action-dot-rect-' + id, x-40, 40, 80, buttons.length*80);
+    group = svgb.createGroup('action-dot-dropdown', 0, 0);
+    svgCircle = svgb.createCircle('action-dot-dropdown-bg', x, 40, 40);
+    svgCircle.setAttribute('transform', 'translate (0 0)');
+    group.appendChild(svgCircle);
+    tbe.svg.appendChild(group);
+    tbe.svg.appendChild(svgRect);
+    // The bottom Circle
+    this.addButton(changeText, x, y, tbe, 'pullUp' + id, 'pullUp' + id);
+    droppoint[0].parentNode.parentNode.removeChild(droppoint[0].parentNode);
+    var newButtons = [];
+
+    // The Buttons that go one the drop-down
+    for(var i = 0; i < buttons.length; i++){
+      var label = buttons[i].label;
+      if(label.match(/[a-z]/i) !== null){
+        newButtons[i] = this.addButton(label, x, y, tbe, buttons[i].command, undefined, 'dropdown-buttons', 'text-buttons');
+      } else {
+        newButtons[i] = this.addButton(label, x, y, tbe, buttons[i].command, undefined, 'dropdown-buttons');
+      }
+    }
+
+    for(var k = 0; k < newButtons.length; k++){
+      animateSlideDown = {
+        frame: 20,
+        adx: 0,
+        ady: ((80 * (k+1)))/20,
+      };
+      this.slideButton(animateSlideDown, newButtons[k]);
+    }
+
+    return newButtons;
+  };
+
   actionButtons.deleteDropdown = function(buttons, tbe, changeText, id){
     for(var i = 0; i < buttons.length; i++){
       var animateSlideDown = {
@@ -196,17 +288,22 @@ module.exports = function () {
       };
       this.slideButton(animateSlideDown, buttons[i], "delete");
     }
+    // Find the bottom circle
     var droppoint = document.getElementById('pullUp' + id).childNodes;
     var x = droppoint[0].getAttribute('cx');
     var y = droppoint[0].getAttribute('cy');
     this.addButton(changeText, x, y, tbe, id, id);
+    // REmove it
     droppoint[0].parentNode.parentNode.removeChild(droppoint[0].parentNode);
-    var underlay = document.getElementsByClassName('buttonGroupUnderlay');
+
+    // Find the recangle
+    var underlay = document.getElementsByClassName('action-dot-dropdown');
     var animateSlide = {
       frame: 20,
       adx: 0,
       ady: -(buttons.length*80)/20
     };
+
     this.slideButton(animateSlide, underlay[0], "delete");
     animateSlide = {
       frame: 20,
@@ -215,22 +312,21 @@ module.exports = function () {
     };
     this.slideButton(animateSlide, underlay[1], "delete");
 
-    underlay = document.getElementsByClassName('action-dot-rect-' + id);
-    underlay[0].setAttribute('class', 'action-dot-rect-remove-' + id);
+    // Get rid of it.
+    underlay = document.getElementsByClassName('action-dot-rect' + id);
+    underlay[0].setAttribute('class', 'action-dot-rect-remove' + id);
   };
 
-  actionButtons.addButton = function(label, x, y, tbe, command, id, eltClass, txtClass){
-    var group = svgb.createGroup('buttonGroup', 0, 0);
-    var svgCircle = svgb.createCircle('action-dot', x, y, 33);
+  actionButtons.addButton = function(label, x, y, tbe, command, id, eltClass){
+    var group = svgb.createGroup('action-dot', 0, 0);
+    var svgCircle = svgb.createCircle('action-dot-bg', x, y, 33);
     var svgText = svgb.createText('fa action-dot-text', x, parseInt(y, 10)+13, label);
     if(command !== undefined){
-      svgCircle.setAttribute('command', command);
+      group.setAttribute('command', command);
     }
+
     if(id !== undefined){
       group.setAttribute('id', id);
-    }
-    if(txtClass !== undefined){
-      svgText.setAttribute('class', 'fa action-dot-text ' + txtClass);
     }
     if(eltClass !== undefined){
       group.setAttribute('class', 'buttonGroup ' + eltClass);
@@ -242,24 +338,6 @@ module.exports = function () {
     group.appendChild(svgCircle);
     group.appendChild(svgText);
     tbe.svg.appendChild(group);
-    return group;
-  };
-
-  actionButtons.addLabel = function(circle, width, label, idName){
-    var x = parseInt(circle.getAttribute('cx'), 10);
-    var y = parseInt(circle.getAttribute('cy'), 10);
-    var r = parseInt(circle.getAttribute('r'), 10);
-
-    var group = svgb.createGroup('buttonGroup', 0, 0);
-
-    var rect = svgb.createRect('', x, y-r, width, r*2);
-    var cir = svgb.createCircle('', x+width, y, r);
-    var txt = svgb.createText('svg-clear action-dot-text', x+80, y-(r/3), label);
-    txt.setAttribute('style', 'dominant-baseline: hanging;');
-    txt.setAttribute('id', idName);
-    group.appendChild(rect);
-    group.appendChild(cir);
-    group.appendChild(txt);
     return group;
   };
 

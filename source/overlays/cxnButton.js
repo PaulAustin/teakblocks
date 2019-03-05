@@ -97,7 +97,6 @@ module.exports = function () {
         <button class='width-third cxnButton-x' id="cxnButton-x">
           <i class="fa fa-check" class="svg-clear"></i>
         </button>
-
       </div>`;
 
     div.setAttribute('style', 'transition: all 0.2s ease;left: 42%; top:35%;position: absolute;width: 240px;transform: scale(3.0, 3.0);pointer-events: all;');

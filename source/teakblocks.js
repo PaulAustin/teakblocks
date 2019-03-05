@@ -92,7 +92,6 @@ tbe.clearStates = function clearStates(block) {
   tf.hideOpenForm();
   this.components.blockSettings.hide(block);
   tbe.forEachDiagramBlock( function(b) { b.markSelected(false); });
-  actionButtons.addActionButtons(tbe.actionButtonDefs, tbe);
 };
 
 tbe.init = function init(svg) {
@@ -113,11 +112,7 @@ tbe.init = function init(svg) {
 
   teakselection.init(tbe);
   tbe.svg.onmousemove = function() {
-    for(var i = 0; i < tbe.actionButtonDefs.length; i++) {
-      if (tbe.actionButtonDefs[i].svgCircle.classList.contains('switch-bg')) {
-        tbe.actionButtonDefs[i].svgCircle.classList.remove('switch-bg');
-      }
-    }
+    // actionButtons.cancelActionButtons(tbe.actionButtonDefs);
   };
 
   return this;
@@ -1211,12 +1206,13 @@ tbe.configInteractions = function configInteractions() {
 
   interact('.action-dot')
   .on('down', function (event) {
-    event.currentTarget.classList.toggle('switch-bg');
+    actionButtons.activate(event.currentTarget);
   })
   .on('up', function (event) {
+    actionButtons.activate(event.currentTarget);
     var cmd = event.currentTarget.getAttribute('command');
-    app.doCommand(cmd, event);
-    event.currentTarget.classList.toggle('switch-bg');
+    console.log('on up doing command', cmd);
+    app.doCommand(cmd);
   });
 
   interact('.dropdown-buttons')
