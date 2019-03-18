@@ -23,14 +23,6 @@
     "is_top_level": true,
     "variables": {}
   },
-  "cordova-plugin-compat": {
-    "source": {
-      "type": "registry",
-      "id": "cordova-plugin-compat"
-    },
-    "is_top_level": true,
-    "variables": {}
-  },
   "cordova-plugin-ble": {
     "source": {
       "type": "registry",
@@ -72,6 +64,14 @@
       "id": "cordova-plugin-splashscreen@5.0.2"
     },
     "is_top_level": true,
+    "variables": {}
+  },
+  "cordova-plugin-compat": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-compat@^1.0.0"
+    },
+    "is_top_level": false,
     "variables": {}
   }
 }

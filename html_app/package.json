@@ -4,8 +4,8 @@
     "displayName": "TBlocks",
     "cordova": {
         "platforms": [
-            "android",
-            "ios"
+            "ios",
+            "android"
         ],
         "plugins": {
             "cordova-plugin-ble": {},
@@ -18,6 +18,7 @@
         "cordova-android": "^7.1.4",
         "cordova-ios": "^4.5.5",
         "cordova-plugin-ble": "1",
+        "cordova-plugin-compat": "^1.2.0",
         "cordova-plugin-device": "git+https://github.com/apache/cordova-plugin-device.git",
         "cordova-plugin-network-information": "git+https://github.com/apache/cordova-plugin-network-information.git",
         "cordova-plugin-splashscreen": "^5.0.2",

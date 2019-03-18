@@ -14,7 +14,7 @@
     <preference name="Orientation" value="landscape" />
     <platform name="android">
         <icon src="res/app-icon.png" />
-        <splash src="res/screen/ios/Default@2x~universal~anyany.png" />
+        <splash src="res/ios/Default@2x~universal~anyany.png" />
         <preference name="Fullscreen" value="true" />
     </platform>
     <platform name="ios">
@@ -53,6 +53,6 @@
     <plugin name="cordova-plugin-whitelist" spec="1" />
     <plugin name="phonegap-plugin-mobile-accessibility" spec="git+https://github.com/phonegap/phonegap-mobile-accessibility.git" />
     <plugin name="cordova-plugin-splashscreen" spec="^5.0.2" />
-    <engine name="android" spec="^7.1.4" />
     <engine name="ios" spec="^4.5.5" />
+    <engine name="android" spec="^7.1.4" />
 </widget>
