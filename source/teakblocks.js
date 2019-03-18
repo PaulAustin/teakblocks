@@ -205,13 +205,14 @@ tbe.deleteChunk = function(block, endBlock) {
 
   // Remember any tail so it can be slid over.
   var tail = endBlock.next;
+  var head = block.prev;
 
   // Disconnect the chunk from its surroundings.
-  if (block.prev !== null) {
-    block.prev.next = endBlock.next;
+  if (head !== null) {
+    head.next = tail;
   }
-  if (endBlock.next !== null) {
-    endBlock.next.prev = block.prev;
+  if (tail !== null) {
+    tail.prev = head;
   }
   block.prev = null;
   endBlock.next = null;
@@ -275,6 +276,10 @@ tbe.deleteChunk = function(block, endBlock) {
   if (tail !== null) {
     tbe.animateMove(tail, tail.last, -deleteWidth, 0, 10);
   }
+};
+
+tbe.deleteBlock = function() {
+
 };
 
 // Copy a chunk or the rest of the chain, and return the copy.
@@ -1123,15 +1128,12 @@ document.body.addEventListener("keydown", function(e) {
       var todelete = [];
       tbe.forEachDiagramBlock( function(block) {
         if (block.isSelected()) {
-          console.log(block);
           todelete.push(block);
-          tbe.deleteChunk(block, block);
         }
       });
-      if (todelete.length !== 0) {
-        log.trace('1', todelete[0], todelete[0].endBlock);
-        //tbe.deleteChunk(todelete[0], todelete[0].endBlock);
-        //todelete[0], todelete[todelete.length - 1]
+      for(var i = 0; i < todelete.length; i++){
+        var block = todelete[i];
+        tbe.deleteChunk(block, block);
       }
     } else if ( key === 49 ) {
       tbe.loadDoc('docA');
