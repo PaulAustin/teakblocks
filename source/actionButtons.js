@@ -125,8 +125,6 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
       label = "bot: " + dso.deviceName;
       this.svgText = svgb.createText('action-dot-text', x - 100, fontY, label);
       this.svgText.setAttribute('id', 'device-name-label');
-      svgDG.appendChild(this.svgDot);
-      svgDG.appendChild(this.svgText);
   } else if (this.label.length > 1) {
       // For files its the doc icon with letter inside. Only one text box has
       // font awesome icon.
@@ -142,8 +140,6 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
     svgDG.appendChild(this.svgDot);
     svgDG.appendChild(this.svgText);
     svgDG.setAttribute('dotIndex', this.dotIndex);
-
-
     this.svgDotGroup = svgDG;
     actionButtons.svgDotParent.appendChild(this.svgDotGroup);
 
@@ -158,27 +154,21 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
 
   };
 
-  actionButtons.ActionDot.prototype.activate = function(target) {
-      target.classList.toggle('action-dot-active');
+  actionButtons.ActionDot.prototype.activate = function() {
+      this.svgDot.classList.toggle('action-dot-active');
   };
 
-  actionButtons.ActionDot.prototype.doCommand = function(target) {
-      target.classList.toggle('action-dot-active');
+  actionButtons.ActionDot.prototype.doCommand = function() {
+      this.svgDot.classList.toggle('action-dot-active');
       var cmd = this.command;
       app.doCommand(cmd);
   };
 
-  actionButtons.reset = function(buttonDefs) {
-      for(var i = 0; i < buttonDefs.length; i++) {
-        if (buttonDefs.svgCircle.classList.contains('action-dot-active')) {
-          buttonDefs[i].svgCircle.classList.remove('action-dot-active');
-        }
+  actionButtons.reset = function() {
+      for (var i = actionButtons.dots.length - 1; i >= 0; i--) {
+          //    if (buttonDefs.svgCircle.classList.contains('action-dot-active')) {
+          actionButtons.dots[i].svgDot.classList.remove('action-dot-active');
       }
-  };
-
-  actionButtons.activate = function(target) {
-      // The event target will be the top level SVG group.
-      target.classList.toggle('action-dot-active');
   };
 
   actionButtons.defineButtons = function(buttons, tbe) {
