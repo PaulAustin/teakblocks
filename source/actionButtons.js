@@ -46,11 +46,15 @@ module.exports = function () {
       // Still a bit hard coded.
       var slotw = w * 0.1;
       var x = 0;
-      var y = 60;
+      var y = 40;
       var dotd = 60;   // diameter
       if ( h < 500 ) {
-          dotd = 40;
-          y = 60;
+          if ( h < 350) {
+              h = 350;
+          }
+          var scale = (h / 500);
+          dotd *=  scale;
+          y *=  scale;
       }
 
       var half = w / 2;
@@ -71,30 +75,16 @@ module.exports = function () {
         } else if (align === 'R') {
           x = w - (slotw * pos);
         }
-//        console.log("align", align, pos, actionButtons.dots[i].command);
         actionButtons.dots[i].updateSvg(x, y, dotd);
       }
-/*
-        if (tbe.actionButtons.hasOwnProperty(key)) {
-          var dot = tbe.actionButtons[key];
-          if (typeof block === 'object') {
-
-              position = dot.position;
-              alignment = dot.alignment;
-              command = dot.command;
-              tweakx = dot.tweakx;
-              if (tweakx === undefined) {
-                tweakx = 0;
-              }
-*/
-
   };
 
-  actionButtons.ActionDot = function ActionButton (button) {
+  actionButtons.ActionDot = function ActionButton (button, index) {
       // Connect the generic block class to the behavior definition class.
       this.command = button.command;
       this.label = button.label;
       this.alignment = button.alignment;
+      this.dotIndex = index;
 
       if (button.alignment === 'L') {
           this.position = actionButtons.dotsLeft;
@@ -112,8 +102,6 @@ module.exports = function () {
 
 // Create an image for the block base on its type.
 actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
-
-    console.log(" regenerating the SVG - ", this.command);
 
     // Empty the shell if it exists.
     if (this.svgDotGroup !== null) {
@@ -153,6 +141,8 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
     }
     svgDG.appendChild(this.svgDot);
     svgDG.appendChild(this.svgText);
+    svgDG.setAttribute('dotIndex', this.dotIndex);
+
 
     this.svgDotGroup = svgDG;
     actionButtons.svgDotParent.appendChild(this.svgDotGroup);
@@ -168,6 +158,15 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
 
   };
 
+  actionButtons.ActionDot.prototype.activate = function(target) {
+      target.classList.toggle('action-dot-active');
+  };
+
+  actionButtons.ActionDot.prototype.doCommand = function(target) {
+      target.classList.toggle('action-dot-active');
+      var cmd = this.command;
+      app.doCommand(cmd);
+  };
 
   actionButtons.reset = function(buttonDefs) {
       for(var i = 0; i < buttonDefs.length; i++) {
@@ -184,27 +183,23 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
 
   actionButtons.defineButtons = function(buttons, tbe) {
 
-    console.log( "Define the buttons !!!!!!!");
-
     actionButtons.svgDotParent = tbe.svg;
-    var i = 0;
 
-    for (i = buttons.length - 1; i >= 0; i--) {
-      actionButtons.dots.push(new this.ActionDot(buttons[i]));
+    var i = 0;
+    for (i = 0; i < buttons.length; i++) {
+      actionButtons.dots.push(new this.ActionDot(buttons[i], i));
     }
 
     // SVG items with the 'action-dot' class will process These
     // events.
     interact('.action-dot')
     .on('down', function (event) {
-      actionButtons.activate(event.currentTarget);
+      var dotIndex = event.currentTarget.getAttribute('dotIndex');
+      actionButtons.dots[dotIndex].activate(event.currentTarget);
     })
     .on('up', function (event) {
-      actionButtons.activate(event.currentTarget);
-      var cmd = event.currentTarget.getAttribute('command');
-      console.log('on up doing command', cmd);
-      // ?? perhaps redirect this, dont call app. directly
-      app.doCommand(cmd);
+      var dotIndex = event.currentTarget.getAttribute('dotIndex');
+      actionButtons.dots[dotIndex].doCommand(event.currentTarget);
     });
 
     console.log( "defined buffons SVG", actionButtons.dotsLeft, actionButtons.dotsMiddle,
