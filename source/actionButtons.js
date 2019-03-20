@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2018 Trashbots - SDG
+Copyright (c) 2019 Trashbots - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,12 +20,174 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+
+
 module.exports = function () {
   var actionButtons = {};
+  var interact = require('interact.js');
   var svgb = require('./svgbuilder.js');
   var dso = require('./overlays/deviceScanOverlay.js');
+  var app = require('./appMain.js');
 
-  actionButtons.cancelActionButtons = function(buttonDefs) {
+  actionButtons.dots = [];
+  actionButtons.dotsLeft = 0;
+  actionButtons.dotsMiddle = 0;
+  actionButtons.dotsRight = 0;
+
+  actionButtons.sizeButtonsToWindow = function (tbe) {
+
+      console.log( "Adjust for screen size - rebuild/reposition SVGs");
+
+      var w = tbe.width;
+      var h = tbe.height;
+      var half = w / 2;
+      var middleLeft = half - ((actionButtons.dotsMiddle + 1) * 0.05 * w);
+
+      var buttonRadius = 30;
+      if ( h < 500 ) {
+          buttonRadius = 20;
+      }
+
+      // The action-dot class is used for event dispatching. The overall
+      // group, but not the the interior items should have this class
+      var i = 0;
+      for ( i = actionButtons.dots.length - 1; i >= 0; i--) {
+          actionButtons.dots[i].updateSvg();
+          /*
+        position = buttons[i].position;
+        alignment = buttons[i].alignment;
+
+        if (alignment === 'L') {
+          x = ((0.1 * tbe.width) * position);
+        } else if(alignment === 'M') {
+          x = middleLeft + ((0.1 * tbe.width) * position);
+        } else if (alignment === 'R') {
+          x = tbe.width - ((0.1 * tbe.width) * position);
+        }
+        */
+      }
+      return;
+
+      /*
+      var w = tbe.width;
+      var h = tbe.height;
+      var half = tbe.width/2;
+      var middleLeft = half - ((numMiddle + 1) * 0.05 * tbe.width);
+      var alignment = '';
+      var x = 0;
+      var position = 0;
+      var dots = tbe.actionButtons;
+      var tweakx = 0;
+      var command = "";
+      var label = "";
+
+      for (var key in tbe.actionButtons) {
+        if (tbe.actionButtons.hasOwnProperty(key)) {
+          var dot = tbe.actionButtons[key];
+          if (typeof block === 'object') {
+
+              position = dot.position;
+              alignment = dot.alignment;
+              command = dot.command;
+              tweakx = dot.tweakx;
+              if (tweakx === undefined) {
+                tweakx = 0;
+              }
+              label = dot.label;
+
+          }
+        }
+      }
+*/
+
+  };
+
+  actionButtons.ActionDot = function ActionButton (button) {
+      // Connect the generic block class to the behavior definition class.
+      this.command = button.command;
+      this.label = button.label;
+
+      console.log("constructing cmd-", button)
+      if (button.alignment === 'M') {
+          actionButtons.dotsMiddle += 1;
+      } else if (button.alignment === 'L') {
+          actionButtons.dotsLeft += 1;
+      } else if (button.alignment === 'R') {
+          actionButtons.dotsRight += 1;
+      }
+
+      this.svgDotGroup = null;
+  };
+
+// Create an image for the block base on its type.
+actionButtons.ActionDot.prototype.updateSvg = function() {
+
+    console.log(" regenerating the SVG - ", this.command);
+
+    // Empty the shell if it exists.
+    if (this.svgDotGroup !== null) {
+      this.svgDotParent.removeChild(this.svgDotGroup);
+    }
+    this.svgDotGroup = null;
+    // disconnect reference to inner pieces so GC will clean them up.
+    this.svgDot = null;
+    this.svgText = null;
+    this.svgText2 = null;
+
+    // The action-dot class is used for event dispatching. The overall
+    // group, but not the the interior items should have this class
+    var svgDG = svgb.createGroup('action-dot', 0, 0);
+    var label = "";
+    var buttonR = 19;
+    var buttonFH = 12;
+    var x = 40;
+    var tweakx = 0;
+
+    //Check if character strings are more than one character to create a label on top of the usual label
+    if (this.command === 'connect') {
+      // For the connect label put the device name
+      this.svgDot = svgb.createRect('action-dot-bg', x - 20, 8, 180, buttonR * 2, buttonR);
+      label = "bot: " + dso.deviceName;
+      this.svgText = svgb.createText('action-dot-text', x + 60, buttonFH, label);
+      this.svgText.setAttribute('id', 'device-name-label');
+      svgDG.appendChild(this.svgDot);
+      svgDG.appendChild(this.svgText);
+  } else if (this.label.length > 1) {
+      // For files its the doc icon with letter inside. Only one text box has
+      // font awesome icon.
+      this.svgDot = svgb.createCircle('action-dot-bg', x, 40, buttonR);
+      this.svgText = svgb.createText('fa action-dot-text', x + tweakx, buttonFH, label.substring(0, 1));
+    //???  svgText2 = svgb.createText('action-dot-doc-label', x + tweakx, buttonFH, label.substring(1));
+    //???  group.appendChild(svgText2);
+    } else {
+      // For simple buttons ther is just one font-awesome icon.
+      this.svgDot = svgb.createCircle('action-dot-bg', x, 40, buttonR);
+      this.svgText = svgb.createText('fa action-dot-text', x + tweakx, buttonFH, label);
+    }
+    svgDG.appendChild(this.svgDot);
+    svgDG.appendChild(this.svgText);
+
+    this.svgDotGroup = svgDG;
+    actionButtons.svgDotParent.appendChild(this.svgDotGroup);
+
+    //??? group.setAttribute('command', command);
+    //??? group.setAttribute('id', buttons[i].command + 'Command');
+
+
+/*
+    var group = svgb.createGroup('action-dot', 0, 0);
+
+    tbe.svg.appendChild(group);
+    buttons[i].svgText = svgText;
+    buttons[i].svgCircle = svgButtonBase;
+    group.setAttribute('command', command);
+    group.setAttribute('id', buttons[i].command + 'Command');
+*/
+
+  };
+
+
+  actionButtons.reset = function(buttonDefs) {
       for(var i = 0; i < buttonDefs.length; i++) {
         if (buttonDefs.svgCircle.classList.contains('action-dot-active')) {
           buttonDefs[i].svgCircle.classList.remove('action-dot-active');
@@ -38,139 +200,36 @@ module.exports = function () {
       target.classList.toggle('action-dot-active');
   };
 
-  actionButtons.addActionButtons = function(buttons, tbe) {
-    var position = null;
-    var alignment = null;
-    var command = '';
-    var tweakx = 0;
-    var label = '';
-    var numMiddle = 0;
+  actionButtons.defineButtons = function(buttons, tbe) {
 
-    var group = null;
-    var svgButtonBase = null;
-    var svgText = null;
-    var svgText2 = null;
-    var existing = document.getElementsByClassName('buttonGroup');
-    var dropLength = document.getElementsByClassName('dropdown-buttons').length;
+    console.log( "Define the buttons !!!!!!!");
 
-    var buttonR = 33;
-    var buttonFH = 53;
-    if (tbe.height < 300) {
-        buttonR = 20;
-        buttonFH = 30;
-    } else if (tbe.height < 450) {
-        buttonR = 25;
-        buttonFH = 40;
-    }
-    console.log('AAB:', dso.height, buttonR);
+    actionButtons.svgDotParent = tbe.svg;
+    var i = 0;
 
-    // If action buttons exist, delete them.
-    if(existing[0] !== undefined){
-      while(existing.length > 0){
-          existing[0].parentNode.removeChild(existing[0]);
-      }
+    for (i = buttons.length - 1; i >= 0; i--) {
+      actionButtons.dots.push(new this.ActionDot(buttons[i]));
     }
 
-    // Determine how many buttons are in the middle.
-    for (var k = 0; k < buttons.length; k++) {
-      if (buttons[k].alignment === 'M' && buttons[k].position > numMiddle) {
-        numMiddle = buttons[k].position;
-      }
-    }
+    // SVG items with the 'action-dot' class will process These
+    // events.
+    interact('.action-dot')
+    .on('down', function (event) {
+      actionButtons.activate(event.currentTarget);
+    })
+    .on('up', function (event) {
+      actionButtons.activate(event.currentTarget);
+      var cmd = event.currentTarget.getAttribute('command');
+      console.log('on up doing command', cmd);
+      // ?? perhaps redirect this, dont call app. directly
+      app.doCommand(cmd);
+    });
 
-    var half = tbe.width/2;
-    var middleLeft = half - ((numMiddle + 1) * 0.05 * tbe.width);
-    var x = 0;
+    console.log( "defined buffons SVG", actionButtons.dotsLeft, actionButtons.dotsMiddle,
+actionButtons.dotsRight );
+};
 
-    for (var i = buttons.length - 1; i >= 0; i--) {
-      position = buttons[i].position;
-      alignment = buttons[i].alignment;
-      command = buttons[i].command;
-      tweakx = buttons[i].tweakx;
-      if (tweakx === undefined) {
-        tweakx = 0;
-      }
-      label = buttons[i].label;
-
-      if (alignment === 'L') {
-        x = ((0.1 * tbe.width) * position);
-      } else if(alignment === 'M') {
-        x = middleLeft + ((0.1 * tbe.width) * position);
-      } else if (alignment === 'R') {
-        x = tbe.width - ((0.1 * tbe.width) * position);
-      }
-
-      // The action-dot class is used for event dispatching. The overall
-      // group, but not the the interior items should have this class
-      group = svgb.createGroup('action-dot', 0, 0);
-
-      //Check if character strings are more than one character to create a label on top of the usual label
-      if (command === 'connect') {
-        // For the connect label put the device name
-        svgButtonBase = svgb.createRect('action-dot-bg', x - 20, 8, 180, buttonR * 2, buttonR);
-        label = "bot: " + dso.deviceName;
-        svgText = svgb.createText('action-dot-text', x + 60, buttonFH, label);
-        svgText.setAttribute('id', 'device-name-label');
-        group.appendChild(svgButtonBase);
-        group.appendChild(svgText);
-      } else if (label.length > 1) {
-        // For files its the doc icon with letter inside. Only one text box has
-        // font awesome icon.
-        svgButtonBase = svgb.createCircle('action-dot-bg', x, 40, buttonR);
-        svgText = svgb.createText('fa action-dot-text', x + tweakx, buttonFH, label.substring(0, 1));
-        svgText2 = svgb.createText('action-dot-doc-label', x + tweakx, buttonFH, label.substring(1));
-        group.appendChild(svgButtonBase);
-        group.appendChild(svgText);
-        group.appendChild(svgText2);
-      } else {
-        // For simple buttons ther is just one font-awesome icon.
-        svgButtonBase = svgb.createCircle('action-dot-bg', x, 40, buttonR);
-        svgText = svgb.createText('fa action-dot-text', x + tweakx, buttonFH, label);
-        group.appendChild(svgButtonBase);
-        group.appendChild(svgText);
-      }
-
-      tbe.svg.appendChild(group);
-      buttons[i].svgText = svgText;
-      buttons[i].svgCircle = svgButtonBase;
-      group.setAttribute('command', command);
-      group.setAttribute('id', buttons[i].command + 'Command');
-    }
-
-    var underlay = document.getElementsByClassName('action-dot-dropdown');
-    if(underlay[0] !== undefined){
-      if(underlay[0].getAttribute('transform') === null){
-        underlay[0].setAttribute('transform', 'translate (0 0)');
-      }
-      var animateSlide = {
-        frame: 20,
-        adx: 0,
-        ady: -(dropLength*80)/20
-      };
-      this.slideButton(animateSlide, underlay[0], "delete");
-      if(underlay[1].getAttribute('transform') === null){
-        underlay[1].setAttribute('transform', 'translate (0 0)');
-      }
-      animateSlide = {
-        frame: 20,
-        adx: 0,
-        ady: 0
-      };
-      this.slideButton(animateSlide, underlay[1], "delete");
-    }
-
-/*
-    underlay = document.getElementsByClassName('action-dot-rect-pages');
-    if(underlay[0] !== undefined){
-      underlay[0].setAttribute('class', 'action-dot-rect-remove-pages');
-    }
-    underlay = document.getElementsByClassName('action-dot-rect-edit');
-    if(underlay[0] !== undefined){
-      underlay[0].setAttribute('class', 'action-dot-rect-remove-edit');
-    }
-    */
-  };
-
+  // Open up the drop down menu
   actionButtons.createDropdown = function(buttons, tbe, changeText, id) {
     // Find out where the drop down will be positioned.
     // The is the center of the button
@@ -198,20 +257,22 @@ module.exports = function () {
       }
     }
 
-    // Start all the animations that moce them into place.
+    // Start all the animations that move buttons into place.
     var animateSlideDown = null;
     for(var k = 0; k < newButtons.length; k++){
       animateSlideDown = {
         frame: 20,
         adx: 0,
-        ady: ((80 * (k+1)))/20,
+        ady: ((80 * (k+1)))/20
       };
       this.slideButton(animateSlideDown, newButtons[k]);
     }
     return newButtons;
   };
 
-  actionButtons.deleteDropdown = function(buttons, tbe, changeText, id){
+  // Hide up the drop down menu, reverse the animation, hide the element.
+  actionButtons.deleteDropdown = function(buttons, tbe, changeText, id) {
+    console.log('hide dropdown', id);
     for(var i = 0; i < buttons.length; i++){
       var animateSlideDown = {
         frame: 20,

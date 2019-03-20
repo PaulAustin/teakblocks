@@ -47,7 +47,6 @@ tbe.currentDoc = 'docA';
 tbe.undoArray = [];
 tbe.currentUndoIndex = 0;
 tbe.stopUndo = false;
-tbe.actionButtonDefs = null;
 tbe.draggingSelectionArea = null;
 tbe.defaultBlockLoc = [40, 120];
 tbe.identityIndent = 120;
@@ -1204,17 +1203,6 @@ tbe.configInteractions = function configInteractions() {
       thisTbe.deleteChunk(block, block.last);
     });
 
-  interact('.action-dot')
-  .on('down', function (event) {
-    actionButtons.activate(event.currentTarget);
-  })
-  .on('up', function (event) {
-    actionButtons.activate(event.currentTarget);
-    var cmd = event.currentTarget.getAttribute('command');
-    console.log('on up doing command', cmd);
-    app.doCommand(cmd);
-  });
-
   interact('.dropdown-buttons')
     .on('hold', function (event) {
       var block = event.target;
@@ -1625,7 +1613,7 @@ tbe.updateScreen = function() {
   tbe.height = window.innerHeight;
   // First resize palette and background then resize the action buttons
   tbe.sizePaletteToWindow();
-  actionButtons.addActionButtons(tbe.actionButtonDefs, tbe);
+  actionButtons.sizeButtonsToWindow(tbe);
 };
 
 tbe.addPalette = function addPalette(palette) {

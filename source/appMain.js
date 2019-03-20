@@ -154,7 +154,6 @@ module.exports = function () {
         var currentDocText = teaktext.blocksToText(tbe.forEachDiagramChain);
         app.fileOverlay.saveFile(tbe.currentDoc, currentDocText);
       },
-
     };
 
     // Construct the clipboard
@@ -195,17 +194,17 @@ module.exports = function () {
     // Add the main command buttons, to left, middle and right locations.
     tbe.addPalette(package1);
     var actionButtonDefs = [
-     {'alignment': 'L', 'position': 1, 'label': fastr.play, 'command': 'play', 'tweakx': 4},
-     {'alignment': 'L', 'position': 2, 'label': fastr.stop, 'command': 'stop'},
-     {'alignment': 'L', 'position': 3, 'label': fastr.gamepad, 'command': 'driveOverlay'},
-     {'alignment': 'M', 'position': 1, 'label': fastr.debug, 'command': 'debugOverlay'},
-     {'alignment': 'M', 'position': 2, 'label': fastr.folder, 'command': 'pages'},
-  // {'alignment': 'M', 'position': 4, 'label': fastr.camera, 'command': 'docSnapShot'},
-     {'alignment': 'M', 'position': 3, 'label': fastr.edit, 'command': 'edit'},
-     {'alignment': 'R', 'position': 3, 'label': '', 'command': 'connect'},
+     {'alignment': 'L', 'label': fastr.play, 'command': 'play', 'tweakx': 4},
+     {'alignment': 'L', 'label': fastr.stop, 'command': 'stop'},
+     {'alignment': 'L', 'label': fastr.gamepad, 'command': 'driveOverlay'},
+     {'alignment': 'M', 'label': fastr.debug, 'command': 'debugOverlay'},
+     {'alignment': 'M', 'label': fastr.folder, 'command': 'pages'},
+     {'alignment': 'M', 'label': fastr.edit, 'command': 'edit'},
+     // {'alignment': 'M', 'position': 4, 'label': fastr.camera, 'command': 'docSnapShot'},
+     {'alignment': 'R', 'label': '', 'command': 'connect'},
     ];
 
-    tbe.actionButtonDefs = actionButtonDefs;
+    actionButtons.defineButtons(actionButtonDefs, tbe);
 
     // Connect to resize event for refresh. Make initial call
     document.body.onresize = tbe.updateScreen;
