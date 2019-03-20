@@ -30,58 +30,51 @@ module.exports = function () {
   var app = require('./appMain.js');
 
   actionButtons.dots = [];
+  // How many dots in each region.
   actionButtons.dotsLeft = 0;
   actionButtons.dotsMiddle = 0;
   actionButtons.dotsRight = 0;
 
-  actionButtons.sizeButtonsToWindow = function (tbe) {
 
-      console.log( "Adjust for screen size - rebuild/reposition SVGs");
+  actionButtons.sizeButtonsToWindow = function (tbe) {
 
       var w = tbe.width;
       var h = tbe.height;
-      var half = w / 2;
-      var middleLeft = half - ((actionButtons.dotsMiddle + 1) * 0.05 * w);
 
-      var buttonRadius = 30;
+      // System basically makes room for 10 dots.
+      // some from right, some from left, some in the center.
+      // Still a bit hard coded.
+      var slotw = w * 0.1;
+      var x = 0;
+      var y = 60;
+      var dotd = 60;   // diameter
       if ( h < 500 ) {
-          buttonRadius = 20;
+          dotd = 40;
+          y = 60;
       }
+
+      var half = w / 2;
+      var mid = half - ((actionButtons.dotsMiddle + 1) * (slotw / 2));
 
       // The action-dot class is used for event dispatching. The overall
       // group, but not the the interior items should have this class
       var i = 0;
       for ( i = actionButtons.dots.length - 1; i >= 0; i--) {
-          actionButtons.dots[i].updateSvg();
-          /*
-        position = buttons[i].position;
-        alignment = buttons[i].alignment;
-
-        if (alignment === 'L') {
-          x = ((0.1 * tbe.width) * position);
-        } else if(alignment === 'M') {
-          x = middleLeft + ((0.1 * tbe.width) * position);
-        } else if (alignment === 'R') {
-          x = tbe.width - ((0.1 * tbe.width) * position);
+        var pos = actionButtons.dots[i].position;
+        var align = actionButtons.dots[i].alignment;
+        // The action-dot class is used for event dispatching. The overall
+        // group, but not the the interior items should have this class
+        if (align === 'L') {
+          x = (slotw * (pos+1));
+        } else if(align === 'M') {
+          x = mid + (slotw * (pos+2));
+        } else if (align === 'R') {
+          x = w - (slotw * pos);
         }
-        */
+//        console.log("align", align, pos, actionButtons.dots[i].command);
+        actionButtons.dots[i].updateSvg(x, y, dotd);
       }
-      return;
-
-      /*
-      var w = tbe.width;
-      var h = tbe.height;
-      var half = tbe.width/2;
-      var middleLeft = half - ((numMiddle + 1) * 0.05 * tbe.width);
-      var alignment = '';
-      var x = 0;
-      var position = 0;
-      var dots = tbe.actionButtons;
-      var tweakx = 0;
-      var command = "";
-      var label = "";
-
-      for (var key in tbe.actionButtons) {
+/*
         if (tbe.actionButtons.hasOwnProperty(key)) {
           var dot = tbe.actionButtons[key];
           if (typeof block === 'object') {
@@ -93,11 +86,6 @@ module.exports = function () {
               if (tweakx === undefined) {
                 tweakx = 0;
               }
-              label = dot.label;
-
-          }
-        }
-      }
 */
 
   };
@@ -106,13 +94,16 @@ module.exports = function () {
       // Connect the generic block class to the behavior definition class.
       this.command = button.command;
       this.label = button.label;
+      this.alignment = button.alignment;
 
-      console.log("constructing cmd-", button)
-      if (button.alignment === 'M') {
-          actionButtons.dotsMiddle += 1;
-      } else if (button.alignment === 'L') {
+      if (button.alignment === 'L') {
+          this.position = actionButtons.dotsLeft;
           actionButtons.dotsLeft += 1;
+      } else if (button.alignment === 'M') {
+          this.position = actionButtons.dotsMiddle;
+          actionButtons.dotsMiddle += 1;
       } else if (button.alignment === 'R') {
+          this.position = actionButtons.dotsRight;
           actionButtons.dotsRight += 1;
       }
 
@@ -120,13 +111,13 @@ module.exports = function () {
   };
 
 // Create an image for the block base on its type.
-actionButtons.ActionDot.prototype.updateSvg = function() {
+actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
 
     console.log(" regenerating the SVG - ", this.command);
 
     // Empty the shell if it exists.
     if (this.svgDotGroup !== null) {
-      this.svgDotParent.removeChild(this.svgDotGroup);
+      actionButtons.svgDotParent.removeChild(this.svgDotGroup);
     }
     this.svgDotGroup = null;
     // disconnect reference to inner pieces so GC will clean them up.
@@ -134,35 +125,31 @@ actionButtons.ActionDot.prototype.updateSvg = function() {
     this.svgText = null;
     this.svgText2 = null;
 
-    // The action-dot class is used for event dispatching. The overall
-    // group, but not the the interior items should have this class
     var svgDG = svgb.createGroup('action-dot', 0, 0);
-    var label = "";
-    var buttonR = 19;
-    var buttonFH = 12;
-    var x = 40;
-    var tweakx = 0;
+    var label = this.label;
+    var dothalf = dotd/2;
+    var fontY = y + (dothalf/2) - 1;
 
     //Check if character strings are more than one character to create a label on top of the usual label
     if (this.command === 'connect') {
       // For the connect label put the device name
-      this.svgDot = svgb.createRect('action-dot-bg', x - 20, 8, 180, buttonR * 2, buttonR);
+      this.svgDot = svgb.createRect('action-dot-bg', x-200, y-(dotd/2), 180, dotd, dothalf);
       label = "bot: " + dso.deviceName;
-      this.svgText = svgb.createText('action-dot-text', x + 60, buttonFH, label);
+      this.svgText = svgb.createText('action-dot-text', x - 100, fontY, label);
       this.svgText.setAttribute('id', 'device-name-label');
       svgDG.appendChild(this.svgDot);
       svgDG.appendChild(this.svgText);
   } else if (this.label.length > 1) {
       // For files its the doc icon with letter inside. Only one text box has
       // font awesome icon.
-      this.svgDot = svgb.createCircle('action-dot-bg', x, 40, buttonR);
-      this.svgText = svgb.createText('fa action-dot-text', x + tweakx, buttonFH, label.substring(0, 1));
+      this.svgDot = svgb.createCircle('action-dot-bg', x- dothalf, y, dothalf);
+      this.svgText = svgb.createText('fa action-dot-text', x - dothalf, fontY, label.substring(0, 1));
     //???  svgText2 = svgb.createText('action-dot-doc-label', x + tweakx, buttonFH, label.substring(1));
     //???  group.appendChild(svgText2);
     } else {
       // For simple buttons ther is just one font-awesome icon.
-      this.svgDot = svgb.createCircle('action-dot-bg', x, 40, buttonR);
-      this.svgText = svgb.createText('fa action-dot-text', x + tweakx, buttonFH, label);
+      this.svgDot = svgb.createCircle('action-dot-bg', x - dothalf, y, dothalf);
+      this.svgText = svgb.createText('fa action-dot-text', x - dothalf, fontY, label);
     }
     svgDG.appendChild(this.svgDot);
     svgDG.appendChild(this.svgText);
@@ -173,13 +160,8 @@ actionButtons.ActionDot.prototype.updateSvg = function() {
     //??? group.setAttribute('command', command);
     //??? group.setAttribute('id', buttons[i].command + 'Command');
 
-
 /*
     var group = svgb.createGroup('action-dot', 0, 0);
-
-    tbe.svg.appendChild(group);
-    buttons[i].svgText = svgText;
-    buttons[i].svgCircle = svgButtonBase;
     group.setAttribute('command', command);
     group.setAttribute('id', buttons[i].command + 'Command');
 */
