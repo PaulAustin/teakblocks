@@ -35,6 +35,29 @@ module.exports = function () {
   actionButtons.dotsMiddle = 0;
   actionButtons.dotsRight = 0;
 
+  actionButtons.ActionDot = function ActionButton (button, index) {
+      // Connect the generic block class to the behavior definition class.
+      this.command = button.command;
+      this.label = button.label;
+      this.alignment = button.alignment;
+      this.dotIndex = index;
+      this.sub = button.sub;
+
+      console.log('button.sub', button.sub);
+
+      if (button.alignment === 'L') {
+          this.position = actionButtons.dotsLeft;
+          actionButtons.dotsLeft += 1;
+      } else if (button.alignment === 'M') {
+          this.position = actionButtons.dotsMiddle;
+          actionButtons.dotsMiddle += 1;
+      } else if (button.alignment === 'R') {
+          this.position = actionButtons.dotsRight;
+          actionButtons.dotsRight += 1;
+      }
+
+      this.svgDotGroup = null;
+  };
 
   actionButtons.sizeButtonsToWindow = function (tbe) {
 
@@ -45,9 +68,12 @@ module.exports = function () {
       // some from right, some from left, some in the center.
       // Still a bit hard coded.
       var slotw = w * 0.1;
+      var edgeSpacing = 10;
       var x = 0;
-      var y = 40;
+      var y = edgeSpacing;
       var dotd = 60;   // diameter
+      // Shrink if page is too short or too wide.
+      // Need to add width check.
       if ( h < 500 ) {
           if ( h < 350) {
               h = 350;
@@ -69,9 +95,9 @@ module.exports = function () {
         // The action-dot class is used for event dispatching. The overall
         // group, but not the the interior items should have this class
         if (align === 'L') {
-          x = (slotw * (pos+1));
+          x = (slotw * (pos)) + (edgeSpacing * 2);
         } else if(align === 'M') {
-          x = mid + (slotw * (pos+2));
+          x = mid + (slotw * (pos+1));
         } else if (align === 'R') {
           x = w - (slotw * pos);
         }
@@ -79,30 +105,11 @@ module.exports = function () {
       }
   };
 
-  actionButtons.ActionDot = function ActionButton (button, index) {
-      // Connect the generic block class to the behavior definition class.
-      this.command = button.command;
-      this.label = button.label;
-      this.alignment = button.alignment;
-      this.dotIndex = index;
-
-      if (button.alignment === 'L') {
-          this.position = actionButtons.dotsLeft;
-          actionButtons.dotsLeft += 1;
-      } else if (button.alignment === 'M') {
-          this.position = actionButtons.dotsMiddle;
-          actionButtons.dotsMiddle += 1;
-      } else if (button.alignment === 'R') {
-          this.position = actionButtons.dotsRight;
-          actionButtons.dotsRight += 1;
-      }
-
-      this.svgDotGroup = null;
-  };
-
 // Create an image for the block base on its type.
 actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
 
+    // x and y are top left of dot bouding square
+    console.log("usg", x, y);
     // Empty the shell if it exists.
     if (this.svgDotGroup !== null) {
       actionButtons.svgDotParent.removeChild(this.svgDotGroup);
@@ -116,42 +123,111 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
     var svgDG = svgb.createGroup('action-dot', 0, 0);
     var label = this.label;
     var dothalf = dotd/2;
-    var fontY = y + (dothalf/2) - 1;
+    var fontY = y + dothalf + 13;
 
     //Check if character strings are more than one character to create a label on top of the usual label
     if (this.command === 'connect') {
       // For the connect label put the device name
-      this.svgDot = svgb.createRect('action-dot-bg', x-200, y-(dotd/2), 180, dotd, dothalf);
+      this.svgDot = svgb.createRect('action-dot-bg', x-200, y, 180, dotd, dothalf);
       label = "bot: " + dso.deviceName;
       this.svgText = svgb.createText('action-dot-text', x - 100, fontY, label);
       this.svgText.setAttribute('id', 'device-name-label');
   } else if (this.label.length > 1) {
       // For files its the doc icon with letter inside. Only one text box has
       // font awesome icon.
-      this.svgDot = svgb.createCircle('action-dot-bg', x- dothalf, y, dothalf);
-      this.svgText = svgb.createText('fa action-dot-text', x - dothalf, fontY, label.substring(0, 1));
+      this.svgDot = svgb.createCircle('action-dot-bg', x + dothalf, y + dotHalf, dothalf);
+      this.svgText = svgb.createText('fa action-dot-text', x + dothalf, fontY, label.substring(0, 1));
     //???  svgText2 = svgb.createText('action-dot-doc-label', x + tweakx, buttonFH, label.substring(1));
     //???  group.appendChild(svgText2);
     } else {
       // For simple buttons ther is just one font-awesome icon.
-      this.svgDot = svgb.createCircle('action-dot-bg', x - dothalf, y, dothalf);
-      this.svgText = svgb.createText('fa action-dot-text', x - dothalf, fontY, label);
+      this.svgDot = svgb.createCircle('action-dot-bg', x + dothalf, y + dothalf, dothalf);
+      this.svgText = svgb.createText('fa action-dot-text', x + dothalf, fontY, label);
     }
+
+    // If there is a sub menu then build it for later use. Its not
+    // inserted in the DOM till needed.
+    if (this.sub !== undefined) {
+        this.svgSubGroup = this.updateDropdownSvg(x, y, dotd, this.sub);
+        svgDG.appendChild(this.svgSubGroup);
+    }
+
     svgDG.appendChild(this.svgDot);
     svgDG.appendChild(this.svgText);
     svgDG.setAttribute('dotIndex', this.dotIndex);
     this.svgDotGroup = svgDG;
     actionButtons.svgDotParent.appendChild(this.svgDotGroup);
 
-    //??? group.setAttribute('command', command);
-    //??? group.setAttribute('id', buttons[i].command + 'Command');
+  };
 
-/*
+  // Open up the drop down menu
+  // The SVG tree for the drop down is build and saved for use by the event
+  // handlers
+  actionButtons.ActionDot.prototype.updateDropdownSvg = function(x, y, dotd, sub) {
+    // Find out where the drop down will be positioned.
+    // The is the center of the button
+    // spacing is distance from top of button to top of screen.
+    // a bit subjective, that is the width of the drop down. It means the
+    // drop down will just touch the top of screen.
+
+    var spacing = y;
+    console.log("spacing", spacing, x, y, dotd);
+    var svgSubGroup = svgb.createGroup('action-dot-dropdown', 0, 0);
+
+    var ddWidth = dotd + (2 * spacing);
+    // The background for the buttons will be a rounded rect a bit larger than
+    // the dots, it wil animate to full length when shown.
+    var ddHeight = ((sub.length + 1) * (dotd + spacing)) + spacing;
+    var svgCircle = svgb.createRect('action-dot-rect-pages',
+       x-spacing, y-spacing, ddWidth, ddHeight, ddWidth/2);
+
+    svgSubGroup.appendChild(svgCircle);
+
+    // Add the dropdown behind the main button.
+    //tbe.svg.insertBefore(group, droppoint[0].parentNode);
+
+    // Insert the buttons that go one the drop-down
+    for(var i = 0; i < sub.length; i++) {
+      var label = sub[i].label;
+      var subDot = null;
+
+      // Move down from the dot above
+      y += dotd + spacing;
+
+      // This test is a bit wonky.
+      if(label.match(/[a-z]/i) !== null){
+        subDot = this.buildSubDot(x, y, dotd, label, sub[i].command, 'dropdown-buttons', 'text-buttons');
+      } else {
+        subDot = this.buildSubDot(x, y, dotd, label, sub[i].command, 'dropdown-buttons');
+      }
+      svgSubGroup.appendChild(subDot);
+    }
+    return svgSubGroup;
+  };
+
+  actionButtons.ActionDot.prototype.buildSubDot = function(x, y, dotd, label, command, id, eltClass) {
+    var dothalf = dotd/2;
     var group = svgb.createGroup('action-dot', 0, 0);
-    group.setAttribute('command', command);
-    group.setAttribute('id', buttons[i].command + 'Command');
-*/
+    var fontHeight = y + dothalf + 13; //??? whats with the 13?
+    var svgCircle = svgb.createCircle('action-dot-bg', x + dothalf, y + dothalf, dothalf);
+    var svgText = svgb.createText('fa action-dot-text', x + dothalf, fontHeight, label);
 
+    group.setAttribute('id', id);
+
+    // ??? What is this????
+    if(eltClass !== undefined){
+      group.setAttribute('class', 'buttonGroup ' + eltClass);
+      if (command === 'copy') {
+        var curr = group.getAttribute('class');
+        group.setAttribute('class', curr + ' copy-button');
+      }
+    }
+    group.appendChild(svgCircle);
+    group.appendChild(svgText);
+    if(command !== undefined){
+      group.setAttribute('command', command);
+    }
+    return group;
   };
 
   actionButtons.ActionDot.prototype.activate = function() {
@@ -192,41 +268,14 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
       actionButtons.dots[dotIndex].doCommand(event.currentTarget);
     });
 
-    console.log( "defined buffons SVG", actionButtons.dotsLeft, actionButtons.dotsMiddle,
-actionButtons.dotsRight );
 };
 
-  // Open up the drop down menu
-  actionButtons.createDropdown = function(buttons, tbe, changeText, id) {
-    // Find out where the drop down will be positioned.
-    // The is the center of the button
-    var droppoint = document.getElementById(id + 'Command').childNodes;
-    var x = droppoint[0].getAttribute('cx');
-    var y = droppoint[0].getAttribute('cy');
 
-    var group = svgb.createGroup('action-dot-dropdown', 0, 0);
-    var svgCircle = svgb.createRect('action-dot-rect-pages', x - 40, 0, 80, (buttons.length  + 1) * 80, 40);
-    group.appendChild(svgCircle);
-
-    // Add the dropdown behind the main button.
-    tbe.svg.insertBefore(group, droppoint[0].parentNode);
-    //droppoint[0].parentNode.parentNode.removeChild(droppoint[0].parentNode);
-
-    // Insert the buttons that go one the drop-down
-    var newButtons = [];
-    for(var i = 0; i < buttons.length; i++){
-      var label = buttons[i].label;
-      // This test is a bit wonky.
-      if(label.match(/[a-z]/i) !== null){
-        newButtons[i] = this.addButton(label, x, y, tbe, buttons[i].command, undefined, 'dropdown-buttons', 'text-buttons');
-      } else {
-        newButtons[i] = this.addButton(label, x, y, tbe, buttons[i].command, undefined, 'dropdown-buttons');
-      }
-    }
-
+actionButtons.ActionDot.prototype.animateDropDown = function(x, y, dotd, sub) {
     // Start all the animations that move buttons into place.
+    /*
     var animateSlideDown = null;
-    for(var k = 0; k < newButtons.length; k++){
+    for(var k = 0; k < newButtons.length; k++) {
       animateSlideDown = {
         frame: 20,
         adx: 0,
@@ -234,13 +283,13 @@ actionButtons.dotsRight );
       };
       this.slideButton(animateSlideDown, newButtons[k]);
     }
-    return newButtons;
-  };
+    */
+};
 
   // Hide up the drop down menu, reverse the animation, hide the element.
   actionButtons.deleteDropdown = function(buttons, tbe, changeText, id) {
     console.log('hide dropdown', id);
-    for(var i = 0; i < buttons.length; i++){
+    for(var i = 0; i < buttons.length; i++) {
       var animateSlideDown = {
         frame: 20,
         adx: 0,
@@ -252,11 +301,11 @@ actionButtons.dotsRight );
     var droppoint = document.getElementById('pullUp' + id).childNodes;
     var x = droppoint[0].getAttribute('cx');
     var y = droppoint[0].getAttribute('cy');
-    this.addButton(changeText, x, y, tbe, id, id);
-    // REmove it
+    this.addButton(changeText, x, y, id, id);  //???yuck
+    // Remove it
     droppoint[0].parentNode.parentNode.removeChild(droppoint[0].parentNode);
 
-    // Find the recangle
+    // Find the rectangle
     var underlay = document.getElementsByClassName('action-dot-dropdown');
     var animateSlide = {
       frame: 20,
@@ -277,31 +326,7 @@ actionButtons.dotsRight );
     underlay[0].setAttribute('class', 'action-dot-rect-remove' + id);
   };
 
-  actionButtons.addButton = function(label, x, y, tbe, command, id, eltClass){
-    var group = svgb.createGroup('action-dot', 0, 0);
-    var svgCircle = svgb.createCircle('action-dot-bg', x, y, 33);
-    var svgText = svgb.createText('fa action-dot-text', x, parseInt(y, 10)+13, label);
-    if(command !== undefined){
-      group.setAttribute('command', command);
-    }
-
-    if(id !== undefined){
-      group.setAttribute('id', id);
-    }
-    if(eltClass !== undefined){
-      group.setAttribute('class', 'buttonGroup ' + eltClass);
-      if (command === 'copy') {
-        var curr = group.getAttribute('class');
-        group.setAttribute('class', curr + ' copy-button');
-      }
-    }
-    group.appendChild(svgCircle);
-    group.appendChild(svgText);
-    tbe.svg.appendChild(group);
-    return group;
-  };
-
-  actionButtons.slideButton = function slideButton(state, button, option){
+  actionButtons.slideButton = function slideButton(state, button, option) {
     var frame = state.frame;
     var currentAttribute = button.getAttribute('transform');
     var parenPos = currentAttribute.lastIndexOf(')');
@@ -311,8 +336,11 @@ actionButtons.dotsRight );
     if (frame > 1) {
       state.frame = frame - 1;
       requestAnimationFrame(function() { slideButton(state, button, option); });
-    } else if(option === "delete"){
-      button.parentNode.removeChild(button);
+  } else {
+      actionButtons.animating = false;
+      if(option === "delete"){
+       button.parentNode.removeChild(button);
+      }
     }
   };
 
