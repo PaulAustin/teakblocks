@@ -1590,7 +1590,7 @@ tbe.showStartBlocks = function showStartBlocks() {
 tbe.showActionBlocks = function showActionBlocks() {
   tbe.forEachPalette(function(block){
     var control = block.name === 'wait' || block.name === 'loop' || block.name === 'tail';
-    if(!block.svgRect.classList.contains('identity-block') && !control){
+    if(!block.svgRect.classList.contains('identity-block') && !control) {
       console.log(block);
       block.svgGroup.setAttribute('class', 'drag-group');
     }
@@ -1613,7 +1613,7 @@ tbe.updateScreen = function() {
   tbe.height = window.innerHeight;
   // First resize palette and background then resize the action buttons
   tbe.sizePaletteToWindow();
-  actionButtons.sizeButtonsToWindow(tbe);
+  actionButtons.sizeButtonsToWindow(tbe.width, tbe.height);
 };
 
 tbe.addPalette = function addPalette(palette) {
