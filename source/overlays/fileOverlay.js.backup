@@ -72,9 +72,6 @@ module.exports = function () {
     if  (overlay !== null) {
       overlay.className = 'fullScreenSlideOut';
     }
-
-    // For now, leave the element there until the next overlay replaces it.
-    // app.overlayDom.innerHTML = '';
   };
 
   // Get an canvas image of the curret screen.

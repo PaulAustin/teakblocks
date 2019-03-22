@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2018 Trashbots - SDG
+Copyright (c) 2019 Trashbots - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@ SOFTWARE.
 module.exports = function () {
   var log = require('./../log.js');
   var cxn = require('./../cxn.js');
-  var app = require('./../appMain.js');
+  var overlays = require('./overlays.js');
   var ko = require('knockout');
   var deviceScanOverlay = {};
   var dso = deviceScanOverlay;
@@ -85,7 +85,7 @@ module.exports = function () {
   dso.start = function () {
 
     // Construct the DOM for the overlay.
-    app.overlayDom.innerHTML = `
+    overlays.overlayDom.innerHTML = `
       <div id='overlayRoot' class ='fullScreenSlideIn'>
         <div id='dsoOverlay'>
             <div class='dso-list-box-shell'>
@@ -102,7 +102,7 @@ module.exports = function () {
       </div>`;
 
     // Connect the dataBinding.
-    ko.applyBindings(dso, app.overlayDom);
+    ko.applyBindings(dso, overlays.overlayDom);
     dso.scanButton = document.getElementById('dsoScan');
     dso.scanButton.onclick = dso.handleScanButton;
 
@@ -123,9 +123,7 @@ module.exports = function () {
     if (cxn.scannning) {
       dso.toggleBtScan();
     }
-    ko.cleanNode(app.overlayDom);
-    // For now, leave the element there until the next overlay replaces it.
-    // app.overlayDom.innerHTML = '';
+    ko.cleanNode(overlays.overlayDom);
   };
 
   dso.handleScanButton = function() {

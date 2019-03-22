@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2017 Paul Austin - SDG
+Copyright (c) 2019 TRashbots - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,12 +25,13 @@ module.exports = function(){
 
   var splashOverlay = {};
   var app = require('./../appMain.js');
+  var overlays = require('./overlays.js');
   // External function for putting it all together.
   splashOverlay.start = function () {
 
     // Construct the DOM for the overlay.
     // TODO Add a method to app for showing overlays.
-    app.overlayDom.innerHTML = `
+    overlays.overlayDom.innerHTML = `
     <div id='overlayFrame' class='fullScreenSlideIn'>
       <div id='splashOverlay'>
       <p class='splashTitle'>Teak blocks<p>

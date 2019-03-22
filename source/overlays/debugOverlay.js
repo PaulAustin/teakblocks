@@ -25,15 +25,14 @@ SOFTWARE.
 // between the app and the robot.
 module.exports = function () {
   var log = require('./../log.js');
-  // var cxn = require('./../cxn.js');
-  var app = require('./../appMain.js');
+  var overlays = require('./overlays.js');
   var debugMode = {};
 
   // External function for putting it all together.
   debugMode.start = function () {
 
     // Construct the DOM for the overlay.
-    app.overlayDom.innerHTML = `
+    overlays.overlayDom.innerHTML = `
     <div id='overlayRoot' class ='fullScreenSlideIn'>
       <div id='debugOverlay'>
         <div id='debugLogBackground'>
@@ -71,9 +70,6 @@ module.exports = function () {
     if  (overlay !== null) {
       overlay.className = 'fullScreenSlideOut';
     }
-
-    // For now, leave the element there until the next overlay replaces it.
-    // app.overlayDom.innerHTML = '';
   };
 
   return debugMode;

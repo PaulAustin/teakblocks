@@ -40,19 +40,11 @@ module.exports = function () {
 
     // Add major modules to the application object.
     var tbe = app.tbe;
-    app.overlayDom = document.getElementById('overlayLayer');
-    app.overlay = null;
-    app.driverOverlay = require('./overlays/driveOverlay.js');
-    app.debugOverlay = require('./overlays/debugOverlay.js');
-    app.deviceScanOverlay = require('./overlays/deviceScanOverlay.js');
 
-    // Add shortcut function to app
-    app.fileOverlay = require('./overlays/fileOverlay.js');
-    app.settingsOverlay = require('./overlays/settings.js');
-    app.splashOverlay = require('./overlays/splashOverlay.js');
-
-    // fileOverlay will provide some from of localStorage, even if faked.
-    app.storage = app.fileOverlay.localStorage();
+    app.overlays = require('./overlays/overlays.js').init();
+    // a bit of a hack???
+    app.fileManager = app.overlays.screens.fileOverlay;
+    app.storage = app.fileManager.localStorage();
 
     if (window.MobileAccessibility) {
       window.MobileAccessibility.usePreferredTextZoom(false);
@@ -137,22 +129,20 @@ module.exports = function () {
       'loadDocD': function(){ tbe.loadDoc('docD'); },
       'loadDocE': function(){ tbe.loadDoc('docE'); },
 
-      'docSnapShot': function(){ app.fileOverlay.cameraFlash(); },
-      'driveOverlay': function(){ app.showOverlay(app.driverOverlay); },
-      'debugOverlay': function(){ app.showOverlay(app.debugOverlay); },
-      'splashOverlay': function(){ app.showOverlay(app.splashOverlay); },
-      'connect': function() { app.showOverlay(app.deviceScanOverlay); },
+      'docSnapShot': function() { app.overlays.fileOverlay.cameraFlash(); },
+      'driveOverlay': function() { app.toggleOverlay('driveOverlay'); },
+      'debugOverlay': function() { app.toggleOverlay('debugOverlay'); },
+      'splashOverlay': function() { app.toggleOverlay('splashOverlay'); },
+      'connect': function() { app.toggleOverlay('deviceScanOverlay'); },
 
       'settings': function() { tbe.loadSettings(); },
       'undo': function() { tbe.undoAction(); },
       'redo': function() { tbe.redoAction(); },
-      'pullUppages': function() { actionButtons.deleteDropdown(tbe.dropdownButtons, tbe, fastr.folder, 'pages'); },
-      'pullUpedit': function() { actionButtons.deleteDropdown(tbe.dropdownButtons, tbe, fastr.edit, 'edit'); },
       'copy': function() { tbe.copyText = teaktext.blocksToText(tbe.forEachDiagramChain); },
       'paste': function() { if(tbe.copyTest !== null) { teaktext.textToBlocks(tbe, tbe.copyText); } },
       'save': function() {
         var currentDocText = teaktext.blocksToText(tbe.forEachDiagramChain);
-        app.fileOverlay.saveFile(tbe.currentDoc, currentDocText);
+        app.fileManager.saveFile(tbe.currentDoc, currentDocText);
       },
     };
 
@@ -226,8 +216,10 @@ module.exports = function () {
     }
   };
 
-  app.showOverlay = function(overlay) {
-    console.log('show overlay');
+  app.toggleOverlay = function(name) {
+
+    console.log('toggle overlay');
+
     // TODO modularized control of editor. Why is this part of the show overlay logic?
     app.tbe.undoArray = {}; // When we switch documents we want to clear undo history.
     app.tbe.undoTransactionIndex = 0;
@@ -235,26 +227,8 @@ module.exports = function () {
     // First, save the current document.
     app.tbe.saveCurrentDoc();
     app.tbe.clearStates();
-
-    var currentOverlay = app.overlay;
-    if (app.overlay !== null) {
-        console.log('hide existing overlay');
-        // If one is up close it (might be toggle action)
-        app.hideOverlay();
-    }
-    if (currentOverlay !== overlay) {
-        // If it is a new one then show it.
-        overlay.start();
-        app.overlay = overlay;
-    }
-  };
-
-  app.hideOverlay = function() {
-      if (app.overlay !== null) {
-          app.overlay.exit();
-          app.overlay = null;
-      }
-  };
+    app.overlays.toggle(name);
+};
 
   return app;
 }();

@@ -68,7 +68,7 @@ module.exports = function () {
 
  // check if contains file (file name)
  defaultFiles.containsFile = function(fileName){
-   if(app.fileOverlay.loadFile(fileName) === null || app.fileOverlay.loadFile(fileName) === `null`){
+   if(app.fileManager.loadFile(fileName) === null || app.fileManager.loadFile(fileName) === `null`){
      return false;
    }
    return true;
@@ -100,7 +100,7 @@ module.exports = function () {
            break;
 
        }
-       app.fileOverlay.saveFile(files[i], file);
+       app.fileManager.saveFile(files[i], file);
      }
    }
  };

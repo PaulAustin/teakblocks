@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2017 Paul Austin - SDG
+Copyright (c) 2019 Trashbots - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@ module.exports = function(){
   var log = require('./../log.js');
   var interact = require('interact.js');
   var conductor = require('./../conductor.js');
-  var app = require('./../appMain.js');
+  var overlays = require('./overlays.js');
   var dso = require('./deviceScanOverlay.js');
   var driveMode = {};
 
@@ -39,7 +39,7 @@ module.exports = function(){
 
   driveMode.buildSlider = function() {
     // TODO need to upate value as they change
-    app.overlayDom.innerHTML = `
+    overlays.overlayDom.innerHTML = `
     <div id='overlayRoot' class='fullScreenSlideIn'>
       <div class='slider sliderRight' data-value='0'></div>
       <div class='slider sliderLeft' data-value='0'></div>
@@ -134,12 +134,6 @@ module.exports = function(){
     if  (overlay !== null) {
       overlay.className = 'fullScreenSlideOut';
     }
-    // TODO Remove content after it is off the screen.
-    //  app.overlayDom.innerHTML = '';
-
-    // Why load docA ?, it will still be there.
-    // TODO add animations
-    //app.tbe.loadDoc('docA');
   };
 
   return driveMode;

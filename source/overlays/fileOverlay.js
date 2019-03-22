@@ -1,5 +1,6 @@
 /*
-Copyright (c) 2017 Paul Austin - SDG
+
+Copyright (c) 2019 Trashbots - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -48,7 +49,9 @@ SOFTWARE.
 module.exports = function () {
 
   var fileOverlay = {};
+  var overlays = require('./overlays.js');
   var app = require('./../appMain.js');
+
 
   fileOverlay.saveCamera = document.getElementById('saveCamera');
 
@@ -56,7 +59,7 @@ module.exports = function () {
   fileOverlay.start = function () {
 
     // Construct the DOM for the overlay.
-    app.overlayDom.innerHTML = `
+    overlays.overlayDom.innerHTML = `
       <div id='overlayRoot' class ='fullScreenSlideIn'>
         <div id='debugLogBackground'>
           <div id='debugLog'></div>
@@ -71,9 +74,6 @@ module.exports = function () {
     if  (overlay !== null) {
       overlay.className = 'fullScreenSlideOut';
     }
-
-    // For now, leave the element there until the next overlay replaces it.
-    // app.overlayDom.innerHTML = '';
   };
 
   // Get an canvas image of the curret screen.
