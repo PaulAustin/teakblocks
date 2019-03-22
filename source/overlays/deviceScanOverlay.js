@@ -86,7 +86,7 @@ module.exports = function () {
 
     // Construct the DOM for the overlay.
     overlays.overlayDom.innerHTML = `
-      <div id='overlayRoot'
+      <div id='overlayRoot'>
         <div id='dsoOverlay'>
             <div class='dso-list-box-shell'>
                 <ul class='dso-list-box' data-bind='foreach: devices'>

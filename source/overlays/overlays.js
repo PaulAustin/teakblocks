@@ -27,6 +27,7 @@ module.exports = function () {
   overlays.currentShowing = null;
   overlays.nextToShow = null;
   overlays.currentIsClosing = false;
+  overlays.isAnimating = false;
 
   // External function for putting it all together.
   overlays.init = function () {
@@ -59,12 +60,12 @@ module.exports = function () {
         // One is already up but this different, close and queue up the new.
         overlays.nextToShow = o;
         overlays.hideOverlay();
-    } else {
+    } else if (!overlays.isAnimating) {
         // Nothing currently is up, show the new one.
+        overlays.currentShowing = o;
         o.start();
         var oroot = document.getElementById('overlayRoot');
         oroot.classList.add('fullScreenSlideIn');
-        overlays.currentShowing = o;
     }
   };
 
@@ -77,18 +78,21 @@ module.exports = function () {
           if  (oroot !== null) {
             oroot.classList.remove('fullScreenSlideIn');
             oroot.classList.add('fullScreenSlideOut');
+            overlays.isAnimating = true;
           }
           overlays.currentShowing = null;
       }
   };
 
   overlays.endAnimation = function() {
+      overlays.isAnimating = false;
       if (overlays.currentIsClosing === true) {
           overlays.currentIsClosing = false;
           if (overlays.nextToShow !== null) {
               overlays.nextToShow.start();
               var oroot = document.getElementById('overlayRoot');
               oroot.classList.add('fullScreenSlideIn');
+              overlays.isAnimating = true;
               overlays.currentShowing = overlays.nextToShow;
               overlays.nextToShow = null;
           } else {
