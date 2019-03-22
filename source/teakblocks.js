@@ -1608,7 +1608,6 @@ tbe.showControlBlocks = function showControlBlocks() {
 
 tbe.updateScreen = function() {
   // This is the logical size (used by SVG, etc) not retina pixels.
-  log.trace('Screen Size:', window.innerWidth, window.innerHeight);
   tbe.width = window.innerWidth;
   tbe.height = window.innerHeight;
   // First resize palette and background then resize the action buttons

@@ -20,8 +20,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-
-
 module.exports = function () {
   var actionButtons = {};
   var interact = require('interact.js');
@@ -44,6 +42,7 @@ module.exports = function () {
       this.alignment = button.alignment;
       this.dotIndex = index;
       this.sub = button.sub;
+      this.subShowing = false;
 
       if (button.alignment === 'L') {
           this.position = actionButtons.dotsLeft;
@@ -70,6 +69,7 @@ module.exports = function () {
       var x = 0;
       var y = edgeSpacing;
       var dotd = 60;   // diameter
+
       // Shrink if page is too short or too wide.
       // Need to add width check.
       if ( h < 500 ) {
@@ -117,6 +117,8 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
     this.svgDot = null;
     this.svgText = null;
     this.svgText2 = null;
+    this.dotDiameter = dotd;
+    this.dopTop = y;
 
     var svgDG = svgb.createGroup('action-dot', 0, 0);
     var label = this.label;
@@ -143,19 +145,15 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
       this.svgText = svgb.createText('fa action-dot-text', x + dotHalf, fontY, label);
     }
 
+    if (this.sub !== undefined) {
+        this.svgSubGroup = this.updateDropdownSvg(x, y, dotd, this.sub);
+    }
+
     svgDG.appendChild(this.svgDot);
     svgDG.appendChild(this.svgText);
     svgDG.setAttribute('dotIndex', this.dotIndex);
     this.svgDotGroup = svgDG;
     actionButtons.svgDotParent.appendChild(this.svgDotGroup);
-
-    // If there is a sub menu then build it for later use. Its not
-    // inserted in the DOM till needed.
-    if (this.sub !== undefined) {
-        this.svgSubGroup = this.updateDropdownSvg(x, y, dotd, this.sub);
-        // Add the dropdown to the dot group but before the dot itself.
-        svgDG.insertBefore(this.svgSubGroup, this.svgDot);
-    }
   };
 
   // Open up the drop down menu
@@ -169,17 +167,20 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
     var ddWidth = dotd + (2 * spacing);
     // The background for the buttons will be a rounded rect a bit larger than
     // the dots, it wil animate to full length when shown.
-    var ddHeight = ((sub.length + 1) * (dotd + spacing)) + spacing;
-    var svgCircle = svgb.createRect('action-dot-rect-pages',
-       x-spacing, y-spacing, ddWidth, ddHeight, ddWidth/2);
+    this.subBackBottom = ((sub.length + 1) * (dotd + spacing)) + spacing;
+    this.subBackD = ddWidth;
+    this.svgSubBack = svgb.createRect('action-dot-rect-pages',
+       x-spacing, y-spacing, ddWidth, ddWidth, ddWidth/2);
 
-    svgSubGroup.appendChild(svgCircle);
+    svgSubGroup.appendChild(this.svgSubBack);
 
     // Insert the buttons that go on the drop-down
+    this.svgSubDots = [];
+    this.svgSubDotYs = [];
+    var dotTop = y + dotd;
     for(var i = 0; i < sub.length; i++) {
 
       // Move down from the dot above
-      y += dotd + spacing;
       var label = sub[i].label;
       var subDot = null;
 
@@ -188,6 +189,9 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
       } else {
         subDot = this.buildSubDot(x, y, dotd, label, sub[i].command, 'dropdown-buttons');
       }
+      this.svgSubDots.push(subDot);
+      this.svgSubDotYs.push(dotTop);
+      dotTop += dotd + spacing;
       svgSubGroup.appendChild(subDot);
     }
     return svgSubGroup;
@@ -213,25 +217,76 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
     group.appendChild(svgCircle);
     group.appendChild(svgText);
     if(command !== undefined){
-      group.setAttribute('command', command);
+        group.setAttribute('command', command);
     }
     return group;
   };
 
-  actionButtons.ActionDot.prototype.activate = function() {
-      this.svgDot.classList.toggle('action-dot-active');
+  actionButtons.ActionDot.prototype.activate = function(state) {
+      // 0 - Back to normal
+      // 1 - Highlight mouse-down/finger-press)
+      // 2 - Do it, valid release.
+      if (state === 1) {
+          this.svgDot.classList.add('action-dot-active');
+      } else if (state === 0 || state === 2) {
+          this.svgDot.classList.remove('action-dot-active');
+      }
   };
 
   actionButtons.ActionDot.prototype.doCommand = function() {
-      this.svgDot.classList.toggle('action-dot-active');
-      var cmd = this.command;
-      app.doCommand(cmd);
+      this.activate(2);
+      if (this.sub === undefined) {
+          var cmd = this.command;
+          app.doCommand(cmd);
+      } else {
+          this.animateDropDown();
+      }
+  };
+
+  actionButtons.ActionDot.prototype.animateDropDown = function() {
+      var state = { frame: 0, frameEnd: 20 };
+      if (!this.subShowing) {
+          if (this.sub !== undefined) {
+              // Add the dropdown to the dot group but before the dot itself.
+              this.svgDotGroup.insertBefore(this.svgSubGroup, this.svgDot);
+              this.slideDots(state, true);
+          }
+          this.subShowing = true;
+      } else {
+          // Start all the animations that move buttons into place.
+          this.subShowing = false;
+          this.slideDots(state, false);
+        }
+  };
+
+  // A target location is set for the last dot, each dot will move relative
+  // to the position it is in, the background will adjust as well.
+  actionButtons.ActionDot.prototype.slideDots = function(state, down) {
+
+      var f = state.frame / state.frameEnd;
+       if (!down) {
+           f = 1.0 - f;
+       }
+
+      var h = (this.subBackBottom - this.subBackD) * f;
+      this.svgSubBack.setAttribute('height', String(this.subBackD + h) + 'px');
+
+      var thisDot = this;
+      var numDots = this.svgSubDots.length;
+      for(var i = 0; i < numDots; i++) {
+          this.svgSubDots[i].setAttribute('transform', 'translate(0 ' + (f * this.svgSubDotYs[i]) + ')');
+      }
+      state.frame += 1;
+      if (state.frame <= state.frameEnd) {
+          requestAnimationFrame(function() { thisDot.slideDots(state, down); });
+      } else if (!down) {
+          this.svgDotGroup.removeChild(this.svgSubGroup);
+      }
   };
 
   actionButtons.reset = function() {
       for (var i = actionButtons.dots.length - 1; i >= 0; i--) {
-          //    if (buttonDefs.svgCircle.classList.contains('action-dot-active')) {
-          actionButtons.dots[i].svgDot.classList.remove('action-dot-active');
+          this.activate(0);
       }
   };
 
@@ -249,86 +304,12 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
     interact('.action-dot')
     .on('down', function (event) {
       var dotIndex = event.currentTarget.getAttribute('dotIndex');
-      actionButtons.dots[dotIndex].activate(event.currentTarget);
+      actionButtons.dots[dotIndex].activate(1);
     })
     .on('up', function (event) {
       var dotIndex = event.currentTarget.getAttribute('dotIndex');
       actionButtons.dots[dotIndex].doCommand(event.currentTarget);
     });
-
-};
-
-actionButtons.ActionDot.prototype.animateDropDown = function(x, y, dotd, sub) {
-    // Start all the animations that move buttons into place.
-    /*
-    var animateSlideDown = null;
-    for(var k = 0; k < newButtons.length; k++) {
-      animateSlideDown = {
-        frame: 20,
-        adx: 0,
-        ady: ((80 * (k+1)))/20
-      };
-      this.slideButton(animateSlideDown, newButtons[k]);
-    }
-    */
-};
-
-  // Hide up the drop down menu, reverse the animation, hide the element.
-  actionButtons.deleteDropdown = function(buttons, tbe, changeText, id) {
-    console.log('hide dropdown', id);
-    for(var i = 0; i < buttons.length; i++) {
-      var animateSlideDown = {
-        frame: 20,
-        adx: 0,
-        ady: -((80 * (i+1))/20)
-      };
-      this.slideButton(animateSlideDown, buttons[i], "delete");
-    }
-    // Find the bottom circle
-    var droppoint = document.getElementById('pullUp' + id).childNodes;
-    var x = droppoint[0].getAttribute('cx');
-    var y = droppoint[0].getAttribute('cy');
-    this.addButton(changeText, x, y, id, id);  //???yuck
-    // Remove it
-    droppoint[0].parentNode.parentNode.removeChild(droppoint[0].parentNode);
-
-    // Find the rectangle
-    var underlay = document.getElementsByClassName('action-dot-dropdown');
-    var animateSlide = {
-      frame: 20,
-      adx: 0,
-      ady: -(buttons.length*80)/20
-    };
-
-    this.slideButton(animateSlide, underlay[0], "delete");
-    animateSlide = {
-      frame: 20,
-      adx: 0,
-      ady: 0
-    };
-    this.slideButton(animateSlide, underlay[1], "delete");
-
-    // Get rid of it.
-    underlay = document.getElementsByClassName('action-dot-rect' + id);
-    underlay[0].setAttribute('class', 'action-dot-rect-remove' + id);
-  };
-
-  actionButtons.slideButton = function slideButton(state, button, option) {
-    var frame = state.frame;
-    var currentAttribute = button.getAttribute('transform');
-    var parenPos = currentAttribute.lastIndexOf(')');
-    var spacePos = currentAttribute.lastIndexOf(' ');
-    var currentY = parseInt(currentAttribute.substring(spacePos, parenPos), 10);
-    button.setAttribute('transform', 'translate(' + state.adx + ' ' + (currentY + state.ady) + ')');
-    if (frame > 1) {
-      state.frame = frame - 1;
-      requestAnimationFrame(function() { slideButton(state, button, option); });
-  } else {
-      actionButtons.animating = false;
-      if(option === "delete"){
-       button.parentNode.removeChild(button);
-      }
-    }
   };
 
   return actionButtons;
