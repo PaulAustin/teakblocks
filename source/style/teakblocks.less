@@ -36,7 +36,7 @@ SOFTWARE.
 
 // Pressed / Turned on state for action buttons
 @action-dot-active-color:#00BCD4;
-@action-dot-active-stroke-color:#FFB300;
+@action-dot-active-stroke-color:#3498DB;
 @action-dot-active-text-color:#FFB300;
 
 // Block related Colors
@@ -250,19 +250,6 @@ body {
     // There for event tracking
 }
 
-/*
-// Idle state of action dots
-@action-dot-color:#B2EBF2;              // background of dots
-@action-dot-dropdown-color:#80DEEA;     // background fodropdown
-@action-dot-stroke-color:#9CCC65;       // outline
-@action-dot-text-color:#9CCC65;         // text labels
-
-// Pressed / Turned on state for action buttons
-@action-dot-active-color:#00BCD4;
-@action-dot-active-stroke-color:#FFB300;
-@action-dot-active-text-color:#FFB300;
-*/
-
 .action-dot-bg {
   transition: fill 0.2s ease;
   fill: @action-dot-color;
@@ -288,7 +275,7 @@ body {
 }
 .action-dot-bg.action-dot-active {
     stroke: @action-dot-active-stroke-color;
-    stroke-width: 3;
+    stroke-width: 5;
 }
 .action-dot.action-dot-active-text {
     stroke: @action-dot-active-stroke-color;

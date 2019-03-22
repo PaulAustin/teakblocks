@@ -86,7 +86,7 @@ module.exports = function () {
 
     // Construct the DOM for the overlay.
     overlays.overlayDom.innerHTML = `
-      <div id='overlayRoot' class ='fullScreenSlideIn'>
+      <div id='overlayRoot'
         <div id='dsoOverlay'>
             <div class='dso-list-box-shell'>
                 <ul class='dso-list-box' data-bind='foreach: devices'>
@@ -115,10 +115,6 @@ module.exports = function () {
   // Close the overlay.
   dso.exit = function() {
       console.log('disconnect block');
-    var overlay = document.getElementById('overlayRoot');
-    if  (overlay !== null) {
-      overlay.className = 'fullScreenSlideOut';
-    }
 
     if (cxn.scannning) {
       dso.toggleBtScan();

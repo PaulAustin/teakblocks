@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2018 Trashbots - SDG
+Copyright (c) 2019 Trashbots - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-
 // An overlay to see log messages and communications
 // between the app and the robot.
 module.exports = function () {
@@ -33,7 +32,7 @@ module.exports = function () {
 
     // Construct the DOM for the overlay.
     overlays.overlayDom.innerHTML = `
-    <div id='overlayRoot' class ='fullScreenSlideIn'>
+    <div id='overlayRoot'>
       <div id='debugOverlay'>
         <div id='debugLogBackground'>
           <div id='debugLog'></div>
@@ -64,12 +63,7 @@ module.exports = function () {
 
   // Close the overlay.
   debugMode.exit = function() {
-
     clearTimeout(debugMode.timer);
-    var overlay = document.getElementById('overlayRoot');
-    if  (overlay !== null) {
-      overlay.className = 'fullScreenSlideOut';
-    }
   };
 
   return debugMode;

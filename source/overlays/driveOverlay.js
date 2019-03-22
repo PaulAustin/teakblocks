@@ -40,7 +40,9 @@ module.exports = function(){
   driveMode.buildSlider = function() {
     // TODO need to upate value as they change
     overlays.overlayDom.innerHTML = `
-    <div id='overlayRoot' class='fullScreenSlideIn'>
+    <div id='overlayRoot'
+     <div id='driveOverlay'>
+
       <div class='slider sliderRight' data-value='0'></div>
       <div class='slider sliderLeft' data-value='0'></div>
       <div id='drive-diagnostics' class='drive-diagnostics'>
@@ -50,6 +52,7 @@ module.exports = function(){
         <h1 class="drive-temperature svg-clear">Temperature: 100</h1>
         <h1 class="drive-encoderL svg-clear">Left Encoder: 100</h1>
         <h1 class="drive-encoderR svg-clear">Right Encoder: 100</h1-->
+      </div>
       </div>
     </div>
     `;
@@ -129,11 +132,6 @@ module.exports = function(){
   // Close the driveMode overlay.
   driveMode.exit = function() {
     clearTimeout(driveMode.timer);
-
-    var overlay = document.getElementById('overlayRoot');
-    if  (overlay !== null) {
-      overlay.className = 'fullScreenSlideOut';
-    }
   };
 
   return driveMode;

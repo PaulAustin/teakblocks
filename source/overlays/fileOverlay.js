@@ -70,10 +70,6 @@ module.exports = function () {
 
   // Close the overlay.
   fileOverlay.exit = function() {
-    var overlay = document.getElementById('overlayRoot');
-    if  (overlay !== null) {
-      overlay.className = 'fullScreenSlideOut';
-    }
   };
 
   // Get an canvas image of the curret screen.

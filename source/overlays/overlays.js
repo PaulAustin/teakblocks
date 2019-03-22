@@ -25,6 +25,7 @@ module.exports = function () {
   var overlays = {};
 
   overlays.currentShowing = null;
+  overlays.nextToShow = null;
   overlays.currentIsClosing = false;
 
   // External function for putting it all together.
@@ -48,36 +49,55 @@ module.exports = function () {
       return overlays;
   };
 
+  // Toggle the showing of an overlay, hide one thath is up if necessary
   overlays.toggle = function(name) {
     var o = overlays.screens[name];
-    overlays.overlayClosing = false;
-
-    var currentOverlay = overlays.currentShowing;
-    if (overlays.currentShowing !== null) {
-        // If one is up close it (might be toggle action)
+    if (overlays.currentShowing === o) {
+        // Simply hide the current one.
         overlays.hideOverlay();
-    }
-    if (currentOverlay !== o) {
-        // If it is a new one then show it.
+    } else if (overlays.currentShowing !== null) {
+        // One is already up but this different, close and queue up the new.
+        overlays.nextToShow = o;
+        overlays.hideOverlay();
+    } else {
+        // Nothing currently is up, show the new one.
         o.start();
+        var oroot = document.getElementById('overlayRoot');
+        oroot.classList.add('fullScreenSlideIn');
         overlays.currentShowing = o;
     }
   };
 
+  // Toggle the showing of an overlay, hide one thath is up if necessary
   overlays.hideOverlay = function() {
       if (overlays.currentShowing !== null) {
           overlays.currentIsClosing = true;
           overlays.currentShowing.exit();
+          var oroot = document.getElementById('overlayRoot');
+          if  (oroot !== null) {
+            oroot.classList.remove('fullScreenSlideIn');
+            oroot.classList.add('fullScreenSlideOut');
+          }
           overlays.currentShowing = null;
       }
   };
 
   overlays.endAnimation = function() {
-      console.log("overlay animation done" );
       if (overlays.currentIsClosing === true) {
           overlays.currentIsClosing = false;
+          if (overlays.nextToShow !== null) {
+              overlays.nextToShow.start();
+              var oroot = document.getElementById('overlayRoot');
+              oroot.classList.add('fullScreenSlideIn');
+              overlays.currentShowing = overlays.nextToShow;
+              overlays.nextToShow = null;
+          } else {
+              // Remove the old overlay from the DOM
+              // sometime browsers ty to interat with it.
+              // (e.g. iOS lets you scroll to it.)
+              overlays.overlayDom.innerHTML = "";
+          }
       }
-
   };
 
   return overlays;

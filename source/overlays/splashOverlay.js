@@ -73,10 +73,8 @@ module.exports = function(){
 
     // TODO should be done by application class.
     var overlay = document.getElementById('overlayFrame');
-
     // Check if the spot clicked on is not the checkbox or its label
     if (overlay !== null && event.target !== checkbox && event.target !== labelText[0]) {
-      overlay.className = 'fullScreenSlideOut';
 
       // If the checkbox is checked, should store into local memory
       if(!checkbox.checked){
