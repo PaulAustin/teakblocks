@@ -27,7 +27,13 @@ module.exports = function () {
   var dso = require('./overlays/deviceScanOverlay.js');
   var app = require('./appMain.js');
 
-  actionButtons.dots = [];
+  // Map of all dots to map SVG dotIndex attribure to JS objects
+  actionButtons.mapIndex = 0;
+  actionButtons.dotMap = [];
+
+  // Set of top dots after they have been defined.
+  actionButtons.topDots = [];
+
   // How many dots in each region.
   actionButtons.dotsLeft = 0;
   actionButtons.dotsMiddle = 0;
@@ -35,12 +41,19 @@ module.exports = function () {
 
   // Construct an action dot object, the object manage the SVGs
   // used by the dot and related dropdown.
-  actionButtons.ActionDot = function ActionButton (button, index) {
+  actionButtons.ActionDot = function ActionButton (button) {
       // Connect the generic block class to the behavior definition class.
+
+      actionButtons.dotMap[actionButtons.mapIndex] = this;
+      this.dotIndex = actionButtons.mapIndex;
+      actionButtons.mapIndex += 1;
+
       this.command = button.command;
       this.label = button.label;
       this.alignment = button.alignment;
-      this.dotIndex = index;
+      if (this.alignment === undefined) {
+          this.alignment = 'S';
+      }
       this.sub = button.sub;
       this.subShowing = false;
 
@@ -56,9 +69,15 @@ module.exports = function () {
       }
 
       this.svgDotGroup = null;
+      this.subDots = [];
+      if (this.sub !== undefined) {
+          for(var i = 0; i < this.sub.length; i++) {
+              this.subDots.push(new actionButtons.ActionDot(this.sub[i]));
+          }
+      }
   };
 
-  // sizeButtonsToWindow adjust al SVGs to mathc the screen sizePaletteToWindow
+  // sizeButtonsToWindow adjust al SVGs to match the screen sizePaletteToWindow
   actionButtons.sizeButtonsToWindow = function (w, h) {
 
       // System basically makes room for 10 dots.
@@ -86,10 +105,9 @@ module.exports = function () {
 
       // The action-dot class is used for event dispatching. The overall
       // group, but not the the interior items should have this class
-      var i = 0;
-      for ( i = actionButtons.dots.length - 1; i >= 0; i--) {
-        var pos = actionButtons.dots[i].position;
-        var align = actionButtons.dots[i].alignment;
+      for (var i = 0; i < actionButtons.topDots.length; i++) {
+        var pos = actionButtons.topDots[i].position;
+        var align = actionButtons.topDots[i].alignment;
         // The action-dot class is used for event dispatching. The overall
         // group, but not the the interior items should have this class
         if (align === 'L') {
@@ -99,7 +117,7 @@ module.exports = function () {
         } else if (align === 'R') {
           x = w - (slotw * pos);
         }
-        actionButtons.dots[i].updateSvg(x, y, dotd);
+        actionButtons.topDots[i].updateSvg(x, y, dotd);
       }
   };
 
@@ -145,21 +163,23 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
       this.svgText = svgb.createText('fa action-dot-text', x + dotHalf, fontY, label);
     }
 
+    svgDG.appendChild(this.svgDot);
+    svgDG.appendChild(this.svgText);
+    svgDG.setAttribute('dotIndex', this.dotIndex);
+    console.log("DI", this.dotIndex, this.command );
+    this.svgDotGroup = svgDG;
+
     if (this.sub !== undefined) {
         this.svgSubGroup = this.updateDropdownSvg(x, y, dotd, this.sub);
     }
 
-    svgDG.appendChild(this.svgDot);
-    svgDG.appendChild(this.svgText);
-    svgDG.setAttribute('dotIndex', this.dotIndex);
-    this.svgDotGroup = svgDG;
     actionButtons.svgDotParent.appendChild(this.svgDotGroup);
   };
 
   // Open up the drop down menu
   // The SVG tree for the drop down is build and saved for use by the event
   // handlers
-  actionButtons.ActionDot.prototype.updateDropdownSvg = function(x, y, dotd, sub) {
+  actionButtons.ActionDot.prototype.updateDropdownSvg = function(x, y, dotd) {
 
     var spacing = y; // Spacing from the top edge
     var svgSubGroup = svgb.createGroup('action-dot-dropdown', 0, 0);
@@ -167,7 +187,7 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
     var ddWidth = dotd + (2 * spacing);
     // The background for the buttons will be a rounded rect a bit larger than
     // the dots, it wil animate to full length when shown.
-    this.subBackBottom = ((sub.length + 1) * (dotd + spacing)) + spacing;
+    this.subBackBottom = ((this.subDots.length + 1) * (dotd + spacing)) + spacing;
     this.subBackD = ddWidth;
     this.svgSubBack = svgb.createRect('action-dot-rect-pages',
        x-spacing, y-spacing, ddWidth, ddWidth, ddWidth/2);
@@ -175,51 +195,41 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
     svgSubGroup.appendChild(this.svgSubBack);
 
     // Insert the buttons that go on the drop-down
-    this.svgSubDots = [];
-    this.svgSubDotYs = [];
-    var dotTop = y + dotd;
-    for(var i = 0; i < sub.length; i++) {
-
+    var dotTop = y;
+    for(var i = 0; i < this.subDots.length; i++) {
       // Move down from the dot above
-      var label = sub[i].label;
-      var subDot = null;
-
-      if(label.match(/[a-z]/i) !== null){
-        subDot = this.buildSubDot(x, y, dotd, label, sub[i].command, 'dropdown-buttons', 'text-buttons');
-      } else {
-        subDot = this.buildSubDot(x, y, dotd, label, sub[i].command, 'dropdown-buttons');
-      }
-      this.svgSubDots.push(subDot);
-      this.svgSubDotYs.push(dotTop);
       dotTop += dotd + spacing;
-      svgSubGroup.appendChild(subDot);
+      var subDot = this.subDots[i];
+      var svgDotGroup = subDot.buildSubDot(x, dotTop, y, dotd);
+      svgSubGroup.appendChild(svgDotGroup);
     }
     return svgSubGroup;
   };
 
-  actionButtons.ActionDot.prototype.buildSubDot = function(x, y, dotd, label, command, id, eltClass) {
+  actionButtons.ActionDot.prototype.buildSubDot = function(x, dotTop, dotTopHide, dotd) {
+    this.x = x;
+    this.dotTop = dotTop;           // where ethe dot shoudl be once shown.
+    this.dotTopHide = dotTopHide;   // where the dot hide.
+
     var dothalf = dotd/2;
-    var group = svgb.createGroup('action-dot', 0, 0);
-    var fontHeight = y + dothalf + 13; //??? whats with the 13?
-    var svgCircle = svgb.createCircle('action-dot-bg', x + dothalf, y + dothalf, dothalf);
-    var svgText = svgb.createText('fa action-dot-text', x + dothalf, fontHeight, label);
+    var svgDG = svgb.createGroup('action-dot', 0, 0);
+    var fontHeight = dotTop + dothalf + 13; //??? whats with the 13?
+    var svgCircle = svgb.createCircle('action-dot-bg', x + dothalf, dotTop + dothalf, dothalf);
+    var svgText = svgb.createText('fa action-dot-text', x + dothalf, fontHeight, this.label);
 
-    group.setAttribute('id', id);
-
+    svgDG.setAttribute('class', 'buttonGroup dropdown-buttons');
     // ??? What is this ????
-    if(eltClass !== undefined){
-      group.setAttribute('class', 'buttonGroup ' + eltClass);
-      if (command === 'copy') {
-        var curr = group.getAttribute('class');
-        group.setAttribute('class', curr + ' copy-button');
-      }
+    if (this.command === 'copy') {
+      var curr = svgDG.getAttribute('class');
+      svgDG.setAttribute('class', curr + ' copy-button');
     }
-    group.appendChild(svgCircle);
-    group.appendChild(svgText);
-    if(command !== undefined){
-        group.setAttribute('command', command);
-    }
-    return group;
+
+    svgDG.appendChild(svgCircle);
+    svgDG.appendChild(svgText);
+    console.log("DIS", this.dotIndex, this.command );
+    svgDG.setAttribute('dotIndex', this.dotIndex);
+    this.svgDotGroup = svgDG;
+    return svgDG;
   };
 
   actionButtons.ActionDot.prototype.activate = function(state) {
@@ -262,19 +272,25 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
   // A target location is set for the last dot, each dot will move relative
   // to the position it is in, the background will adjust as well.
   actionButtons.ActionDot.prototype.slideDots = function(state, down) {
+      var thisDot = this;
 
+      // Based on frame calculate a 0.0 to 1.0 fraction
       var f = state.frame / state.frameEnd;
-       if (!down) {
+      if (!down) {
            f = 1.0 - f;
-       }
+      }
 
+      // Animate the drop down back ground.
       var h = (this.subBackBottom - this.subBackD) * f;
       this.svgSubBack.setAttribute('height', String(this.subBackD + h) + 'px');
 
-      var thisDot = this;
-      var numDots = this.svgSubDots.length;
+      // Animate the dots.
+      var numDots = this.subDots.length;
       for(var i = 0; i < numDots; i++) {
-          this.svgSubDots[i].setAttribute('transform', 'translate(0 ' + (f * this.svgSubDotYs[i]) + ')');
+          var subDot = this.subDots[i];
+          var span = subDot.dotTop - subDot.dotTopHide;
+          var dy = -((1.0 - f) * span);
+          subDot.svgDotGroup.setAttribute('transform', 'translate(0 ' + dy + ')');
       }
       state.frame += 1;
       if (state.frame <= state.frameEnd) {
@@ -285,7 +301,7 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
   };
 
   actionButtons.reset = function() {
-      for (var i = actionButtons.dots.length - 1; i >= 0; i--) {
+      for (var i = actionButtons.topDots.length - 1; i >= 0; i--) {
           this.activate(0);
       }
   };
@@ -296,7 +312,7 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
 
     var i = 0;
     for (i = 0; i < buttons.length; i++) {
-      actionButtons.dots.push(new this.ActionDot(buttons[i], i));
+      actionButtons.topDots.push(new this.ActionDot(buttons[i]));
     }
 
     // SVG items with the 'action-dot' class will process These
@@ -304,11 +320,12 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
     interact('.action-dot')
     .on('down', function (event) {
       var dotIndex = event.currentTarget.getAttribute('dotIndex');
-      actionButtons.dots[dotIndex].activate(1);
+      actionButtons.dotMap[dotIndex].activate(1);
     })
     .on('up', function (event) {
       var dotIndex = event.currentTarget.getAttribute('dotIndex');
-      actionButtons.dots[dotIndex].doCommand(event.currentTarget);
+      console.log('dot index up', dotIndex);
+      actionButtons.dotMap[dotIndex].doCommand();
     });
   };
 
