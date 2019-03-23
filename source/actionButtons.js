@@ -39,6 +39,8 @@ module.exports = function () {
   actionButtons.dotsMiddle = 0;
   actionButtons.dotsRight = 0;
 
+  actionButtons.isAnimating = false;
+
   // Construct an action dot object, the object manage the SVGs
   // used by the dot and related dropdown.
   actionButtons.ActionDot = function ActionButton (button) {
@@ -166,7 +168,6 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
     svgDG.appendChild(this.svgDot);
     svgDG.appendChild(this.svgText);
     svgDG.setAttribute('dotIndex', this.dotIndex);
-    console.log("DI", this.dotIndex, this.command );
     this.svgDotGroup = svgDG;
 
     if (this.sub !== undefined) {
@@ -200,8 +201,8 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
       // Move down from the dot above
       dotTop += dotd + spacing;
       var subDot = this.subDots[i];
-      var svgDotGroup = subDot.buildSubDot(x, dotTop, y, dotd);
-      svgSubGroup.appendChild(svgDotGroup);
+      var svg = subDot.buildSubDot(x, dotTop, y, dotd);
+      svgSubGroup.appendChild(svg);
     }
     return svgSubGroup;
   };
@@ -214,19 +215,17 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
     var dothalf = dotd/2;
     var svgDG = svgb.createGroup('action-dot', 0, 0);
     var fontHeight = dotTop + dothalf + 13; //??? whats with the 13?
-    var svgCircle = svgb.createCircle('action-dot-bg', x + dothalf, dotTop + dothalf, dothalf);
-    var svgText = svgb.createText('fa action-dot-text', x + dothalf, fontHeight, this.label);
+    this.svgDot = svgb.createCircle('action-dot-bg', x + dothalf, dotTop + dothalf, dothalf);
+    this.svgText = svgb.createText('fa action-dot-text', x + dothalf, fontHeight, this.label);
 
-    svgDG.setAttribute('class', 'buttonGroup dropdown-buttons');
+    //svgDG.setAttribute('class', 'buttonGroup dropdown-buttons');
     // ??? What is this ????
     if (this.command === 'copy') {
-      var curr = svgDG.getAttribute('class');
-      svgDG.setAttribute('class', curr + ' copy-button');
+        svgDG.classList.add('copyButton');
     }
 
-    svgDG.appendChild(svgCircle);
-    svgDG.appendChild(svgText);
-    console.log("DIS", this.dotIndex, this.command );
+    svgDG.appendChild(this.svgDot);
+    svgDG.appendChild(this.svgText);
     svgDG.setAttribute('dotIndex', this.dotIndex);
     this.svgDotGroup = svgDG;
     return svgDG;
@@ -240,6 +239,9 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
           this.svgDot.classList.add('action-dot-active');
       } else if (state === 0 || state === 2) {
           this.svgDot.classList.remove('action-dot-active');
+          if (state === 0 && this.subShowing) {
+              this.animateDropDown();
+          }
       }
   };
 
@@ -247,6 +249,7 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
       this.activate(2);
       if (this.sub === undefined) {
           var cmd = this.command;
+          actionButtons.reset();
           app.doCommand(cmd);
       } else {
           this.animateDropDown();
@@ -254,11 +257,14 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
   };
 
   actionButtons.ActionDot.prototype.animateDropDown = function() {
+      if (actionButtons.isAnimating)
+        return;
+      actionButtons.isAnimating = true;
       var state = { frame: 0, frameEnd: 20 };
       if (!this.subShowing) {
           if (this.sub !== undefined) {
-              // Add the dropdown to the dot group but before the dot itself.
-              this.svgDotGroup.insertBefore(this.svgSubGroup, this.svgDot);
+              // Insert the drop down beneath the dot/
+              actionButtons.svgDotParent.insertBefore(this.svgSubGroup, this.svgDotGroup);
               this.slideDots(state, true);
           }
           this.subShowing = true;
@@ -295,14 +301,17 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
       state.frame += 1;
       if (state.frame <= state.frameEnd) {
           requestAnimationFrame(function() { thisDot.slideDots(state, down); });
-      } else if (!down) {
-          this.svgDotGroup.removeChild(this.svgSubGroup);
+      } else {
+          actionButtons.isAnimating = false;
+          if (!down) {
+              actionButtons.svgDotParent.removeChild(this.svgSubGroup);
+          }
       }
   };
 
   actionButtons.reset = function() {
-      for (var i = actionButtons.topDots.length - 1; i >= 0; i--) {
-          this.activate(0);
+      for (var i = 0; i < actionButtons.topDots.length; i++) {
+          actionButtons.topDots[i].activate(0);
       }
   };
 
@@ -315,8 +324,7 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
       actionButtons.topDots.push(new this.ActionDot(buttons[i]));
     }
 
-    // SVG items with the 'action-dot' class will process These
-    // events.
+    // SVG items with the 'action-dot' class will process these events.
     interact('.action-dot')
     .on('down', function (event) {
       var dotIndex = event.currentTarget.getAttribute('dotIndex');
@@ -324,7 +332,6 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
     })
     .on('up', function (event) {
       var dotIndex = event.currentTarget.getAttribute('dotIndex');
-      console.log('dot index up', dotIndex);
       actionButtons.dotMap[dotIndex].doCommand();
     });
   };
