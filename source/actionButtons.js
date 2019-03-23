@@ -95,9 +95,11 @@ module.exports = function () {
       var x = 0;
       var y = edgeSpacing;
       var dotd = 60;   // diameter
+      var fontSize = 36;
 
       // Shrink if page is too short or too wide.
       // Need to add width check.
+
       if ( h < 500 ) {
           if ( h < 350) {
               h = 350;
@@ -105,6 +107,7 @@ module.exports = function () {
           var scale = (h / 500);
           dotd *=  scale;
           y *=  scale;
+          fontSize *= scale;
       }
 
       var half = w / 2;
@@ -124,12 +127,12 @@ module.exports = function () {
         } else if (align === 'R') {
           x = w - (slotw * pos);
         }
-        actionButtons.topDots[i].updateSvg(x, y, dotd);
+        actionButtons.topDots[i].updateSvg(x, y, dotd, fontSize);
       }
   };
 
 // Create an image for the block base on its type.
-actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
+actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
     // x and y are top left of dot bouding square
     // dotd is the diameter of the dots
 
@@ -137,8 +140,8 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
     if (this.svgDotGroup !== null) {
       actionButtons.svgDotParent.removeChild(this.svgDotGroup);
     }
+    // Disconnect reference to inner pieces so GC will clean them up.
     this.svgDotGroup = null;
-    // disconnect reference to inner pieces so GC will clean them up.
     this.svgDot = null;
     this.svgText = null;
     this.svgText2 = null;
@@ -148,27 +151,28 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
     var svgDG = svgb.createGroup('action-dot', 0, 0);
     var label = this.label;
     var dotHalf = dotd/2;
-    var fontY = y + dotHalf + 13;
+    var fontY = y + dotHalf + (fontSize / 3);
 
     //Check if character strings are more than one character to create a label on top of the usual label
     if (this.command === 'connect') {
       // For the connect label put the device name
       this.svgDot = svgb.createRect('action-dot-bg', x-200, y, 180, dotd, dotHalf);
       label = "bot: " + dso.deviceName;
-      this.svgText = svgb.createText('action-dot-text', x - 100, fontY, label);
+      this.svgText = svgb.createText('action-dot-fatext', x - 100, fontY, label);
       this.svgText.setAttribute('id', 'device-name-label');
   } else if (this.label.length > 1) {
       // For files its the doc icon with letter inside. Only one text box has
       // font awesome icon.
       this.svgDot = svgb.createCircle('action-dot-bg', x + dotHalf, y + dotHalf, dotHalf);
-      this.svgText = svgb.createText('fa action-dot-text', x + dotHalf, fontY, label.substring(0, 1));
+      this.svgText = svgb.createText('fa action-dot-fatext', x + dotHalf, fontY, label.substring(0, 1));
     //???  svgText2 = svgb.createText('action-dot-doc-label', x + tweakx, buttonFH, label.substring(1));
     //???  group.appendChild(svgText2);
     } else {
       // For simple buttons ther is just one font-awesome icon.
       this.svgDot = svgb.createCircle('action-dot-bg', x + dotHalf, y + dotHalf, dotHalf);
-      this.svgText = svgb.createText('fa action-dot-text', x + dotHalf + this.tweakx, fontY, label);
+      this.svgText = svgb.createText('fa action-dot-fatext', x + dotHalf + this.tweakx, fontY, label);
     }
+    this.svgText.style.fontSize = fontSize.toString() + 'px';
 
     svgDG.appendChild(this.svgDot);
     svgDG.appendChild(this.svgText);
@@ -176,7 +180,7 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
     this.svgDotGroup = svgDG;
 
     if (this.sub !== undefined) {
-        this.svgSubGroup = this.updateDropdownSvg(x, y, dotd, this.sub);
+        this.svgSubGroup = this.updateDropdownSvg(x, y, dotd, fontSize);
     }
 
     actionButtons.svgDotParent.appendChild(this.svgDotGroup);
@@ -185,7 +189,7 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
   // Open up the drop down menu
   // The SVG tree for the drop down is build and saved for use by the event
   // handlers
-  actionButtons.ActionDot.prototype.updateDropdownSvg = function(x, y, dotd) {
+  actionButtons.ActionDot.prototype.updateDropdownSvg = function(x, y, dotd, fontSize) {
 
     var spacing = y; // Spacing from the top edge
     var svgSubGroup = svgb.createGroup('action-dot-dropdown', 0, 0);
@@ -195,7 +199,7 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
     // the dots, it wil animate to full length when shown.
     this.subBackBottom = ((this.subDots.length + 1) * (dotd + spacing)) + spacing;
     this.subBackD = ddWidth;
-    this.svgSubBack = svgb.createRect('action-dot-rect-pages',
+    this.svgSubBack = svgb.createRect('action-dot-dropdown-bg',
        x-spacing, y-spacing, ddWidth, ddWidth, ddWidth/2);
 
     svgSubGroup.appendChild(this.svgSubBack);
@@ -206,24 +210,24 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
       // Move down from the dot above
       dotTop += dotd + spacing;
       var subDot = this.subDots[i];
-      var svg = subDot.buildSubDot(x, dotTop, y, dotd);
+      var svg = subDot.buildSubDot(x, dotTop, y, dotd, fontSize);
       svgSubGroup.appendChild(svg);
     }
     return svgSubGroup;
   };
 
-  actionButtons.ActionDot.prototype.buildSubDot = function(x, dotTop, dotTopHide, dotd) {
+  actionButtons.ActionDot.prototype.buildSubDot = function(x, dotTop, dotTopHide, dotd, fontSize) {
     this.x = x;
     this.dotTop = dotTop;           // where ethe dot shoudl be once shown.
     this.dotTopHide = dotTopHide;   // where the dot hide.
 
     var dothalf = dotd/2;
     var svgDG = svgb.createGroup('action-dot', 0, 0);
-    var fontHeight = dotTop + dothalf + 13; //??? whats with the 13?
+    var fontHeight = dotTop + dothalf + (fontSize / 3);
     this.svgDot = svgb.createCircle('action-dot-bg', x + dothalf, dotTop + dothalf, dothalf);
-    this.svgText = svgb.createText('fa action-dot-text', x + dothalf, fontHeight, this.label);
+    this.svgText = svgb.createText('fa action-dot-fatext', x + dothalf, fontHeight, this.label);
+    this.svgText.style.fontSize = fontSize.toString() + 'px';
 
-    //svgDG.setAttribute('class', 'buttonGroup dropdown-buttons');
     // ??? What is this ????
     if (this.command === 'copy') {
         svgDG.classList.add('copyButton');
