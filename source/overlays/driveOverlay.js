@@ -42,7 +42,6 @@ module.exports = function(){
     overlays.overlayDom.innerHTML = `
     <div id='overlayRoot'
      <div id='driveOverlay'>
-
       <div class='slider sliderRight' data-value='0'></div>
       <div class='slider sliderLeft' data-value='0'></div>
       <div id='drive-diagnostics' class='drive-diagnostics'>

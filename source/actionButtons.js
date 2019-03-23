@@ -324,9 +324,9 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
       }
   };
 
-  actionButtons.defineButtons = function(buttons, tbe) {
+  actionButtons.defineButtons = function(buttons, svg) {
 
-    actionButtons.svgDotParent = tbe.svg;
+    actionButtons.svgDotParent = svg;
 
     var i = 0;
     for (i = 0; i < buttons.length; i++) {

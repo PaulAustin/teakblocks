@@ -194,7 +194,7 @@ module.exports = function () {
      {'alignment': 'R', 'label': '', 'command': 'connect'},
     ];
 
-    actionButtons.defineButtons(actionButtonDefs, tbe);
+    actionButtons.defineButtons(actionButtonDefs, document.getElementById('actionDotSvgCanvas'));
 
     // Connect to resize event for refresh. Make initial call
     document.body.onresize = tbe.updateScreen;
