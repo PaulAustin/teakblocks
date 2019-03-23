@@ -194,7 +194,7 @@ module.exports = function () {
      {'alignment': 'R', 'label': '', 'command': 'connect'},
     ];
 
-    actionButtons.defineButtons(actionButtonDefs, document.getElementById('actionDotSvgCanvas'));
+    actionButtons.defineButtons(actionButtonDefs, document.getElementById('editorSvgCanvas'));
 
     // Connect to resize event for refresh. Make initial call
     document.body.onresize = tbe.updateScreen;
@@ -217,8 +217,6 @@ module.exports = function () {
   };
 
   app.toggleOverlay = function(name) {
-
-    console.log('toggle overlay');
 
     // TODO modularized control of editor. Why is this part of the show overlay logic?
     app.tbe.undoArray = {}; // When we switch documents we want to clear undo history.
