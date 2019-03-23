@@ -56,6 +56,11 @@ module.exports = function () {
       if (this.alignment === undefined) {
           this.alignment = 'S';
       }
+      this.tweakx = button.tweakx;
+      if (this.tweakx === undefined) {
+          this.tweakx = 0;
+      }
+
       this.sub = button.sub;
       this.subShowing = false;
 
@@ -162,7 +167,7 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd) {
     } else {
       // For simple buttons ther is just one font-awesome icon.
       this.svgDot = svgb.createCircle('action-dot-bg', x + dotHalf, y + dotHalf, dotHalf);
-      this.svgText = svgb.createText('fa action-dot-text', x + dotHalf, fontY, label);
+      this.svgText = svgb.createText('fa action-dot-text', x + dotHalf + this.tweakx, fontY, label);
     }
 
     svgDG.appendChild(this.svgDot);
