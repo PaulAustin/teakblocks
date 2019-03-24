@@ -93,12 +93,13 @@ tbe.clearStates = function clearStates(block) {
   tbe.forEachDiagramBlock( function(b) { b.markSelected(false); });
 };
 
-tbe.init = function init(svg) {
+tbe.init = function init(svg, ceiling) {
   this.width = window.innerWidth;
   this.height = window.innerHeight;
   this.svg = svg;
+  this.svgCeiling = ceiling;
   this.background = svgb.createRect('editor-background', 0, 0, 20, 20, 0);
-  this.svg.appendChild(this.background);
+  this.svg.insertBefore(this.background, this.svgCeiling);
   this.configInteractions();
   interact.maxInteractions(Infinity);
   this.initPaletteBox();
@@ -413,7 +414,7 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   this.dmove(x, y, true);
 
   // Add block to the editor tree. This makes it visible.
-  tbe.svg.appendChild(this.svgGroup);
+  tbe.svg.insertBefore(this.svgGroup, tbe.svgCeiling);
 };
 
 // Create an image for the block base on its type.
@@ -571,7 +572,7 @@ tbe.FunctionBlock.prototype.markSelected = function(state) {
   if (state) {
     // TODO moving to the front interrupts (prevents) the animations.
     tbe.svg.removeChild(this.svgGroup);
-    tbe.svg.appendChild(this.svgGroup);
+    tbe.svg.insertBefore(this.svgGroup, tbe.svgCeiling);
     this.svgRect.classList.add('selectedBlock');
     if (this.flowHead !== null) {
       this.flowHead.svgRect.classList.add('selectedBlock');
@@ -668,7 +669,7 @@ tbe.FunctionBlock.prototype.hilite = function(state) {
     // overlap, so z plane is not important. But blocks
     // that are being dragged need to float above ones on
     // the diagram.
-    tbe.svg.appendChild(this.svgGroup);
+    tbe.svg.insertBefore(this.svgGroup, tbe.svgCeiling);
   }
 };
 
@@ -840,6 +841,7 @@ tbe.FunctionBlock.prototype.insertTargetShadows = function(target, action) {
       shadow = icons.paletteBlock(1, 'shadow-block', x, y, block);//svgb.createRect('shadow-block', x, y, block.width, block.height, 10);
     }
     tbe.svg.insertBefore(shadow, tbe.background.nextSibling);
+
     block.targetShadow = shadow;
     x += block.width;
     block = block.next;
@@ -1419,7 +1421,7 @@ tbe.configInteractions = function configInteractions() {
         // Puts the blocks being dragged at the top
         var temp = block;
         while(temp !== null) {
-          tbe.svg.appendChild(temp.svgGroup);
+          tbe.svg.insertBefore(temp.svgGroup, tbe.svgCeiling);
           temp = temp.next;
         }
 

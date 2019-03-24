@@ -98,8 +98,6 @@ module.exports = function () {
     tbe.audio.shortClick.preload = 'true';
     tbe.audio.poof.preload = 'true';
 
-    tbe.init(document.getElementById('editorSvgCanvas'));
-
     var buttonsPages = [
       {'label': 'A', 'command': 'loadDocA'},
       {'label': 'B', 'command': 'loadDocB'},
@@ -181,8 +179,6 @@ module.exports = function () {
       }
     };
 
-    // Add the main command buttons, to left, middle and right locations.
-    tbe.addPalette(package1);
     var actionButtonDefs = [
      {'alignment': 'L', 'label': fastr.play, 'command': 'play', 'tweakx': 4},
      {'alignment': 'L', 'label': fastr.stop, 'command': 'stop'},
@@ -194,7 +190,13 @@ module.exports = function () {
      {'alignment': 'R', 'label': '', 'command': 'connect'},
     ];
 
-    actionButtons.defineButtons(actionButtonDefs, document.getElementById('editorSvgCanvas'));
+    var base = actionButtons.defineButtons(actionButtonDefs, document.getElementById('editorSvgCanvas'));
+    //actionButtons.defineButtons(actionButtonDefs, document.getElementById('actionDotSvgCanvas'));
+
+    tbe.init(document.getElementById('editorSvgCanvas'), base);
+
+    // Add the main command buttons, to left, middle and right locations.
+    tbe.addPalette(package1);
 
     // Connect to resize event for refresh. Make initial call
     document.body.onresize = tbe.updateScreen;

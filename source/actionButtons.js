@@ -327,6 +327,11 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
   actionButtons.defineButtons = function(buttons, svg) {
 
     actionButtons.svgDotParent = svg;
+    // Menu elements will be added at the end, that measn they will
+    // be visually in the front. All editor elements will be behind this
+    // element.
+    var base = svgb.createGroup('action-dot', 0, 0);
+    svg.appendChild(base);
 
     var i = 0;
     for (i = 0; i < buttons.length; i++) {
@@ -343,6 +348,7 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
       var dotIndex = event.currentTarget.getAttribute('dotIndex');
       actionButtons.dotMap[dotIndex].doCommand();
     });
+    return base;
   };
 
   return actionButtons;
