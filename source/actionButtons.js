@@ -39,6 +39,7 @@ module.exports = function () {
   actionButtons.dotsMiddle = 0;
   actionButtons.dotsRight = 0;
 
+  // Flag to prevent nested animations, seconds hits bounce off.
   actionButtons.isAnimating = false;
 
   // Construct an action dot object, the object manage the SVGs

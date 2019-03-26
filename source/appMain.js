@@ -191,6 +191,7 @@ module.exports = function () {
     ];
 
     var base = actionButtons.defineButtons(actionButtonDefs, document.getElementById('editorSvgCanvas'));
+    // It seesm SVG eat all the events, even ones that dont hit any objects :(
     //actionButtons.defineButtons(actionButtonDefs, document.getElementById('actionDotSvgCanvas'));
 
     tbe.init(document.getElementById('editorSvgCanvas'), base);
