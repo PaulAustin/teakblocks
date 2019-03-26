@@ -33,6 +33,11 @@ module.exports = function(){
   driveMode.pastRight = 0;
   driveMode.pastLeft = 0;
 
+  driveMode.lDrag = 0;
+  driveMode.rDrag = 0;
+  driveMode.lValue = 0;
+  driveMode.rValue = 0;
+
   driveMode.start = function() {
     driveMode.buildSlider();
     driveMode.updateSlider();
@@ -66,73 +71,134 @@ module.exports = function(){
     driveMode.sliderInteract();
   };
 
-driveMode.onResize = function() {
+  driveMode.onResize = function() {
     driveMode.w = driveMode.svg.clientWidth;
     driveMode.h = driveMode.svg.clientHeight;
     driveMode.buildSVG();
-};
+  };
 
   driveMode.buildSVG = function() {
-
-    var svg = driveMode.svg;
+    var t = driveMode;
     // Clear out the old.
-    while (svg.lastChild) {
-        svg.removeChild(svg.lastChild);
+    while (t.svg.lastChild) {
+        t.svg.removeChild(t.svg.lastChild);
     }
 
-    var gtop = 120;
-    var ginset = 100;
-    var gw = 120;
-    var tw = 50;
-    var gwHalf = gw / 2;
-    var gh = driveMode.h - 100 - gtop;
+    var w = t.w;
+    var h = t.h;
+    t.scaleH = 1.0;
+    t.scaleW = 1.0;
+    if ( w < 500 ) {
+        if ( w < 200) {
+            w = 200;
+        }
+        t.scaleW = (w / 500);
+    }
 
-    var lCenter = ginset + gwHalf;
-    var rCenter = driveMode.w - ginset - gwHalf;
+    if ( h < 500 ) {
+        if ( h < 200) {
+            h = 200;
+        }
+        t.scaleH = (h / 500);
+    }
 
-    var leftGroove = svgb.createRect('slider-groove', lCenter - gwHalf, gtop, gw, gh, gwHalf);
-    var rightGroove = svgb.createRect('slider-groove', rCenter - gwHalf, gtop, gw, gh, gwHalf);
-    driveMode.svg.appendChild(leftGroove);
-    driveMode.svg.appendChild(rightGroove);
+    t.gtop = 100 * t.scaleH;
+    t.gw = 120 *  Math.min(t.scaleH, t.scaleW);
+    var gwHalf = t.gw / 2;
+    t.gh = h - gwHalf - t.gtop;
+    t.range = t.gh - t.gw;      // range in pixels
 
-    driveMode.lThumb = svgb.createCircle('slider-thumb', lCenter, gtop, tw);
-    driveMode.rThumb = svgb.createCircle('slider-thumb', rCenter, gtop, tw);
-    driveMode.svg.appendChild(driveMode.lThumb);
-    driveMode.svg.appendChild(driveMode.rThumb);
+    var fontY = 70 * t.scaleH;
+    var fontSize = 48 * t.scaleH;
+    var tw = gwHalf - 15;
+
+    var gInsetW = 80 * t.scaleW;
+    var lCenter = gInsetW + gwHalf;
+    var rCenter = w - gInsetW - gwHalf;
+
+    t.lText = svgb.createText('slider-text', lCenter, fontY, "0");
+    t.rText = svgb.createText('slider-text', rCenter, fontY, "0");
+    t.lText.style.fontSize = fontSize.toString() + 'px';
+    t.rText.style.fontSize = fontSize.toString() + 'px';
+    t.svg.appendChild(t.lText);
+    t.svg.appendChild(t.rText);
+
+    var leftGroove = svgb.createRect('slider-groove', lCenter - gwHalf, t.gtop, t.gw, t.gh, gwHalf);
+    var rightGroove = svgb.createRect('slider-groove', rCenter - gwHalf, t.gtop, t.gw, t.gh, gwHalf);
+    t.svg.appendChild(leftGroove);
+    t.svg.appendChild(rightGroove);
+
+    t.lThumb = svgb.createCircle('slider-thumb', lCenter, t.gtop, tw);
+    t.rThumb = svgb.createCircle('slider-thumb', rCenter, t.gtop, tw);
+    t.lThumb.setAttribute('thumb', 'L');
+    t.rThumb.setAttribute('thumb', 'R');
+    t.svg.appendChild(t.lThumb);
+    t.svg.appendChild(t.rThumb);
 
     // Move thumbs to actual value locations.
-    driveMode.moveThumbs();
+    t.moveThumbs();
   };
 
   driveMode.moveThumbs = function() {
-      var gtop = 120;
-      var gw = 120;
-      var gwHalf = gw / 2;
-      var gh = driveMode.h - 100 - gtop;
+      var t = driveMode;
 
-      var lValue = -100;
-      var rValue = 100;
+      if (t.lValue < -100) {
+          t.lValue = -100;
+      } else if (t.lValue > 100) {
+          t.lValue = 100;
+      }
 
-      var range = gh - gw;
+      if (t.rValue < -100) {
+          t.rValue = -100;
+      } else if (t.rValue > 100) {
+          t.rValue = 100;
+      }
 
-      var lPx = (range * ((lValue + 100)/200));
-      var rPx = (range * ((rValue + 100)/200));
+      var lPx = (t.range * ((t.lValue + 100)/200));
+      var rPx = (t.range * ((t.rValue + 100)/200));
 
-      driveMode.lThumb.setAttribute('cy', lPx + gtop + gwHalf);
-      driveMode.rThumb.setAttribute('cy', rPx + gtop + gwHalf);
+      driveMode.lThumb.setAttribute('cy', lPx + t.gtop + (t.gw/2));
+      driveMode.rThumb.setAttribute('cy', rPx + t.gtop + (t.gw/2));
+  };
+
+  driveMode.thumbEvent = function(event) {
+      var t = driveMode;
+      var thumb = event.target.getAttribute('thumb');
+      var valPerPy = 200 / t.range;
+
+      if (thumb === 'L') {
+        if (event.type === 'dragstart') {
+            t.lValueDStart = t.lValue;
+        } else if (event.type === 'dragmove') {
+            t.lValue = t.lValueDStart + (valPerPy * (event.pageY - event.y0));
+        } else if (event.type === 'dragend') {
+            t.lValue = 0;
+        }
+      } else if (thumb === 'R') {
+          if (event.type === 'dragstart') {
+              t.rValueDStart = t.rValue;
+          } else if (event.type === 'dragmove') {
+              t.rValue = t.rValueDStart + (valPerPy * (event.pageY - event.y0));
+          } else if (event.type === 'dragend') {
+              t.rValue = 0;
+          }
+      }
+      t.moveThumbs();
   };
 
   driveMode.sliderInteract = function() {
 
     interact('.slider-thumb', {context:driveMode.svg})              // target the matches of that selector
-//      .origin('self')                     // (0, 0) will be the element's top-left
-//      .restrict({drag: 'self'})           // keep the drag within the element
-//      .inertia(true)                      // start inertial movement if thrown
       .draggable({                        // make the element fire drag events
         max: Infinity                     // allow drags on multiple elements
       })
-      .on('dragmove', function (event) {  // call this function on every move
-          console.log("on drag move");
+      .on('dragstart', function (event) {
+          driveMode.thumbEvent(event);
+      })
+      .on('dragmove', function (event) {
+          driveMode.thumbEvent(event);
+
+          // call this function on every move
           /*
         var sliderHeight = interact.getElementRect(event.target).height,
             value = event.pageY / sliderHeight;
@@ -147,7 +213,8 @@ driveMode.onResize = function() {
         }
         */
       })
-    .on('dragend', function(event){
+    .on('dragend', function(event) {
+        driveMode.thumbEvent(event);
         /*
       event.target.style.paddingTop = (0.5 * 7) + 'em';
       event.target.setAttribute('data-value', 0);

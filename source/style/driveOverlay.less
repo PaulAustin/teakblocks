@@ -26,7 +26,7 @@ SOFTWARE.
   left:0%;
   width:100%;
   height:100%;
-  background-color: lightgreen;
+  background-color:  #66BB6A;
   -ms-touch-action: none;
   touch-action: none;
   /* prevent text from being selected browser style */
@@ -39,48 +39,24 @@ SOFTWARE.
 
 // Direct control
 .slider-groove {
-  fill: #873600;
-  stroke:#f4af41;
+  fill: #4A148C;
+  stroke:#2e7d32;
   stroke-width: 10px;
 }
 
 .slider-thumb {
-    fill: #873600;
-    stroke:#f4af41;
+    fill: #CE93D8;
+    stroke:#673AB7;
     stroke-width: 10px;
 }
 
-// Slider thumb.
-.slider:before {
-  content: "";
-  display: block;
-  //position: relative;
-  width: 80px;
-  height: 40px;
-  border: solid 10px #f4af41;
-  border-radius: 20px;
-  background-color: inherit;
-  box-sizing: border-box;
+.slider-text {
+  fill: #FFEB3B;
+  font-family: helvetica;
+  text-anchor: middle;
+  pointer-events: none;
 }
-// Slider value
-.slider:after {
-  content: attr(data-value);
-  position: absolute;
-  top: -20px;
-  width: 40px;
-  text-align: center;
-  font-family: "helvetica";
-}
-.sliderLeft {
-  left: 80px;
-  float:left;
-  display:inline-block;
-}
-.sliderRight {
-  right: 80px;
-  float:right;
-  display:inline-block;
-}
+
 .drive-diagnostics {
   font-family: 'helvetica';
   position:absolute;
