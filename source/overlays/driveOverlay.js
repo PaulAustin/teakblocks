@@ -22,28 +22,25 @@ SOFTWARE.
 
 // Drive mode overlay allows users to diretly control the motors and other IO.
 module.exports = function(){
-  var log = require('./../log.js');
   var interact = require('interact.js');
   var svgb = require('./../svgbuilder.js');
   var conductor = require('./../conductor.js');
   var overlays = require('./overlays.js');
   var dso = require('./deviceScanOverlay.js');
-  var driveMode = {};
+  var driveOverlay = {};
 
-  driveMode.pastRight = 0;
-  driveMode.pastLeft = 0;
+  driveOverlay.pastRight = 0;
+  driveOverlay.pastLeft = 0;
 
-  driveMode.lDrag = 0;
-  driveMode.rDrag = 0;
-  driveMode.lValue = 0;
-  driveMode.rValue = 0;
+  driveOverlay.lValue = 0;
+  driveOverlay.rValue = 0;
 
-  driveMode.start = function() {
-    driveMode.buildSlider();
-    driveMode.updateSlider();
+  driveOverlay.start = function() {
+    driveOverlay.buildSlider();
+    driveOverlay.updateSlider();
   };
 
-  driveMode.buildSlider = function() {
+  driveOverlay.buildSlider = function() {
     // TODO need to upate value as they change
     overlays.overlayDom.innerHTML = `
     <div id='overlayRoot'
@@ -64,21 +61,21 @@ module.exports = function(){
       </div>
     </div>`
     ;
-    window.addEventListener("resize", driveMode.onResize);
+    window.addEventListener("resize", driveOverlay.onResize);
 
-    driveMode.svg = document.getElementById('driveOverlaySvgCanvas');
-    driveMode.onResize();
-    driveMode.sliderInteract();
+    driveOverlay.svg = document.getElementById('driveOverlaySvgCanvas');
+    driveOverlay.onResize();
+    driveOverlay.sliderInteract();
   };
 
-  driveMode.onResize = function() {
-    driveMode.w = driveMode.svg.clientWidth;
-    driveMode.h = driveMode.svg.clientHeight;
-    driveMode.buildSVG();
+  driveOverlay.onResize = function() {
+    driveOverlay.w = driveOverlay.svg.clientWidth;
+    driveOverlay.h = driveOverlay.svg.clientHeight;
+    driveOverlay.buildSVG();
   };
 
-  driveMode.buildSVG = function() {
-    var t = driveMode;
+  driveOverlay.buildSVG = function() {
+    var t = driveOverlay;
     // Clear out the old.
     while (t.svg.lastChild) {
         t.svg.removeChild(t.svg.lastChild);
@@ -139,15 +136,17 @@ module.exports = function(){
     t.moveThumbs();
   };
 
-  driveMode.moveThumbs = function() {
-      var t = driveMode;
+  driveOverlay.moveThumbs = function() {
+      var t = driveOverlay;
 
+      t.lValue = parseInt(t.lValue, 10);
       if (t.lValue < -100) {
           t.lValue = -100;
       } else if (t.lValue > 100) {
           t.lValue = 100;
       }
 
+      t.rValue = parseInt(t.rValue, 10);
       if (t.rValue < -100) {
           t.rValue = -100;
       } else if (t.rValue > 100) {
@@ -156,13 +155,17 @@ module.exports = function(){
 
       var lPx = (t.range * ((t.lValue + 100)/200));
       var rPx = (t.range * ((t.rValue + 100)/200));
+      var bottom = t.gtop + t.range + (t.gw/2);
 
-      driveMode.lThumb.setAttribute('cy', lPx + t.gtop + (t.gw/2));
-      driveMode.rThumb.setAttribute('cy', rPx + t.gtop + (t.gw/2));
+      driveOverlay.lThumb.setAttribute('cy', bottom - lPx);
+      driveOverlay.rThumb.setAttribute('cy', bottom - rPx);
+
+      t.lText.textContent = t.lValue.toString();
+      t.rText.textContent = t.rValue.toString();
   };
 
-  driveMode.thumbEvent = function(event) {
-      var t = driveMode;
+  driveOverlay.thumbEvent = function(event) {
+      var t = driveOverlay;
       var thumb = event.target.getAttribute('thumb');
       var valPerPy = 200 / t.range;
 
@@ -170,7 +173,7 @@ module.exports = function(){
         if (event.type === 'dragstart') {
             t.lValueDStart = t.lValue;
         } else if (event.type === 'dragmove') {
-            t.lValue = t.lValueDStart + (valPerPy * (event.pageY - event.y0));
+            t.lValue = t.lValueDStart + (valPerPy * (event.y0 - event.pageY));
         } else if (event.type === 'dragend') {
             t.lValue = 0;
         }
@@ -178,7 +181,7 @@ module.exports = function(){
           if (event.type === 'dragstart') {
               t.rValueDStart = t.rValue;
           } else if (event.type === 'dragmove') {
-              t.rValue = t.rValueDStart + (valPerPy * (event.pageY - event.y0));
+              t.rValue = t.rValueDStart + (valPerPy * (event.y0 - event.pageY));
           } else if (event.type === 'dragend') {
               t.rValue = 0;
           }
@@ -186,42 +189,38 @@ module.exports = function(){
       t.moveThumbs();
   };
 
-  driveMode.sliderInteract = function() {
+  driveOverlay.sliderInteract = function() {
 
-    interact('.slider-thumb', {context:driveMode.svg})              // target the matches of that selector
+    interact('.slider-thumb', {context:driveOverlay.svg})              // target the matches of that selector
       .draggable({                        // make the element fire drag events
         max: Infinity                     // allow drags on multiple elements
       })
       .on('dragstart', function (event) {
-          driveMode.thumbEvent(event);
+          driveOverlay.thumbEvent(event);
       })
       .on('dragmove', function (event) {
-          driveMode.thumbEvent(event);
+          driveOverlay.thumbEvent(event);
 
           // call this function on every move
           /*
-        var sliderHeight = interact.getElementRect(event.target).height,
-            value = event.pageY / sliderHeight;
-
-        event.target.style.paddingTop = (value * 7) + 'em';
         var display = (100 - Math.round((value.toFixed(3)*200)));
         event.target.setAttribute('data-value', display);
         if(event.target.classList.contains('sliderRight')) {
-          driveMode.displayRight = display;
+          driveOverlay.displayRight = display;
         } else if (event.target.classList.contains('sliderLeft')) {
-          driveMode.displayLeft = display;
+          driveOverlay.displayLeft = display;
         }
         */
       })
     .on('dragend', function(event) {
-        driveMode.thumbEvent(event);
+        driveOverlay.thumbEvent(event);
         /*
       event.target.style.paddingTop = (0.5 * 7) + 'em';
       event.target.setAttribute('data-value', 0);
       if(event.target.classList.contains('sliderRight')) {
-    //    driveMode.displayRight = 0;
+    //    driveOverlay.displayRight = 0;
       } else if (event.target.classList.contains('sliderLeft')) {
-    //    driveMode.displayLeft = 0;
+    //    driveOverlay.displayLeft = 0;
       }
       */
     });
@@ -230,22 +229,22 @@ module.exports = function(){
     interact.maxInteractions(Infinity);
   };
 
-  driveMode.updateSlider = function() {
+  driveOverlay.updateSlider = function() {
     var id = dso.deviceName;
 //    log.trace('updTE', id);
-    //var changed = driveMode.displayLeft !== driveMode.pastLeft || driveMode.displayRight !== driveMode.pastRight;
+    //var changed = driveOverlay.displayLeft !== driveOverlay.pastLeft || driveOverlay.displayRight !== driveOverlay.pastRight;
     if (id !== null && id !== '-?-') {
-      if (driveMode.displayLeft !== undefined && driveMode.displayLeft !== driveMode.pastLeft) {
-        var message2 = '(m:1 d:' + -driveMode.displayLeft + ' b:1);';
+      if (driveOverlay.displayLeft !== undefined && driveOverlay.displayLeft !== driveOverlay.pastLeft) {
+        var message2 = '(m:1 d:' + -driveOverlay.displayLeft + ' b:1);';
         conductor.cxn.write(id, message2);
       }
-      if (driveMode.displayRight !== undefined && driveMode.displayRight !== driveMode.pastRight) {
-        var message1 = '(m:2 d:' + -driveMode.displayRight + ');';
+      if (driveOverlay.displayRight !== undefined && driveOverlay.displayRight !== driveOverlay.pastRight) {
+        var message1 = '(m:2 d:' + -driveOverlay.displayRight + ');';
         conductor.cxn.write(id, message1);
       }
 
-      driveMode.pastRight = driveMode.displayRight;
-      driveMode.pastLeft = driveMode.displayLeft;
+      driveOverlay.pastRight = driveOverlay.displayRight;
+      driveOverlay.pastLeft = driveOverlay.displayLeft;
     }
 /*
     var accel = document.getElementsByClassName("drive-accelerometer")[0];
@@ -257,16 +256,16 @@ module.exports = function(){
     var temp = document.getElementsByClassName("drive-temperature")[0];
     temp.innerHTML = "Temperature:" + cxn.temp;
 */
-    driveMode.timer = setTimeout( function() {
-      driveMode.updateSlider();
+    driveOverlay.timer = setTimeout( function() {
+      driveOverlay.updateSlider();
     }
     , 500);
   };
 
-  // Close the driveMode overlay.
-  driveMode.exit = function() {
-    clearTimeout(driveMode.timer);
+  // Close the driveOverlay overlay.
+  driveOverlay.exit = function() {
+    clearTimeout(driveOverlay.timer);
   };
 
-  return driveMode;
+  return driveOverlay;
 }();
