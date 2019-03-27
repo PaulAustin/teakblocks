@@ -30,35 +30,41 @@ module.exports = function(){
   splashOverlay.start = function () {
 
     // Construct the DOM for the overlay.
-    // TODO Add a method to app for showing overlays.
     overlays.overlayDom.innerHTML = `
-    <div id='overlayFrame' class='fullScreenSlideIn'>
-      <div id='splashOverlay'>
-      <p class='splashTitle'>Teak blocks<p>
-      <p class='splashBody'>A block sequencing tool for simple programs.<p>
-      <p class='splashBody'> This site uses cookies and local storage to maintain your settings.<p>
-      <p class='splashBody'> © 2017 Paul Austin and Sidharth Srinivasan. All rights reserved.<p>
-      <br>
-      <div class='margin:20'>
-        <button id='clearAllBlocksButton' type='button'>Start clean!</button>
-        <button id='clearAllBlocksButton' type='button'>Close</button>
-      </div>
-      <br>
-      <div>
-        <label class='splashBody'>
-        <input checked='true' id='noLaunchSplash' type='checkbox'>
-        <span class='label-text'> Show this box at launch. </span>
-        </label>
-      <div>
-      </div>
+    <div id='overlayRoot'>
+        <div id='splashOverlay'>
+            <div id='splashDialog'>
+              <p class='splashTitle'>Teak blocks<p>
+              <p class='splashBody'>A block sequencing tool for simple programs.<p>
+              <p class='splashBody'> This site uses cookies and local storage to maintain your settings.<p>
+              <p class='splashBody'> © 2019 Paul Austin and Sidharth Srinivasan. All rights reserved.<p>
+            <br>
+            <div class='margin:20'>
+                <button id='clearAllBlocksButton' type='button'>Start clean!</button>
+                <button id='clearAllBlocksButton' type='button'>Close</button>
+            </div>
+            <br>
+            <div>
+                <label class='splashBody'>
+                <input checked='true' id='noLaunchSplash' type='checkbox'>
+                <span class='label-text'> Show this box at launch. </span>
+                </label>
+            </div>
+            </div>
+        </div>
     </div>`;
+
     var exitButton = document.getElementById('splashOverlay');
     // TODO add exit button.
-    exitButton.onclick = splashOverlay.exit;
+    exitButton.onclick = splashOverlay.hideAbout;
 
     // Get the clear button and clear the blocks if it is pressed.
     var clearAllButton = document.getElementById('clearAllBlocksButton');
-    clearAllButton.onclick = app.tbe.clearAllBlocks;
+    clearAllButton.onclick = app.tbe.hideAbout;
+  };
+
+  splashOverlay.hideAbout = function() {
+      overlays.hideOverlay();
   };
 
   splashOverlay.showLaunchAboutBox = function() {
