@@ -41,6 +41,7 @@ module.exports = function () {
 
   // Flag to prevent nested animations, seconds hits bounce off.
   actionButtons.isAnimating = false;
+  actionButtons.currentSubShowing = null;
 
   // Construct an action dot object, the object manage the SVGs
   // used by the dot and related dropdown.
@@ -275,18 +276,26 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
       if (actionButtons.isAnimating)
         return;
       actionButtons.isAnimating = true;
-      var state = { frame: 0, frameEnd: 20 };
       if (!this.subShowing) {
           if (this.sub !== undefined) {
+              if ( actionButtons.currentSubShowing !== null) {
+                  // Hide other menu if one is up. In this case
+                  // its OK to do both animations at the same time.
+                  actionButtons.currentSubShowing.subShowing = false;
+                  actionButtons.currentSubShowing.slideDots({ frame: 0, frameEnd: 10 }, false);
+                  actionButtons.currentSubShowing = null;
+              }
               // Insert the drop down beneath the dot/
               actionButtons.svgDotParent.insertBefore(this.svgSubGroup, this.svgDotGroup);
-              this.slideDots(state, true);
+              actionButtons.currentSubShowing = this;
+              this.slideDots( { frame: 0, frameEnd: 10 }, true);
           }
           this.subShowing = true;
       } else {
-          // Start all the animations that move buttons into place.
+          // Start all the animations that hide buttons.
           this.subShowing = false;
-          this.slideDots(state, false);
+          this.slideDots({ frame: 0, frameEnd: 10 }, false);
+          actionButtons.currentSubShowing = null;
         }
   };
 
