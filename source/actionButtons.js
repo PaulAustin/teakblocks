@@ -267,7 +267,7 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
           var cmd = this.command;
           actionButtons.reset();
           app.doCommand(cmd);
-      } else {
+      } else if (app.overlays.currentShowing === null) {
           this.animateDropDown();
       }
   };
