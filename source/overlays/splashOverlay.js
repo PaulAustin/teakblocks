@@ -55,12 +55,11 @@ module.exports = function(){
     </div>`;
 
     var exitButton = document.getElementById('splashOverlay');
-    // TODO add exit button.
     exitButton.onclick = splashOverlay.hideAbout;
 
     // Get the clear button and clear the blocks if it is pressed.
     var clearAllButton = document.getElementById('clearAllBlocksButton');
-    clearAllButton.onclick = app.tbe.hideAbout;
+    clearAllButton.onclick = splashOverlay.hideAbout;
   };
 
   splashOverlay.hideAbout = function() {
