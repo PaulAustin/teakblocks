@@ -62,6 +62,8 @@ module.exports = function () {
           this.tweakx = 0;
       }
 
+      this.svgDotGroup = null;
+      this.svgSubGroup = null;
       this.sub = button.sub;
       this.subShowing = false;
 
@@ -76,7 +78,6 @@ module.exports = function () {
           actionButtons.dotsRight += 1;
       }
 
-      this.svgDotGroup = null;
       this.subDots = [];
       if (this.sub !== undefined) {
           for(var i = 0; i < this.sub.length; i++) {
@@ -139,7 +140,11 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
 
     // Remove exisiting dot group if it exists
     if (this.svgDotGroup !== null) {
-      actionButtons.svgDotParent.removeChild(this.svgDotGroup);
+        if (this.svgSubGroup !== null && this.subShowing) {
+            actionButtons.svgDotParent.removeChild(this.svgSubGroup);
+            this.subShowing = false;
+        }
+        actionButtons.svgDotParent.removeChild(this.svgDotGroup);
     }
     // Disconnect reference to inner pieces so GC will clean them up.
     this.svgDotGroup = null;

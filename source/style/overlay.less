@@ -23,11 +23,11 @@ SOFTWARE.
 // Full screen overlay common parts
 .fullScreenSlideIn {
   top:80px;
-  animation: fullScreenSlideIn 0.5s ease;
+  animation: fullScreenSlideIn 0.5s ease-out;
 }
 .fullScreenSlideOut {
   top:100%;
-  animation: fullScreenSlideOut 0.5s ease;
+  animation: fullScreenSlideOut 0.5s ease-in;
 }
 @keyframes fullScreenSlideIn  { from{ top:100%; }  to{ top:80px; } }
 @keyframes fullScreenSlideOut { from{ top:80px; }  to{ top:100%; } }

@@ -34,36 +34,24 @@ module.exports = function(){
 
   driveOverlay.lValue = 0;
   driveOverlay.rValue = 0;
+  driveOverlay.lPastValue = 0;
+  driveOverlay.rPastValue = 0;
 
   driveOverlay.start = function() {
     driveOverlay.buildSlider();
-    driveOverlay.updateSlider();
+    driveOverlay.sendValuesToBot();
   };
 
   driveOverlay.buildSlider = function() {
     // TODO need to upate value as they change
     overlays.overlayDom.innerHTML = `
-    <div id='overlayRoot'
-     <div id='driveOverlay'>
-      <svg id='driveOverlaySvgCanvas' xmlns="http://www.w3.org/2000/svg"></svg>
-<!--      <div class='slider sliderRight' data-value='0'></div>
-      <div class='slider sliderLeft' data-value='0'></div>
-      <div id='drive-diagnostics' class='drive-diagnostics'>
-      -->
+    <div id='overlayRoot'>
+      <svg id='driveOverlay' xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>`;
 
-        <!--h1 class='connected-brick svg-clear'>Connected Bot: -?-</h1>
-        <h1 class="drive-accelerometer svg-clear">Accelerometer: 100</h1>
-        <h1 class="drive-compass svg-clear">Compass: 100</h1>
-        <h1 class="drive-temperature svg-clear">Temperature: 100</h1>
-        <h1 class="drive-encoderL svg-clear">Left Encoder: 100</h1>
-        <h1 class="drive-encoderR svg-clear">Right Encoder: 100</h1-->
-      </div>
-      </div>
-    </div>`
-    ;
     window.addEventListener("resize", driveOverlay.onResize);
 
-    driveOverlay.svg = document.getElementById('driveOverlaySvgCanvas');
+    driveOverlay.svg = document.getElementById('driveOverlay');
     driveOverlay.onResize();
     driveOverlay.sliderInteract();
   };
@@ -192,59 +180,38 @@ module.exports = function(){
   driveOverlay.sliderInteract = function() {
 
     interact('.slider-thumb', {context:driveOverlay.svg})              // target the matches of that selector
-      .draggable({                        // make the element fire drag events
-        max: Infinity                     // allow drags on multiple elements
+      .draggable({         // make the element fire drag events
+        max: Infinity      // allow drags on multiple elements
       })
       .on('dragstart', function (event) {
           driveOverlay.thumbEvent(event);
       })
       .on('dragmove', function (event) {
           driveOverlay.thumbEvent(event);
-
-          // call this function on every move
-          /*
-        var display = (100 - Math.round((value.toFixed(3)*200)));
-        event.target.setAttribute('data-value', display);
-        if(event.target.classList.contains('sliderRight')) {
-          driveOverlay.displayRight = display;
-        } else if (event.target.classList.contains('sliderLeft')) {
-          driveOverlay.displayLeft = display;
-        }
-        */
       })
-    .on('dragend', function(event) {
-        driveOverlay.thumbEvent(event);
-        /*
-      event.target.style.paddingTop = (0.5 * 7) + 'em';
-      event.target.setAttribute('data-value', 0);
-      if(event.target.classList.contains('sliderRight')) {
-    //    driveOverlay.displayRight = 0;
-      } else if (event.target.classList.contains('sliderLeft')) {
-    //    driveOverlay.displayLeft = 0;
-      }
-      */
-    });
-
-    // Allow more thatn one slide to be used at a time (multiple fingers).
-    interact.maxInteractions(Infinity);
+      .on('dragend', function(event) {
+          driveOverlay.thumbEvent(event);
+      });
   };
 
-  driveOverlay.updateSlider = function() {
+  driveOverlay.sendValuesToBot = function() {
     var id = dso.deviceName;
-//    log.trace('updTE', id);
+    var t = driveOverlay;
+
+    //    log.trace('updTE', id);
     //var changed = driveOverlay.displayLeft !== driveOverlay.pastLeft || driveOverlay.displayRight !== driveOverlay.pastRight;
     if (id !== null && id !== '-?-') {
-      if (driveOverlay.displayLeft !== undefined && driveOverlay.displayLeft !== driveOverlay.pastLeft) {
-        var message2 = '(m:1 d:' + -driveOverlay.displayLeft + ' b:1);';
+      if (t.lValue !== t.lPastValue) {
+        var message2 = '(m:1 d:' + -t.displayLeft + ' b:1);';
         conductor.cxn.write(id, message2);
       }
-      if (driveOverlay.displayRight !== undefined && driveOverlay.displayRight !== driveOverlay.pastRight) {
-        var message1 = '(m:2 d:' + -driveOverlay.displayRight + ');';
+      if (t.rValue !== t.rPastValue) {
+        var message1 = '(m:2 d:' + -t.displayRight + ');';
         conductor.cxn.write(id, message1);
       }
 
-      driveOverlay.pastRight = driveOverlay.displayRight;
-      driveOverlay.pastLeft = driveOverlay.displayLeft;
+      t.lPastValue = t.lValue;
+      t.rPastValue = t.rValue;
     }
 /*
     var accel = document.getElementsByClassName("drive-accelerometer")[0];
@@ -257,9 +224,8 @@ module.exports = function(){
     temp.innerHTML = "Temperature:" + cxn.temp;
 */
     driveOverlay.timer = setTimeout( function() {
-      driveOverlay.updateSlider();
-    }
-    , 500);
+      driveOverlay.sendValuesToBot();
+    }, 500);
   };
 
   // Close the driveOverlay overlay.
