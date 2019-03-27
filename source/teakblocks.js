@@ -31,7 +31,7 @@ var svgb = require('./svgbuilder.js');
 var trashBlocks = require('./trashBlocks.js');
 var fblocks = require('./fblock-settings.js');
 var teakselection = require('./teakselection');
-var actionButtons = require('./actionButtons.js');
+var actionButtons = require('./overlays/actionButtons.js');
 var defaultFiles = require('./defaultFiles.js');
 var conductor = require('./conductor.js');
 var app = require('./appMain.js');
@@ -111,9 +111,6 @@ tbe.init = function init(svg, ceiling) {
   }
 
   teakselection.init(tbe);
-  tbe.svg.onmousemove = function() {
-    // actionButtons.cancelActionButtons(tbe.actionButtonDefs);
-  };
 
   return this;
 };

@@ -23,9 +23,9 @@ SOFTWARE.
 module.exports = function () {
   var actionButtons = {};
   var interact = require('interact.js');
-  var svgb = require('./svgbuilder.js');
-  var dso = require('./overlays/deviceScanOverlay.js');
-  var app = require('./appMain.js');
+  var svgb = require('./../svgbuilder.js');
+  var dso = require('./deviceScanOverlay.js');
+  var app = require('./../appMain.js');
 
   // Map of all dots to map SVG dotIndex attribure to JS objects
   actionButtons.mapIndex = 0;
@@ -354,15 +354,29 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
     }
 
     // SVG items with the 'action-dot' class will process these events.
-    interact('.action-dot')
+    interact('.action-dot', {context:svg})
+    .draggable({})
     .on('down', function (event) {
+      // Highligth on initial interaction
       var dotIndex = event.currentTarget.getAttribute('dotIndex');
       actionButtons.dotMap[dotIndex].activate(1);
     })
-    .on('up', function (event) {
+    .on('hold', function () {
+      // show some help.
+    })
+    .on('dragmove', function (event) {
+//        console.log('cancel', event);
+      // show some help.
+    })
+    .on('enter', function (event) {
+      // show some help.
+//      console.log('enter', event);
+    })
+    .on('tap', function (event) {
+      // Do command if event is in button
       var dotIndex = event.currentTarget.getAttribute('dotIndex');
       actionButtons.dotMap[dotIndex].doCommand();
-    });
+  });
     return base;
   };
 

@@ -35,7 +35,7 @@ module.exports = function () {
     var Clipboard = require('clipboard');
     app.tbe = require('./teakblocks.js');
     app.conductor = require('./conductor.js');
-    var actionButtons = require('./actionButtons.js');
+    var actionButtons = require('./overlays/actionButtons.js');
     var teaktext = require('./teaktext.js');
 
     // Add major modules to the application object.
