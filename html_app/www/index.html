@@ -6,6 +6,14 @@
 <!--link rel="apple-touch-startup-image" href="/launch.png"-->
 <html>
 <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-137187540-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-137187540-1');
+    </script>
   <audio id='short-click' src='sounds/short-click.m4a'></audio>
   <audio id='poof' src='sounds/poof.m4a'></audio>
   <audio id='drop' src='sounds/drop.m4a'></audio>
@@ -32,14 +40,5 @@
   <div id='tbe-forms'></div>
   <!-- canvas id='snapShotCanvas'></canvas-->
 </body>
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-84211264-1', 'auto');
-  ga('send', 'pageview');
-</script>
 <script src='bundled_tbe.js'></script>
 </html>
