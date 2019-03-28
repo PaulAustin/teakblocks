@@ -202,11 +202,12 @@ module.exports = function(){
     //var changed = driveOverlay.displayLeft !== driveOverlay.pastLeft || driveOverlay.displayRight !== driveOverlay.pastRight;
     if (id !== null && id !== '-?-') {
       if (t.lValue !== t.lPastValue) {
-        var message2 = '(m:1 d:' + -t.displayLeft + ' b:1);';
+        var message2 = '(m:1 d:' + -t.lValue + ' b:1);';
         conductor.cxn.write(id, message2);
       }
       if (t.rValue !== t.rPastValue) {
-        var message1 = '(m:2 d:' + -t.displayRight + ');';
+          console.log('setting motor right', t.rValue);
+        var message1 = '(m:2 d:' + -t.rValue + ');';
         conductor.cxn.write(id, message1);
       }
 
