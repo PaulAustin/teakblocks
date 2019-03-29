@@ -181,6 +181,7 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
     }
     this.svgText.style.fontSize = fontSize.toString() + 'px';
 
+    this.svgDot.setAttribute('id', 'action-dot-' + this.command);
     svgDG.appendChild(this.svgDot);
     svgDG.appendChild(this.svgText);
     svgDG.setAttribute('dotIndex', this.dotIndex);
@@ -240,6 +241,7 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
         svgDG.classList.add('copyButton');
     }
 
+    this.svgDot.setAttribute('id', 'action-dot-' + this.command);
     svgDG.appendChild(this.svgDot);
     svgDG.appendChild(this.svgText);
     svgDG.setAttribute('dotIndex', this.dotIndex);
