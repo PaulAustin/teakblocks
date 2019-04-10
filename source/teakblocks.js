@@ -401,7 +401,7 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   if(blockName.startsWith('identity')){
     this.svgRect = icons.paletteBlockIdentity(1, 'function-block identity-block', 0, 0, width);
   } else {
-    this.svgRect = icons.paletteBlock(1, 'function-block', 0, 0, this);//svgb.createRect('function-block', 0, 0, width, 80, 10);
+    this.svgRect = icons.paletteBlock(1, 'function-block', 0, 0, this);
   }
   this.svgGroup.appendChild(this.svgRect);
   this.svgCustomGroup = null; // see updateSvg()
@@ -570,20 +570,20 @@ tbe.FunctionBlock.prototype.markSelected = function(state) {
     // TODO moving to the front interrupts (prevents) the animations.
     tbe.svg.removeChild(this.svgGroup);
     tbe.svg.insertBefore(this.svgGroup, tbe.svgCeiling);
-    this.svgRect.classList.add('selectedBlock');
+    this.svgRect.classList.add('selected-block');
     if (this.flowHead !== null) {
-      this.flowHead.svgRect.classList.add('selectedBlock');
+      this.flowHead.svgRect.classList.add('selected-block');
     }
     if (this.flowTail !== null) {
-      this.flowTail.svgRect.classList.add('selectedBlock');
+      this.flowTail.svgRect.classList.add('selected-block');
     }
   } else {
-    this.svgRect.classList.remove('selectedBlock');
+    this.svgRect.classList.remove('selected-block');
   }
 };
 
 tbe.FunctionBlock.prototype.isSelected = function() {
-  return this.svgRect.classList.contains('selectedBlock');
+  return this.svgRect.classList.contains('selected-block');
 };
 
 tbe.FunctionBlock.prototype.isLoopHead = function() {

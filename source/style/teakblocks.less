@@ -44,14 +44,28 @@ SOFTWARE.
 @action-dot-toggle-stroke-color:#3498DB;
 
 // Block related Colors
-@block-running-color:#3300ff;
-@block-branch-color:lightgreen;
+@block-running-outline-color:#3300ff;
 @block-shadow-color:#43A047;
 @block-glyph-color:#FFB74D;
 @block-font-heigth:20px;
+@block-outline-color: #873600;
+@block-branch-color: @block-outline-color;
+@block-back-color: #795548;
+
+@block-indentity-backcolor: #492f27;
+
+@block-picture-back: #332222;
+@block-picture-led-on: #FF3366;
+@block-picture-led-off: #641e16;
 
 @selection-outline-color:#1E88E5;
 @selection-fill-color:#B3E5FC;
+
+// Tabs
+@Tab-Start-Color:#F5B041;
+@Tab-Action-Color:#AE3415;
+@Tab-Control-Color: #7B99AF;
+
 
 // Config Page colors
 @mono-spaced-font:"Monaco";
@@ -135,19 +149,18 @@ html, body { margin:0; padding:0; overflow:hidden }
 .dropArea {
   /* drop area will be moved to bottom, match width of screen */
   stroke-width:1;
-  //stroke: #000;
-  //stroke: none;
   font-family: helvetica;
   font-size: 18px;
 }
+
 .area1 {
-  fill: #F5B041;
+  fill: @Tab-Start-Color;
 }
 .area2 {
-  fill: #AE3415;
+  fill: @Tab-Action-Color;
 }
 .area3 {
-  fill: #7B99AF;
+  fill: @Tab-Control-Color;
 }
 .tab-block {
   fill: #F5B041;

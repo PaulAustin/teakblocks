@@ -66,38 +66,40 @@ SOFTWARE.
   fill: @block-shadow-color;
   animation: outShadowFadeOut 0.35s ease;
 }
-
-.selectedBlock {
+/*
+.function-block-dragging {
+  fill: #795548;
+  stroke-width: 4;
+  stroke: #4E342E;
+}
+*/
+.function-block {
+  fill: @block-back-color;
+  stroke: @block-outline-color;
+  stroke-width: 4;
+  transition: stroke 0.3s ease;
+  stroke-linejoin: round;
+}
+.identity-block {
+  fill: @block-indentity-backcolor;
+}
+.selected-block {
   transition: stroke 0.3s ease;
   stroke-width: 4;
   stroke: @selection-outline-color;
 }
-.running-block{
+.running-block {
   stroke-width: 4;
-  stroke: #3300ff;
+  stroke: @block-running-outline-color;
 }
-.function-block {
-  fill: #3372FF;
-  stroke-width: 4;
-  stroke: #5A33FF;
-  transition: stroke 0.3s ease;
-  stroke: @block-glyph-color;
-  fill: @block-glyph-color;
-  stroke-linejoin: round;
-}
-//.function-block-dragging {
-//  fill: green;
-//  stroke-width: 4;
-//  stroke: #5A33FF;
-// }
 .flow-path {
   fill: none;
   stroke-width: 4;
-  stroke: #5A33FF;
+  stroke: @block-branch-color;
   stroke-linejoin: round;
   stroke-linecap: round;
-  /* stroke-dasharray: 8, 3.5; */
 }
+
 .block-stencil {
   fill: none;
   stroke-width: 2.5;
@@ -178,7 +180,7 @@ SOFTWARE.
 .vars-bottom-txt {
   font-family: 'FontAwesome', "helvetica";
   font-size: 20px;
-  fill: #FFB74D;
+  fill: @block-glyph-color;
   stroke-width: 0;
 }
 .printBlock-var-text {
@@ -232,13 +234,13 @@ SOFTWARE.
   font-family: 'FontAwesome', "helvetica";
   text-align: center;
   font-size: 65px;
-  fill: #FFB74D;
+  fill: @block-glyph-color;
 }
 .printBlock-text {
   font-family: helvetica;
   text-align: center;
   font-size: 15px;
-  fill: #795548;
+  fill: @block-back-color;
 }
 .printBlock-selected {
   background-color: #4CAF50;
@@ -268,13 +270,13 @@ SOFTWARE.
   margin-top: -10px;
 }
 .block-picture-board {
-  fill: #332222;
+  fill: @block-picture-back;
 }
 .block-picture-led-off {
-  fill: #641E16;
+  fill: @block-picture-led-off;
 }
 .block-picture-led-on {
-  fill: #FF3366;
+  fill: @block-picture-led-on;
 }
 .block-bot-connecting {
   fill: #BA68C8;
