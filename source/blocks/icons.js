@@ -239,6 +239,7 @@ module.exports = function () {
     pathd += pb.hline(-width);
     pathd += pb.line(15, -40);
     pathd += pb.line(-15, -40);
+    pathd += pb.close();
 
     var path = svgb.createPath(classes, pathd);
     path.setAttribute('transform', 'scale(' + scale + ')');
@@ -252,7 +253,8 @@ module.exports = function () {
     pathd += pb.line(15, 40);
     pathd += pb.line(-15, 40);
     pathd += pb.hline(-width);
-    pathd += pb.vline(-81);
+    pathd += pb.vline(-80);
+    pathd += pb.close();
 
     var path = svgb.createPath(classes, pathd);
     path.setAttribute('transform', 'scale(' + scale + ')');
