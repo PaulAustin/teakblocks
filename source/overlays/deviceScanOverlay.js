@@ -90,8 +90,8 @@ module.exports = function () {
         <div id='dsoOverlay'>
             <div class='dso-list-box-shell'>
                 <ul class='dso-list-box' data-bind='foreach: devices'>
-                  <li data-bind= "css:{'dso-list-item-selected':selected()}">
-                    <span data-bind= "text:name, click:$parent.onDeviceClick"></span>
+                  <li data-bind="css:{'dso-list-item-selected':selected()}">
+                    <div data-bind="text:name, click:$parent.onDeviceClick"></div>
                   </li>
                 </ul>
             </div>
