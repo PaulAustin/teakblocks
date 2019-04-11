@@ -29,6 +29,12 @@ module.exports = function () {
 
   log.trace('TBlocks starting.', new Date().toLocaleDateString());
 
+  app.hideCookieSheet = function() {
+      var cookieSheet = document.getElementById('cookieSheet');
+      cookieSheet.innerHTML = '';
+      app.storage.setItem('cookiesAccepted', true);
+  };
+
   // Application main, called once shell is fully up.
   app.start = function () {
     var ko = require('knockout');
@@ -83,6 +89,26 @@ module.exports = function () {
     var formsDiv = document.getElementById('tbe-forms');
     tbe.components.appSettings.insert(formsDiv);
     tbe.components.blockSettings.insert(formsDiv);
+
+    var cookieSheet = document.getElementById('cookieSheet');
+    var cookiesAccepted = app.storage.getItem('cookiesAccepted');
+    if ((cookiesAccepted === null) || (cookiesAccepted === false)) {
+        cookieSheet.innerHTML = `
+        <div id='cookiesGlass'></dev>
+        <div id='cookiesForm'>
+            <div id='cookiesNote'>
+              <input id='cookiesButton' type="button" value="  Accept Cookies  " style="float:right">
+              <p>
+                  We use cookies and similar technologies for document
+                  stroage functionality and to measure performance of application features.
+                  You consent to our cookies if you continue to use our website.
+              </p>
+            </div>
+        </div>
+        `;
+        var cookiesButton = document.getElementById('cookiesButton');
+        cookiesButton.onclick = app.hideCookieSheet;
+    }
 
     // Some early experiments. seems to work well for desktop Chrome
     // Safari has noticeable lag, with volume fluctuations.
