@@ -177,10 +177,10 @@ module.exports = function () {
       }
     });
     clipboard.on('success', function(e) {
-      log.trace(e);
+      log.trace('clipboard success', e);
     });
     clipboard.on('error', function(e) {
-      log.trace(e);
+      log.trace('clipboard error', e);
     });
 
     // these could be loaded from JSON files/strings

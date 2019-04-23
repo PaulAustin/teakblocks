@@ -32,34 +32,33 @@ module.exports = function () {
 
   dso.devices = ko.observableArray([]);
   dso.deviceName = '-?-';
-
   dso.onDeviceClick = function() {
-    // Ah JavaScript... 'this' is NOT the deviceScanOverlay.
-    // It is the knockout item in the observable array.
+      // Ah JavaScript... 'this' is NOT the deviceScanOverlay.
+      // It is the knockout item in the observable array.
+      console.log('on device click', this.name, this);
+      dso.selectDevice(this.name);
+  }
 
-    var newBotName = this.name;
-
-    if (typeof name === 'string') {
+  dso.selectDevice = function(newBotName) {
+    console.log('SD name is ', newBotName);
+    if (typeof newBotName === 'string') {
 
       var currentBotName = dso.deviceName;
       if (currentBotName !== newBotName) {
-        // Find the current item, and mark it as unselected.
-        var match = ko.utils.arrayFirst(dso.devices(), function(item) {
-          return (item().name === currentBotName);
+        // arrayFirst as a visitor.
+        ko.utils.arrayFirst(dso.devices(), function(item) {
+            item().selected(item().name === newBotName);
+            return false; // visit all items
         });
-        if (match) {
-          match().selected(false);
-        }
-        // Select the item that was clicked.
-        this.selected(true);
       }
+
       // Move the selected name into the object.
-      dso.deviceName = newBotName;
-      dso.updateScreenName();
+      dso.updateScreenName(newBotName);
     }
   };
 
-  dso.updateScreenName = function() {
+  dso.updateScreenName = function(botName) {
+    dso.deviceName = botName;
     var txt = document.getElementById('device-name-label');
     txt.innerHTML = "bot: " + dso.deviceName;
   };
@@ -75,7 +74,7 @@ module.exports = function () {
         // Connection mechanism
         bus:'ble',
       },
-      // Indicate what controller is active. This may affect the data format.
+      // Indicate what controller isx active. This may affect the data format.
       controller:'target-bt',
       status:0,
     };
@@ -114,7 +113,7 @@ module.exports = function () {
 
   // Close the overlay.
   dso.exit = function() {
-      console.log('disconnect block');
+      log.trace('dso.exit()');
 
     if (cxn.scannning) {
       dso.toggleBtScan();
@@ -124,7 +123,7 @@ module.exports = function () {
 
   dso.handleScanButton = function() {
     if (cxn.scanning) {
-      console.log('disconnect block');
+      log.trace('stop scanning');
       var currentBotName = dso.deviceName;
       var dev = cxn.devices[currentBotName];
       if (dev !== undefined) {
@@ -133,7 +132,7 @@ module.exports = function () {
         cxn.disconnect(mac, currentBotName);
       }
     } else {
-      console.log('go to toggleBtScan');
+      log.trace('start scanning');
       dso.toggleBtScan();
     }
   };
@@ -169,28 +168,29 @@ module.exports = function () {
     dso.configBtnScan(cxn.scanning);
   };
 
-  // Update the list of devices in the configuration box
+  // refreshList() -- rebuilds the UI list bases on devices the
+  // connection manager knows about.
   dso.refreshList = function (bots) {
-    // TODO, might be able to use data binding to do this as well.
     dso.devices.removeAll();
+    var cxnSelectedBot = '-?-';
     for (var key in bots) {
+      var selected = bots[key].status === cxn.statusEnum.CONNECTED;
+      if (selected) {
+          cxnSelectedBot = key;
+      }
       if (bots.hasOwnProperty(key)) {
-        dso.addItem(key);
+          var item = ko.observable({
+            name: key, //+ faBlueTooth,
+            selected: ko.observable(selected)
+          });
+          dso.devices.unshift(item);
       }
     }
     // If scanning has stopped update the button.
     if (!cxn.scanning) {
       dso.configBtnScan(false);
     }
-  };
-
-  dso.addItem = function (botName) {
-    var targetName = dso.deviceName;
-    var item = ko.observable({
-      name: botName, //+ faBlueTooth,
-      selected: ko.observable(botName === targetName)
-    });
-    dso.devices.unshift(item);
+    dso.updateScreenName(cxnSelectedBot);
   };
 
   return dso;

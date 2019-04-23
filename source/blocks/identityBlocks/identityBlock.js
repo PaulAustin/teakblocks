@@ -123,69 +123,6 @@ module.exports = function () {
     }*/
   };
 
-  /*identityBlock.handleScanButton = function() {
-    if(cxn.scanning){
-      console.log('disconnect block');
-      var block = identityBlock.activeBlock;
-      var currentBotName = block.controllerSettings.data.deviceName;
-      var dev = cxn.devices[currentBotName];
-      if (dev !== undefined) {
-        var mac = cxn.devices[currentBotName].mac;
-        log.trace('disconnect from current mac', mac);
-        cxn.disconnect(mac, currentBotName);
-      }
-    } else{
-      console.log('go to toggleBtScan');
-      identityBlock.toggleBtScan();
-    }
-  };
-
-  // Turn on Scanning
-  identityBlock.configBtnScan = function(scanning) {
-    log.trace('config scaning button', scanning);
-    var button= identityBlock.scanButton;
-    if (scanning) {
-      // Turn on scanning.
-      button.innerHTML =
-      "<span>Looking for bots <i class='fa fa-spinner fa-pulse fa-fw'></i></span>";
-    } else {
-      // Turn off back scanning
-      button.innerHTML = "<span>Look for bots </span>";
-    }
-  };
-
-  identityBlock.toggleBtScan = function() {
-    if (cxn.scannning) {
-      // Turn off back scanning
-      cxn.stopScanning();
-      identityBlock.watch.dispose();
-      identityBlock.watch = null;
-    } else {
-      console.log('in theory start scanning');
-      // Turn on scanning.
-      // Set up a callback to get notified when when devices show up.
-      identityBlock.refreshList(cxn.devices);
-      identityBlock.watch = cxn.connectionChanged.subscribe(identityBlock.refreshList);
-      cxn.startScanning();
-    }
-    identityBlock.configBtnScan(cxn.scanning);
-  };
-
-  // Update the list of devices in the configuration box
-  identityBlock.refreshList = function (bots) {
-    // TODO, might be able to use data binding to do this as well.
-    identityBlock.devices.removeAll();
-    for (var key in bots) {
-      if (bots.hasOwnProperty(key)) {
-        identityBlock.addItem(key);
-      }
-    }
-
-    // If scanning has stopped update the button.
-    if (!cxn.scanning) {
-      identityBlock.configBtnScan(false);
-    }
-  };*/
 
   // Close the identity blocks and clean up hooks related to it.
   identityBlock.configuratorClose = function(div) {
@@ -246,18 +183,6 @@ module.exports = function () {
     root.appendChild(arrowHead);
     root.appendChild(arrowBody);
   };
-
-/*identityBlock.addItem = function (botName) {
-    var block = identityBlock.activeBlock;
-    if (block !== null) {
-      var targetName = block.controllerSettings.data.deviceName;
-      var item = ko.observable({
-        name: botName, //+ faBlueTooth,
-        selected: ko.observable(botName === targetName)
-      });
-      identityBlock.devices.unshift(item);
-    }
-  };*/
 
   return identityBlock;
   }();

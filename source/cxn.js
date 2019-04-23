@@ -32,6 +32,7 @@ module.exports = function factory(){
   cxn.compass = 0;
   cxn.temp = 0;
   cxn.connectingTimeout = 0;
+  cxn.hostSelectedName = "";
 
   cxn.accelerometer = null;
   cxn.temperature = null;
@@ -235,10 +236,11 @@ cxn.webBTConnect = function () {
   };
 
   // requestDevice will trigger a browse dialog once back to the browser loop.
-  // When a user selects one the then is called. Since the user has already
+  // When a user selects one the 'then()' is called. Since the user has already
   // selected on at that point, add it to the list and select.
   navigator.bluetooth.requestDevice(options)
     .then(function(device) {
+      // Called once device selected by user - no connection made yet
       log.trace('> device:', device);
       var beaconInfo = {
         name : device.name,     // Should be in 'BBC micro:bit [xxxxx]' format
@@ -251,10 +253,12 @@ cxn.webBTConnect = function () {
       return device.gatt.connect();
     })
     .then(function(server) {
+      // Called once gatt.connect() finishes
       log.trace('> primary service:', server);
       return server.getPrimaryService(nordicUARTservice.serviceUUID);
     })
     .then(function(primaryService) {
+      // Called once nordicUARTservice is found.
       log.trace('> primary Service:', primaryService);
       // Calling getCharacteristics with no parameters
       // should return the one associated with the primary service
@@ -319,7 +323,6 @@ cxn.setConnectionStatus = function (name, status) {
   if (dev !== null) {
     dev.status = status;
   }
-  // cxn.devices[name].status = status;
   // Trigger notifications.
   cxn.connectionChanged(cxn.devices);
 };
@@ -383,7 +386,7 @@ cxn.onConnectAppBLE = function(info) {
 cxn.onData = function(name, data) {
   // (A T B G)
   var str = bufferToString(data);
-  log.trace('On Data:', name, str);
+//  log.trace('On Data:', name, str);
   cxn.messages.push(name + ':' + str);
   if(str.includes('accel')){
     var accelData = str.substring(7, str.length - 1);
