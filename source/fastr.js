@@ -43,7 +43,9 @@ module.exports = function factory(){
       camera: '\uf030',
       bluetooth: '\uf294',
       connect: '\uf1e6',
-      robot: '\uf544'
+      robot: '\uf544',
+      temp: '\uf2c9',
+      loop: '\uf2ea'
     };
 
     return fastr;

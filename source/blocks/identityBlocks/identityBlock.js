@@ -21,9 +21,8 @@ SOFTWARE.
 */
 
 module.exports = function () {
-  //var log = require('./../log.js');
   var svgb = require('./../../svgbuilder.js');
-  //var cxn = require('./../cxn.js');
+  var fastr = require('./../../fastr.js');
   var ko = require('knockout');
   // TODO the link type could show up on the icon
   // to indicate how it is connected
@@ -177,7 +176,7 @@ module.exports = function () {
       }
       root.appendChild(svgb.createCircle('svg-clear ' + statusClass, 40, 65, 5));
     }*/
-    var arrowHead = svgb.createText('svg-clear block-identity-text', 40, 55, '\uf04b');
+    var arrowHead = svgb.createText('fa fas svg-clear block-identity-text', 40, 55, fastr.play);
     var arrowBody = svgb.createRect('svg-clear block-identity-text', 10, 35, 40, 10, 5);
     //play.setAttribute('style', 'font-family: FontAwesome;');
     root.appendChild(arrowHead);

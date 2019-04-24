@@ -21,9 +21,8 @@ SOFTWARE.
 */
 
 module.exports = function () {
-  //var log = require('./../log.js');
   var svgb = require('./../../svgbuilder.js');
-  //var cxn = require('./../cxn.js');
+  var fastr = require('./../../fastr.js');
   var ko = require('knockout');
   var keypad = require('./../keypadTab.js');
   // TODO the link type could show up on the icon
@@ -97,7 +96,7 @@ module.exports = function () {
   // Buid an SVG for the block that indicates the device name
   // and connection status
   identityTemperatureBlock.svg = function(root, block) {
-    var text = svgb.createText('svg-clear block-temperature-text block-identity-text', 42, 60, '\uf2c9');
+    var text = svgb.createText('fa fas svg-clear block-temperature-text block-identity-text', 42, 60, fastr.temp);
     text.setAttribute('text-anchor', 'middle');
     root.appendChild(text);
   };

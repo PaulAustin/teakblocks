@@ -23,6 +23,7 @@ SOFTWARE.
 module.exports = function () {
   // var interact = require('interact.js');
   var svgb = require('./../svgbuilder.js');
+  var fastr = require('./../fastr.js');
   var keypad = require('./keypadTab.js');
   var ko = require('knockout');
   var flowBlockHead = {};
@@ -43,7 +44,7 @@ module.exports = function () {
   flowBlockHead.keyPadValue = ko.observable(0+" times");
 
   flowBlockHead.svg = function (root, block) {
-    var loop = svgb.createText('svg-clear block-flowhead-loop', 20, 40, '\uf021');
+    var loop = svgb.createText('fa fas svg-clear block-flowhead-loop', 20, 40, fastr.loop);
     root.appendChild(loop);
     var data = block.controllerSettings.data.duration;
     var duration = svgb.createText('svg-clear block-flowhead-count block-stencil-fill', 35, 70, data); //
