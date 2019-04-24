@@ -22,6 +22,7 @@ SOFTWARE.
 
 module.exports = function () {
   var log = require('./log.js');
+  var fastr = require('./fastr.js');
 
   // Starts as an object and will be mosty empty until start()
   // is called.
@@ -55,29 +56,6 @@ module.exports = function () {
     if (window.MobileAccessibility) {
       window.MobileAccessibility.usePreferredTextZoom(false);
     }
-
-    // Unicode charcodes for FontAwesome symbols.
-    var fastr = {
-      play: '\uf04b',
-      pause: '\uf04c',
-      stop: '\uf04D',
-      file: '\uf016',
-      trash: '\uf014',
-      folder: '\uf114',
-      undo: '\uf0e2',
-      redo: '\uf01e',
-      settings: '\uf013',
-      copy: '\uf24d',
-      paste:'\uf0ea',
-      page: '\uf0f6',
-      edit: '\uf044',
-      save: '\uf0c7',
-      gamepad: '\uf11b',
-      debug: '\uf120',
-      camera: '\uf030',
-      bluetooth: '\uf294',
-      connect: '\uf1e6'
-    };
 
     // Configuration components for the app and blocks
     // Initialize knockout databinding for documents DOM

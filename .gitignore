@@ -8,6 +8,9 @@ html_app/platforms/*
 html_app/plugins/*
 html_app/node_modules/*
 html_app/www/font-awesome/*
+html_app/www/font-awesome-4/*
+html_app/www/font-awesome-free/*
+html_app/www/font-awesome-pro/*
 html_app/npm-debug.log
 html_app/www/bundled_tbe.js
 

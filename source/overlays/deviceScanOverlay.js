@@ -24,6 +24,7 @@ SOFTWARE.
 // between the app and the robot.
 module.exports = function () {
   var log = require('./../log.js');
+  var fastr = require('./../fastr.js');
   var cxn = require('./../cxn.js');
   var overlays = require('./overlays.js');
   var ko = require('knockout');
@@ -35,14 +36,12 @@ module.exports = function () {
   dso.onDeviceClick = function() {
       // Ah JavaScript... 'this' is NOT the deviceScanOverlay.
       // It is the knockout item in the observable array.
-      console.log('on device click', this.name, this);
       dso.selectDevice(this.name);
   }
 
   dso.selectDevice = function(newBotName) {
     console.log('SD name is ', newBotName);
     if (typeof newBotName === 'string') {
-
       var currentBotName = dso.deviceName;
       if (currentBotName !== newBotName) {
         // arrayFirst as a visitor.
@@ -57,10 +56,14 @@ module.exports = function () {
     }
   };
 
+  dso.decoratedName = function() {
+     return fastr.robot + '  ' + dso.deviceName;
+ };
+
   dso.updateScreenName = function(botName) {
     dso.deviceName = botName;
     var txt = document.getElementById('device-name-label');
-    txt.innerHTML = "bot: " + dso.deviceName;
+    txt.innerHTML = dso.decoratedName();
   };
 
   dso.defaultSettings = function() {

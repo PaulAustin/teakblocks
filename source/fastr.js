@@ -20,44 +20,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#driveOverlay {
-  position: absolute;
-  width:100%;
-  height:100%;
-  background-color: lightgreen; //#66BB6A;
-  -ms-touch-action: none;
-  touch-action: none;
-  /* prevent text from being selected browser style */
-  user-select: none;
-  -moz-user-select: -moz-none;
-  -khtml-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-}
+module.exports = function factory(){
 
-// Direct control
-.slider-groove {
-  fill: #4A148C;
-  stroke:#2e7d32;
-  stroke-width: 10px;
-}
+    // Unicode charcodes for FontAwesome symbols.
+    var fastr = {
+      play: '\uf04b',
+      pause: '\uf04c',
+      stop: '\uf04D',
+      file: '\uf016',
+      trash: '\uf014',
+      folder: '\uf07b',
+      undo: '\uf0e2',
+      redo: '\uf01e',
+      settings: '\uf013',
+      copy: '\uf24d',
+      paste:'\uf0ea',
+      page: '\uf0f6',
+      edit: '\uf044',
+      save: '\uf0c7',
+      gamepad: '\uf11b',
+      debug: '\uf120',
+      camera: '\uf030',
+      bluetooth: '\uf294',
+      connect: '\uf1e6',
+      robot: '\uf544'
+    };
 
-.slider-thumb {
-    fill: #CE93D8;
-    stroke :#BA68C8;
-    stroke-width: 10px;
-}
-
-.slider-text {
-  fill: #3949AB;
-  font-family: @app-font;
-  text-anchor: middle;
-  pointer-events: none;
-}
-
-.drive-diagnostics {
-    position:absolute;
-  font-family: @app-font;
-  left:calc(~'50% - 150px');
-  top:200px;
-}
+    return fastr;
+    }();

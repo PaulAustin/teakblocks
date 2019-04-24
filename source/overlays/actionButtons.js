@@ -98,7 +98,7 @@ module.exports = function () {
       var x = 0;
       var y = edgeSpacing;
       var dotd = 60;   // diameter
-      var fontSize = 36;
+      var fontSize = 34;
 
       // Shrink if page is too short or too wide.
       // Need to add width check.
@@ -164,20 +164,19 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
     if (this.command === 'connect') {
       // For the connect label put the device name
       this.svgDot = svgb.createRect('action-dot-bg', x-200, y, 180, dotd, dotHalf);
-      label = "bot: " + dso.deviceName;
-      this.svgText = svgb.createText('action-dot-fatext', x - 100, fontY, label);
+      this.svgText = svgb.createText('fa fas action-dot-fatext', x - 120, fontY, dso.decoratedName());
       this.svgText.setAttribute('id', 'device-name-label');
   } else if (this.label.length > 1) {
       // For files its the doc icon with letter inside. Only one text box has
       // font awesome icon.
       this.svgDot = svgb.createCircle('action-dot-bg', x + dotHalf, y + dotHalf, dotHalf);
-      this.svgText = svgb.createText('fa action-dot-fatext', x + dotHalf, fontY, label.substring(0, 1));
+      this.svgText = svgb.createText('fa fas action-dot-fatext', x + dotHalf, fontY, label.substring(0, 1));
     //???  svgText2 = svgb.createText('action-dot-doc-label', x + tweakx, buttonFH, label.substring(1));
     //???  group.appendChild(svgText2);
     } else {
       // For simple buttons ther is just one font-awesome icon.
       this.svgDot = svgb.createCircle('action-dot-bg', x + dotHalf, y + dotHalf, dotHalf);
-      this.svgText = svgb.createText('fa action-dot-fatext', x + dotHalf + this.tweakx, fontY, label);
+      this.svgText = svgb.createText('fa fas action-dot-fatext', x + dotHalf + this.tweakx, fontY, label);
     }
     this.svgText.style.fontSize = fontSize.toString() + 'px';
 

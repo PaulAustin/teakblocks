@@ -17,7 +17,9 @@
     "abuildr": "cd html_app; cordova build android --release -- --keystore=./teakblocks.keystore --alias=teakblocks",
     "ibuild": "cd html_app; cordova build iOS",
     "irun": "cd html_app; cordova run iOS",
-    "cpfonts": "cp -R node_modules/font-awesome/  html_app/www/font-awesome/",
+    "cpfonts4": "cp -R node_modules/font-awesome/  html_app/www/font-awesome/",
+    "cpfonts5": "cp -R node_modules/@fortawesome/fontawesome-free/  html_app/www/font-awesome/",
+    "cpfonts5pro": "cp -R node_modules/@fortawesome/fontawesome-pro/  html_app/www/font-awesome/",
     "adeploy": "adb install -r html_app/platforms/android/app/build/outputs/apk/debug/app-debug.apk",
     "http": "http-server ./html_app/www"
   },
@@ -45,6 +47,8 @@
     "teak": "0.0.14"
   },
   "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.8.1",
+    "@fortawesome/fontawesome-pro": "^5.8.1",
     "babel-preset-es2015": "^6.14.0",
     "babelify": "^7.3.0",
     "browserify": "^14.1.0",
