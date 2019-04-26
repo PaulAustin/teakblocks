@@ -121,11 +121,11 @@ module.exports = function () {
     ko.applyBindings(dso, overlays.overlayDom);
     dso.scanButton = document.getElementById('dsoScan');
     dso.scanButton.onclick = dso.onScanButton;
-    dso.updateLabel();
 
     dso.disconnectButton = document.getElementById('dsoDisconnect');
     dso.disconnectButton.onclick = dso.onDisconnectButton;
 
+    dso.updateLabel();
     dso.updateScreenName(dso.deviceName);
   };
 
@@ -142,6 +142,7 @@ module.exports = function () {
   dso.onScanButton = function() {
       dso.onDisconnectButton();
       dso.toggleBtScan();
+      dso.updateLabel();
   };
 
   dso.onDisconnectButton = function() {
@@ -167,7 +168,6 @@ module.exports = function () {
       dso.watch = cxn.connectionChanged.subscribe(dso.refreshList);
       cxn.startScanning();
     }
-    dso.updateLabel();
   };
 
   // refreshList() -- rebuilds the UI list bases on devices the
@@ -188,6 +188,7 @@ module.exports = function () {
           dso.devices.unshift(item);
       }
     }
+    dso.updateLabel();
     dso.updateScreenName(cxnSelectedBot);
   };
 
