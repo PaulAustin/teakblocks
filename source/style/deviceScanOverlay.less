@@ -50,17 +50,30 @@ SOFTWARE.
   padding: 0px;
   margin: 0px;
 }
-.dso-scan-button {
+.dso-button-group button {
+//  border: 1px solid green; /* Green border */
+  padding: 10px 24px; /* Some padding */
+  float: left; /* Float the buttons side by side */
+}
+/* Clear floats (clearfix hack) */
+.dso-button-group:after {
+  content: "";
+  clear: both;
+  display: table;
+}
+.dso-button-group button:not(:last-child) {
+  border-right: none; /* Prevent double borders */
+}
+.dso-button {
   box-sizing: border-box;
   margin-top: 5px;
-  font-size: 15px;
   height: 60px;
-  width: 100%;
+  width: 49%;
   border-radius: 10px;
-}
-.dso-scan-label {
+  display: inline-block;
   fill: @action-dot-color;
-  font-family: @app-font;
+  font-family: @fa-font, @app-font;
+  font-weight:900;
   font-size: 24px;
   text-anchor: middle;
 }

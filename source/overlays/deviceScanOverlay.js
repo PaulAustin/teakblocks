@@ -36,11 +36,11 @@ module.exports = function () {
   dso.onDeviceClick = function() {
       // Ah JavaScript... 'this' is NOT the deviceScanOverlay.
       // It is the knockout item in the observable array.
+      cxn.connect(this.name);
       dso.selectDevice(this.name);
-  }
+  };
 
   dso.selectDevice = function(newBotName) {
-    console.log('SD name is ', newBotName);
     if (typeof newBotName === 'string') {
       var currentBotName = dso.deviceName;
       if (currentBotName !== newBotName) {
@@ -50,7 +50,6 @@ module.exports = function () {
             return false; // visit all items
         });
       }
-
       // Move the selected name into the object.
       dso.updateScreenName(newBotName);
     }
@@ -97,61 +96,58 @@ module.exports = function () {
                   </li>
                 </ul>
             </div>
-            <button id='dsoScan' class='dso-scan-button dso-scan-label'>
-             Search for TB1s from the broswer
-            </button>
+            <div>
+                <button id='dsoScan' class='fa fas dso-button'>
+                LABEL SET BASED ON STATE
+                </button>
+                <button id='dsoDisconnect' class='fa fas dso-button' style='float:right'>
+                Disconnect
+                </button>
+            </div>
         </div>
       </div>`;
 
     // Connect the dataBinding.
     ko.applyBindings(dso, overlays.overlayDom);
     dso.scanButton = document.getElementById('dsoScan');
-    dso.scanButton.onclick = dso.handleScanButton;
+    dso.scanButton.onclick = dso.onScanButton;
+    dso.updateLabel();
 
-    // If currently connected then disconnect and let them choose the same again
-    // or pick another.
-    var currentBotName = dso.deviceName;
-    log.trace('currently connected to', currentBotName);
+    dso.disconnectButton = document.getElementById('dsoDisconnect');
+    dso.disconnectButton.onclick = dso.onDisconnectButton;
   };
 
   // Close the overlay.
   dso.exit = function() {
       log.trace('dso.exit()');
 
-    if (cxn.scannning) {
+    if (cxn.scanning) {
       dso.toggleBtScan();
     }
     ko.cleanNode(overlays.overlayDom);
   };
 
-  dso.handleScanButton = function() {
-    if (cxn.scanning) {
-      log.trace('stop scanning');
+  dso.onScanButton = function() {
+      dso.onDisconnectButton();
+      dso.toggleBtScan();
+  };
+
+  dso.onDisconnectButton = function() {
       var currentBotName = dso.deviceName;
       var dev = cxn.devices[currentBotName];
       if (dev !== undefined) {
         var mac = cxn.devices[currentBotName].mac;
-        log.trace('disconnect from current mac', mac);
         cxn.disconnect(mac, currentBotName);
       }
-    } else {
-      log.trace('start scanning');
-      dso.toggleBtScan();
-    }
   };
 
   // Turn on Scanning
-  dso.configBtnScan = function(scanning) {
-    log.trace('config scaning button', scanning);
-    var button= dso.scanButton;
-    if (scanning) {
-      // Turn on scanning.
-      button.innerHTML =
-      "<span>Looking for bots <i class='fa fa-spinner fa-pulse fa-fw'></i></span>";
-    } else {
-      // Turn off back scanning
-      button.innerHTML = "<span>Look for bots </span>";
-    }
+  dso.updateLabel = function() {
+    dso.scanButton.innerHTML  = (cxn.scanning) ? (
+        'Searching for ' + fastr.robot
+    ) : (
+        'Search for ' + fastr.robot
+    );
   };
 
   dso.toggleBtScan = function() {
@@ -168,7 +164,7 @@ module.exports = function () {
       dso.watch = cxn.connectionChanged.subscribe(dso.refreshList);
       cxn.startScanning();
     }
-    dso.configBtnScan(cxn.scanning);
+    dso.updateLabel();
   };
 
   // refreshList() -- rebuilds the UI list bases on devices the
@@ -188,10 +184,6 @@ module.exports = function () {
           });
           dso.devices.unshift(item);
       }
-    }
-    // If scanning has stopped update the button.
-    if (!cxn.scanning) {
-      dso.configBtnScan(false);
     }
     dso.updateScreenName(cxnSelectedBot);
   };

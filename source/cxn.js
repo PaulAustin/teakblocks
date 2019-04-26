@@ -88,10 +88,11 @@ if (typeof ble !== 'undefined') {
   cxn.webBLE = null;
 }
 
-//
-cxn.scanUsesHostDialog = cxn.webBLE;
-
-var pbi = 0;
+// For WebBLE (others??) the UX needs to bring up the host's
+// Scanning dialog.
+cxn.scanUsesHostDialog = function(){
+    return cxn.webBLE !== null;
+};
 
 // fake list of beacons for testing.
 var pseudoBeacons = [
@@ -109,6 +110,7 @@ var pseudoBeacons = [
 
 cxn.devices = {};
 cxn.scanning = false;
+var pbi = 0;
 cxn.psedoScan = function () {
   if (pbi >= pseudoBeacons.length) {
     pbi = 0;
@@ -122,6 +124,7 @@ cxn.psedoScan = function () {
 };
 
 cxn.stopScanning = function () {
+  log.trace('cxn.stopScanning');
   cxn.scanning = false;
   if (cxn.appBLE) {
     cxn.appBLE.stopScan();
@@ -209,8 +212,10 @@ cxn.startScanning = function () {
   if (cxn.webBLE) {
     cxn.webBTConnect();
   } else if (cxn.appBLE) {
+    log.trace('appBLE:' + cxn.scanning);
     cxn.appBLE.startScanWithOptions([], { reportDuplicates: true },
       function(device) {
+          log.trace('beacon:' + device.name);
         cxn.beaconReceived(device);
       },
       function(errorCode) {
