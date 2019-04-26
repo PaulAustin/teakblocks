@@ -200,7 +200,7 @@ module.exports = function(){
 
     //    log.trace('updTE', id);
     //var changed = driveOverlay.displayLeft !== driveOverlay.pastLeft || driveOverlay.displayRight !== driveOverlay.pastRight;
-    if (id !== null && id !== '-?-') {
+    if (id !== null && id !== dso.nonName) {
       if (t.lValue !== t.lPastValue) {
         var message2 = '(m:1 d:' + -t.lValue + ' b:1);';
         conductor.cxn.write(id, message2);

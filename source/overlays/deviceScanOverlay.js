@@ -32,7 +32,8 @@ module.exports = function () {
   var dso = deviceScanOverlay;
 
   dso.devices = ko.observableArray([]);
-  dso.deviceName = '-?-';
+  dso.nonName = '-?-';
+  dso.deviceName = dso.nonName;
   dso.onDeviceClick = function() {
       // Ah JavaScript... 'this' is NOT the deviceScanOverlay.
       // It is the knockout item in the observable array.
@@ -61,8 +62,17 @@ module.exports = function () {
 
   dso.updateScreenName = function(botName) {
     dso.deviceName = botName;
+    dso.disconnectButton.disabled = (dso.deviceName === dso.nonName);
     var txt = document.getElementById('device-name-label');
     txt.innerHTML = dso.decoratedName();
+  };
+
+  dso.updateLabel = function() {
+    dso.scanButton.innerHTML  = (cxn.scanning) ? (
+        'Searching for ' + fastr.robot
+    ) : (
+        'Search for ' + fastr.robot
+    );
   };
 
   dso.defaultSettings = function() {
@@ -72,7 +82,7 @@ module.exports = function () {
         // What triggers this chain, mouse click, button, message,...
         start:'click',
         // Device name
-        deviceName:'-?-',
+        deviceName:dso.nonName,
         // Connection mechanism
         bus:'ble',
       },
@@ -115,6 +125,8 @@ module.exports = function () {
 
     dso.disconnectButton = document.getElementById('dsoDisconnect');
     dso.disconnectButton.onclick = dso.onDisconnectButton;
+
+    dso.updateScreenName(dso.deviceName);
   };
 
   // Close the overlay.
@@ -141,15 +153,6 @@ module.exports = function () {
       }
   };
 
-  // Turn on Scanning
-  dso.updateLabel = function() {
-    dso.scanButton.innerHTML  = (cxn.scanning) ? (
-        'Searching for ' + fastr.robot
-    ) : (
-        'Search for ' + fastr.robot
-    );
-  };
-
   dso.toggleBtScan = function() {
     if (cxn.scannning) {
       // Turn off back scanning
@@ -171,7 +174,7 @@ module.exports = function () {
   // connection manager knows about.
   dso.refreshList = function (bots) {
     dso.devices.removeAll();
-    var cxnSelectedBot = '-?-';
+    var cxnSelectedBot = dso.nonName;
     for (var key in bots) {
       var selected = bots[key].status === cxn.statusEnum.CONNECTED;
       if (selected) {

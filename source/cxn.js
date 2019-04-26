@@ -215,7 +215,6 @@ cxn.startScanning = function () {
     log.trace('appBLE:' + cxn.scanning);
     cxn.appBLE.startScanWithOptions([], { reportDuplicates: true },
       function(device) {
-          log.trace('beacon:' + device.name);
         cxn.beaconReceived(device);
       },
       function(errorCode) {
