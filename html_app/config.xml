@@ -13,6 +13,9 @@
     <preference name="WebViewBounce" value="false" />
     <preference name="Orientation" value="landscape" />
     <platform name="android">
+        <edit-config file="AndroidManifest.xml" mode="merge" target="/manifest/uses-permission" xmlns:android="http://schemas.android.com/apk/res/android">
+            <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+        </edit-config>
         <icon src="res/app-icon.png" />
         <splash src="res/ios/Default@2x~universal~anyany.png" />
         <preference name="Fullscreen" value="true" />
