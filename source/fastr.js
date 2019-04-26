@@ -28,7 +28,7 @@ module.exports = function factory(){
       pause: '\uf04c',
       stop: '\uf04D',
       file: '\uf016',
-      trash: '\uf014',
+      trash: '\uf2ed',
       folder: '\uf07b',
       undo: '\uf0e2',
       redo: '\uf01e',
