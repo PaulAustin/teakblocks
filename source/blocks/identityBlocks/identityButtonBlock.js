@@ -21,18 +21,8 @@ SOFTWARE.
 */
 
 module.exports = function () {
-  //var log = require('./../log.js');
   var svgb = require('./../../svgbuilder.js');
-  //var cxn = require('./../cxn.js');
-  var ko = require('knockout');
-  // TODO the link type could show up on the icon
-  // to indicate how it is connected
-  // var faBlueTooth = '\uf294';
   var identityButtonBlock = {};
-
-  // Items for selecting a device from a list.
-  //identityAccelerometer.devices = ko.observableArray([]);
-
 
   // Initial settings for blocks of this type.
   identityButtonBlock.defaultSettings = function() {
@@ -61,8 +51,6 @@ module.exports = function () {
       </div>`;
 
     // Connect the dataBinding.
-
-
     var drop = document.getElementById("dropdown-comparison");
     var opts = drop.options;
     for (var i = 0; i < opts.length; i++) {

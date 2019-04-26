@@ -26,49 +26,8 @@ module.exports = function () {
   var ko = require('knockout');
   // TODO the link type could show up on the icon
   // to indicate how it is connected
-  // var faBlueTooth = '\uf294';
-  //var pb = svgb.pathBuilder;
+  // var pb = svgb.pathBuilder;
   var identityBlock = {};
-
-  // Items for selecting a device from a list.
-  //identityBlock.devices = ko.observableArray([]);
-
-  // When an item is clicked on select that device.
-  /*identityBlock.onDeviceClick = function() {
-    // Ah JavaScript... 'this' is NOT identityBlock.
-    // It is the knockout item in the observable array.
-
-    var newBotName = this.name;
-
-    if (typeof name === 'string') {
-
-      var block = identityBlock.activeBlock;
-      var currentBotName = block.controllerSettings.data.deviceName;
-      if (currentBotName !== newBotName) {
-        // Find the current item, and mark it as unselected.
-        var match = ko.utils.arrayFirst(identityBlock.devices(), function(item) {
-          return (item().name === currentBotName);
-        });
-        if (match) {
-          match().selected(false);
-        }
-        // Select the item that was clicked.
-        this.selected(true);
-      }
-      // Move the selected name into the object.
-      block.controllerSettings.data.deviceName = newBotName;
-
-      block.updateSvg();
-    }
-  };
-
-  // Start block is a work in progress; it might not be needed.
-  // It might be for naming seperate targets.
-  identityBlock.tabs = {
-    //'event': '<i class="fa fa-bolt" aria-hidden="true"></i>',
-    //'target-bt': '<i class="fa fa-bluetooth-b" aria-hidden="true"></i>',
-    //'target-usb': '<i class="fa fa-usb" aria-hidden="true"></i>',
-  };*/
 
   // Initial settings for blocks of this type.
   identityBlock.defaultSettings = function() {
@@ -77,14 +36,7 @@ module.exports = function () {
       data:{
         // What triggers this chain, mouse click, button, message,...
         start:true,
-        // Device name
-        //deviceName:'-?-',
-        // Connection mechanism
-        //bus:'ble',
       },
-      // Indicate what controller is active. This may affect the data format.
-      //controller:'target-bt',
-      //status:0,
     };
   };
 
@@ -97,38 +49,10 @@ module.exports = function () {
 
     // Connect the dataBinding.
     ko.applyBindings(identityBlock, div);
-
-    //identityBlock.scanButton = document.getElementById('bt-scan');
-    //identityBlock.scanButton.onclick = identityBlock.handleScanButton;
-
-    // If currently connected then disconnect and let them choose the same again
-    // or pick another.
-    //var currentBotName = block.controllerSettings.data.deviceName;
-    //log.trace('currently connected to', currentBotName);
-    /*
-    var dev = cxn.devices[currentBotName];
-    if (dev !== undefined) {
-      var mac = cxn.devices[currentBotName].mac;
-      log.trace('current mac', mac);
-      cxn.disconnect(mac, currentBotName);
-    }
-
-    if (!cxn.scanUsesHostDialog && !cxn.scannning) {
-      // If scanning is unobtrusive, start it when the form is shown.
-      identityBlock.toggleBtScan();
-    } else {
-      // Otherwise at least fix up the button label.
-      identityBlock.configBtnScan(false);
-    }*/
   };
-
 
   // Close the identity blocks and clean up hooks related to it.
   identityBlock.configuratorClose = function(div) {
-    // Stop looking for visible devices.
-    //if (cxn.scannning) {
-    //  identityBlock.toggleBtScan();
-    //}
     identityBlock.activeBlock = null;
     ko.cleanNode(div);
   };
@@ -136,49 +60,8 @@ module.exports = function () {
   // Buid an SVG for the block that indicates the device name
   // and connection status
   identityBlock.svg = function(root, block) {
-    /*var pathd = '';
-    pathd =  pb.move(31, 11);
-    pathd += pb.hline(18);
-    pathd += pb.arc(9, 180, 0, 1, 0, 18);
-    pathd += pb.hline(-18);
-    pathd += pb.arc(9, 180, 0, 1, 0, -18);
-    var path = svgb.createPath('svg-clear block-stencil', pathd);
-    root.appendChild(path);
-    root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 31, 20, 2));
-    root.appendChild(svgb.createCircle('svg-clear block-stencil-fill', 49, 20, 2));*/
-
-    // Add identity name
-    //var botName = block.controllerSettings.data.deviceName;
-    /*var status = cxn.connectionStatus(botName);
-    if (status === cxn.statusEnum.NOT_THERE) {
-      botName = '-?-';
-      block.controllerSettings.data.deviceName = botName;
-    }
-    var text = svgb.createText('block-identity-text svg-clear', 40, 50, botName);
-    text.setAttribute('text-anchor', 'middle');
-    root.appendChild(text);
-
-    if (botName !== '-?-') {
-      var statusClass = 0;
-      // Connection status dot
-      if (status === cxn.statusEnum.NOT_THERE) {
-        statusClass = 'block-bot-not-found';
-      } else if (status === cxn.statusEnum.BEACON) {
-        statusClass = 'block-bot-visible';
-      } else if (status === cxn.statusEnum.CONNECTING) {
-        statusClass = 'block-bot-connecting';
-      } else if (status === cxn.statusEnum.CONNECTED) {
-        statusClass = 'block-bot-connected';
-      } else {
-        // Connected but with protocol errors. Might be wrong FW
-        // or not really a teakblocks device.
-        statusClass = 'block-bot-connection-error';
-      }
-      root.appendChild(svgb.createCircle('svg-clear ' + statusClass, 40, 65, 5));
-    }*/
     var arrowHead = svgb.createText('fa fas svg-clear block-identity-text', 40, 55, fastr.play);
     var arrowBody = svgb.createRect('svg-clear block-identity-text', 10, 35, 40, 10, 5);
-    //play.setAttribute('style', 'font-family: FontAwesome;');
     root.appendChild(arrowHead);
     root.appendChild(arrowBody);
   };

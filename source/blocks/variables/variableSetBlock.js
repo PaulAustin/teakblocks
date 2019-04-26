@@ -21,9 +21,7 @@ SOFTWARE.
 */
 
 module.exports = function () {
-  //var log = require('./../log.js');
   var svgb = require('./../../svgbuilder.js');
-  //var cxn = require('./../cxn.js');
   var ko = require('knockout');
   var keypad = require('./../keypadTab.js');
   var icons = require('./../icons.js');
@@ -37,7 +35,6 @@ module.exports = function () {
   // Items for selecting a device from a list.
   //identityAccelerometer.devices = ko.observableArray([]);
   variableSetBlock.keyPadValue = ko.observable(0);
-
 
   // Initial settings for blocks of this type.
   variableSetBlock.defaultSettings = function() {

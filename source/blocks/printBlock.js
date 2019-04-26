@@ -21,10 +21,8 @@ SOFTWARE.
 */
 
 module.exports = function () {
-  //var log = require('./../log.js');
   var svgb = require('./../svgbuilder.js');
   var interact = require('interact.js');
-  //var cxn = require('./../cxn.js');
   var ko = require('knockout');
   var keypad = require('./keypadTab.js');
   var icons = require('./icons.js');
