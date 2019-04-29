@@ -1539,7 +1539,7 @@ tbe.initPaletteBox = function initPaletteBox() {
 tbe.tabbedDropArea = function tabbedDropArea(number) {
   var dropAreaGroup = svgb.createGroup("dropAreaGroup", 0, 0);
   var names = ["Start", "Action", "Control"];
-  for(var i = number-1; i >=0; i--){
+  for(var i = number-1; i >=0; i--) {
     var group = svgb.createGroup("dropArea", 0, 0);
     var className = 'area'+String(i+1);
     var rect = svgb.createRect('dropArea '+className, 0, 0, tbe.width, 100, 0);
@@ -1555,43 +1555,43 @@ tbe.tabbedDropArea = function tabbedDropArea(number) {
     .on('down', function (event) {
       tbe.dropAreaGroup.appendChild(event.target.parentNode);
       this.dropArea = event.target.parentNode;
-      tbe.evaluateBlocks(this.dropArea);
+      tbe.switchTabs(this.dropArea);
     });
   return dropAreaGroup;
 };
 
-tbe.evaluateBlocks = function evaluateBlocks(tab) {
+tbe.switchTabs = function switchTabs(tab) {
   var tabNum = parseInt(tab.getAttribute('tab'), 10);
-  if(tabNum === 1){
+  if (tabNum === 1) {
     tbe.hidePaletteBlocks();
     tbe.showStartBlocks();
-  } else if(tabNum === 2){
+  } else if (tabNum === 2) {
     tbe.hidePaletteBlocks();
     tbe.showActionBlocks();
-  } else if(tabNum === 3){
+  } else if (tabNum === 3) {
     tbe.hidePaletteBlocks();
     tbe.showControlBlocks();
   }
 };
 
 tbe.hidePaletteBlocks = function hidePaletteBlocks() {
-  tbe.forEachPalette(function(block){
+  tbe.forEachPalette(function(block) {
     block.svgGroup.classList.add('hiddenPaletteBlock');
   });
 };
 
 tbe.showStartBlocks = function showStartBlocks() {
-  tbe.forEachPalette(function(block){
-    if(block.svgRect.classList.contains('identity-block')){
+  tbe.forEachPalette(function(block) {
+    if (block.svgRect.classList.contains('identity-block')) {
       block.svgGroup.setAttribute('class', 'drag-group');
     }
   });
 };
 
 tbe.showActionBlocks = function showActionBlocks() {
-  tbe.forEachPalette(function(block){
+  tbe.forEachPalette(function(block) {
     var control = block.name === 'wait' || block.name === 'loop' || block.name === 'tail';
-    if(!block.svgRect.classList.contains('identity-block') && !control) {
+    if (!block.svgRect.classList.contains('identity-block') && !control) {
       console.log(block);
       block.svgGroup.setAttribute('class', 'drag-group');
     }
@@ -1599,9 +1599,9 @@ tbe.showActionBlocks = function showActionBlocks() {
 };
 
 tbe.showControlBlocks = function showControlBlocks() {
-  tbe.forEachPalette(function(block){
+  tbe.forEachPalette(function(block) {
     var control = block.name === 'wait' || block.name === 'loop' || block.name === 'tail';
-    if(control){
+    if(control) {
       block.svgGroup.setAttribute('class', 'drag-group');
     }
   });
@@ -1617,21 +1617,24 @@ tbe.updateScreen = function() {
 };
 
 tbe.addPalette = function addPalette(palette) {
+  const leftIndent = 100;
+  var indent = leftIndent;
+  var increment = 30;
 
   this.tabs.push(palette);
 
-  var indent = 10;
-  var increment = 30;
   var blocks = palette.blocks;
   var blockTop = tbe.height - 90;
   for (var key in blocks) {
     if (blocks.hasOwnProperty(key)) {
-      if(key.includes('variableSet') || key.includes('wait')){
-        indent = 10;
+      // Hmmm. This is a curious hack. Reset to left on a few specific blocks.
+      if(key.includes('variableSet') || key.includes('wait')) {
+        indent = leftIndent;
         increment = 15;
       }
       var block = this.addPaletteBlock(indent, blockTop, key);
       if (key === 'loop') {
+        // The loop is two blocks, needs a little special work here.
         var blockTail = this.addPaletteBlock(block.right, blockTop, 'tail');
         block.next = blockTail;
         blockTail.prev = block;
@@ -1643,7 +1646,7 @@ tbe.addPalette = function addPalette(palette) {
       indent += block.chainWidth + increment;
     }
   }
-  tbe.evaluateBlocks(this.dropArea);
+  tbe.switchTabs(this.dropArea);
 };
 
 return tbe;
