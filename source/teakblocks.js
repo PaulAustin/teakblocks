@@ -102,7 +102,6 @@ tbe.init = function init(svg, ceiling) {
   this.svg.insertBefore(this.background, this.svgCeiling);
   this.configInteractions();
   interact.maxInteractions(Infinity);
-  this.initPaletteBox();
   var files = ['docA', 'docB', 'docC', 'docD', 'docE'];
   defaultFiles.default(files);
   var loadedDocText = app.fileManager.loadFile('docA');
@@ -1506,15 +1505,12 @@ tbe.redoAction = function() {
   }
 };
 
-tbe.buildSvgTabs = function buildSvgTabs() {
-};
-
 tbe.sizePaletteToWindow = function sizePaletteToWindow () {
   var w = tbe.width;
   var h = tbe.height;
 
   svgb.translateXY(tbe.dropAreaGroup, 0, (h - 100));
-  svgb.resizeRect(tbe.dropArea, w, 100);
+  svgb.resizeRect(tbe.dropArea, w, 100);    // This is just one of the tabs
   svgb.resizeRect(tbe.background, w, h);
 
   tbe.windowRect = { left:0, top:0, right:w, bottom:h };
@@ -1525,21 +1521,18 @@ tbe.sizePaletteToWindow = function sizePaletteToWindow () {
   });
 };
 
-tbe.initPaletteBox = function initPaletteBox() {
-  this.dropAreaGroup = tbe.tabbedDropArea(3);
-  this.dropArea = this.dropAreaGroup.childNodes[this.dropAreaGroup.childNodes.length - 1];
-  this.svg.appendChild(this.dropAreaGroup);
-
-  this.paletteGroup = svgb.createGroup('paletteGroup', 0, 0, 0, 0);
-  this.svg.appendChild(this.paletteGroup);
-
-  this.tabs = [];
+tbe.createTabSwitcherButton = function() {
+    var group = svgb.createGroup("tabSwitcher", 0, 0);
+    var circle = svgb.createCircle('tabSwitcherRing', 50, 50, 40, 0);
+    group.appendChild(circle);
+    return group;
 };
 
-tbe.tabbedDropArea = function tabbedDropArea(number) {
+tbe.buildTabs = function() {
+
   var dropAreaGroup = svgb.createGroup("dropAreaGroup", 0, 0);
   var names = ["Start", "Action", "Control"];
-  for(var i = number-1; i >=0; i--) {
+  for(var i = 0; i < 3; i++) {
     var group = svgb.createGroup("dropArea", 0, 0);
     var className = 'area'+String(i+1);
     var rect = svgb.createRect('dropArea '+className, 0, 0, tbe.width, 100, 0);
@@ -1551,36 +1544,47 @@ tbe.tabbedDropArea = function tabbedDropArea(number) {
     group.appendChild(text);
     dropAreaGroup.appendChild(group);
   }
+
   interact('.dropArea')
     .on('down', function (event) {
-      tbe.dropAreaGroup.appendChild(event.target.parentNode);
-      this.dropArea = event.target.parentNode;
-      tbe.switchTabs(this.dropArea);
+      tbe.switchTabs(event.target.parentNode);
     });
-  return dropAreaGroup;
+
+  this.svg.appendChild(dropAreaGroup);
+  this.dropAreaGroup = dropAreaGroup;
+
+  // Make the the group all the palette blocks are in. Individual ones will be
+  // hidden based on what group they are part of.
+  this.paletteGroup = svgb.createGroup('paletteGroup', 0, 0, 0, 0);
+  this.svg.appendChild(this.paletteGroup);
 };
 
-tbe.switchTabs = function switchTabs(tab) {
+tbe.switchTabs = function(tab) {
+  // This moves the tab background to the front.
+  this.dropArea = tab;
+  tbe.dropAreaGroup.appendChild(tab);
+
   var tabNum = parseInt(tab.getAttribute('tab'), 10);
+  console.log('tab num', tabNum);
   if (tabNum === 1) {
-    tbe.hidePaletteBlocks();
-    tbe.showStartBlocks();
+    tbe.hideAllBlocks();
+    tbe.showStartTab();
   } else if (tabNum === 2) {
-    tbe.hidePaletteBlocks();
-    tbe.showActionBlocks();
+    tbe.hideAllBlocks();
+    tbe.showActionTab();
   } else if (tabNum === 3) {
-    tbe.hidePaletteBlocks();
-    tbe.showControlBlocks();
+    tbe.hideAllBlocks();
+    tbe.showControlTab();
   }
 };
 
-tbe.hidePaletteBlocks = function hidePaletteBlocks() {
+tbe.hideAllBlocks = function hidePaletteBlocks() {
   tbe.forEachPalette(function(block) {
     block.svgGroup.classList.add('hiddenPaletteBlock');
   });
 };
 
-tbe.showStartBlocks = function showStartBlocks() {
+tbe.showStartTab = function showStartBlocks() {
   tbe.forEachPalette(function(block) {
     if (block.svgRect.classList.contains('identity-block')) {
       block.svgGroup.setAttribute('class', 'drag-group');
@@ -1588,17 +1592,16 @@ tbe.showStartBlocks = function showStartBlocks() {
   });
 };
 
-tbe.showActionBlocks = function showActionBlocks() {
+tbe.showActionTab = function showActionBlocks() {
   tbe.forEachPalette(function(block) {
     var control = block.name === 'wait' || block.name === 'loop' || block.name === 'tail';
     if (!block.svgRect.classList.contains('identity-block') && !control) {
-      console.log(block);
       block.svgGroup.setAttribute('class', 'drag-group');
     }
   });
 };
 
-tbe.showControlBlocks = function showControlBlocks() {
+tbe.showControlTab = function showControlBlocks() {
   tbe.forEachPalette(function(block) {
     var control = block.name === 'wait' || block.name === 'loop' || block.name === 'tail';
     if(control) {
@@ -1617,11 +1620,11 @@ tbe.updateScreen = function() {
 };
 
 tbe.addPalette = function addPalette(palette) {
-  const leftIndent = 100;
+  const leftIndent = 30;
   var indent = leftIndent;
   var increment = 30;
 
-  this.tabs.push(palette);
+  tbe.buildTabs();
 
   var blocks = palette.blocks;
   var blockTop = tbe.height - 90;
@@ -1646,7 +1649,9 @@ tbe.addPalette = function addPalette(palette) {
       indent += block.chainWidth + increment;
     }
   }
-  tbe.switchTabs(this.dropArea);
+
+  tbe.switchTabs(tbe.dropAreaGroup.childNodes[0]);
+  // dropAreaGroup.appendChild(tbe.createTabSwitcherButton());
 };
 
 return tbe;
