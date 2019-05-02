@@ -1510,7 +1510,11 @@ tbe.sizePaletteToWindow = function sizePaletteToWindow () {
   var h = tbe.height;
 
   svgb.translateXY(tbe.dropAreaGroup, 0, (h - 100));
-  svgb.resizeRect(tbe.dropArea, w, 100);    // This is just one of the tabs
+
+  for (let i = 0; i < tbe.dropAreaGroup.childNodes.length; i++) {
+    let r = tbe.dropAreaGroup.childNodes[i].childNodes[0];
+    svgb.resizeRect(r, w, 100);    // This is just one of the tabs
+  }
   svgb.resizeRect(tbe.background, w, h);
 
   tbe.windowRect = { left:0, top:0, right:w, bottom:h };
@@ -1539,8 +1543,8 @@ tbe.buildTabs = function() {
     var tab = svgb.createRect('dropArea '+className, 10+(160*i), -30, 150, 40, 5);
     var text = svgb.createText('dropArea', 20+(160*i), -10, names[i]);
     group.setAttribute('tab', String(i+1));
-    group.appendChild(tab);
     group.appendChild(rect);
+    group.appendChild(tab);
     group.appendChild(text);
     dropAreaGroup.appendChild(group);
   }
