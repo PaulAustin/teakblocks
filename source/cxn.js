@@ -212,10 +212,22 @@ cxn.startScanning = function () {
   if (cxn.webBLE) {
     cxn.webBTConnect();
   } else if (cxn.appBLE) {
+
+    cxn.appBLE.isEnabled(
+        function() {
+            console.log("Bluetooth is enabled");
+        },
+        function() {
+            console.log("Bluetooth is *not* enabled");
+        }
+    );
+
+    //cxn.appBLE.enable();
     log.trace('appBLE:' + cxn.scanning);
     cxn.appBLE.startScanWithOptions([], { reportDuplicates: true },
-      function(device) {
-        cxn.beaconReceived(device);
+      function(beaconInfo) {
+        //log.trace('beacon', beaconInfo.name);
+        cxn.beaconReceived(beaconInfo);
       },
       function(errorCode) {
         log.trace('error1:' + errorCode);

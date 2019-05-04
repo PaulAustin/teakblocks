@@ -119,6 +119,11 @@ module.exports = function () {
 
     // Connect the dataBinding.
     ko.applyBindings(dso, overlays.overlayDom);
+
+    if (!cxn.scanUsesHostDialog()) {
+      dso.watch = cxn.connectionChanged.subscribe(dso.refreshList);
+      cxn.startScanning();
+    }
     dso.scanButton = document.getElementById('dsoScan');
     dso.scanButton.onclick = dso.onScanButton;
 
@@ -131,18 +136,29 @@ module.exports = function () {
 
   // Close the overlay.
   dso.exit = function() {
-      log.trace('dso.exit()');
+    log.trace('dso.exit()');
 
     if (cxn.scanning) {
-      dso.toggleBtScan();
+      cxn.stopScanning();
+      dso.watch.dispose();
+      dso.watch = null;
     }
     ko.cleanNode(overlays.overlayDom);
   };
 
   dso.onScanButton = function() {
-      dso.onDisconnectButton();
-      dso.toggleBtScan();
-      dso.updateLabel();
+    console.log('onSCanButton pressed');
+    if (cxn.scanUsesHostDialog()) {
+      if (cxn.scanning) {
+        cxn.stopScanning();
+        dso.watch.dispose();
+        dso.watch = null;
+      } else {
+        dso.refreshList(cxn.devices);
+        dso.watch = cxn.connectionChanged.subscribe(dso.refreshList);
+        cxn.startScanning();
+      }
+    }
   };
 
   dso.onDisconnectButton = function() {
@@ -152,22 +168,6 @@ module.exports = function () {
         var mac = cxn.devices[currentBotName].mac;
         cxn.disconnect(mac, currentBotName);
       }
-  };
-
-  dso.toggleBtScan = function() {
-    if (cxn.scannning) {
-      // Turn off back scanning
-      cxn.stopScanning();
-      dso.watch.dispose();
-      dso.watch = null;
-    } else {
-      console.log('in theory start scanning');
-      // Turn on scanning.
-      // Set up a callback to get notified when when devices show up.
-      dso.refreshList(cxn.devices);
-      dso.watch = cxn.connectionChanged.subscribe(dso.refreshList);
-      cxn.startScanning();
-    }
   };
 
   // refreshList() -- rebuilds the UI list bases on devices the
