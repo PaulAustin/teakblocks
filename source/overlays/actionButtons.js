@@ -94,10 +94,10 @@ module.exports = function () {
       // some from right, some from left, some in the center.
       // Still a bit hard coded.
       var slotw = w * 0.1;
-      var edgeSpacing = 10;
+      var edgeSpacing = 7;
       var x = 0;
       var y = edgeSpacing;
-      var dotd = 60;   // diameter
+      var dotd = 66;   // diameter
       var fontSize = 34;
 
       // Shrink if page is too short or too wide.
