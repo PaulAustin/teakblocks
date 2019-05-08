@@ -44,7 +44,6 @@ tbe.diagramBlocks = {};
 tbe.paletteBlocks = {};
 tbe.blockIdSequence = 100;
 tbe.currentDoc = 'docA';
-tbe.undoArray = [];
 tbe.currentUndoIndex = 0;
 tbe.stopUndo = false;
 tbe.draggingSelectionArea = null;
@@ -147,9 +146,6 @@ tbe.saveCurrentDoc = function() {
 };
 
 tbe.loadDoc = function(docName) {
-
-  tbe.undoArray = {}; // When we switch documents we want to clear undo history.
-  tbe.undoTransactionIndex = 0;
 
   // First, save the current document if actually a doc.
   if (tbe.currentDoc !== 'driveMode') {
@@ -968,7 +964,6 @@ tbe.animateMoveCore = function (state) {
 
 tbe.clearDiagramBlocks = function clearDiagramBlocks() {
   tbe.internalClearDiagramBlocks();
-  tbe.diagramChanged();
 };
 tbe.internalClearDiagramBlocks = function clearDiagramBlocks() {
   tbe.forEachDiagramBlock(function (block) {
@@ -1117,10 +1112,6 @@ document.body.addEventListener("keydown", function(e) {
       }
 
       document.body.removeChild(textArea);
-    } else if ( key === 90 && ctrl) {
-      tbe.undoAction();
-    } else if ( key === 89 && ctrl) {
-      tbe.redoAction();
     } else if ( key === 8) {
       var todelete = [];
       tbe.forEachDiagramBlock( function(block) {
@@ -1441,31 +1432,8 @@ tbe.configInteractions = function configInteractions() {
     });
 };
 
-tbe.undoArray[0] = teakText.blocksToText(tbe.forEachDiagramChain);
-
 tbe.diagramChanged = function diagramChanged() {
-  var text = teakText.blocksToText(tbe.forEachDiagramChain);
-
-  // Checks if the text to be added is the same as the last one added
-  if (tbe.undoArray[tbe.currentUndoIndex] !== text) {
-    tbe.currentUndoIndex += 1;
-    tbe.undoArray[tbe.currentUndoIndex] = text;
-    // Truncates the rest of the array if change is made before the end of the array
-    if (tbe.currentUndoIndex < tbe.undoArray.length - 1) {
-
-      var temp = [];
-      for(var i = 0; i <= tbe.currentUndoIndex; i++) {
-        temp[i] = tbe.undoArray[i];
-      }
-      tbe.undoArray = temp;
-    }
-
-  }
-
-  // as long as the index is more than 0
-  if (tbe.currentUndoIndex < 0) {
-    tbe.currentUndoIndex = 0;
-  }
+  // var text = teakText.blocksToText(tbe.forEachDiagramChain);
 };
 
 tbe.blocksOnScreen = function() {
@@ -1479,30 +1447,6 @@ tbe.blocksOnScreen = function() {
     return false;
   }
   return toReturn;
-};
-
-tbe.undoAction = function() {
-  tbe.clearStates(undefined, false);
-
-  if (tbe.currentUndoIndex > 0) {
-    tbe.internalClearDiagramBlocks();
-    tbe.currentUndoIndex -= 1;
-  }
-
-  if (tbe.undoArray[tbe.currentUndoIndex] !== undefined) {
-    teakText.textToBlocks(tbe, tbe.undoArray[tbe.currentUndoIndex].toString());
-  }
-};
-
-tbe.redoAction = function() {
-  if (tbe.currentUndoIndex < tbe.undoArray.length - 1) {
-    //tbe.clearStates();
-    tbe.internalClearDiagramBlocks();
-    tbe.currentUndoIndex += 1;
-    if (tbe.undoArray[tbe.currentUndoIndex] !== undefined) {
-      teakText.textToBlocks(tbe, tbe.undoArray[tbe.currentUndoIndex].toString());
-    }
-  }
 };
 
 tbe.sizePaletteToWindow = function sizePaletteToWindow () {

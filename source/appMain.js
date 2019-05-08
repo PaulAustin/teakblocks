@@ -138,8 +138,6 @@ module.exports = function () {
       'deviceScanOverlay': 'deviceScanOverlay',
 
       'settings': function() { tbe.loadSettings(); },
-      'undo': function() { tbe.undoAction(); },
-      'redo': function() { tbe.redoAction(); },
       'copy': function() { tbe.copyText = teaktext.blocksToText(tbe.forEachDiagramChain); },
       'paste': function() { if(tbe.copyTest !== null) { teaktext.textToBlocks(tbe, tbe.copyText); } },
       'save': function() {

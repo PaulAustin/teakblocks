@@ -202,15 +202,6 @@ module.exports = function () {
       this.tabNames = [];
       this.tabButtons = [];
     }
-    // Catch the clear states from the redo button.
-    if(diagram !== undefined){
-      diagramChanger = diagram;
-    }
-
-    if(diagramChanger){
-      tbe.diagramChanged();
-    }
-
   };
 
   // A block has been tapped on, the gesture for the config page.
