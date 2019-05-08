@@ -34,6 +34,7 @@ module.exports = function () {
   dso.devices = ko.observableArray([]);
   dso.nonName = '-?-';
   dso.deviceName = dso.nonName;
+
   dso.onDeviceClick = function() {
       // Ah JavaScript... 'this' is NOT the deviceScanOverlay.
       // It is the knockout item in the observable array.
@@ -63,8 +64,7 @@ module.exports = function () {
   dso.updateScreenName = function(botName) {
     dso.deviceName = botName;
     dso.disconnectButton.disabled = (dso.deviceName === dso.nonName);
-    var txt = document.getElementById('device-name-label');
-    txt.innerHTML = dso.decoratedName();
+    dso.deviceNameLabel.innerHTML = dso.decoratedName();
   };
 
   dso.updateLabel = function() {
@@ -130,13 +130,13 @@ module.exports = function () {
     dso.disconnectButton = document.getElementById('dsoDisconnect');
     dso.disconnectButton.onclick = dso.onDisconnectButton;
 
+    dso.deviceNameLabel = document.getElementById('device-name-label');
     dso.updateLabel();
     dso.updateScreenName(dso.deviceName);
   };
 
   // Close the overlay.
   dso.exit = function() {
-    log.trace('dso.exit()');
 
     if (cxn.scanning) {
       cxn.stopScanning();

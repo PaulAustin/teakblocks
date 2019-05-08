@@ -56,16 +56,19 @@ module.exports = function () {
     if (overlays.currentShowing === o) {
         // Simply hide the current one.
         overlays.hideOverlay();
+        return false;
     } else if (overlays.currentShowing !== null) {
         // One is already up but this different, close and queue up the new.
         overlays.nextToShow = o;
         overlays.hideOverlay();
+        return true;
     } else if (!overlays.isAnimating) {
         // Nothing currently is up, show the new one.
         overlays.currentShowing = o;
         o.start();
         var oroot = document.getElementById('overlayRoot');
         oroot.classList.add('fullScreenSlideIn');
+        return true;
     }
   };
 

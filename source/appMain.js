@@ -42,7 +42,7 @@ module.exports = function () {
     var Clipboard = require('clipboard');
     app.tbe = require('./teakblocks.js');
     app.conductor = require('./conductor.js');
-    var actionButtons = require('./overlays/actionButtons.js');
+    app.dots = require('./overlays/actionButtons.js');
     var teaktext = require('./teaktext.js');
 
     // Add major modules to the application object.
@@ -123,8 +123,8 @@ module.exports = function () {
       'play': function() { app.conductor.playAll(); },
       'stop': function() { app.conductor.stopAll(); },
       'trash': function() { tbe.clearAllBlocks(); },
-      'pages': function() { tbe.clearStates(); tbe.dropdownButtons = actionButtons.showDropdown(buttonsPages, tbe, fastr.folder, 'pages'); },
-      'edit': function() { tbe.clearStates(); tbe.dropdownButtons = actionButtons.showDropdown(buttonsEdit, tbe, fastr.edit, 'edit'); },
+      'pages': function() { tbe.clearStates(); tbe.dropdownButtons = app.dots.showDropdown(buttonsPages, tbe, fastr.folder, 'pages'); },
+      'edit': function() { tbe.clearStates(); tbe.dropdownButtons = app.dots.showDropdown(buttonsEdit, tbe, fastr.edit, 'edit'); },
       'loadDocA': function(){ tbe.loadDoc('docA'); },
       'loadDocB': function(){ tbe.loadDoc('docB'); },
       'loadDocC': function(){ tbe.loadDoc('docC'); },
@@ -135,7 +135,7 @@ module.exports = function () {
       'driveOverlay': function() { app.toggleOverlay('driveOverlay'); },
       'debugOverlay': function() { app.toggleOverlay('debugOverlay'); },
       'splashOverlay': function() { app.toggleOverlay('splashOverlay'); },
-      'connect': function() { app.toggleOverlay('deviceScanOverlay'); },
+      'deviceScanOverlay': function() { app.toggleOverlay('deviceScanOverlay'); },
 
       'settings': function() { tbe.loadSettings(); },
       'undo': function() { tbe.undoAction(); },
@@ -191,10 +191,10 @@ module.exports = function () {
      {'alignment': 'M', 'label': fastr.folder, 'command': 'pages', 'sub':buttonsPages},
      {'alignment': 'M', 'label': fastr.edit, 'command': 'edit', 'sub':buttonsEdit},
      // {'alignment': 'M', 'position': 4, 'label': fastr.camera, 'command': 'docSnapShot'},
-     {'alignment': 'R', 'label': '', 'command': 'connect'},
+     {'alignment': 'R', 'label': '', 'command': 'deviceScanOverlay'},
     ];
 
-    var base = actionButtons.defineButtons(actionButtonDefs, document.getElementById('editorSvgCanvas'));
+    var base = app.dots.defineButtons(actionButtonDefs, document.getElementById('editorSvgCanvas'));
     // It seesm SVG eat all the events, even ones that dont hit any objects :(
     //actionButtons.defineButtons(actionButtonDefs, document.getElementById('actionDotSvgCanvas'));
 
@@ -232,7 +232,11 @@ module.exports = function () {
     // First, save the current document.
     app.tbe.saveCurrentDoc();
     app.tbe.clearStates();
-    app.overlays.toggle(name);
+    if (app.overlays.toggle(name)) {
+      app.dots.activate(name, 3);
+    } else {
+      app.dots.activate(name, 0);
+    }
 };
 
   return app;

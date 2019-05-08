@@ -24,8 +24,8 @@ module.exports = function () {
   var actionButtons = {};
   var interact = require('interact.js');
   var svgb = require('./../svgbuilder.js');
-  var dso = require('./deviceScanOverlay.js');
   var app = require('./../appMain.js');
+  var dso = require('./deviceScanOverlay.js');
 
   // Map of all dots to map SVG dotIndex attribure to JS objects
   actionButtons.mapIndex = 0;
@@ -33,6 +33,7 @@ module.exports = function () {
 
   // Set of top dots after they have been defined.
   actionButtons.topDots = [];
+  actionButtons.commandDots = [];
 
   // How many dots in each region.
   actionButtons.dotsLeft = 0;
@@ -161,11 +162,11 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
     var fontY = y + dotHalf + (fontSize / 3);
 
     //Check if character strings are more than one character to create a label on top of the usual label
-    if (this.command === 'connect') {
-      // For the connect label put the device name
-      this.svgDot = svgb.createRect('action-dot-bg', x-200, y, 180, dotd, dotHalf);
-      this.svgText = svgb.createText('fa fas action-dot-fatext', x - 120, fontY, dso.decoratedName());
-      this.svgText.setAttribute('id', 'device-name-label');
+  if (this.command === 'deviceScanOverlay') {
+    // For the connect label put the device name
+    this.svgDot = svgb.createRect('action-dot-bg', x-200, y, 180, dotd, dotHalf);
+    this.svgText = svgb.createText('fa fas action-dot-fatext', x - 120, fontY, dso.decoratedName());
+    this.svgText.setAttribute('id', 'device-name-label');
   } else if (this.label.length > 1) {
       // For files its the doc icon with letter inside. Only one text box has
       // font awesome icon.
@@ -237,7 +238,7 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
 
     // ??? What is this ????
     if (this.command === 'copy') {
-        svgDG.classList.add('copyButton');
+    //  vgDG.classList.add('copyButton');
     }
 
     this.svgDot.setAttribute('id', 'action-dot-' + this.command);
@@ -252,13 +253,17 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
       // 0 - Back to normal
       // 1 - Highlight mouse-down/finger-press)
       // 2 - Do it, valid release.
+      // 3 - Highlight state with overlay showing.
       if (state === 1) {
           this.svgDot.classList.add('action-dot-active');
       } else if (state === 0 || state === 2) {
+          this.svgDot.classList.remove('overlay-showing');
           this.svgDot.classList.remove('action-dot-active');
           if (state === 0 && this.subShowing) {
               this.animateDropDown();
           }
+      } else if (state === 3) {
+        this.svgDot.classList.add('overlay-showing');
       }
   };
 
@@ -335,8 +340,16 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
   };
 
   actionButtons.reset = function() {
-      for (var i = 0; i < actionButtons.topDots.length; i++) {
-          actionButtons.topDots[i].activate(0);
+    for (var i = 0; i < actionButtons.topDots.length; i++) {
+        actionButtons.topDots[i].activate(0);
+    }
+  };
+
+  actionButtons.activate = function(name, state) {
+      var dot = actionButtons.commandDots[name];
+      console.log('ac', name, state, dot);
+      if ( dot !== undefined ) {
+        dot.activate(state);
       }
   };
 
@@ -351,7 +364,9 @@ actionButtons.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
 
     var i = 0;
     for (i = 0; i < buttons.length; i++) {
-      actionButtons.topDots.push(new this.ActionDot(buttons[i]));
+      var dot = new this.ActionDot(buttons[i]);
+      actionButtons.topDots.push(dot);
+      actionButtons.commandDots[dot.command] = dot;
     }
 
     // SVG items with the 'action-dot' class will process these events.
