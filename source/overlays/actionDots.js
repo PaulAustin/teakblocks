@@ -268,12 +268,17 @@ actionDots.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
   };
 
   actionDots.ActionDot.prototype.doCommand = function() {
+      // Highlight the button hit
       this.activate(2);
       if (this.sub === undefined) {
           var cmd = this.command;
           actionDots.reset();
           app.doCommand(cmd);
-      } else if (app.overlays.currentShowing === null) {
+      } else {
+          if (app.overlays.currentShowing !== null) {
+            actionDots.activate(app.overlays.currentShowing, 0);
+            app.overlays.hideOverlay(null);
+          }
           this.animateDropDown();
       }
   };

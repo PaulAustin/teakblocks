@@ -132,10 +132,10 @@ module.exports = function () {
       'loadDocE': function(){ tbe.loadDoc('docE'); },
 
       'docSnapShot': function() { app.overlays.fileOverlay.cameraFlash(); },
-      'driveOverlay': function() { app.toggleOverlay('driveOverlay'); },
-      'debugOverlay': function() { app.toggleOverlay('debugOverlay'); },
-      'splashOverlay': function() { app.toggleOverlay('splashOverlay'); },
-      'deviceScanOverlay': function() { app.toggleOverlay('deviceScanOverlay'); },
+      'driveOverlay': 'driveOverlay',
+      'debugOverlay': 'debugOverlay',
+      'splashOverlay': 'splashOverlay',
+      'deviceScanOverlay': 'deviceScanOverlay',
 
       'settings': function() { tbe.loadSettings(); },
       'undo': function() { tbe.undoAction(); },
@@ -217,18 +217,36 @@ module.exports = function () {
   };
 
   app.doCommand = function(commandName) {
-    var cmdFunction = app.tbe.commands[commandName];
-    if (typeof cmdFunction === 'function') {
-      cmdFunction();
+    var cmd = app.tbe.commands[commandName];
+    if (app.overlays.isAnimating) {
+      return;
+    }
+
+    if (app.overlays.currentShowing !== null) {
+      // First hide the current one, then
+      // invoke the command once hiding animation is done.
+      if (app.overlays.currentShowing === cmd) {
+        // Simply hide if its the same overlay.
+        app.dots.activate(commandName, 0);
+        app.overlays.hideOverlay(null);
+      } else {
+        if (typeof cmd === 'string') {
+          app.dots.activate(commandName, 3);
+        }
+        app.overlays.hideOverlay(function () {
+          app.doCommand(commandName);
+         });
+      }
+    } else if (typeof cmd === 'function') {
+      cmd();
+    } else if (typeof cmd === 'string') {
+      app.dots.activate(cmd, 3);
+      app.overlays.showOverlay(cmd);
     }
   };
 
   app.toggleOverlay = function(name) {
-
     // TODO modularized control of editor. Why is this part of the show overlay logic?
-    app.tbe.undoArray = {}; // When we switch documents we want to clear undo history.
-    app.tbe.undoTransactionIndex = 0;
-
     // First, save the current document.
     app.tbe.saveCurrentDoc();
     app.tbe.clearStates();
