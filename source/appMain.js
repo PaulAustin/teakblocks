@@ -42,7 +42,7 @@ module.exports = function () {
     var Clipboard = require('clipboard');
     app.tbe = require('./teakblocks.js');
     app.conductor = require('./conductor.js');
-    app.dots = require('./overlays/actionButtons.js');
+    app.dots = require('./overlays/actionDots.js');
     var teaktext = require('./teaktext.js');
 
     // Add major modules to the application object.
@@ -196,7 +196,7 @@ module.exports = function () {
 
     var base = app.dots.defineButtons(actionButtonDefs, document.getElementById('editorSvgCanvas'));
     // It seesm SVG eat all the events, even ones that dont hit any objects :(
-    //actionButtons.defineButtons(actionButtonDefs, document.getElementById('actionDotSvgCanvas'));
+    //actionDots.defineButtons(actionButtonDefs, document.getElementById('actionDotSvgCanvas'));
 
     tbe.init(document.getElementById('editorSvgCanvas'), base);
 

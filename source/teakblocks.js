@@ -31,7 +31,7 @@ var svgb = require('./svgbuilder.js');
 var trashBlocks = require('./trashBlocks.js');
 var fblocks = require('./fblock-settings.js');
 var teakselection = require('./teakselection');
-var actionButtons = require('./overlays/actionButtons.js');
+var actionDots = require('./overlays/actionDots.js');
 var defaultFiles = require('./defaultFiles.js');
 var conductor = require('./conductor.js');
 var app = require('./appMain.js');
@@ -1620,7 +1620,7 @@ tbe.updateScreen = function() {
   tbe.height = window.innerHeight;
   // First resize palette and background then resize the action buttons
   tbe.sizePaletteToWindow();
-  actionButtons.sizeButtonsToWindow(tbe.width, tbe.height);
+  actionDots.sizeButtonsToWindow(tbe.width, tbe.height);
 };
 
 tbe.addPalette = function addPalette(palette) {
