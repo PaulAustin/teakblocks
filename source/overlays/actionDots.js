@@ -351,11 +351,10 @@ actionDots.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
   };
 
   actionDots.activate = function(name, state) {
-      var dot = actionDots.commandDots[name];
-      console.log('ac', name, state, dot);
-      if ( dot !== undefined ) {
-        dot.activate(state);
-      }
+    var dot = actionDots.commandDots[name];
+    if ( dot !== undefined ) {
+      dot.activate(state);
+    }
   };
 
   actionDots.defineButtons = function(buttons, svg) {
@@ -385,11 +384,11 @@ actionDots.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
     .on('hold', function () {
       // show some help.
     })
-    .on('dragmove', function (event) {
+    .on('dragmove', function () {
 //        console.log('cancel', event);
       // show some help.
     })
-    .on('enter', function (event) {
+    .on('enter', function () {
       // show some help.
 //      console.log('enter', event);
     })
