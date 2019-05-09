@@ -127,7 +127,7 @@ module.exports = function () {
             // Mark the current block as running
             var id = block.first;
             if (id.name.startsWith('identity')) { // && !block.isCommented()
-              conductor.tbe.svg.appendChild(block.svgGroup);
+              block.moveToFront();
               block.svgRect.classList.add('running-block');
             }
 

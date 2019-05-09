@@ -406,7 +406,7 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   this.dmove(x, y, true);
 
   // Add block to the editor tree. This makes it visible.
-  tbe.svg.insertBefore(this.svgGroup, tbe.svgCeiling);
+  this.moveToFront();
 };
 
 // Create an image for the block base on its type.
@@ -560,11 +560,15 @@ tbe.FunctionBlock.prototype.setDraggingState = function (state) {
   }
 };
 
+tbe.FunctionBlock.prototype.moveToFront = function() {
+  // TODO moving to the front interrupts (prevents) the animations.
+  //tbe.svg.removeChild(this.svgGroup);
+  tbe.svg.insertBefore(this.svgGroup, tbe.svgCeiling);
+};
+
 tbe.FunctionBlock.prototype.markSelected = function(state) {
   if (state) {
-    // TODO moving to the front interrupts (prevents) the animations.
-    tbe.svg.removeChild(this.svgGroup);
-    tbe.svg.insertBefore(this.svgGroup, tbe.svgCeiling);
+    this.moveToFront();
     this.svgRect.classList.add('selected-block');
     if (this.flowHead !== null) {
       this.flowHead.svgRect.classList.add('selected-block');
@@ -658,10 +662,9 @@ tbe.FunctionBlock.prototype.hilite = function(state) {
   // unify the function and give it a better name.
   if (state) {
     // Bring highlighted block to top. Blocks don't normally
-    // overlap, so z plane is not important. But blocks
-    // that are being dragged need to float above ones on
-    // the diagram.
-    tbe.svg.insertBefore(this.svgGroup, tbe.svgCeiling);
+    // overlap, so Z plane is not important. But blocks that are
+    // being dragged need to float above ones on the diagram.
+    this.moveToFront();
   }
 };
 
