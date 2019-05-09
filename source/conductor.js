@@ -24,6 +24,7 @@ module.exports = function () {
   var log = require('./log.js');
   var conductor = {};
   var dso = require('./overlays/deviceScanOverlay.js');
+  var dots = require('./overlays/actionDots.js');
   var cxn = require('./cxn.js');
   var variables = require('./variables.js');
 
@@ -38,14 +39,9 @@ module.exports = function () {
   conductor.soundCount = 0;
 
   // Once the conductor system is connected to the editor,
-  // it will ping the target device to determine
-  // its current state.
+  // it will ping the target device to determine its current state.
 
   // Scan the editor looking for identity blocks
-  // For each id block,
-  // determine if it is currently connected and still responding.
-
-  // Give some time for the animation to complete, then remove.
 
   conductor.activeBits = [];
 
@@ -77,9 +73,6 @@ module.exports = function () {
   conductor.linkHeartBeat = function() {
     var botName = dso.deviceName;
     conductor.hbTimer = 0;
-
-    // Visit all chains and see if any have changed connection states.
-    // conductor.checkAllIdentityBlocks();
 
     // Set all of the blocks to a regular state.
     conductor.tbe.forEachDiagramBlock(function(b){
@@ -126,7 +119,7 @@ module.exports = function () {
 
             // Mark the current block as running
             var id = block.first;
-            if (id.name.startsWith('identity')) { // && !block.isCommented()
+            if (id.name.startsWith('identity')) {
               block.moveToFront();
               block.svgRect.classList.add('running-block');
             }
@@ -151,6 +144,7 @@ module.exports = function () {
 
   // Find all start all blocks and start them running.
   conductor.playAll = function() {
+    dots.activate('play', 5);
     conductor.runningBlocks = [];
     conductor.run = true;
     variables.resetVars();
@@ -232,6 +226,7 @@ module.exports = function () {
 
   // Stop all running chains.
   conductor.stopAll = function() {
+    dots.activate('play', 0);
     var blockChainIterator  = conductor.tbe.forEachDiagramChain;
     var botName = '';
     var message = '(m:(1 2) d:0);';

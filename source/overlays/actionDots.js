@@ -253,16 +253,22 @@ module.exports = function () {
     // 1 - Highlight mouse-down/finger-press)
     // 2 - Do it, valid release.
     // 3 - Highlight state with overlay showing.
+    // This is way to much of a hack. TODO refactor
     if (state === 1) {
       this.svgDot.classList.add('action-dot-active');
     } else if (state === 0 || state === 2) {
+      this.svgDot.classList.remove('running');
       this.svgDot.classList.remove('overlay-showing');
       this.svgDot.classList.remove('action-dot-active');
+      this.svgText.classList.remove('running');
       if (state === 0 && this.subShowing) {
         this.animateDropDown();
       }
     } else if (state === 3) {
       this.svgDot.classList.add('overlay-showing');
+    } else if (state === 5) {
+      this.svgDot.classList.add('running');
+      this.svgText.classList.add('running');
     }
   };
 
@@ -344,7 +350,10 @@ module.exports = function () {
   };
 
   actionDots.reset = function() {
-    for (var i = 0; i < actionDots.topDots.length; i++) {
+    // Skip the play button since it takes care of its self.
+    // TODO refactor, this is over kill, main need is to reset when overlay
+    // is hidden.
+    for (var i = 1; i < actionDots.topDots.length; i++) {
       actionDots.topDots[i].activate(0);
     }
   };
