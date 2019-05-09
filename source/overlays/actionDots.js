@@ -47,106 +47,105 @@ module.exports = function () {
   // Construct an action dot object, the object manage the SVGs
   // used by the dot and related dropdown.
   actionDots.ActionDot = function ActionButton (button) {
-      // Connect the generic block class to the behavior definition class.
+    // Connect the generic block class to the behavior definition class.
+    actionDots.dotMap[actionDots.mapIndex] = this;
+    this.dotIndex = actionDots.mapIndex;
+    actionDots.mapIndex += 1;
 
-      actionDots.dotMap[actionDots.mapIndex] = this;
-      this.dotIndex = actionDots.mapIndex;
-      actionDots.mapIndex += 1;
+    this.command = button.command;
+    this.label = button.label;
+    this.alignment = button.alignment;
+    if (this.alignment === undefined) {
+      this.alignment = 'S';
+    }
+    this.tweakx = button.tweakx;
+    if (this.tweakx === undefined) {
+      this.tweakx = 0;
+    }
 
-      this.command = button.command;
-      this.label = button.label;
-      this.alignment = button.alignment;
-      if (this.alignment === undefined) {
-          this.alignment = 'S';
+    this.svgDotGroup = null;
+    this.svgSubGroup = null;
+    this.sub = button.sub;
+    this.subShowing = false;
+
+    if (button.alignment === 'L') {
+      this.position = actionDots.dotsLeft;
+      actionDots.dotsLeft += 1;
+    } else if (button.alignment === 'M') {
+      this.position = actionDots.dotsMiddle;
+      actionDots.dotsMiddle += 1;
+    } else if (button.alignment === 'R') {
+      this.position = actionDots.dotsRight;
+      actionDots.dotsRight += 1;
+    }
+
+    this.subDots = [];
+    if (this.sub !== undefined) {
+      for(var i = 0; i < this.sub.length; i++) {
+        this.subDots.push(new actionDots.ActionDot(this.sub[i]));
       }
-      this.tweakx = button.tweakx;
-      if (this.tweakx === undefined) {
-          this.tweakx = 0;
-      }
-
-      this.svgDotGroup = null;
-      this.svgSubGroup = null;
-      this.sub = button.sub;
-      this.subShowing = false;
-
-      if (button.alignment === 'L') {
-          this.position = actionDots.dotsLeft;
-          actionDots.dotsLeft += 1;
-      } else if (button.alignment === 'M') {
-          this.position = actionDots.dotsMiddle;
-          actionDots.dotsMiddle += 1;
-      } else if (button.alignment === 'R') {
-          this.position = actionDots.dotsRight;
-          actionDots.dotsRight += 1;
-      }
-
-      this.subDots = [];
-      if (this.sub !== undefined) {
-          for(var i = 0; i < this.sub.length; i++) {
-              this.subDots.push(new actionDots.ActionDot(this.sub[i]));
-          }
-      }
+    }
   };
 
   // sizeButtonsToWindow adjust al SVGs to match the screen sizePaletteToWindow
   actionDots.sizeButtonsToWindow = function (w, h) {
 
-      // System basically makes room for 10 dots.
-      // some from right, some from left, some in the center.
-      // Still a bit hard coded.
-      var slotw = w * 0.1;
-      var edgeSpacing = 7;
-      var x = 0;
-      var y = edgeSpacing;
-      var dotd = 66;   // diameter
-      var fontSize = 34;
+    // System basically makes room for 10 dots.
+    // some from right, some from left, some in the center.
+    // Still a bit hard coded.
+    var slotw = w * 0.1;
+    var edgeSpacing = 7;
+    var x = 0;
+    var y = edgeSpacing;
+    var dotd = 66;   // diameter
+    var fontSize = 34;
 
-      // Shrink if page is too short or too wide.
-      // Need to add width check.
+    // Shrink if page is too short or too wide.
+    // Need to add width check.
 
-      if ( h < 500 ) {
-          if ( h < 350) {
-              h = 350;
-          }
-          var scale = (h / 500);
-          dotd *=  scale;
-          y *=  scale;
-          fontSize *= scale;
+    if ( h < 500 ) {
+      if ( h < 350) {
+        h = 350;
       }
+      var scale = (h / 500);
+      dotd *=  scale;
+      y *=  scale;
+      fontSize *= scale;
+    }
 
-      var half = w / 2;
-      var mid = half - ((actionDots.dotsMiddle + 1) * (slotw / 2));
+    var half = w / 2;
+    var mid = half - ((actionDots.dotsMiddle + 1) * (slotw / 2));
 
+    // The action-dot class is used for event dispatching. The overall
+    // group, but not the the interior items should have this class
+    for (var i = 0; i < actionDots.topDots.length; i++) {
+      var pos = actionDots.topDots[i].position;
+      var align = actionDots.topDots[i].alignment;
       // The action-dot class is used for event dispatching. The overall
       // group, but not the the interior items should have this class
-      for (var i = 0; i < actionDots.topDots.length; i++) {
-        var pos = actionDots.topDots[i].position;
-        var align = actionDots.topDots[i].alignment;
-        // The action-dot class is used for event dispatching. The overall
-        // group, but not the the interior items should have this class
-        if (align === 'L') {
-          x = (slotw * (pos)) + (edgeSpacing * 2);
-        } else if(align === 'M') {
-          x = mid + (slotw * (pos+1));
-        } else if (align === 'R') {
-          x = w - (slotw * pos);
-        }
-        actionDots.topDots[i].updateSvg(x, y, dotd, fontSize);
+      if (align === 'L') {
+        x = (slotw * (pos)) + (edgeSpacing * 2);
+      } else if(align === 'M') {
+        x = mid + (slotw * (pos+1));
+      } else if (align === 'R') {
+        x = w - (slotw * pos);
       }
+      actionDots.topDots[i].updateSvg(x, y, dotd, fontSize);
+    }
   };
 
-// Create an image for the block base on its type.
-actionDots.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
+  // Create an image for the block base on its type.
+  actionDots.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
     // x and y are top left of dot bouding square
     // dotd is the diameter of the dots
 
     // Remove exisiting dot group if it exists
     if (this.svgDotGroup !== null) {
-        if (this.svgSubGroup !== null && this.subShowing) {
-            actionDots.svgDotParent.removeChild(this.svgSubGroup);
-            this.subShowing = false;
-        }
-        actionDots.svgDotParent.removeChild(this.svgDotGroup);
+      if (this.svgSubGroup !== null && this.subShowing) {
+        actionDots.svgDotParent.removeChild(this.svgSubGroup);
+        this.subShowing = false;
+      }
+      actionDots.svgDotParent.removeChild(this.svgDotGroup);
     }
     // Disconnect reference to inner pieces so GC will clean them up.
     this.svgDotGroup = null;
@@ -162,18 +161,18 @@ actionDots.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
     var fontY = y + dotHalf + (fontSize / 3);
 
     //Check if character strings are more than one character to create a label on top of the usual label
-  if (this.command === 'deviceScanOverlay') {
-    // For the connect label put the device name
-    this.svgDot = svgb.createRect('action-dot-bg', x-200, y, 180, dotd, dotHalf);
-    this.svgText = svgb.createText('fa fas action-dot-fatext', x - 120, fontY, dso.decoratedName());
-    this.svgText.setAttribute('id', 'device-name-label');
-  } else if (this.label.length > 1) {
+    if (this.command === 'deviceScanOverlay') {
+      // For the connect label put the device name
+      this.svgDot = svgb.createRect('action-dot-bg', x-200, y, 180, dotd, dotHalf);
+      this.svgText = svgb.createText('fa fas action-dot-fatext', x - 120, fontY, dso.decoratedName());
+      this.svgText.setAttribute('id', 'device-name-label');
+    } else if (this.label.length > 1) {
       // For files its the doc icon with letter inside. Only one text box has
       // font awesome icon.
       this.svgDot = svgb.createCircle('action-dot-bg', x + dotHalf, y + dotHalf, dotHalf);
       this.svgText = svgb.createText('fa fas action-dot-fatext', x + dotHalf, fontY, label.substring(0, 1));
-    //???  svgText2 = svgb.createText('action-dot-doc-label', x + tweakx, buttonFH, label.substring(1));
-    //???  group.appendChild(svgText2);
+      //???  svgText2 = svgb.createText('action-dot-doc-label', x + tweakx, buttonFH, label.substring(1));
+      //???  group.appendChild(svgText2);
     } else {
       // For simple buttons ther is just one font-awesome icon.
       this.svgDot = svgb.createCircle('action-dot-bg', x + dotHalf, y + dotHalf, dotHalf);
@@ -188,7 +187,7 @@ actionDots.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
     this.svgDotGroup = svgDG;
 
     if (this.sub !== undefined) {
-        this.svgSubGroup = this.updateDropdownSvg(x, y, dotd, fontSize);
+      this.svgSubGroup = this.updateDropdownSvg(x, y, dotd, fontSize);
     }
 
     actionDots.svgDotParent.appendChild(this.svgDotGroup);
@@ -208,7 +207,7 @@ actionDots.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
     this.subBackBottom = ((this.subDots.length + 1) * (dotd + spacing)) + spacing;
     this.subBackD = ddWidth;
     this.svgSubBack = svgb.createRect('action-dot-dropdown-bg',
-       x-spacing, y-spacing, ddWidth, ddWidth, ddWidth/2);
+    x-spacing, y-spacing, ddWidth, ddWidth, ddWidth/2);
 
     svgSubGroup.appendChild(this.svgSubBack);
 
@@ -238,7 +237,7 @@ actionDots.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
 
     // ??? What is this ????
     if (this.command === 'copy') {
-    //  vgDG.classList.add('copyButton');
+      //  vgDG.classList.add('copyButton');
     }
 
     this.svgDot.setAttribute('id', 'action-dot-' + this.command);
@@ -250,103 +249,103 @@ actionDots.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
   };
 
   actionDots.ActionDot.prototype.activate = function(state) {
-      // 0 - Back to normal
-      // 1 - Highlight mouse-down/finger-press)
-      // 2 - Do it, valid release.
-      // 3 - Highlight state with overlay showing.
-      if (state === 1) {
-          this.svgDot.classList.add('action-dot-active');
-      } else if (state === 0 || state === 2) {
-          this.svgDot.classList.remove('overlay-showing');
-          this.svgDot.classList.remove('action-dot-active');
-          if (state === 0 && this.subShowing) {
-              this.animateDropDown();
-          }
-      } else if (state === 3) {
-        this.svgDot.classList.add('overlay-showing');
+    // 0 - Back to normal
+    // 1 - Highlight mouse-down/finger-press)
+    // 2 - Do it, valid release.
+    // 3 - Highlight state with overlay showing.
+    if (state === 1) {
+      this.svgDot.classList.add('action-dot-active');
+    } else if (state === 0 || state === 2) {
+      this.svgDot.classList.remove('overlay-showing');
+      this.svgDot.classList.remove('action-dot-active');
+      if (state === 0 && this.subShowing) {
+        this.animateDropDown();
       }
+    } else if (state === 3) {
+      this.svgDot.classList.add('overlay-showing');
+    }
   };
 
   actionDots.ActionDot.prototype.doCommand = function() {
-      // Highlight the button hit
-      this.activate(2);
-      if (this.sub === undefined) {
-          var cmd = this.command;
-          actionDots.reset();
-          app.doCommand(cmd);
-      } else {
-          if (app.overlays.currentShowing !== null) {
-            actionDots.activate(app.overlays.currentShowing, 0);
-            app.overlays.hideOverlay(null);
-          }
-          this.animateDropDown();
+    // Highlight the button hit
+    this.activate(2);
+    if (this.sub === undefined) {
+      var cmd = this.command;
+      actionDots.reset();
+      app.doCommand(cmd);
+    } else {
+      if (app.overlays.currentShowing !== null) {
+        actionDots.activate(app.overlays.currentShowing, 0);
+        app.overlays.hideOverlay(null);
       }
+      this.animateDropDown();
+    }
   };
 
   actionDots.ActionDot.prototype.animateDropDown = function() {
-      if (actionDots.isAnimating)
-        return;
-      actionDots.isAnimating = true;
-      if (!this.subShowing) {
-          if (this.sub !== undefined) {
-              if ( actionDots.currentSubShowing !== null) {
-                  // Hide other menu if one is up. In this case
-                  // its OK to do both animations at the same time.
-                  actionDots.currentSubShowing.subShowing = false;
-                  actionDots.currentSubShowing.slideDots({ frame: 0, frameEnd: 10 }, false);
-                  actionDots.currentSubShowing = null;
-              }
-              // Insert the drop down beneath the dot/
-              actionDots.svgDotParent.insertBefore(this.svgSubGroup, this.svgDotGroup);
-              actionDots.currentSubShowing = this;
-              this.slideDots( { frame: 0, frameEnd: 10 }, true);
-          }
-          this.subShowing = true;
-      } else {
-          // Start all the animations that hide buttons.
-          this.subShowing = false;
-          this.slideDots({ frame: 0, frameEnd: 10 }, false);
+    if (actionDots.isAnimating)
+    return;
+    actionDots.isAnimating = true;
+    if (!this.subShowing) {
+      if (this.sub !== undefined) {
+        if ( actionDots.currentSubShowing !== null) {
+          // Hide other menu if one is up. In this case
+          // its OK to do both animations at the same time.
+          actionDots.currentSubShowing.subShowing = false;
+          actionDots.currentSubShowing.slideDots({ frame: 0, frameEnd: 10 }, false);
           actionDots.currentSubShowing = null;
         }
+        // Insert the drop down beneath the dot/
+        actionDots.svgDotParent.insertBefore(this.svgSubGroup, this.svgDotGroup);
+        actionDots.currentSubShowing = this;
+        this.slideDots( { frame: 0, frameEnd: 10 }, true);
+      }
+      this.subShowing = true;
+    } else {
+      // Start all the animations that hide buttons.
+      this.subShowing = false;
+      this.slideDots({ frame: 0, frameEnd: 10 }, false);
+      actionDots.currentSubShowing = null;
+    }
   };
 
   // A target location is set for the last dot, each dot will move relative
   // to the position it is in, the background will adjust as well.
   actionDots.ActionDot.prototype.slideDots = function(state, down) {
-      var thisDot = this;
+    var thisDot = this;
 
-      // Based on frame calculate a 0.0 to 1.0 fraction
-      var f = state.frame / state.frameEnd;
+    // Based on frame calculate a 0.0 to 1.0 fraction
+    var f = state.frame / state.frameEnd;
+    if (!down) {
+      f = 1.0 - f;
+    }
+
+    // Animate the drop down back ground.
+    var h = (this.subBackBottom - this.subBackD) * f;
+    this.svgSubBack.setAttribute('height', String(this.subBackD + h) + 'px');
+
+    // Animate the dots.
+    var numDots = this.subDots.length;
+    for(var i = 0; i < numDots; i++) {
+      var subDot = this.subDots[i];
+      var span = subDot.dotTop - subDot.dotTopHide;
+      var dy = -((1.0 - f) * span);
+      subDot.svgDotGroup.setAttribute('transform', 'translate(0 ' + dy + ')');
+    }
+    state.frame += 1;
+    if (state.frame <= state.frameEnd) {
+      requestAnimationFrame(function() { thisDot.slideDots(state, down); });
+    } else {
+      actionDots.isAnimating = false;
       if (!down) {
-           f = 1.0 - f;
+        actionDots.svgDotParent.removeChild(this.svgSubGroup);
       }
-
-      // Animate the drop down back ground.
-      var h = (this.subBackBottom - this.subBackD) * f;
-      this.svgSubBack.setAttribute('height', String(this.subBackD + h) + 'px');
-
-      // Animate the dots.
-      var numDots = this.subDots.length;
-      for(var i = 0; i < numDots; i++) {
-          var subDot = this.subDots[i];
-          var span = subDot.dotTop - subDot.dotTopHide;
-          var dy = -((1.0 - f) * span);
-          subDot.svgDotGroup.setAttribute('transform', 'translate(0 ' + dy + ')');
-      }
-      state.frame += 1;
-      if (state.frame <= state.frameEnd) {
-          requestAnimationFrame(function() { thisDot.slideDots(state, down); });
-      } else {
-          actionDots.isAnimating = false;
-          if (!down) {
-              actionDots.svgDotParent.removeChild(this.svgSubGroup);
-          }
-      }
+    }
   };
 
   actionDots.reset = function() {
     for (var i = 0; i < actionDots.topDots.length; i++) {
-        actionDots.topDots[i].activate(0);
+      actionDots.topDots[i].activate(0);
     }
   };
 
@@ -385,18 +384,18 @@ actionDots.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
       // show some help.
     })
     .on('dragmove', function () {
-//        console.log('cancel', event);
+      //        console.log('cancel', event);
       // show some help.
     })
     .on('enter', function () {
       // show some help.
-//      console.log('enter', event);
+      //      console.log('enter', event);
     })
     .on('tap', function (event) {
       // Do command if event is in button
       var dotIndex = event.currentTarget.getAttribute('dotIndex');
       actionDots.dotMap[dotIndex].doCommand();
-  });
+    });
     return base;
   };
 
