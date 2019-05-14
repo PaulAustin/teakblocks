@@ -28,7 +28,6 @@ module.exports = function () {
   // TODO the link type could show up on the icon
   // to indicate how it is connected
   // var faBlueTooth = '\uf294';
-  var pb = svgb.pathBuilder;
   var variableAddBlock = {};
   // var variables = require('./../../variables.js');
 
@@ -44,7 +43,7 @@ module.exports = function () {
       data:{
         // What variable: A, B, C
         variable:'A',
-        incdec: '+',
+        incdec:'+',
         // Value
         value:1
       },
@@ -102,7 +101,6 @@ module.exports = function () {
     var vars = document.getElementById('dropdown-comparison');
     var index = vars.selectedIndex;
     block.controllerSettings.data.variable = vars.options[index].value;
-
     block.updateSvg();
     keypad.closeTabs({'div': div});
   };
@@ -116,6 +114,7 @@ module.exports = function () {
 
     var val = block.controllerSettings.data.value;
     var incdec = block.controllerSettings.data.incdec;
+    // +/- prefix is seperate from the number
     var num = svgb.createText('svg-clear vars-bottom-txt', 45, 71, incdec + ' ' + Math.abs(String(val)));
     num.setAttribute('text-anchor', 'middle');
     root.appendChild(num);

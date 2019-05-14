@@ -277,15 +277,17 @@ module.exports = function () {
       } else if (block.name === 'wait') {
         message = '';
       } else if (block.name === 'variableSet'){
-        variables.setVal(d.variable, d.value);
+        variables.set(d.variable, d.value);
       } else if (block.name === 'variableAdd'){
-        variables.incdec(d.variable, d.incdec, d.value);
+        // Decrement is done with negative numbers.
+        variables.func(d.variable, '+', d.value);
       } else if(block.name === 'print'){
         var val = conductor.getPrintVal(d);
         message = '(pr:' + val + ');';
       }
       conductor.cxn.write(botName, message);
     }
+    // variables.printVars();
     // Single step, find target and head of chain and run the single block.
   };
 

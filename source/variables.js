@@ -23,59 +23,85 @@ SOFTWARE.
 module.exports = function (){
   var variables = {};
 
-  variables.a = 0;
-  variables.b = 0;
-  variables.c = 0;
-
-  variables.increment = function(variable, val) {
-    if(variable === 'A'){
-      variables.a += val;
-    } else if(variable === 'B'){
-      variables.b += val;
-    } if(variable === 'C'){
-      variables.c += val;
-    }
-    console.log(variables.a, variables.b, variables.c);
+  variables.Var = function Var () {
+    this.value = 0;
+    this.min = null;
+    this.max = null;
   };
 
-  variables.decrement = function(variable, val) {
-    if(variable === 'A'){
-      variables.a -= val;
-    } else if(variable === 'B'){
-      variables.b -= val;
-    } if(variable === 'C'){
-      variables.c -= val;
-    }
-    console.log(variables.a, variables.b, variables.c);
+  variables.Var.prototype.setMinMax = function(min, max) {
+    this.min = min;
+    this.max = max;
+    this.pin();
   };
 
-  variables.incdec = function (variable, incdec, val) {
-    var num = Math.abs(parseInt(val, 10));
-    if(incdec === '+'){
-      variables.increment(variable, num);
-    } else if(incdec === '-'){
-      variables.decrement(variable, num);
+  variables.Var.prototype.increment = function(operand) {
+    this.value += operand;
+    this.pin();
+  };
+
+  variables.Var.prototype.decrement = function(operand) {
+    this.value -= operand;
+    this.pin();
+  };
+
+  variables.Var.prototype.set = function(operand) {
+    this.value = parseInt(operand, 10);
+    this.pin();
+  };
+
+  variables.Var.prototype.pin = function() {
+    if (this.min !== null && this.value < this.min) {
+      this.value = this.min;
+    } else if (this.max !== null && this.value > this.max) {
+      this.value = this.max;
     }
   };
 
-  variables.setVal = function(variable, val) {
+  variables.v = {
+    'A': new variables.Var(),
+    'B': new variables.Var(),
+    'C': new variables.Var(),
+    'L': new variables.Var(),
+    'R': new variables.Var()
+  };
+
+  variables.func = function (vname, f, val) {
+    var v = variables.v[vname];
+    if (v === undefined)
+      return;
     var num = parseInt(val, 10);
-    if(variable === 'A'){
-      variables.a = num;
-    } else if(variable === 'B'){
-      variables.b = num;
-    } if(variable === 'C'){
-      variables.c = num;
+    if(f === '+'){
+      v.increment(num);
+    } else if(f === '-'){
+      v.decrement(num);
     }
-    console.log(variables.a, variables.b, variables.c);
+  };
+
+  variables.set = function(vname, val) {
+    var v = variables.v[vname];
+    if (v === undefined)
+      return;
+    v.set(val);
+  };
+
+  variables.printVars = function() {
+    var varDump = '';
+    for (var prop in variables.v) {
+      if (variables.v.hasOwnProperty(prop)) {
+        varDump = varDump + ", [" + prop + "]=" + variables.v[prop].value;
+      }
+    }
+    console.log(varDump);
   };
 
   variables.resetVars = function() {
-    variables.a = 0;
-    variables.b = 0;
-    variables.c = 0;
+    for (var prop in variables.v) {
+      if (variables.v.hasOwnProperty(prop)) {
+        variables.v[prop].set(0);
+      }
+    }
   };
 
   return variables;
-
 }();
