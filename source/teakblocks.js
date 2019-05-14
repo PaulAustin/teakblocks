@@ -980,6 +980,26 @@ tbe.internalClearDiagramBlocks = function clearDiagramBlocks() {
   tbe.diagramBlocks = {};
 };
 
+tbe.findSelectedChunk = function findSelectedChunk() {
+  var selected = null;
+  tbe.forEachDiagramBlock(function (block) {
+    if (selected === null && block.isSelected()) {
+      selected = block;
+    }
+  });
+  return selected;
+};
+
+tbe.findSelectedTail = function findSelectedChunk(sHead) {
+  var sTail = null;
+  var sBlock = sHead;
+  while (sBlock !== null && sBlock.isSelected()) {
+    sTail = sBlock;
+    sBlock = sBlock.next;
+  }
+  return sTail;
+};
+
 // Starting at a block that was clicked on find the logical range that
 // should be selected, typically that is the selected block to the end.
 // But for flow blocks it more subtle.
@@ -1116,15 +1136,9 @@ document.body.addEventListener("keydown", function(e) {
 
       document.body.removeChild(textArea);
     } else if ( key === 8) {
-      var todelete = [];
-      tbe.forEachDiagramBlock( function(block) {
-        if (block.isSelected()) {
-          todelete.push(block);
-        }
-      });
-      for(var i = 0; i < todelete.length; i++){
-        var block = todelete[i];
-        tbe.deleteChunk(block, block);
+      var sBlock = tbe.findSelectedChunk();
+      if (sBlock !== null) {
+        tbe.deleteChunk(sBlock, tbe.findSelectedTail(sBlock));
       }
     } else if ( key === 49 ) {
       tbe.loadDoc('docA');
