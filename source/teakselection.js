@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2017 Paul Austin - SDG
+Copyright (c) 2019 Paul Austin - SDG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -113,19 +113,23 @@ tbSelecton.startSelectionBoxDrag = function(event) {
  // Adds and removes the class for a selected block based on position and order of selection.
  tbSelecton.checkForSelectedBlocks = function(rect, tbe) {
    var intersecting = [];
-      // Take all of the blocks in the selection area and push it to the array.
+      // Extend selection to include complete loops where needed.
      tbe.forEachDiagramBlock( function(block) {
-       if(tbe.intersectingArea(rect, block.rect) > 0){
+       if (tbe.intersectingArea(rect, block.rect) > 0) {
          intersecting.push(block);
          var tempBlock = block;
-         if(block.isLoopHead()){
-           while(tempBlock !== null ){ //&& !tempBlock.isLoopTail()
+         if (block.isLoopHead()) {
+           while(tempBlock !== null) {
              intersecting.push(tempBlock);
+             if (tempBlock === block.flowTail)
+              break;
              tempBlock = tempBlock.next;
            }
-         } else if(block.isLoopTail()){
-           while(tempBlock !== null && !tempBlock.isLoopHead()){
+         } else if (block.isLoopTail()) {
+           while (tempBlock !== null && !tempBlock.isLoopHead()) {
              intersecting.push(tempBlock);
+             if (tempBlock === block.flowHead)
+              break;
              tempBlock = tempBlock.prev;
            }
          }
