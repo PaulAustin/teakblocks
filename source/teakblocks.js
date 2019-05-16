@@ -585,6 +585,15 @@ tbe.FunctionBlock.prototype.isSelected = function() {
   return this.svgRect.classList.contains('selected-block');
 };
 
+// For a selected block find the last in the selected set.
+tbe.FunctionBlock.prototype.selectionEnd = function() {
+  var block = this;
+  while (block.next !== null && block.next.isSelected()) {
+    block = block.next;
+  }
+  return block;
+};
+
 tbe.FunctionBlock.prototype.isLoopHead = function() {
   return (this.flowTail !== null);
 };
@@ -630,6 +639,7 @@ tbe.FunctionBlock.prototype.isIsolatedLoop = function() {
   return true;
 };
 
+// Determine if the block is part of selection that is more than one block
 tbe.FunctionBlock.prototype.isGroupSelected = function() {
   var before = false;
   var after = false;
@@ -639,10 +649,7 @@ tbe.FunctionBlock.prototype.isGroupSelected = function() {
   if (this.prev !== null) {
     after = this.prev.isSelected();
   }
-  if (this.isSelected() && (before || after)) {
-    return true;
-  }
-  return false;
+  return (this.isSelected() && (before || after));
 };
 
 tbe.FunctionBlock.prototype.isOnScreen = function() {
@@ -980,6 +987,8 @@ tbe.internalClearDiagramBlocks = function clearDiagramBlocks() {
   tbe.diagramBlocks = {};
 };
 
+// Find a selected block on the diragram. There should only
+// be one set of blocks selected.
 tbe.findSelectedChunk = function findSelectedChunk() {
   var selected = null;
   tbe.forEachDiagramBlock(function (block) {
@@ -988,16 +997,6 @@ tbe.findSelectedChunk = function findSelectedChunk() {
     }
   });
   return selected;
-};
-
-tbe.findSelectedTail = function findSelectedChunk(sHead) {
-  var sTail = null;
-  var sBlock = sHead;
-  while (sBlock !== null && sBlock.isSelected()) {
-    sTail = sBlock;
-    sBlock = sBlock.next;
-  }
-  return sTail;
 };
 
 // Starting at a block that was clicked on find the logical range that
@@ -1136,9 +1135,13 @@ document.body.addEventListener("keydown", function(e) {
 
       document.body.removeChild(textArea);
     } else if ( key === 8) {
-      var sBlock = tbe.findSelectedChunk();
-      if (sBlock !== null) {
-        tbe.deleteChunk(sBlock, tbe.findSelectedTail(sBlock));
+      if ( tbe.components.blockSettings.isOpen()) {
+        tbe.components.blockSettings.deleteGroup();
+      } else {
+        var sBlock = tbe.findSelectedChunk();
+        if (sBlock !== null) {
+          tbe.deleteChunk(sBlock, sBlock.selectionEnd());
+        }
       }
     } else if ( key === 49 ) {
       tbe.loadDoc('docA');
@@ -1274,8 +1277,10 @@ tbe.configInteractions = function configInteractions() {
     .on('tap', function(event) {
       var block = thisTbe.elementToBlock(event.target);
       if (block !== null && block.isPaletteBlock) {
+        // Tapping on an palette item will place it on the sheet.
         tbe.autoPlace(block);
       }  else {
+        // Tapping on diagram block brings up a config page.
         thisTbe.components.blockSettings.tap(block);
       }
     })
@@ -1303,16 +1308,6 @@ tbe.configInteractions = function configInteractions() {
          // not for now.
          return;
        }
-
-       /*if (!block.isPaletteBlock) {
-         if (!block.isCommented()) {
-           block.svgRect.classList.add('commented');
-         } else {
-           block.svgRect.classList.remove('commented');
-         }
-       }*/
-       // Bring up config; dont let drag start.
-       //thisTbe.components.blockSettings.tap(block);
     })
     .on('move', function(event) {
       var interaction = event.interaction;

@@ -74,86 +74,11 @@ module.exports = function () {
 
 
     for(var i = 0; i < 2; i++){ // To process through commonDiv and groupDiv
-      // Add step/run button handler.
       document.getElementsByClassName('block-run')[i].onclick = function() {
         conductor.playOne(blockSettings.activeBlock);
       };
-
-      // Add delete button handler.
-      document.getElementsByClassName('block-clone')[i].onclick = function() {
-        // TODO grab whole loop if necessary
-        if (blockSettings.activeBlock !== null) {
-          // Back up start if necessary for clone to be logical.
-          var startBlock = tbe.findChunkStart(blockSettings.activeBlock);
-          if (startBlock.isLoopTail()) {
-            startBlock = startBlock.flowHead;
-          }
-          // Extend end if necessary for clone to be logical.
-          var endBlock = startBlock;
-          if (endBlock.isLoopHead()) {
-            endBlock = endBlock.flowTail;
-          }
-          if(startBlock.isGroupSelected()){
-            while(endBlock.next !== null && endBlock.next.isSelected()){
-              endBlock = endBlock.next;
-            }
-          }
-          var clone = tbe.replicateChunk(startBlock, endBlock);
-          // move it to some open space
-          // TODO use more logic to find a good place to put the block.
-          var dy = 0;
-          if(moveUp === 0){
-            dy = -120;
-            moveUp = dy;
-          } else if(moveUp < 0){
-            dy = -40 + moveUp;
-            moveUp = dy;
-          } else if(moveUp > 0){
-            dy = 40 + moveUp;
-            moveUp = dy;
-          }
-          if (clone.top < -dy) {
-            dy = 120;
-            moveUp = dy;
-          } else if(clone.bottom > tbe.height - moveUp - 80){
-            dy = 120;
-            moveUp = dy;
-          }
-          tbe.animateMove(clone, clone.last, 0, dy, 20);
-        }
-      };
-
-      // Add delete button handler.
-      document.getElementsByClassName('block-clear')[i].onclick = function() {
-        // TODO grab whole loop if necessary
-        if (blockSettings.activeBlock !== null) {
-          // Delete the block.
-          var block1 = tbe.findChunkStart(blockSettings.activeBlock);
-          var block2 = null;
-          var endBlock = block1;
-
-          // If the block is part of a selected chain, find the last block in the chain
-          while(endBlock.next !== null && endBlock.next.isSelected()){
-            endBlock = endBlock.next;
-          }
-
-          // If ends of a flow block remove both parts,
-          // delete the tail first, since it owns the graphics.
-          if (block1.isLoopTail()) {
-            block2 = block1.flowHead;
-          } else if (block1.isLoopHead() && block1.flowTail.next !== null && !block1.flowTail.next.isSelected()) {
-            block2 = block1;
-            block1 = block1.flowTail;
-          }
-
-
-          if (block2 !== null) {
-            tbe.deleteChunk(block2, block1);
-          } else {
-            tbe.deleteChunk(block1, endBlock);
-          }
-        }
-      };
+      document.getElementsByClassName('block-clone')[i].onclick = blockSettings.cloneGroup;
+      document.getElementsByClassName('block-clear')[i].onclick = blockSettings.deleteGroup;
     }
 
     // Get a reference to the div that is customized for each block.
@@ -161,6 +86,83 @@ module.exports = function () {
 
     // Get a reference to the div that lists controllers.
     blockSettings.controllersDiv = document.getElementById('block-controller-tabs');//TABS - uncomment
+  };
+
+  blockSettings.cloneGroup = function() {
+    // TODO grab whole loop if necessary
+    if (blockSettings.activeBlock !== null) {
+      // Back up start if necessary for clone to be logical.
+      var startBlock = tbe.findChunkStart(blockSettings.activeBlock);
+      if (startBlock.isLoopTail()) {
+        // Redirect logive to look a loop beginning
+        startBlock = startBlock.flowHead;
+      }
+      // Extend end if necessary for clone to be logical.
+      var endBlock = startBlock;
+      if (endBlock.isLoopHead()) {
+        endBlock = endBlock.flowTail;
+      }
+      if(startBlock.isGroupSelected()){
+        endBlock = startBlock.selectionEnd();
+      }
+      var clone = tbe.replicateChunk(startBlock, endBlock);
+      // move it to some open space
+      // TODO use more logic to find a good place to put the block.
+      var dy = 0;
+      if(moveUp === 0){
+        dy = -120;
+        moveUp = dy;
+      } else if(moveUp < 0){
+        dy = -40 + moveUp;
+        moveUp = dy;
+      } else if(moveUp > 0){
+        dy = 40 + moveUp;
+        moveUp = dy;
+      }
+      if (clone.top < -dy) {
+        dy = 120;
+        moveUp = dy;
+      } else if(clone.bottom > tbe.height - moveUp - 80){
+        dy = 120;
+        moveUp = dy;
+      }
+      tbe.animateMove(clone, clone.last, 0, dy, 20);
+    }
+  };
+
+  blockSettings.deleteGroup = function() {
+    if (blockSettings.activeBlock === null)
+      return;
+
+    // TODO grab whole loop if necessary
+    // Delete the block.
+    var block1 = tbe.findChunkStart(blockSettings.activeBlock);
+    if (block1.isLoopTail()) {
+      // Redirect logive to look a loop beginning
+      block1 = block1.flowHead;
+    }
+    if (block1.isLoopHead() && block1.next === block1.flowTail) {
+      console.log('empty loop', block1.isSelected());
+      // Delete an empty loop.
+      tbe.deleteChunk(block1, block1.next);
+    } else if (block1.isLoopHead() && !block1.next.isSelected()) {
+      console.log('loop shell', block1.isSelected());
+      // Delete a loop, but leave the interior intact
+      tbe.deleteChunk(block1.flowTail, block1.flowTail);
+      tbe.deleteChunk(block1, block1);
+    } else if (block1.isLoopHead() && block1.next.isSelected()) {
+      console.log('loop all', block1.isSelected());
+      // Delete a loop including the interior blocks
+      tbe.deleteChunk(block1, block1.flowTail);
+    } else {
+      // If the block is part of a selected chain, find the last block in the chain
+      tbe.deleteChunk(block1, block1.selectionEnd());
+    }
+  };
+
+
+  blockSettings.isOpen = function() {
+      return (this.activeBlock !== null);
   };
 
   blockSettings.hide = function(exceptBlock, diagram) {
@@ -209,13 +211,11 @@ module.exports = function () {
   blockSettings.tap = function(block) {
     if (this.activeBlock === block) {
       // Clicked on the same block so make it go away.
-      //this.hide();
       tbe.clearStates();
     } else if (this.activeBlock !== null) {
       // Clicked on a block other than the one that is showing.
       // Make the block that is showing go away,
       // then show the new one once the hide transition is done.
-      //this.hide();
       tbe.clearStates();
       this.activeBlock = block;
       if(block.name === 'tail'){
