@@ -185,7 +185,7 @@ tbe.addPaletteBlock = function(x, y, name) {
    block.interactId = tbe.nextBlockId('p:');
    this.paletteBlocks[block.interactId] = block;
    tbe.svg.removeChild(block.svgGroup);
-   if(block.rect.right + 30 > tbe.width){
+   if (block.rect.right + 30 > tbe.width) {
      block.svgGroup.setAttribute('class', 'drag-group hiddenPaletteBlock');
    }
    tbe.paletteGroup.appendChild(block.svgGroup);
@@ -393,7 +393,7 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
       bottom: 80,
   };
   this.svgGroup = svgb.createGroup('drag-group', 0, 0);
-  if(blockName.startsWith('identity')){
+  if (blockName.startsWith('identity')) {
     this.svgRect = icons.paletteBlockIdentity(1, 'function-block identity-block', 0, 0, width);
   } else {
     this.svgRect = icons.paletteBlock(1, 'function-block', 0, 0, this);
@@ -773,9 +773,9 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
   var shadowY = null;
   var gridsize = 40;
 
-  if(action === null){
+  if (action === null) {
     action = 'outsnap';
-    if(target !== null){
+    if (target !== null) {
       var diff = target.rect.bottom-this.rect.top;
       shadowX = (Math.round((this.rect.top + diff)/gridsize)*gridsize);
       shadowY = (Math.round(this.rect.left/gridsize)*gridsize);
@@ -783,7 +783,7 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
     }
   }
 
-  if(shadowX === null && shadowY === null){
+  if (shadowX === null && shadowY === null) {
     shadowX = Math.round(this.rect.top/gridsize)*gridsize;
     shadowY = Math.round(this.rect.left/gridsize)*gridsize;
   }
@@ -1056,7 +1056,7 @@ tbe.autoPlace = function autoPlace(block) {
   var dx = Math.round(x-block.left);
   var dy = Math.round(y-block.top);
 
-  if(foundBlock !== null && block.isIdentity()){
+  if (foundBlock !== null && block.isIdentity()) {
     block.dmove(dx, dy);
     tbe.identityAutoPlace(block);
     return;
@@ -1074,13 +1074,13 @@ tbe.autoPlace = function autoPlace(block) {
 };
 
 tbe.identityAutoPlace = function identityAutoPlace(block) {
-  tbe.forEachDiagramBlock(function(compare){
+  tbe.forEachDiagramBlock(function(compare) {
     //console.log("compare", tbe.intersectingArea(compare, block));
-    if(tbe.intersectingArea(compare, block) > 100 && compare !== block && block.bottom + 120 < tbe.height - 150){
+    if (tbe.intersectingArea(compare, block) > 100 && compare !== block && block.bottom + 120 < tbe.height - 150) {
       block.dmove(0, 120);
       tbe.identityAutoPlace(block);
       return;
-    } else if(block.bottom + 120 > tbe.height - 100) {
+    } else if (block.bottom + 120 > tbe.height - 100) {
       tbe.deleteChunk(block, block);
     }
     console.log(block.bottom + 120, tbe.height - 100);
@@ -1564,7 +1564,7 @@ tbe.showActionTab = function showActionBlocks() {
 tbe.showControlTab = function showControlBlocks() {
   tbe.forEachPalette(function(block) {
     var control = block.name === 'wait' || block.name === 'loop' || block.name === 'tail';
-    if(control) {
+    if (control) {
       block.svgGroup.setAttribute('class', 'drag-group');
     }
   });
@@ -1591,7 +1591,7 @@ tbe.addPalette = function addPalette(palette) {
   for (var key in blocks) {
     if (blocks.hasOwnProperty(key)) {
       // Hmmm. This is a curious hack. Reset to left on a few specific blocks.
-      if(key.includes('variableSet') || key.includes('wait')) {
+      if (key.includes('variableSet') || key.includes('wait')) {
         indent = leftIndent;
         increment = 15;
       }

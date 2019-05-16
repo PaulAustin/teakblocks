@@ -20,7 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-module.exports = function (){
+module.exports = function () {
 
 var interact = require('interact.js');
 var svgb = require('./svgbuilder.js');
@@ -47,7 +47,7 @@ tbSelecton.init = function(tbe) {
       },
       onend: function() {
         // Remove the selection rectangle
-        if(tbSelecton.selectionSvg !== null){
+        if (tbSelecton.selectionSvg !== null) {
           tbe.svg.removeChild(tbSelecton.selectionSvg);
           tbSelecton.selectionSvg = null;
           tbSelecton.currentChain = null;
@@ -137,19 +137,19 @@ tbSelecton.startSelectionBoxDrag = function(event) {
      });
 
      // If nothing is in the selection area, then clear the intersecting array.
-     if(intersecting.length === 0){
+     if (intersecting.length === 0) {
        tbSelecton.currentChain = null;
        intersecting = [];
-     } else if(tbSelecton.currentChain === null){ // If nothing is in currentChain, then put in the first selected block.
+     } else if (tbSelecton.currentChain === null) { // If nothing is in currentChain, then put in the first selected block.
        tbSelecton.currentChain = tbe.findChunkStart(intersecting[0]);
      }
      // If the block is in intersecting array and it is in the currentChain, select it. Otherwise, deselect it.
      tbe.forEachDiagramBlock(function(block) {
-       if(intersecting.includes(block) && tbSelecton.currentChain.chainContainsBlock(block)){
+       if (intersecting.includes(block) && tbSelecton.currentChain.chainContainsBlock(block)) {
          block.markSelected(true); //tbe.intersectingArea(rect, block.rect) > 0
-       } else if(block.flowHead !== null && !intersecting.includes(block.flowHead)){
+       } else if (block.flowHead !== null && !intersecting.includes(block.flowHead)) {
          block.markSelected(false);
-       } else if(block.flowHead === null){
+       } else if (block.flowHead === null) {
          block.markSelected(false);
        }
      });
