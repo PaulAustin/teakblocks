@@ -110,10 +110,10 @@ module.exports = function () {
       {'label': 'E', 'command': 'loadDocE'},
     ];
     var buttonsEdit = [
-      {'label': fastr.trash, 'command': 'trash'},
+      {'label': fastr.save, 'command': 'save'},
       {'label': fastr.copy, 'command': 'copy'},
       {'label': fastr.paste, 'command': 'paste'},
-      {'label': fastr.save, 'command': 'save'},
+      {'label': fastr.trash, 'command': 'trash'},
       {'label': fastr.settings, 'command': 'splashOverlay'},
     ];
 
