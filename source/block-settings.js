@@ -142,16 +142,13 @@ module.exports = function () {
       block1 = block1.flowHead;
     }
     if (block1.isLoopHead() && block1.next === block1.flowTail) {
-      console.log('empty loop', block1.isSelected());
       // Delete an empty loop.
       tbe.deleteChunk(block1, block1.next);
     } else if (block1.isLoopHead() && !block1.next.isSelected()) {
-      console.log('loop shell', block1.isSelected());
       // Delete a loop, but leave the interior intact
       tbe.deleteChunk(block1.flowTail, block1.flowTail);
       tbe.deleteChunk(block1, block1);
     } else if (block1.isLoopHead() && block1.next.isSelected()) {
-      console.log('loop all', block1.isSelected());
       // Delete a loop including the interior blocks
       tbe.deleteChunk(block1, block1.flowTail);
     } else {
