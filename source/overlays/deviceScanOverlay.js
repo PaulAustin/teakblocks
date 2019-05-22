@@ -118,18 +118,18 @@ module.exports = function () {
 
     // Connect the dataBinding.
     ko.applyBindings(dso, overlays.overlayDom);
+    dso.scanButton = document.getElementById('dsoScan');
+    dso.scanButton.onclick = dso.onScanButton;
+    dso.disconnectButton = document.getElementById('dsoDisconnect');
+    dso.disconnectButton.onclick = dso.onDisconnectButton;
+
+    dso.deviceNameLabel = document.getElementById('device-name-label');
 
     if (!cxn.scanUsesHostDialog()) {
       dso.watch = cxn.connectionChanged.subscribe(dso.refreshList);
       cxn.startScanning();
     }
-    dso.scanButton = document.getElementById('dsoScan');
-    dso.scanButton.onclick = dso.onScanButton;
 
-    dso.disconnectButton = document.getElementById('dsoDisconnect');
-    dso.disconnectButton.onclick = dso.onDisconnectButton;
-
-    dso.deviceNameLabel = document.getElementById('device-name-label');
     dso.updateLabel();
     dso.updateScreenName(dso.deviceName);
   };
@@ -146,7 +146,6 @@ module.exports = function () {
   };
 
   dso.onScanButton = function() {
-    console.log('onSCanButton pressed');
     if (cxn.scanUsesHostDialog()) {
       if (cxn.scanning) {
         cxn.stopScanning();

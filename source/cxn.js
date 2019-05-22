@@ -94,34 +94,8 @@ cxn.scanUsesHostDialog = function(){
     return cxn.webBLE !== null;
 };
 
-// fake list of beacons for testing.
-var pseudoBeacons = [
- {name:'BBC micro:bit [aragorn]', mac:'0000000A', delay:500},
- {name:'puck.js 4e75', mac:'00004e75', delay:500},
- {name:'BBC micro:bit [frodo]', mac:'0000000F', delay:1000},
- {name:'BBC micro:bit [aragorn]', mac:'0000000A', delay:1000},
- {name:'BBC micro:bit [frodo]', mac:'0000000F', delay:500},
- {name:'BBC micro:bit [aslan]', mac:'000000AA', delay:100},
- {name:'puck.js 4e75', mac:'0000000A', delay:1000},
- {name:'BBC micro:bit [aragorn]', mac:'0000000A', delay:1000},
- {name:'BBC micro:bit [aragorn]', mac:'0000000A', delay:200},
- {name:'BBC micro:bit [zorgav]', mac:'000000FF', delay:500}
-];
-
 cxn.devices = {};
 cxn.scanning = false;
-var pbi = 0;
-cxn.psedoScan = function () {
-  if (pbi >= pseudoBeacons.length) {
-    pbi = 0;
-  }
-  var beaconInfo = pseudoBeacons[pbi];
-  cxn.beaconReceived(beaconInfo);
-  pbi += 1;
-  if (cxn.scanning) {
-    setTimeout(function() { cxn.psedoScan(); }, beaconInfo.delay);
-  }
-};
 
 cxn.stopScanning = function () {
   log.trace('cxn.stopScanning');
@@ -233,8 +207,7 @@ cxn.startScanning = function () {
         log.trace('error1:' + errorCode);
       });
   } else {  // bleAPI is not null looks like cordova model.
-    log.trace ('simulated bluetooth scan');
-    cxn.psedoScan();
+    log.trace ('Bluetooth not supported in this context');
   }
 };
 
