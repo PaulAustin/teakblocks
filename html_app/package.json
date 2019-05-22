@@ -5,7 +5,8 @@
     "cordova": {
         "platforms": [
             "ios",
-            "android"
+            "android",
+            "osx"
         ],
         "plugins": {
             "cordova-plugin-ble": {},
@@ -17,6 +18,7 @@
     "dependencies": {
         "cordova-android": "^7.1.4",
         "cordova-ios": "^4.5.5",
+        "cordova-osx": "^4.0.2",
         "cordova-plugin-ble": "1",
         "cordova-plugin-compat": "^1.2.0",
         "cordova-plugin-device": "git+https://github.com/apache/cordova-plugin-device.git",
