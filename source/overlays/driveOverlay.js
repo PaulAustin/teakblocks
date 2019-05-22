@@ -30,15 +30,12 @@ module.exports = function(){
   var vars = require('./../variables.js');
   var dov = {};
 
-  dov.pastRight = 0;
-  dov.pastLeft = 0;
-
-  dov.lValue = 0;
-  dov.rValue = 0;
-  dov.lPastValue = 0;
-  dov.rPastValue = 0;
+  dov.lValueDStart = 0;
+  dov.rValueDStart = 0;
 
   dov.start = function() {
+    dov.lVar = vars.v['L'];
+    dov.rVar = vars.v['R'];
     dov.buildSlider();
     dov.sendValuesToBot();
   };
@@ -128,29 +125,15 @@ module.exports = function(){
   dov.moveThumbs = function() {
       var t = dov;
 
-      t.lValue = parseInt(t.lValue, 10);
-      if (t.lValue < -100) {
-          t.lValue = -100;
-      } else if (t.lValue > 100) {
-          t.lValue = 100;
-      }
-
-      t.rValue = parseInt(t.rValue, 10);
-      if (t.rValue < -100) {
-          t.rValue = -100;
-      } else if (t.rValue > 100) {
-          t.rValue = 100;
-      }
-
-      var lPx = (t.range * ((t.lValue + 100)/200));
-      var rPx = (t.range * ((t.rValue + 100)/200));
+      var lPx = (t.range * ((t.lVar.value + 100)/200));
+      var rPx = (t.range * ((t.rVar.value + 100)/200));
       var bottom = t.gtop + t.range + (t.gw/2);
 
       dov.lThumb.setAttribute('cy', bottom - lPx);
       dov.rThumb.setAttribute('cy', bottom - rPx);
 
-      t.lText.textContent = t.lValue.toString();
-      t.rText.textContent = t.rValue.toString();
+      t.lText.textContent = t.lVar.value.toString();
+      t.rText.textContent = t.rVar.value.toString();
   };
 
   dov.thumbEvent = function(event) {
@@ -160,20 +143,20 @@ module.exports = function(){
 
       if (thumb === 'L') {
         if (event.type === 'dragstart') {
-            t.lValueDStart = t.lValue;
+          t.lValueDStart = t.lVar.value;
         } else if (event.type === 'dragmove') {
-            t.lValue = t.lValueDStart + (valPerPy * (event.y0 - event.pageY));
+          t.lVar.set(t.lValueDStart + (valPerPy * (event.y0 - event.pageY)));
         } else if (event.type === 'dragend') {
-            t.lValue = 0;
+          t.lVar.set(0);
         }
       } else if (thumb === 'R') {
-          if (event.type === 'dragstart') {
-              t.rValueDStart = t.rValue;
-          } else if (event.type === 'dragmove') {
-              t.rValue = t.rValueDStart + (valPerPy * (event.y0 - event.pageY));
-          } else if (event.type === 'dragend') {
-              t.rValue = 0;
-          }
+        if (event.type === 'dragstart') {
+          t.rValueDStart = t.rVar.value;
+        } else if (event.type === 'dragmove') {
+          t.rVar.set(t.rValueDStart + (valPerPy * (event.y0 - event.pageY)));
+        } else if (event.type === 'dragend') {
+          t.rVar.set(0);
+        }
       }
       t.moveThumbs();
   };
@@ -202,17 +185,16 @@ module.exports = function(){
     //    log.trace('updTE', id);
     //var changed = dov.displayLeft !== dov.pastLeft || dov.displayRight !== dov.pastRight;
     if (id !== null && id !== dso.nonName) {
-      if (t.lValue !== t.lPastValue) {
-        var message2 = '(m:1 d:' + -t.lValue + ' b:1);';
+      if (t.lVar.hasChanged()) {
+        var message2 = '(m:1 d:' + (-t.lVar.value) + ' b:1);';
         conductor.cxn.write(id, message2);
       }
-      if (t.rValue !== t.rPastValue) {
-        var message1 = '(m:2 d:' + -t.rValue + ');';
+      if (t.rVar.hasChanged()) {
+        var message1 = '(m:2 d:' + (-t.rVar.value) + ');';
         conductor.cxn.write(id, message1);
       }
-
-      t.lPastValue = t.lValue;
-      t.rPastValue = t.rValue;
+      t.lVar.sync();
+      t.rVar.sync();
     }
 /*
     var accel = document.getElementsByClassName("drive-accelerometer")[0];

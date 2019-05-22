@@ -48,11 +48,10 @@ module.exports = function () {
   };
 
   identityAccelerometerBlock.configuratorOpen = function(div, block) {
-    keypad.openTabs({
+    keypad.openTabs(div, {
       'getValue': function() { return block.controllerSettings.data.value; },
       'setValue': function(value) { block.controllerSettings.data.value = value; },
       'type':identityAccelerometerBlock,
-      'div': div,
       'block': block,
       'min':-100,
       'max':100,
@@ -62,7 +61,7 @@ module.exports = function () {
       'inner': `<div id='keypadDiv' class='editorDiv'>
           <div class="dropdown-label-txt svg-clear">accel
           </div>
-          <select class="dropdown-comparison" id="dropdown-comparison">
+          <select class="dropdown-comparison" id="var-list">
             <option value=">" id="idAccel-greater">></option>
             <option value="<" id="idAccel-less"><</option>
             <option value="=" id="idAccel-equals">=</option>
@@ -73,7 +72,7 @@ module.exports = function () {
       </div>`
     });
 
-    var drop = document.getElementById("dropdown-comparison");
+    var drop = document.getElementById("var-list");
     var opts = drop.options;
     for (var i = 0; i < opts.length; i++) {
       if (opts[i].value === block.controllerSettings.data.comparison) {
@@ -88,7 +87,7 @@ module.exports = function () {
     var comparison = document.getElementById('dropdown-comparison');
     var index = comparison.selectedIndex;
     block.controllerSettings.data.comparison = comparison.options[index].value;
-    keypad.closeTabs({'div': div});
+    keypad.closeTabs(div);
   };
 
   // Buid an SVG for the block that indicates the device name

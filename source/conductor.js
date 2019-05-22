@@ -293,21 +293,18 @@ module.exports = function () {
 
   conductor.getPrintVal = function(d){
     var val = 0;
-    if(d.print === 'var'){
-      if(d.variable === 'A'){
-        val = variables.a;
-      } else if(d.variable === 'B'){
-        val = variables.b;
-      } else if(d.variable === 'C'){
-        val = variables.c;
-      }
-    } else if(d.print === 'sensor'){
-      if(d.sensor === 'accel'){
+    if (d.print === 'var') {
+      console.log('var------');
+      val = variables.get(d.variable);
+    } else if (d.print === 'sensor') {
+      console.log('sensor------');
+      if(d.sensor === 'accel') {
         val = cxn.accelerometer;
-      } else if(d.sensor === 'temp'){
+      } else if (d.sensor === 'temp') {
         val = cxn.temperature;
       }
     }
+    console.log('conductor print', d.print, d.variable, val);
     return val;
   };
 

@@ -95,11 +95,10 @@ module.exports = function () {
   };
 
   servoBlock.configuratorOpen = function(div, block) {
-    keypad.openTabs({
+    keypad.openTabs(div, {
       'getValue': function() { return block.controllerSettings.data.pos; },
       'setValue': function(position) { block.controllerSettings.data.pos = position; },
       'type':servoBlock,
-      'div': div,
       'block': block,
       'min':0,
       'max':180,
@@ -109,7 +108,7 @@ module.exports = function () {
     });
   };
   servoBlock.configuratorClose = function(div) {
-    keypad.closeTabs({'div': div});
+    keypad.closeTabs(div);
   };
 
   return servoBlock;

@@ -64,15 +64,14 @@ module.exports = function () {
   };
 
   twoMotorBlock.configuratorOpen = function(div, block) {
-    keypad.tabbedButtons({
+    keypad.tabbedButtons(div, {
       'getValue': function() { return block.controllerSettings.data.speed; },
       'setValue': function(speed) { block.controllerSettings.data.speed = speed; },
-      'type':twoMotorBlock,
-      'div': div,
+      'type': twoMotorBlock,
       'block': block,
-      'min':-100,
-      'max':100,
-      'suffix':"%",
+      'min': -100,
+      'max': 100,
+      'suffix': "%",
       'numArray': ["+1", "+10", "+50", "-1", "-10", "-50", undefined, "C"],
       'calcLayout': 'simple',
       'getBeats': function() { return block.controllerSettings.data.duration; },
@@ -80,7 +79,7 @@ module.exports = function () {
     });
   };
   twoMotorBlock.configuratorClose = function(div) {
-    keypad.closeTabs({'div': div});
+    keypad.closeTabs(div);
   };
 
   return twoMotorBlock;

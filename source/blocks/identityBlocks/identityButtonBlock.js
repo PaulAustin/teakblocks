@@ -68,7 +68,6 @@ module.exports = function () {
     block.controllerSettings.data.button = comparison.options[index].value;
     identityButtonBlock.activeBlock = null;
     block.updateSvg();
-    //keypad.closeTabs({'div': div});
   };
 
   // Buid an SVG for the block that indicates the device name

@@ -23,9 +23,9 @@ SOFTWARE.
 module.exports = function () {
   //var log = require('./../log.js');
   var svgb = require('./../../svgbuilder.js');
-  //var cxn = require('./../cxn.js');
   var ko = require('knockout');
   var keypad = require('./../keypadTab.js');
+
   // TODO the link type could show up on the icon
   // to indicate how it is connected
   // var faBlueTooth = '\uf294';
@@ -34,7 +34,6 @@ module.exports = function () {
 
   // Items for selecting a device from a list.
   identityGyroBlock.keyPadValue = ko.observable(0);
-
 
   // Initial settings for blocks of this type.
   identityGyroBlock.defaultSettings = function() {
@@ -51,11 +50,10 @@ module.exports = function () {
   };
 
   identityGyroBlock.configuratorOpen = function(div, block) {
-    keypad.openTabs({
+    keypad.openTabs(div, {
       'getValue': function() { return block.controllerSettings.data.value; },
       'setValue': function(value) { block.controllerSettings.data.value = value; },
       'type':identityGyroBlock,
-      'div': div,
       'block': block,
       'min':-2048,
       'max':2048,
@@ -91,7 +89,7 @@ module.exports = function () {
     var comparison = document.getElementById('dropdown-comparison');
     var index = comparison.selectedIndex;
     block.controllerSettings.data.comparison = comparison.options[index].value;
-    keypad.closeTabs({'div': div});
+    keypad.closeTabs(div);
   };
 
   // Buid an SVG for the block that indicates the device name
@@ -125,7 +123,6 @@ module.exports = function () {
     var button3 = svgb.createCircle('svg-clear block-stencil-fill', 65, -27, 8);
     button3.setAttribute('style', 'transform: rotate(90deg) scale(1, 1.5);');
     root.appendChild(button3);
-
   };
 
   return identityGyroBlock;

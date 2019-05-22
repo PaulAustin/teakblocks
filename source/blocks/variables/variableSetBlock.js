@@ -25,15 +25,10 @@ module.exports = function () {
   var ko = require('knockout');
   var keypad = require('./../keypadTab.js');
   var icons = require('./../icons.js');
-  // TODO the link type could show up on the icon
-  // to indicate how it is connected
-  // var faBlueTooth = '\uf294';
-  // var pb = svgb.pathBuilder;
+  var vars = require('./../../variables.js');
   var variableSetBlock = {};
-  // var variables = require('./../../variables.js');
 
   // Items for selecting a device from a list.
-  //identityAccelerometer.devices = ko.observableArray([]);
   variableSetBlock.keyPadValue = ko.observable(0);
 
   // Initial settings for blocks of this type.
@@ -50,11 +45,10 @@ module.exports = function () {
   };
 
   variableSetBlock.configuratorOpen = function(div, block) {
-    keypad.openTabs({
+    keypad.openTabs(div, {
       'getValue': function() { return block.controllerSettings.data.value; },
       'setValue': function(value) { block.controllerSettings.data.value = value; },
       'type':variableSetBlock,
-      'div': div,
       'block': block,
       'min':-100,
       'max':100,
@@ -62,10 +56,7 @@ module.exports = function () {
       'numArray': ["-1", "C", "+1", "-10", undefined, "+10"],
       'calcLayout': 'simple',
       'inner': `<div id='keypadDiv' class='editorDiv'>
-          <select class="dropdown-comparison vars-dropdown-comparison" id="dropdown-comparison">
-            <option value="A">A</option>
-            <option value="B">B</option>
-            <option value="C">C</option>
+          <select class="dropdown-comparison vars-dropdown-comparison" id="var-list">
           </select>
           <div class="dropdown-label-txt varSet-label-txt svg-clear">=
           </div>
@@ -75,23 +66,17 @@ module.exports = function () {
       </div>`
     });
 
-    var drop = document.getElementById("dropdown-comparison");
-    var opts = drop.options;
-    for (var i = 0; i < opts.length; i++) {
-      if (opts[i].value === block.controllerSettings.data.variable) {
-        drop.selectedIndex = i;
-        break;
-      }
-    }
+    var selObj = document.getElementById("var-list");
+    vars.addOptions(selObj, block.controllerSettings.data.variable);
   };
 
   // Close the identity blocks and clean up hooks related to it.
   variableSetBlock.configuratorClose = function(div, block) {
-    var vars = document.getElementById('dropdown-comparison');
-    var index = vars.selectedIndex;
-    block.controllerSettings.data.variable = vars.options[index].value;
+    // Determine what was seleced
+    var selObj = document.getElementById('var-list');
+    block.controllerSettings.data.variable = vars.getSelected(selObj);
     block.updateSvg();
-    keypad.closeTabs({'div': div});
+    keypad.closeTabs(div);
   };
 
   // Buid an SVG for the block that indicates the device name

@@ -123,11 +123,10 @@ module.exports = function () {
     block.svgCrossBlock = scb;
   };
   flowBlockHead.configuratorOpen = function(div, block) {
-    keypad.openTabs({
+    keypad.openTabs(div, {
       'getValue': function() { return block.controllerSettings.data.duration; },
       'setValue': function(duration) { block.controllerSettings.data.duration = duration; },
       'type':flowBlockHead,
-      'div': div,
       'block': block,
       'min':1,
       'max':100,
@@ -137,7 +136,7 @@ module.exports = function () {
     });
   };
   flowBlockHead.configuratorClose = function(div) {
-    keypad.closeTabs({'div': div});
+    keypad.closeTabs(div);
   };
   flowBlockTail.configuratorOpen = function(div, block) {
     flowBlockHead.configuratorOpen(div, block.flowHead);

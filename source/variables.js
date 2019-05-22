@@ -23,8 +23,48 @@ SOFTWARE.
 module.exports = function (){
   var variables = {};
 
+  variables.vars = {
+    'A': {'rw':true, 'source':'variable'},
+    'B': {'rw':true, 'source':'variable'},
+    'C': {'rw':true, 'source':'variable'},
+    /*
+    'Accel': {'rw':false, 'source':'sensor'},
+    'Gyro': {'rw':false, 'source':'sensor'},
+    'M1': {'rw':false, 'source':'actor'},
+    'M2': {'rw':false, 'source':'actor'},
+    'E1': {'rw':false, 'source':'sensor'},
+    'E2': {'rw':false, 'source':'sensor'},
+    'F1': {'rw':false, 'source':'function'},
+    'F2': {'rw':false, 'source':'function'},
+    */
+  };
+
+  variables.addOptions = function(selectObj, selectedOption) {
+
+    var index = 0;
+    for (var key in variables.vars) {
+      var option = document.createElement("option");
+      option.text = key;
+      option.value = key;
+      selectObj.add(option);
+
+      if (key === selectedOption) {
+        selectObj.selectedIndex = index;
+      }
+      index += 1;
+    }
+  };
+
+  variables.getSelected = function(selectObj) {
+    var index = selectObj.selectedIndex;
+    var item = selectObj.options[index];
+    console.log("selected item", item.value);
+    return item.value;
+    };
+
   variables.Var = function Var () {
     this.value = 0;
+    this.lastValue = 0;
     this.min = null;
     this.max = null;
   };
@@ -50,6 +90,19 @@ module.exports = function (){
     this.pin();
   };
 
+  variables.Var.prototype.get = function() {
+    return this.value;
+  };
+
+  variables.Var.prototype.hasChanged = function() {
+    return (this.value !== this.lastValue);
+  };
+
+  variables.Var.prototype.sync = function() {
+    this.lastValue = this.value;
+  };
+
+
   variables.Var.prototype.pin = function() {
     if (this.min !== null && this.value < this.min) {
       this.value = this.min;
@@ -65,6 +118,9 @@ module.exports = function (){
     'L': new variables.Var(),
     'R': new variables.Var()
   };
+
+  variables.v['L'].setMinMax(-100,100);
+  variables.v['R'].setMinMax(-100,100);
 
   variables.func = function (vname, f, val) {
     var v = variables.v[vname];
@@ -83,6 +139,10 @@ module.exports = function (){
     if (v === undefined)
       return;
     v.set(val);
+  };
+
+  variables.get = function (vname) {
+    return variables.v[vname].get();
   };
 
   variables.printVars = function() {

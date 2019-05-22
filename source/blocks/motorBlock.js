@@ -73,11 +73,10 @@ module.exports = function () {
         tabs[i].classList.add('tab-selected');
       }
     }
-    keypad.tabbedButtons({
+    keypad.tabbedButtons(div, {
       'getValue': function() { return block.controllerSettings.data.speed; },
       'setValue': function(speed) { block.controllerSettings.data.speed = speed; },
       'type':motorBlock,
-      'div': div,
       'block': block,
       'min':-100,
       'max':100,
@@ -95,7 +94,7 @@ module.exports = function () {
         block.controllerSettings.data.motor = tabs[i].textContent;
       }
     }
-    keypad.closeTabs({'div': div});
+    keypad.closeTabs(div);
   };
 
   return motorBlock;

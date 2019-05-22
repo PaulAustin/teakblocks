@@ -50,11 +50,10 @@ module.exports = function () {
   };
 
   identityTemperatureBlock.configuratorOpen = function(div, block) {
-    keypad.openTabs({
+    keypad.openTabs(div, {
       'getValue': function() { return block.controllerSettings.data.value; },
       'setValue': function(value) { block.controllerSettings.data.value = value; },
       'type':identityTemperatureBlock,
-      'div': div,
       'block': block,
       'min':20,
       'max':120,
@@ -90,7 +89,7 @@ module.exports = function () {
     var comparison = document.getElementById('dropdown-comparison');
     var index = comparison.selectedIndex;
     block.controllerSettings.data.comparison = comparison.options[index].value;
-    keypad.closeTabs({'div': div});
+    keypad.closeTabs(div);
   };
 
   // Buid an SVG for the block that indicates the device name

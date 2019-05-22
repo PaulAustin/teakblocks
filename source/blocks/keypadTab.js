@@ -26,7 +26,7 @@ module.exports = function () {
     var ko = require('knockout');
     var keypad = {};
 
-    keypad.tabbedButtons = function(object){
+    keypad.tabbedButtons = function(div, object){
       object.inner =
           `<div id='keypadDiv' class='editorDiv'>
               <div id="numeric-display" class = "numeric-display-half svg-clear selectedDisplay" width='80px' height='80px' data-bind='text: keyPadValue'>
@@ -36,7 +36,7 @@ module.exports = function () {
               <svg id="keypadSvg" class='area' width='225px' height='200px' xmlns='http://www.w3.org/2000/svg'></svg>
               <svg id="beatsSvg" class='area' width='225px' height='200px' xmlns='http://www.w3.org/2000/svg'></svg>
           </div>`;
-      keypad.openTabs(object); //dataButton
+      keypad.openTabs(div, object); //dataButton
       var beatsDisplay = document.getElementById('beats-display');
       var numericDisplay = document.getElementById('numeric-display');
       beatsDisplay.onclick = function(){
@@ -60,14 +60,13 @@ module.exports = function () {
         for(var i = 0; i < buttonsLen; i++){
           buttons[0].parentNode.removeChild(buttons[0]);
         }
-        ko.cleanNode(object.div);
+        ko.cleanNode(div);
         keypad.tabbedButtons(object);
       };
     };
 
-    keypad.openTabs = function(object){
+    keypad.openTabs = function(div, object){
       // Get all the data from the parameter
-      var div = object.div;
       var block = object.block;
       var min = object.min;
       var max = object.max;
@@ -255,7 +254,7 @@ module.exports = function () {
 
     };
 
-    keypad.openTabsWithBeats = function(object) {
+    keypad.openTabsWithBeats = function(div, object) {
       object.inner =
           `<div id='keypadDiv' class='editorDiv'>
               <div id="numeric-display" class = "numeric-display-half svg-clear" width='80px' height='80px' data-bind='text: keyPadValue'>
@@ -267,13 +266,13 @@ module.exports = function () {
               <svg id="keypadSvg" class='area' width='225px' height='72px' xmlns='http://www.w3.org/2000/svg'></svg>
               <svg id="beatsSvg" class='area' width='225px' height='80px' xmlns='http://www.w3.org/2000/svg'></svg>
           </div>`;
-      keypad.openTabs(object);
+      keypad.openTabs(div, object);
       object.beatsRay = ["1", "2", "3", "4", "5", "6"];
       keypad.openBeats(object);
       };
 
-    keypad.closeTabs = function createKeyPad(object){
-      ko.cleanNode(object.div);
+    keypad.closeTabs = function createKeyPad(div){
+      ko.cleanNode(div);
     };
     return keypad;
 }();

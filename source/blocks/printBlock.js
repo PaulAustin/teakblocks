@@ -24,19 +24,13 @@ module.exports = function () {
   var svgb = require('./../svgbuilder.js');
   var interact = require('interact.js');
   var ko = require('knockout');
-  var keypad = require('./keypadTab.js');
   var icons = require('./icons.js');
-  // TODO the link type could show up on the icon
-  // to indicate how it is connected
-  // var faBlueTooth = '\uf294';
-  // var pb = svgb.pathBuilder;
   var printBlock = {};
-  // var variables = require('./../../variables.js');
+  var vars = require('./../variables.js');
 
   // Items for selecting a device from a list.
   //identityAccelerometer.devices = ko.observableArray([]);
   printBlock.keyPadValue = ko.observable(0);
-
 
   // Initial settings for blocks of this type.
   printBlock.defaultSettings = function() {
@@ -69,14 +63,14 @@ module.exports = function () {
         </div>`;
     printBlock.loadSlide(data.button, block);
 
-    var drop = document.getElementById("dropdown-comparison");
-    var opts = drop.options;
+    var selObj = document.getElementById("var-list");
+    var opts = selObj.options;
     for (var i = 0; i < opts.length; i++) {
       if (data.print === 'var' && opts[i].value === data.variable) {
-        drop.selectedIndex = i;
+        selObj.selectedIndex = i;
         break;
       } else if(data.print === 'sensor' && opts[i].value === data.sensor){
-        drop.selectedIndex = i;
+        selObj.selectedIndex = i;
         break;
       }
     }
@@ -104,34 +98,34 @@ module.exports = function () {
     if(buttonName === 'A'){ // var
       block.controllerSettings.data.print = "var";
       block.controllerSettings.data.button = "A";
-      editor.innerHTML = `<select class="dropdown-comparison printBlock-dropdown" id="dropdown-comparison">
-        <option value="A">A</option>
-        <option value="B">B</option>
-        <option value="C">C</option>
+      editor.innerHTML = `<select class="dropdown-comparison printBlock-dropdown" id="var-list">
       </select>`;
     } else if(buttonName === 'B'){ //sensor
       block.controllerSettings.data.print = "sensor";
       block.controllerSettings.data.button = "B";
-      editor.innerHTML = `<select class="dropdown-comparison printBlock-dropdown" id="dropdown-comparison">
+      editor.innerHTML = `<select class="dropdown-comparison printBlock-dropdown" id="var-list">
         <option value="accel">accel</option>
         <option value="temp">temp</option>
       </select>`;
     }
+
+    // Add variables to the drop down.
+    var selObj = document.getElementById("var-list");
+    vars.addOptions(selObj, block.controllerSettings.data.variable);
   };
 
   // Close the identity blocks and clean up hooks related to it.
   printBlock.configuratorClose = function(div, block) {
-    var vars = document.getElementById('dropdown-comparison');
-    var index = vars.selectedIndex;
+    var selObj = document.getElementById('var-list');
+    var opt = vars.getSelected(selObj);
     var data = block.controllerSettings.data;
     if(data.print === 'var'){
-      data.variable = vars.options[index].value;
+      data.variable = opt;
     } else if(data.print === 'sensor'){
-      data.sensor = vars.options[index].value;
+      data.sensor = opt;
     }
     block.updateSvg();
     printBlock.activeBlock = null;
-    //keypad.closeTabs({'div': div});
   };
 
   // Buid an SVG for the block that indicates the device name
