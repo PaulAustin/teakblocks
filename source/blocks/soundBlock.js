@@ -64,11 +64,11 @@ module.exports = function () {
   soundBlock.configuratorOpen = function(div, block) {
     soundBlock.activeBlock = block;
     div.innerHTML =
-        `<div id='pictureEditorDiv' class='editorDiv'>
-          <svg id='pianoSvg' width=231px height=175px xmlns='http://www.w3.org/2000/svg'>
-            <rect id='pictureRect' y=2px width=231px height=100px rx=4 ry=4 class='block-sound-piano'/>
-          </svg>
-        </div>`;
+          `<div id='pictureEditorDiv' class='editorDiv'>
+            <svg id='pianoSvg' width=231px height=190px xmlns='http://www.w3.org/2000/svg'>
+              <rect id='pictureRect' y=2px width=231px height=100px rx=4 ry=4 class='block-sound-piano'/>
+            </svg>
+          </div>`;
 
     // Create an editor state object for the interactions to work with.
     var svg = document.getElementById('pianoSvg');
