@@ -162,9 +162,8 @@ module.exports = function () {
       return (this.activeBlock !== null);
   };
 
-  blockSettings.hide = function(exceptBlock, diagram) {
+  blockSettings.hide = function(exceptBlock) {
 
-    var diagramChanger = true;
     var isSelectedGroup = false;
     var block = this.activeBlock;
 
