@@ -31,7 +31,7 @@ module.exports = function () {
       calcpad.activeBlock = block; // Is this even needed ???
       div.innerHTML =
       `<div id='pictureEditorDiv' class='editorDiv'>
-        <svg id='calcpadSvg' width=231px height=185px xmlns='http://www.w3.org/2000/svg'>
+        <svg id='calcpadSvg' width=231px height=190px xmlns='http://www.w3.org/2000/svg'>
         </svg>
       </div>`;
 
@@ -44,27 +44,63 @@ module.exports = function () {
       // based on what field is pressed. The key pad let it be filled in
       // layout.
 
-      var obj = icons.variable(0.9, 8, 2, 'R');
+      var xw = 226;
+      var yh = 190;
+      var displayh = 38;
+
+      var group = svgb.createGroup('', 0, 0);
+      var shell = svgb.createRect('calc-shell', 2, 2, xw, displayh, 4);
+      var keybase = svgb.createRect('calc-keybase', 2, displayh+3, xw, 145, 4);
+      group.appendChild(shell);
+      group.appendChild(keybase);
+      svg.appendChild(group);
+
+      var obj = icons.variable(0.7, 34, 6, 'A');
+      svg.appendChild(obj);
+       obj = icons.variable(0.7, 155, 6, 'M1');
+      svg.appendChild(obj);
+
+      obj = svgb.createText('svg-clear vars-bottom-txt', 112, 8+18, ':=');
+      obj.setAttribute('text-anchor', 'middle');
       svg.appendChild(obj);
 
       calcpad.addVarKeypad(svg);
+      calcpad.connectEvents(svg);
+    };
+
+    calcpad.connectEvents = function(svg) {
+      console.log('connect events');
+      interact('.calc-button', {context:svg} )
+        .on('tap', function (event) {
+          var strNum = event.target.getAttribute('name');
+          console.log('tap ->', strNum);
+        });
+
+/*
+      interact('.calcButtons', {context:svg})
+        .on('tap', function (event) {
+            // Get the clicked on button name
+            var strNum = event.target.getAttribute('name');
+        });
+        */
     };
 
     calcpad.addVarKeypad = function(svg) {
       var baseX = 6;
-      var dX = 57;
-      var baseY = 38;
-      var dY = 42;
+      var dX = 56;
+      var baseY = 42;
+      var dY = 36;
 
       var labels = ['7', '8', '9', '+1', '4', '5', '6', '-1', '1', '2', '3', '+/-', '0', '0', '.', 'C'];
 
       var i = 0;
-      for (var y = 0; y < 5; y++) {
+      for (var y = 0; y < 4; y++) {
         for (var x = 0; x < 4; x++) {
 //          var obj = icons.variable(0.8, baseX + (x*dX), baseY + (y*dY), 'R');
           var obj = icons.calcbutton(0.8,
             baseX + (x * dX),
-            baseY + (y * dY), 52,
+            baseY + (y * dY),
+            53, 34,
             labels[i],
             'calc-numbers');
           svg.appendChild(obj);
