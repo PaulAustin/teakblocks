@@ -26,6 +26,153 @@ module.exports = function () {
     var ko = require('knockout');
     var icons = require('./icons.js');
     var calcpad = {};
+    var expr = {};
+
+// An expression capture the operator/operand tree
+//  fix:  infix | prefix | postfix
+//  fxn:  function name. Variable and literals evalueate to simple functions
+//  flex: legal set of options allowed by the editor
+//        integer, real, boolean, variable, io variable, string?
+
+// In this case the data is kept simple and the algorithms are visitors.
+    var infixOpMap = {
+      'assign': ':=',
+      'increment': '+=',
+      'decrement': '-=',
+      'scale': '*=',
+      'divscale': '/=',
+      'add': '+',
+      'subtract': '-',
+      'divide': '/',
+      'multiply': '*',
+      'rshift': '>>',
+      'lshift': '<<',
+      'mod': '%',
+      'greater' : '>',
+      'greater-equal' : '≥',
+      'equal' : '=',
+      'not-equal' : '≠',
+      'less-equal' : '≤',
+      'less' : '<',
+//      'and' : '∧',
+//      'or' : '∨',
+      'and' : '&',
+      'or' : '|',
+      'xor' : '⊕',
+    };
+
+    var sampleExpr = {
+      cat: 'infixop',
+      name: 'assign',
+      flex: 'assign|increment|decrement',
+      args: [
+        {
+          cat: 'variable',
+          name: 'A',
+          flex: 'variable'
+        }, {
+          cat: 'integer',
+          name: '0',
+          flex: 'integer|variable'
+        }
+      ],
+    };
+
+    calcpad.argExists = function(e, i) {
+      return (e.args !== undefined && e.args[i] !== undefined);
+    };
+
+    // Caculate bounding boxes for elements of the epxression
+    calcpad.calcExprPlacements = function(e, left) {
+
+      // Start out with all infix notation
+      if (calcpad.argExists(e, 0))
+        left = calcpad.calcExprPlacements(e.args[0], left);
+
+      e.boxLeft = left;
+      if (e.cat === 'variable') {
+        // Might allow for longer names
+        left += 70;
+      } else if (e.cat === 'integer') {
+        // Might allow for longer numbers and negatives
+        left += 40;
+      } else if (e.cat === 'boolean') {
+        // Might allow for longer numbers and negatives
+        left += 40;
+      } else if (e.cat === 'infixop') {
+        // Migth be one or two characters
+        left += 40;
+      }
+
+      // This nodes left is for the fxn, not the whole expression.
+      e.boxRight = left;
+
+      if (calcpad.argExists(e, 1))
+        left = calcpad.calcExprPlacements(e.args[1], left);
+
+      return left;
+    };
+
+    calcpad.buildExprSvg = function(e, svg, top, height) {
+      var obj = null;
+
+      if (calcpad.argExists(e, 0))
+        calcpad.buildExprSvg(e.args[0], svg, top, height);
+
+      // In the back is th object that actually get the click events.
+      // class will be added/removed to highlight the expression.
+      var left = e.boxLeft;
+      var right = e.boxRight;
+      console.log('rect bounds', e, left, top + 6, right-left, height);
+      e.boxObj = svgb.createRect('expr-region', left, top, right-left, height);
+      e.boxObj.setAttribute('name', e.name); //Just for now.
+      svg.appendChild(e.boxObj);
+
+      if (e.cat === 'variable') {
+        obj = icons.variable(0.7, left + 15, top + 1, e.name);
+        svg.appendChild(obj);
+      } else if (e.cat === 'integer') {
+        obj = svgb.createText('svg-clear vars-bottom-txt', left + 15, 8+18, e.name);
+        obj.setAttribute('text-anchor', 'middle');
+        svg.appendChild(obj);
+      } else if (e.cat === 'boolean') {
+        obj = svgb.createText('svg-clear vars-bottom-txt', left + 15, 8+18, e.name);
+        obj.setAttribute('text-anchor', 'middle');
+        svg.appendChild(obj);
+      } else if (e.cat === 'infixop') {
+        let opString = infixOpMap[e.name];
+        obj = svgb.createText('svg-clear vars-bottom-txt', left + 15, 8+18, opString);
+        obj.setAttribute('text-anchor', 'middle');
+        svg.appendChild(obj);
+      }
+
+      if (calcpad.argExists(e, 0))
+        calcpad.buildExprSvg(e.args[1], svg, top, height);
+    };
+
+    calcpad.clearSvg = function(e, svg) {
+
+    }
+
+    calcpad.highlightExprSvg = function(e) {
+
+    }
+
+    calcpad.configKeyBoard = function(e, svg) {
+      if (e.cat === 'variable') {
+        calcpad.addVarKeypad(svg);
+      } else if (e.cat === 'integer') {
+        // can also allow for ooching.
+        calcpad.addNumberKeypad(svg);
+      } else if (e.cat === 'boolean') {
+        // true false
+        calcpad.addVarKeypad(svg);
+      } else if (e.cat === 'infixop') {
+        // logic , equality., etc
+        calcpad.addVarKeypad(svg);
+//        calcpad.addOpKeypad(svg);
+      }
+    };
 
     calcpad.open = function(div, block) {
       calcpad.activeBlock = block; // Is this even needed ???
@@ -50,31 +197,33 @@ module.exports = function () {
 
       var group = svgb.createGroup('', 0, 0);
       var shell = svgb.createRect('calc-shell', 2, 2, xw, displayh, 4);
-      var keybase = svgb.createRect('calc-keybase', 2, displayh+3, xw, 145, 4);
+      var keybase = svgb.createRect('calc-keybase', 2, displayh + 3, xw, 145, 4);
       group.appendChild(shell);
       group.appendChild(keybase);
       svg.appendChild(group);
 
-      var obj = icons.variable(0.7, 34, 6, 'A');
-      svg.appendChild(obj);
-       obj = icons.variable(0.7, 155, 6, 'M1');
-      svg.appendChild(obj);
+      calcpad.calcExprPlacements(sampleExpr, 10);
+      calcpad.exprGroup = svgb.createGroup('', 0, 0);
+      calcpad.buildExprSvg(sampleExpr, calcpad.exprGroup, 4, displayh - 4);
+      svg.appendChild(calcpad.exprGroup);
 
-      obj = svgb.createText('svg-clear vars-bottom-txt', 112, 8+18, ':=');
-      obj.setAttribute('text-anchor', 'middle');
-      svg.appendChild(obj);
-
-      calcpad.addVarKeypad(svg);
+      calcpad.configKeyBoard(sampleExpr, svg);
       calcpad.connectEvents(svg);
     };
 
     calcpad.connectEvents = function(svg) {
-      console.log('connect events');
       interact('.calc-button', {context:svg} )
         .on('tap', function (event) {
           var strNum = event.target.getAttribute('name');
-          console.log('tap ->', strNum);
+          console.log('calc-button ->', strNum);
         });
+
+        interact('.expr-region', {context:svg} )
+          .on('tap', function (event) {
+            var strNum = event.target.getAttribute('name');
+            console.log('expr-region ->', strNum);
+          });
+
 
 /*
       interact('.calcButtons', {context:svg})
@@ -96,7 +245,6 @@ module.exports = function () {
       var i = 0;
       for (var y = 0; y < 4; y++) {
         for (var x = 0; x < 4; x++) {
-//          var obj = icons.variable(0.8, baseX + (x*dX), baseY + (y*dY), 'R');
           var obj = icons.calcbutton(0.8,
             baseX + (x * dX),
             baseY + (y * dY),
