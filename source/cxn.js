@@ -218,7 +218,8 @@ cxn.webBTConnect = function () {
 
   let options = {
       filters: [
-        {services: ['generic_attribute']},
+      // The GATT filter filters out micro:bits on chrome books (6/1/2019) why??
+      // {services: ['generic_attribute']},
         {namePrefix: 'BBC micro:bit'}
       ],
       optionalServices: [nordicUARTservice.serviceUUID, 'link_loss']

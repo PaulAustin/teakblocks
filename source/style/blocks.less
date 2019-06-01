@@ -77,14 +77,14 @@ SOFTWARE.
   fill: @block-back-color;
   stroke: @block-outline-color;
   stroke-width: 4;
-  transition: stroke 0.3s ease;
+  transition: stroke 0.8s ease;
   stroke-linejoin: round;
 }
 .identity-block {
   fill: @block-indentity-backcolor;
 }
 .selected-block {
-  transition: stroke 0.3s ease;
+  transition: stroke 0.8s ease;
   stroke-width: 4;
   stroke: @selection-block-color;
 }
@@ -155,17 +155,75 @@ SOFTWARE.
   margin-left: 20px;
   text-align:center;
 }
+
+.calc-shell {
+  stroke-width: 4;
+  stroke: @block-outline-color;
+  fill:  @block-back-color;
+  stroke-linejoin: round;
+}
+
+.calc-keybase {
+  stroke-width: 4;
+  stroke: @block-outline-color;
+  fill:  @block-outline-color;
+  stroke-linejoin: round;
+}
+
+.calc-vars {
+  stroke-width: 2;
+  fill:  @var-poly-fill;
+  stroke: @var-poly-sroke;
+  stroke-linejoin: round;
+}
+
+.calc-vars-text {
+  font-family: @fa-font, @app-font;
+  text-align: center;
+  font-size: 30px;
+  fill: @var-poly-text;
+}
+
+.calc-operand {
+  stroke-width: 2;
+  stroke: @block-outline-color;
+  fill:  @block-back-color;
+}
+
+.calc-operand-text {
+  font-family: @fa-font, @app-font;
+  text-align: center;
+  font-size: 30px;
+  fill: @block-glyph-color;
+}
+
+.calc-numbers {
+  stroke-width: 2;
+  stroke: @block-outline-color;
+//  fill:  @block-back-color;
+  fill:  #000000;
+}
+
+.calc-numbers-text {
+  font-family: @fa-font, @app-font;
+  text-align: center;
+  font-size: 30px;
+  fill: @block-glyph-color;
+}
+
 .vars-dropdown-comparison {
   margin-left: 5px;
   width: 75px;
 }
-.vars-var-text {
+
+.vars-poly-text {
   font-family: @fa-font, @app-font;
   text-align: center;
   font-size: 30px;
-  fill: #FFF;
+  fill: @var-poly-text;
 }
-.vars-ploygon {
+
+.vars-poly {
   stroke-width: 4;
   fill:  @var-poly-fill;
   stroke: @var-poly-sroke;
@@ -178,12 +236,13 @@ SOFTWARE.
   fill: @block-glyph-color;
   stroke-width: 0;
 }
-.printBlock-var-text {
-  font-family: @fa-font, @app-font;
-  text-align: center;
-  font-size: 20px;
-  fill: #FFF;
+
+.expr-region {
+  stroke-width: 1;
+  stroke: @block-glyph-color;
+  fill: @block-back-color;
 }
+
 .dropdown-label-txt {
   float:left;
   padding-left: 20px;

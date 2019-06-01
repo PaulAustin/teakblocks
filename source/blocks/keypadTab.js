@@ -126,7 +126,7 @@ module.exports = function () {
         .on('tap', function (event) {
             // Get the clicked on button name
             strNum = event.target.getAttribute('name');
-
+            console.log('tap ->', strNum);
             if(calcLayout === "simple"){ // If the layout is a simple layout
               var increment = "";
               display.classList.remove("error");

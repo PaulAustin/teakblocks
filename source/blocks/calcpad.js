@@ -63,7 +63,7 @@ module.exports = function () {
 
     var sampleExpr = {
       cat: 'infixop',
-      name: 'assign',
+      name: 'decrement',
       flex: 'assign|increment|decrement',
       args: [
         {
@@ -95,13 +95,13 @@ module.exports = function () {
         left += 70;
       } else if (e.cat === 'integer') {
         // Might allow for longer numbers and negatives
-        left += 40;
+        left += 50;
       } else if (e.cat === 'boolean') {
         // Might allow for longer numbers and negatives
         left += 40;
       } else if (e.cat === 'infixop') {
         // Migth be one or two characters
-        left += 40;
+        left += 50;
       }
 
       // This nodes left is for the fxn, not the whole expression.
@@ -132,16 +132,16 @@ module.exports = function () {
         obj = icons.variable(0.7, left + 15, top + 1, e.name);
         svg.appendChild(obj);
       } else if (e.cat === 'integer') {
-        obj = svgb.createText('svg-clear vars-bottom-txt', left + 15, 8+18, e.name);
+        obj = svgb.createText('svg-clear vars-bottom-txt', left + 20, top+22, e.name);
         obj.setAttribute('text-anchor', 'middle');
         svg.appendChild(obj);
       } else if (e.cat === 'boolean') {
-        obj = svgb.createText('svg-clear vars-bottom-txt', left + 15, 8+18, e.name);
+        obj = svgb.createText('svg-clear vars-bottom-txt', left + 20, top+22, e.name);
         obj.setAttribute('text-anchor', 'middle');
         svg.appendChild(obj);
       } else if (e.cat === 'infixop') {
         let opString = infixOpMap[e.name];
-        obj = svgb.createText('svg-clear vars-bottom-txt', left + 15, 8+18, opString);
+        obj = svgb.createText('svg-clear vars-bottom-txt', left + 20, top+22, opString);
         obj.setAttribute('text-anchor', 'middle');
         svg.appendChild(obj);
       }
@@ -202,7 +202,7 @@ module.exports = function () {
       group.appendChild(keybase);
       svg.appendChild(group);
 
-      calcpad.calcExprPlacements(sampleExpr, 10);
+      calcpad.calcExprPlacements(sampleExpr, 30);
       calcpad.exprGroup = svgb.createGroup('', 0, 0);
       calcpad.buildExprSvg(sampleExpr, calcpad.exprGroup, 4, displayh - 4);
       svg.appendChild(calcpad.exprGroup);

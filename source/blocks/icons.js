@@ -135,24 +135,37 @@ module.exports = function () {
     return group;
   };
 
-  icons.variable = function(scale, x, y, data) {
+  icons.calcbutton = function(scale, x, y, width, hieght, label, style) {
+    var group = svgb.createGroup('', 0, 0);
+    var button = svgb.createRect(
+      'calc-button ' + style,
+       x, y, width, hieght, hieght / 2);
+    var text = svgb.createText(
+      'svg-clear ' + style + '-text',
+       x+(width/2), y + 28, label);
+    text.setAttribute('text-anchor', 'middle');
+    group.appendChild(button);
+    group.appendChild(text);
+    return group;
+  };
+
+  icons.variable = function(scale, x, y, label) {
     var group = svgb.createGroup('svg-clear', 0, 0);
 
     var pathd = '';
     pathd += pb.move(11, 5);
-    pathd += pb.hline(33);
-    pathd += pb.line(8, 20);
-    pathd += pb.line(-8, 20);
-    pathd += pb.hline(-33);
-    pathd += pb.line(-8, -20);
-    pathd += pb.line(8, -20);
+    pathd += pb.hline(36);
+    pathd += pb.line(7.5, 18);
+    pathd += pb.line(-7.5, 18);
+    pathd += pb.hline(-36);
+    pathd += pb.line(-7.5, -18);
+    pathd += pb.line(7, -18);
     pathd += pb.close();
 
-    var path = svgb.createPath('svg-clear vars-ploygon', pathd);
+    var path = svgb.createPath('svg-clear vars-poly', pathd);
     group.appendChild(path);
 
-    var variable = data;
-    var text = svgb.createText('svg-clear vars-var-text', 27, 35, variable);
+    var text = svgb.createText('svg-clear vars-poly-text', 29, 34, label);
     text.setAttribute('text-anchor', 'middle');
     group.appendChild(text);
 
@@ -160,14 +173,14 @@ module.exports = function () {
     return group;
   };
 
-  icons.motor = function(scale, x, y, doScale) {
+  icons.motor = function(scale, x, y) {
     var group = svgb.createGroup('svg-clear', 0, 0);
     var motor = svgb.createCircle('svg-clear block-motor-body', 40, 30, 20);
     group.appendChild(motor);
     var shaft = svgb.createCircle('svg-clear block-motor-shaft', 40, 30, 4);
     group.appendChild(shaft);
 
-    if(doScale !== false){
+    if (scale !== 1.0) {
       group.setAttribute('style', 'transform: translate(' + x + 'px, ' + y + 'px) scale(' + scale + ');');
     }
     return group;
@@ -176,7 +189,7 @@ module.exports = function () {
   icons.motorWithDial = function(scale, x, y, data) {
     var group = svgb.createGroup('svg-clear', 0, 0);
 
-    var motorBody = icons.motor(scale, x, y, false);
+    var motorBody = icons.motor(1.0, x, y);
     group.appendChild(motorBody);
 
     var data1 = data;
@@ -184,7 +197,7 @@ module.exports = function () {
     var dx = Math.cos((rotate) * (Math.PI/180));
     var dy = Math.sin((rotate) * (Math.PI/180));
     var spread = 1;
-    if(rotate < 0){
+    if (rotate < 0) {
       spread = 0;
     }
     var pathd = '';
@@ -211,7 +224,7 @@ module.exports = function () {
 
   icons.paletteBlock = function(scale, classes, x, y, block) {
     var width = block.width;
-    if(block.name.includes('identity')){
+    if (block.name.includes('identity')) {
       return icons.paletteBlockIdentity(scale, classes, x, y, width);
     }
     var pathd = '';

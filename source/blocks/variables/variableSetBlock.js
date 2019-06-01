@@ -24,6 +24,7 @@ module.exports = function () {
   var svgb = require('./../../svgbuilder.js');
   var ko = require('knockout');
   var keypad = require('./../keypadTab.js');
+  var calcpad = require('./../calcpad.js');
   var icons = require('./../icons.js');
   var vars = require('./../../variables.js');
   var variableSetBlock = {};
@@ -45,6 +46,9 @@ module.exports = function () {
   };
 
   variableSetBlock.configuratorOpen = function(div, block) {
+    calcpad.open(div, block);
+
+/*
     keypad.openTabs(div, {
       'getValue': function() { return block.controllerSettings.data.value; },
       'setValue': function(value) { block.controllerSettings.data.value = value; },
@@ -53,30 +57,36 @@ module.exports = function () {
       'min':-100,
       'max':100,
       'suffix':"",
-      'numArray': ["-1", "C", "+1", "-10", undefined, "+10"],
+      'numArray': ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I','J','K','L'],
+//      'numArray': ["-1", "C", "+1", "-10", undefined, "+10"],
       'calcLayout': 'simple',
       'inner': `<div id='keypadDiv' class='editorDiv'>
-          <select class="dropdown-comparison vars-dropdown-comparison" id="var-list">
-          </select>
-          <div class="dropdown-label-txt varSet-label-txt svg-clear">=
+          <div id="numeric-display" class = "numeric-display-third svg-clear" width='30px' height='80px' data-bind='text: keyPadValue'>
           </div>
           <div id="numeric-display" class = "numeric-display-third svg-clear" width='30px' height='80px' data-bind='text: keyPadValue'>
           </div>
           <svg id="keypadSvg" class='area' width='225px' height='200px' xmlns='http://www.w3.org/2000/svg'></svg>
       </div>`
     });
+*/
 
-    var selObj = document.getElementById("var-list");
-    vars.addOptions(selObj, block.controllerSettings.data.variable);
+//  <select class="dropdown-comparison vars-dropdown-comparison" id="var-list">
+//  </select>
+
+//<!--          <div class="dropdown-label-txt varSet-label-txt svg-clear">=
+//          </div>
+
+  //zz  var selObj = document.getElementById("var-list");
+  //zz  vars.addOptions(selObj, block.controllerSettings.data.variable);
   };
 
   // Close the identity blocks and clean up hooks related to it.
   variableSetBlock.configuratorClose = function(div, block) {
     // Determine what was seleced
-    var selObj = document.getElementById('var-list');
-    block.controllerSettings.data.variable = vars.getSelected(selObj);
+    //zz  var selObj = document.getElementById('var-list');
+    //zz  block.controllerSettings.data.variable = vars.getSelected(selObj);
     block.updateSvg();
-    keypad.closeTabs(div);
+    calcpad.close(div);
   };
 
   // Buid an SVG for the block that indicates the device name
@@ -91,6 +101,7 @@ module.exports = function () {
     num.setAttribute('text-anchor', 'middle');
     root.appendChild(num);
   };
+
 
   return variableSetBlock;
   }();
