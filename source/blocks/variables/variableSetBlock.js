@@ -46,9 +46,8 @@ module.exports = function () {
   };
 
   variableSetBlock.configuratorOpen = function(div, block) {
-    calcpad.open(div, block);
+  //  calcpad.open(div, block);
 
-/*
     keypad.openTabs(div, {
       'getValue': function() { return block.controllerSettings.data.value; },
       'setValue': function(value) { block.controllerSettings.data.value = value; },
@@ -57,36 +56,31 @@ module.exports = function () {
       'min':-100,
       'max':100,
       'suffix':"",
-      'numArray': ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I','J','K','L'],
-//      'numArray': ["-1", "C", "+1", "-10", undefined, "+10"],
+      'numArray': ["-1", "C", "+1", "-10", undefined, "+10"],
       'calcLayout': 'simple',
       'inner': `<div id='keypadDiv' class='editorDiv'>
-          <div id="numeric-display" class = "numeric-display-third svg-clear" width='30px' height='80px' data-bind='text: keyPadValue'>
+          <select class="dropdown-comparison vars-dropdown-comparison" id="var-list">
+          </select>
+          <div class="dropdown-label-txt varSet-label-txt svg-clear">=
           </div>
           <div id="numeric-display" class = "numeric-display-third svg-clear" width='30px' height='80px' data-bind='text: keyPadValue'>
           </div>
           <svg id="keypadSvg" class='area' width='225px' height='200px' xmlns='http://www.w3.org/2000/svg'></svg>
       </div>`
     });
-*/
 
-//  <select class="dropdown-comparison vars-dropdown-comparison" id="var-list">
-//  </select>
-
-//<!--          <div class="dropdown-label-txt varSet-label-txt svg-clear">=
-//          </div>
-
-  //zz  var selObj = document.getElementById("var-list");
-  //zz  vars.addOptions(selObj, block.controllerSettings.data.variable);
+    var selObj = document.getElementById("var-list");
+    vars.addOptions(selObj, block.controllerSettings.data.variable);
   };
 
   // Close the identity blocks and clean up hooks related to it.
   variableSetBlock.configuratorClose = function(div, block) {
     // Determine what was seleced
-    //zz  var selObj = document.getElementById('var-list');
-    //zz  block.controllerSettings.data.variable = vars.getSelected(selObj);
+    var selObj = document.getElementById('var-list');
+    block.controllerSettings.data.variable = vars.getSelected(selObj);
     block.updateSvg();
-    calcpad.close(div);
+    //calcpad.close(div);
+    keypad.closeTabs(div);
   };
 
   // Buid an SVG for the block that indicates the device name

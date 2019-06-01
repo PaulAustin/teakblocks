@@ -70,9 +70,6 @@ module.exports = function () {
       'calcLayout': 'simple',
       'inner': `<div id='keypadDiv' class='editorDiv'>
           <select class="dropdown-comparison vars-dropdown-comparison" id="var-list">
-            <option value="A" id="idAccel-equals">A</option>
-            <option value="B" id="idAccel-greater">B</option>
-            <option value="C" id="idAccel-less">C</option>
           </select>
           <div class="dropdown-label-txt varAdd-label-txt svg-clear" id="varAdd-incdec">\uf061
           </div>
