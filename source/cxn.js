@@ -244,12 +244,12 @@ cxn.webBTConnect = function () {
     })
     .then(function(server) {
       // Called once gatt.connect() finishes
-      log.trace('> primary service:', server);
+      log.trace('> GATT connected:', server);
       return server.getPrimaryService(nordicUARTservice.serviceUUID);
     })
     .then(function(primaryService) {
       // Called once nordicUARTservice is found.
-      log.trace('> primary Service:', primaryService);
+      log.trace('> Nordic UART service connected:', primaryService);
       // Calling getCharacteristics with no parameters
       // should return the one associated with the primary service
       // ( the tx and rx service)
@@ -257,17 +257,29 @@ cxn.webBTConnect = function () {
     })
     .then(function(characteristics) {
       var rawName = characteristics[0].service.device.name;
-      log.trace('> characteristics:', rawName, characteristics);
+      log.trace('> UART characteristics:', rawName, characteristics);
       var botName = cxn.bleNameToBotName(rawName);
       cxn.scanning = false;
       cxn.setConnectionStatus(botName, cxn.statusEnum.CONNECTED);
 
-      // testing this in chrome has worked.
-      // Could add validation code to confirm nothing has changes
-      // [0].uuid = 6e400002-... (tx)
-      // [1].uuid = 6e400003-... (rx)
-      cxn.webBLEWrite = characteristics[0];
-      cxn.webBLERead = characteristics[1];
+      if (characteristics.length >= 2) {
+        var c0 = characteristics[0];
+        var c1 = characteristics[1];
+        if (c0.uuid === nordicUARTservice.txCharacteristic) {
+          cxn.webBLEWrite = c0;
+        } else if (c1.uuid === nordicUARTservice.txCharacteristic) {
+          cxn.webBLEWrite = c1;
+        }
+        if (c0.uuid === nordicUARTservice.rxCharacteristic) {
+          cxn.webBLERead = c0;
+        } else if (c1.uuid === nordicUARTservice.rxCharacteristic) {
+          cxn.webBLERead = c1;
+        }
+      }
+      log.trace('> Write connection', cxn.webBLEWrite);
+      log.trace('> Read connection', cxn.webBLERead);
+      //cxn.webBLEWrite = characteristics[0];
+      //cxn.webBLERead = characteristics[1];
       cxn.webBLERead.startNotifications()
       .then(function() {
           log.trace ('adding event listener');
@@ -426,10 +438,10 @@ cxn.write = function(name, message) {
       if (cxn.webBLEWrite) {
         cxn.webBLEWrite.writeValue(buffer)
         .then(function() {
-          //log.trace('write complete');
+          //log.trace('write succeded', message);
         })
         .catch(function(error) {
-          log.trace('write failed', error);
+          log.trace('write failed', message, error);
         });
       }
       //var cxn.webBLEWrite = null;
