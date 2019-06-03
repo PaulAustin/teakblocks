@@ -28,7 +28,16 @@ module.exports = function () {
   // is called.
   var app = {};
 
-  log.trace('TBlocks starting.', new Date().toLocaleDateString());
+  let timeFormat = {
+      year: "2-digit",
+      month: "2-digit",
+      day: "2-digit",
+      hour:  "2-digit",
+      minute: "2-digit",
+      second: "2-digit"
+    };
+
+  log.trace('TBlocks starting.', new Date().toLocaleDateString("en-US", timeFormat));
 
   app.hideCookieSheet = function() {
       var cookieSheet = document.getElementById('cookieSheet');
@@ -36,8 +45,21 @@ module.exports = function () {
       app.storage.setItem('cookiesAccepted', true);
   };
 
+  app.pause = function () {
+    log.trace('TBlocks pause.', new Date().toLocaleDateString("en-US", timeFormat));
+  };
+
+  app.resume = function () {
+    log.trace('TBlocks resuming.', new Date().toLocaleDateString("en-US", timeFormat));
+  };
+
   // Application main, called once shell is fully up.
   app.start = function () {
+
+    // Once app has started these can be added.
+    document.addEventListener("pause", app.pause, false);
+    document.addEventListener("resume", app.resume, false);
+
     var ko = require('knockout');
     var Clipboard = require('clipboard');
     app.tbe = require('./teakblocks.js');
