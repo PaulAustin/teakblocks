@@ -1591,7 +1591,7 @@ tbe.addPalette = function addPalette(palette) {
   for (var key in blocks) {
     if (blocks.hasOwnProperty(key)) {
       // Hmmm. This is a curious hack. Reset to left on a few specific blocks.
-      if (key.includes('variableSet') || key.includes('wait')) {
+      if (key.includes('picture') || key.includes('wait')) {
         indent = leftIndent;
         increment = 15;
       }
