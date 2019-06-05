@@ -33,7 +33,6 @@ module.exports = function () {
   //identityAccelerometer.devices = ko.observableArray([]);
   identityAccelerometerBlock.keyPadValue = ko.observable(0);
 
-
   // Initial settings for blocks of this type.
   identityAccelerometerBlock.defaultSettings = function() {
     // Return a new object with settings for the controller.
@@ -61,7 +60,7 @@ module.exports = function () {
       'inner': `<div id='keypadDiv' class='editorDiv'>
           <div class="dropdown-label-txt svg-clear">accel
           </div>
-          <select class="dropdown-comparison" id="var-list">
+          <select class="dropdown-comparison" id="comparison-list">
             <option value=">" id="idAccel-greater">></option>
             <option value="<" id="idAccel-less"><</option>
             <option value="=" id="idAccel-equals">=</option>
@@ -72,7 +71,7 @@ module.exports = function () {
       </div>`
     });
 
-    var drop = document.getElementById("var-list");
+    var drop = document.getElementById("comparison-list");
     var opts = drop.options;
     for (var i = 0; i < opts.length; i++) {
       if (opts[i].value === block.controllerSettings.data.comparison) {
@@ -84,7 +83,7 @@ module.exports = function () {
 
   // Close the identity blocks and clean up hooks related to it.
   identityAccelerometerBlock.configuratorClose = function(div, block) {
-    var comparison = document.getElementById('dropdown-comparison');
+    var comparison = document.getElementById('comparison-list');
     var index = comparison.selectedIndex;
     block.controllerSettings.data.comparison = comparison.options[index].value;
     keypad.closeTabs(div);
