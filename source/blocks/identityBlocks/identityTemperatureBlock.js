@@ -42,7 +42,7 @@ module.exports = function () {
     return {
       data:{
         // What comparison: =, <, >
-        comparison:'=',
+        comparison:'>',
         // Value
         value:80
       },
@@ -64,9 +64,9 @@ module.exports = function () {
           <div class="dropdown-label-txt svg-clear">temp
           </div>
           <select class="dropdown-comparison" id="dropdown-comparison">
-            <option value="=" id="idTemp-equals">=</option>
             <option value=">" id="idTemp-greater">></option>
             <option value="<" id="idTemp-less"><</option>
+            <option value="=" id="idTemp-equals">=</option>
           </select>
           <div id="numeric-display" class = "numeric-display-third svg-clear" width='30px' height='80px' data-bind='text: keyPadValue'>
           </div>
