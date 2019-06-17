@@ -57,6 +57,5 @@
     <plugin name="phonegap-plugin-mobile-accessibility" spec="git+https://github.com/phonegap/phonegap-mobile-accessibility.git" />
     <plugin name="cordova-plugin-splashscreen" spec="^5.0.2" />
     <engine name="ios" spec="^4.5.5" />
-    <engine name="android" spec="^7.1.4" />
     <engine name="osx" spec="^4.0.2" />
 </widget>
