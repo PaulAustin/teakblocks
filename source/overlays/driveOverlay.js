@@ -30,17 +30,14 @@ module.exports = function(){
   var vars = require('./../variables.js');
   var dov = {};
 
-  dov.lValueDStart = 0;
-  dov.rValueDStart = 0;
-
   dov.start = function() {
-    dov.lVar = vars.v['L'];
-    dov.rVar = vars.v['R'];
-    dov.buildSlider();
+    dov.lSlide = {vvalue: vars.v['L'], name:'L', dragStart:0};
+    dov.rSlide = {vvalue: vars.v['R'], name:'R', dragStart:0};
+    dov.buildSliders();
     dov.sendValuesToBot();
   };
 
-  dov.buildSlider = function() {
+  dov.buildSliders = function() {
     // TODO need to upate value as they change
     overlays.overlayDom.innerHTML = `
     <div id='overlayRoot'>
@@ -92,56 +89,39 @@ module.exports = function(){
     t.range = t.gh - t.gw;      // range in pixels
 
     var gInsetW = 80 * t.scaleW;
-    var lCenter = gInsetW + gwHalf;
-    var rCenter = w - gInsetW - gwHalf;
+    t.lSlide.hCenter = gInsetW + gwHalf;
+    t.rSlide.hCenter = w - gInsetW - gwHalf;
 
-    t.lSlide = t.addSlide(lCenter, 'L');
-    t.rSlide = t.addSlide(rCenter, 'R');
-
-    // Move thumbs to actual value locations.
-    t.moveThumbs();
+    t.addSlide(t.lSlide, 'L');
+    t.addSlide(t.rSlide, 'R');
   };
 
-  dov.addSlide = function(hCenter, tName) {
+  dov.addSlide = function(slide, tName) {
     var t = dov;
     var gwHalf = t.gw / 2;
     var fontY = 70 * t.scaleH;
     var fontSize = 48 * t.scaleH;
     var tw = gwHalf - 15;
 
-    var text = svgb.createText('slider-text', hCenter, fontY, "0");
-    text.style.fontSize = fontSize.toString() + 'px';
-    t.svg.appendChild(text);
-    var groove = svgb.createRect('slider-groove', hCenter - gwHalf, t.gtop, t.gw, t.gh, gwHalf);
+    slide.text = svgb.createText('slider-text', slide.hCenter, fontY, "0");
+    slide.text.style.fontSize = fontSize.toString() + 'px';
+    t.svg.appendChild(slide.text);
+    var groove = svgb.createRect('slider-groove', slide.hCenter - gwHalf, t.gtop, t.gw, t.gh, gwHalf);
     t.svg.appendChild(groove);
-    var thumb = svgb.createCircle('slider-thumb', hCenter, t.gtop, tw);
-    thumb.setAttribute('thumb', tName);
-    t.svg.appendChild(thumb);
+    slide.thumb = svgb.createCircle('slider-thumb', slide.hCenter, t.gtop, tw);
+    slide.thumb.setAttribute('thumb', tName);
+    t.svg.appendChild(slide.thumb);
 
-    return {text:text, thumb:thumb};
+    // Align with initial value.
+    t.updateSlide(slide);
   };
 
   dov.updateSlide = function(slide) {
     var t = dov;
-    var lPx = (t.range * ((t.lVar.value + 100)/200));
+    var tPx = (t.range * ((slide.vvalue.value + 100)/200));
     var bottom = t.gtop + t.range + (t.gw/2);
-    slide.thumb.setAttribute('cy', bottom - lPx);
-    slide.text.textContent = t.rVar.value.toString();
-  };
-
-
-  dov.moveThumbs = function() {
-      var t = dov;
-
-      var lPx = (t.range * ((t.lVar.value + 100)/200));
-      var rPx = (t.range * ((t.rVar.value + 100)/200));
-      var bottom = t.gtop + t.range + (t.gw/2);
-
-      t.lSlide.thumb.setAttribute('cy', bottom - lPx);
-      t.rSlide.thumb.setAttribute('cy', bottom - rPx);
-
-      t.lSlide.text.textContent = t.lVar.value.toString();
-      t.rSlide.text.textContent = t.rVar.value.toString();
+    slide.thumb.setAttribute('cy', bottom - tPx);
+    slide.text.textContent = slide.vvalue.value.toString();
   };
 
   dov.thumbEvent = function(event) {
@@ -151,27 +131,29 @@ module.exports = function(){
 
       if (thumb === 'L') {
         if (event.type === 'dragstart') {
-          t.lValueDStart = t.lVar.value;
+          t.lSlide.dragStart = t.lSlide.vvalue.value;
         } else if (event.type === 'dragmove') {
-          t.lVar.set(t.lValueDStart + (valPerPy * (event.y0 - event.pageY)));
+          t.lSlide.vvalue.set(t.lSlide.dragStart + (valPerPy * (event.y0 - event.pageY)));
         } else if (event.type === 'dragend') {
-          t.lVar.set(0);
+          t.lSlide.vvalue.set(0);
         }
+        dov.updateSlide(dov.lSlide);
       } else if (thumb === 'R') {
         if (event.type === 'dragstart') {
-          t.rValueDStart = t.rVar.value;
+          t.rSlide.dragStart = t.rSlide.vvalue.value;
         } else if (event.type === 'dragmove') {
-          t.rVar.set(t.rValueDStart + (valPerPy * (event.y0 - event.pageY)));
+          t.rSlide.vvalue.set(t.rSlide.dragStart + (valPerPy * (event.y0 - event.pageY)));
         } else if (event.type === 'dragend') {
-          t.rVar.set(0);
+          t.rSlide.vvalue.set(0);
         }
+        dov.updateSlide(dov.rSlide);
       }
-      t.moveThumbs();
   };
 
   dov.sliderInteract = function() {
 
-    interact('.slider-thumb', {context:dov.svg})              // target the matches of that selector
+    interact('.slider-thumb', {context:dov.svg})
+      // target the matches of that selector
       .draggable({         // make the element fire drag events
         max: Infinity      // allow drags on multiple elements
       })
@@ -193,16 +175,16 @@ module.exports = function(){
     //    log.trace('updTE', id);
     //var changed = dov.displayLeft !== dov.pastLeft || dov.displayRight !== dov.pastRight;
     if (id !== null && id !== dso.nonName) {
-      if (t.lVar.hasChanged()) {
-        var message2 = '(m:1 d:' + (-t.lVar.value) + ' b:1);';
+      if (t.lSlide.vvalue.hasChanged()) {
+        var message2 = '(m:1 d:' + (-t.lSlide.vvalue.value) + ' b:1);';
         conductor.cxn.write(id, message2);
       }
-      if (t.rVar.hasChanged()) {
-        var message1 = '(m:2 d:' + (-t.rVar.value) + ');';
+      if (t.rSlide.vvalue.hasChanged()) {
+        var message1 = '(m:2 d:' + (-t.rSlide.vvalue.value) + ');';
         conductor.cxn.write(id, message1);
       }
-      t.lVar.sync();
-      t.rVar.sync();
+      t.lSlide.vvalue.sync();
+      t.rSlide.vvalue.sync();
     }
 /*
     var accel = document.getElementsByClassName("drive-accelerometer")[0];
