@@ -92,11 +92,11 @@ module.exports = function(){
     t.lSlide.hCenter = gInsetW + gwHalf;
     t.rSlide.hCenter = w - gInsetW - gwHalf;
 
-    t.addSlide(t.lSlide, 'L');
-    t.addSlide(t.rSlide, 'R');
+    t.slideAdd(t.lSlide);
+    t.slideAdd(t.rSlide);
   };
 
-  dov.addSlide = function(slide, tName) {
+  dov.slideAdd = function(slide) {
     var t = dov;
     var gwHalf = t.gw / 2;
     var fontY = 70 * t.scaleH;
@@ -109,14 +109,14 @@ module.exports = function(){
     var groove = svgb.createRect('slider-groove', slide.hCenter - gwHalf, t.gtop, t.gw, t.gh, gwHalf);
     t.svg.appendChild(groove);
     slide.thumb = svgb.createCircle('slider-thumb', slide.hCenter, t.gtop, tw);
-    slide.thumb.setAttribute('thumb', tName);
+    slide.thumb.setAttribute('thumb', slide.name);
     t.svg.appendChild(slide.thumb);
 
     // Align with initial value.
-    t.updateSlide(slide);
+    t.slideUpdate(slide);
   };
 
-  dov.updateSlide = function(slide) {
+  dov.slideUpdate = function(slide) {
     var t = dov;
     var tPx = (t.range * ((slide.vvalue.value + 100)/200));
     var bottom = t.gtop + t.range + (t.gw/2);
@@ -124,29 +124,24 @@ module.exports = function(){
     slide.text.textContent = slide.vvalue.value.toString();
   };
 
-  dov.thumbEvent = function(event) {
-      var t = dov;
-      var thumb = event.target.getAttribute('thumb');
-      var valPerPy = 200 / t.range;
+  dov.slideEvent = function(slide, event) {
+    var valPerPy = 200 / dov.range;
+    if (event.type === 'dragstart') {
+      slide.dragStart = slide.vvalue.value;
+    } else if (event.type === 'dragmove') {
+      slide.vvalue.set(slide.dragStart + (valPerPy * (event.y0 - event.pageY)));
+    } else if (event.type === 'dragend') {
+      slide.vvalue.set(0);
+    }
+    dov.slideUpdate(slide);
+  };
 
-      if (thumb === 'L') {
-        if (event.type === 'dragstart') {
-          t.lSlide.dragStart = t.lSlide.vvalue.value;
-        } else if (event.type === 'dragmove') {
-          t.lSlide.vvalue.set(t.lSlide.dragStart + (valPerPy * (event.y0 - event.pageY)));
-        } else if (event.type === 'dragend') {
-          t.lSlide.vvalue.set(0);
-        }
-        dov.updateSlide(dov.lSlide);
-      } else if (thumb === 'R') {
-        if (event.type === 'dragstart') {
-          t.rSlide.dragStart = t.rSlide.vvalue.value;
-        } else if (event.type === 'dragmove') {
-          t.rSlide.vvalue.set(t.rSlide.dragStart + (valPerPy * (event.y0 - event.pageY)));
-        } else if (event.type === 'dragend') {
-          t.rSlide.vvalue.set(0);
-        }
-        dov.updateSlide(dov.rSlide);
+  dov.dispatchEvent = function(event) {
+      var tName = event.target.getAttribute('thumb');
+      if (tName === 'L') {
+        dov.slideEvent(dov.lSlide, event);
+      } else if (tName === 'R') {
+        dov.slideEvent(dov.rSlide, event);
       }
   };
 
@@ -158,13 +153,13 @@ module.exports = function(){
         max: Infinity      // allow drags on multiple elements
       })
       .on('dragstart', function (event) {
-          dov.thumbEvent(event);
+          dov.dispatchEvent(event);
       })
       .on('dragmove', function (event) {
-          dov.thumbEvent(event);
+          dov.dispatchEvent(event);
       })
       .on('dragend', function(event) {
-          dov.thumbEvent(event);
+          dov.dispatchEvent(event);
       });
   };
 
