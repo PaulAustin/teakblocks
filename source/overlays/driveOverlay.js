@@ -36,21 +36,26 @@ module.exports = function(){
     this.dragStart = 0;
   };
 
-  Slide.prototype.buildSvg = function(svg, width, hCenter, top, vRange) {
+  Slide.prototype.buildSvg = function(svg, hCenter, width, top, h) {
+    // Since the Thumb is a circle the vRange is reduced by the
+    // diameter (.e.g. the width) This still look confusing.
+
+    var tRadius = width / 2;
+    var gh = h - tRadius - top;
+    this.vRange = gh - (tRadius*2);      // range in pixels
     this.hCenter = hCenter;
-    this.vRange = vRange;
     this.top = top;
     this.width = width;
+    this.h = h;
     var t = dov;
-    var gwHalf = width / 2;
     var fontY = 70 * t.scaleH;
     var fontSize = 48 * t.scaleH;
-    var tw = gwHalf - 15;
+    var tw = tRadius - 15;
 
     this.text = svgb.createText('slider-text', this.hCenter, fontY, "0");
     this.text.style.fontSize = fontSize.toString() + 'px';
     svg.appendChild(this.text);
-    var groove = svgb.createRect('slider-groove', hCenter - gwHalf, top, width, t.gh, gwHalf);
+    var groove = svgb.createRect('slider-groove', hCenter - tRadius, top, width, gh, tRadius);
     svg.appendChild(groove);
     this.thumb = svgb.createCircle('slider-thumb', hCenter, top, tw);
     this.thumb.setAttribute('thumb', this.name);
@@ -70,11 +75,7 @@ module.exports = function(){
   dov.start = function() {
     dov.lSlide = new Slide('L');
     dov.rSlide = new Slide('R');
-    dov.buildSliders();
-    dov.sendValuesToBot();
-  };
 
-  dov.buildSliders = function() {
     // TODO need to upate value as they change
     overlays.overlayDom.innerHTML = `
     <div id='overlayRoot'>
@@ -86,6 +87,7 @@ module.exports = function(){
     dov.svg = document.getElementById('driveOverlay');
     dov.onResize();
     dov.sliderInteract();
+    dov.sendValuesToBot();
   };
 
   Slide.prototype.event = function(event) {
@@ -132,18 +134,11 @@ module.exports = function(){
     }
 
     var top = 100 * t.scaleH;
-    // width
     var width = 120 *  Math.min(t.scaleH, t.scaleW);
-    // Since the Thumb is a circle the vRange is reduced by the
-    // diameter (.e.g. the width)
-    var thumbHeigth = width;
     var gwHalf = width / 2;
-    t.gh = h - gwHalf - top;
-    var vRange = t.gh - thumbHeigth;      // range in pixels
     var gInsetW = 80 * t.scaleW;
-
-    t.lSlide.buildSvg(t.svg, width, gInsetW + gwHalf, top, vRange);
-    t.rSlide.buildSvg(t.svg, width, w - gInsetW - gwHalf, top, vRange);
+    t.lSlide.buildSvg(t.svg, gInsetW + gwHalf, width, top, h);
+    t.rSlide.buildSvg(t.svg, w - gInsetW - gwHalf, width, top, h);
   };
 
   dov.dispatchEvent = function(event) {
