@@ -91,36 +91,44 @@ module.exports = function(){
     t.gh = h - gwHalf - t.gtop;
     t.range = t.gh - t.gw;      // range in pixels
 
-    var fontY = 70 * t.scaleH;
-    var fontSize = 48 * t.scaleH;
-    var tw = gwHalf - 15;
-
     var gInsetW = 80 * t.scaleW;
     var lCenter = gInsetW + gwHalf;
     var rCenter = w - gInsetW - gwHalf;
 
-    t.lText = svgb.createText('slider-text', lCenter, fontY, "0");
-    t.rText = svgb.createText('slider-text', rCenter, fontY, "0");
-    t.lText.style.fontSize = fontSize.toString() + 'px';
-    t.rText.style.fontSize = fontSize.toString() + 'px';
-    t.svg.appendChild(t.lText);
-    t.svg.appendChild(t.rText);
-
-    var leftGroove = svgb.createRect('slider-groove', lCenter - gwHalf, t.gtop, t.gw, t.gh, gwHalf);
-    var rightGroove = svgb.createRect('slider-groove', rCenter - gwHalf, t.gtop, t.gw, t.gh, gwHalf);
-    t.svg.appendChild(leftGroove);
-    t.svg.appendChild(rightGroove);
-
-    t.lThumb = svgb.createCircle('slider-thumb', lCenter, t.gtop, tw);
-    t.rThumb = svgb.createCircle('slider-thumb', rCenter, t.gtop, tw);
-    t.lThumb.setAttribute('thumb', 'L');
-    t.rThumb.setAttribute('thumb', 'R');
-    t.svg.appendChild(t.lThumb);
-    t.svg.appendChild(t.rThumb);
+    t.lSlide = t.addSlide(lCenter, 'L');
+    t.rSlide = t.addSlide(rCenter, 'R');
 
     // Move thumbs to actual value locations.
     t.moveThumbs();
   };
+
+  dov.addSlide = function(hCenter, tName) {
+    var t = dov;
+    var gwHalf = t.gw / 2;
+    var fontY = 70 * t.scaleH;
+    var fontSize = 48 * t.scaleH;
+    var tw = gwHalf - 15;
+
+    var text = svgb.createText('slider-text', hCenter, fontY, "0");
+    text.style.fontSize = fontSize.toString() + 'px';
+    t.svg.appendChild(text);
+    var groove = svgb.createRect('slider-groove', hCenter - gwHalf, t.gtop, t.gw, t.gh, gwHalf);
+    t.svg.appendChild(groove);
+    var thumb = svgb.createCircle('slider-thumb', hCenter, t.gtop, tw);
+    thumb.setAttribute('thumb', tName);
+    t.svg.appendChild(thumb);
+
+    return {text:text, thumb:thumb};
+  };
+
+  dov.updateSlide = function(slide) {
+    var t = dov;
+    var lPx = (t.range * ((t.lVar.value + 100)/200));
+    var bottom = t.gtop + t.range + (t.gw/2);
+    slide.thumb.setAttribute('cy', bottom - lPx);
+    slide.text.textContent = t.rVar.value.toString();
+  };
+
 
   dov.moveThumbs = function() {
       var t = dov;
@@ -129,11 +137,11 @@ module.exports = function(){
       var rPx = (t.range * ((t.rVar.value + 100)/200));
       var bottom = t.gtop + t.range + (t.gw/2);
 
-      dov.lThumb.setAttribute('cy', bottom - lPx);
-      dov.rThumb.setAttribute('cy', bottom - rPx);
+      t.lSlide.thumb.setAttribute('cy', bottom - lPx);
+      t.rSlide.thumb.setAttribute('cy', bottom - rPx);
 
-      t.lText.textContent = t.lVar.value.toString();
-      t.rText.textContent = t.rVar.value.toString();
+      t.lSlide.text.textContent = t.lVar.value.toString();
+      t.rSlide.text.textContent = t.rVar.value.toString();
   };
 
   dov.thumbEvent = function(event) {
