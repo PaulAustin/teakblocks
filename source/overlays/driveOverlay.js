@@ -30,9 +30,46 @@ module.exports = function(){
   var vars = require('./../variables.js');
   var dov = {};
 
+  var Slide = function Slider(name) {
+    this.name = name;
+    this.vvalue = vars.v[name];
+    this.dragStart = 0;
+  };
+
+  Slide.prototype.buildSvg = function(svg, width, hCenter, top, vRange) {
+    this.hCenter = hCenter;
+    this.vRange = vRange;
+    this.top = top;
+    this.width = width;
+    var t = dov;
+    var gwHalf = width / 2;
+    var fontY = 70 * t.scaleH;
+    var fontSize = 48 * t.scaleH;
+    var tw = gwHalf - 15;
+
+    this.text = svgb.createText('slider-text', this.hCenter, fontY, "0");
+    this.text.style.fontSize = fontSize.toString() + 'px';
+    svg.appendChild(this.text);
+    var groove = svgb.createRect('slider-groove', hCenter - gwHalf, top, width, t.gh, gwHalf);
+    svg.appendChild(groove);
+    this.thumb = svgb.createCircle('slider-thumb', hCenter, top, tw);
+    this.thumb.setAttribute('thumb', this.name);
+    svg.appendChild(this.thumb);
+
+    // Align with initial value.
+    this.updateSvg();
+  };
+
+  Slide.prototype.updateSvg = function() {
+    var tPx = (this.vRange * ((this.vvalue.value + 100)/200));
+    var bottom = this.top + this.vRange + (this.width / 2);
+    this.thumb.setAttribute('cy', bottom - tPx);
+    this.text.textContent = this.vvalue.value.toString();
+  };
+
   dov.start = function() {
-    dov.lSlide = {vvalue: vars.v['L'], name:'L', dragStart:0};
-    dov.rSlide = {vvalue: vars.v['R'], name:'R', dragStart:0};
+    dov.lSlide = new Slide('L');
+    dov.rSlide = new Slide('R');
     dov.buildSliders();
     dov.sendValuesToBot();
   };
@@ -49,6 +86,18 @@ module.exports = function(){
     dov.svg = document.getElementById('driveOverlay');
     dov.onResize();
     dov.sliderInteract();
+  };
+
+  Slide.prototype.event = function(event) {
+    var valPerPy = 200 / this.vRange;
+    if (event.type === 'dragstart') {
+      this.dragStart = this.vvalue.value;
+    } else if (event.type === 'dragmove') {
+      this.vvalue.set(this.dragStart + (valPerPy * (event.y0 - event.pageY)));
+    } else if (event.type === 'dragend') {
+      this.vvalue.set(0);
+    }
+    this.updateSvg();
   };
 
   dov.onResize = function() {
@@ -82,66 +131,27 @@ module.exports = function(){
         t.scaleH = (h / 500);
     }
 
-    t.gtop = 100 * t.scaleH;
-    t.gw = 120 *  Math.min(t.scaleH, t.scaleW);
-    var gwHalf = t.gw / 2;
-    t.gh = h - gwHalf - t.gtop;
-    t.range = t.gh - t.gw;      // range in pixels
-
+    var top = 100 * t.scaleH;
+    // width
+    var width = 120 *  Math.min(t.scaleH, t.scaleW);
+    // Since the Thumb is a circle the vRange is reduced by the
+    // diameter (.e.g. the width)
+    var thumbHeigth = width;
+    var gwHalf = width / 2;
+    t.gh = h - gwHalf - top;
+    var vRange = t.gh - thumbHeigth;      // range in pixels
     var gInsetW = 80 * t.scaleW;
-    t.lSlide.hCenter = gInsetW + gwHalf;
-    t.rSlide.hCenter = w - gInsetW - gwHalf;
 
-    t.slideAdd(t.lSlide);
-    t.slideAdd(t.rSlide);
-  };
-
-  dov.slideAdd = function(slide) {
-    var t = dov;
-    var gwHalf = t.gw / 2;
-    var fontY = 70 * t.scaleH;
-    var fontSize = 48 * t.scaleH;
-    var tw = gwHalf - 15;
-
-    slide.text = svgb.createText('slider-text', slide.hCenter, fontY, "0");
-    slide.text.style.fontSize = fontSize.toString() + 'px';
-    t.svg.appendChild(slide.text);
-    var groove = svgb.createRect('slider-groove', slide.hCenter - gwHalf, t.gtop, t.gw, t.gh, gwHalf);
-    t.svg.appendChild(groove);
-    slide.thumb = svgb.createCircle('slider-thumb', slide.hCenter, t.gtop, tw);
-    slide.thumb.setAttribute('thumb', slide.name);
-    t.svg.appendChild(slide.thumb);
-
-    // Align with initial value.
-    t.slideUpdate(slide);
-  };
-
-  dov.slideUpdate = function(slide) {
-    var t = dov;
-    var tPx = (t.range * ((slide.vvalue.value + 100)/200));
-    var bottom = t.gtop + t.range + (t.gw/2);
-    slide.thumb.setAttribute('cy', bottom - tPx);
-    slide.text.textContent = slide.vvalue.value.toString();
-  };
-
-  dov.slideEvent = function(slide, event) {
-    var valPerPy = 200 / dov.range;
-    if (event.type === 'dragstart') {
-      slide.dragStart = slide.vvalue.value;
-    } else if (event.type === 'dragmove') {
-      slide.vvalue.set(slide.dragStart + (valPerPy * (event.y0 - event.pageY)));
-    } else if (event.type === 'dragend') {
-      slide.vvalue.set(0);
-    }
-    dov.slideUpdate(slide);
+    t.lSlide.buildSvg(t.svg, width, gInsetW + gwHalf, top, vRange);
+    t.rSlide.buildSvg(t.svg, width, w - gInsetW - gwHalf, top, vRange);
   };
 
   dov.dispatchEvent = function(event) {
       var tName = event.target.getAttribute('thumb');
       if (tName === 'L') {
-        dov.slideEvent(dov.lSlide, event);
+        dov.lSlide.event(event);
       } else if (tName === 'R') {
-        dov.slideEvent(dov.rSlide, event);
+        dov.rSlide.event(event);
       }
   };
 
@@ -167,8 +177,6 @@ module.exports = function(){
     var id = dso.deviceName;
     var t = dov;
 
-    //    log.trace('updTE', id);
-    //var changed = dov.displayLeft !== dov.pastLeft || dov.displayRight !== dov.pastRight;
     if (id !== null && id !== dso.nonName) {
       if (t.lSlide.vvalue.hasChanged()) {
         var message2 = '(m:1 d:' + (-t.lSlide.vvalue.value) + ' b:1);';
