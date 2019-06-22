@@ -35,8 +35,8 @@ module.exports = function(){
     </div>`;
 
     dov.svg = document.getElementById('driveOverlay');
-    dov.lSlide = new slideControl.Class('L');
-    dov.rSlide = new slideControl.Class('R');
+    dov.lSlide = new slideControl.Class(dov.svg, 'L');
+    dov.rSlide = new slideControl.Class(dov.svg, 'R');
 
     window.addEventListener("resize", dov.onResize);
     dov.onResize();
@@ -77,8 +77,8 @@ module.exports = function(){
     var gInsetW = 80 * t.scaleW;
     var fontSize = 48 * t.scaleH;
 
-    t.lSlide.buildSvg(t.svg, gInsetW + gwHalf, width, top, h, fontSize);
-    t.rSlide.buildSvg(t.svg, w - gInsetW - gwHalf, width, top, h, fontSize);
+    t.lSlide.buildSvg(gInsetW + gwHalf, width, top, h, fontSize);
+    t.rSlide.buildSvg(w - gInsetW - gwHalf, width, top, h, fontSize);
   };
 
   dov.sendValuesToBot = function() {

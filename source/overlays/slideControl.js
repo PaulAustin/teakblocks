@@ -27,14 +27,15 @@ module.exports = function(){
 
   var slideControl = {};
 
-  slideControl.Class = function Slider(name) {
+  slideControl.Class = function Slider(svg, name) {
+    this.svg = svg;
     this.name = name;
     this.vvalue = vars.v[name];
     this.dragStart = 0;
     this.vDomain = 200;
   };
 
-  slideControl.Class.prototype.buildSvg = function(svg, hCenter, width, top, h, fontSize) {
+  slideControl.Class.prototype.buildSvg = function(hCenter, width, top, h, fontSize) {
     // Since the Thumb is a circle the vRange is reduced by the
     // diameter (.e.g. the width) This still look confusing.
 
@@ -49,12 +50,12 @@ module.exports = function(){
 
     this.text = svgb.createText('slider-text', this.hCenter, top - fontY, "0");
     this.text.style.fontSize = fontSize.toString() + 'px';
-    svg.appendChild(this.text);
+    this.svg.appendChild(this.text);
     var groove = svgb.createRect('slider-groove', hCenter - tRadius, top, width, gh, tRadius);
-    svg.appendChild(groove);
+    this.svg.appendChild(groove);
     this.thumb = svgb.createCircle('slider-thumb', hCenter, top, tw);
     this.thumb.setAttribute('thumb', this.name);
-    svg.appendChild(this.thumb);
+    this.svg.appendChild(this.thumb);
 
     // Align thumb and text with current value.
     this.updateSvg();
