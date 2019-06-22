@@ -22,94 +22,32 @@ SOFTWARE.
 
 // Drive mode overlay allows users to diretly control the motors and other IO.
 module.exports = function(){
-  var interact = require('interact.js');
-  var svgb = require('./../svgbuilder.js');
   var conductor = require('./../conductor.js');
   var overlays = require('./overlays.js');
   var dso = require('./deviceScanOverlay.js');
-  var vars = require('./../variables.js');
+  var slideControl = require('./slideControl.js');
   var dov = {};
 
-  var Slide = function Slider(name) {
-    this.name = name;
-    this.vvalue = vars.v[name];
-    this.dragStart = 0;
-  };
-
-  Slide.prototype.buildSvg = function(svg, hCenter, width, top, h) {
-    // Since the Thumb is a circle the vRange is reduced by the
-    // diameter (.e.g. the width) This still look confusing.
-
-    var tRadius = width / 2;
-    var gh = h - tRadius - top;
-    this.vRange = gh - (tRadius*2);      // range in pixels
-    this.hCenter = hCenter;
-    this.top = top;
-    this.width = width;
-    this.h = h;
-    var t = dov;
-    var fontY = 70 * t.scaleH;
-    var fontSize = 48 * t.scaleH;
-    var tw = tRadius - 15;
-
-    this.text = svgb.createText('slider-text', this.hCenter, fontY, "0");
-    this.text.style.fontSize = fontSize.toString() + 'px';
-    svg.appendChild(this.text);
-    var groove = svgb.createRect('slider-groove', hCenter - tRadius, top, width, gh, tRadius);
-    svg.appendChild(groove);
-    this.thumb = svgb.createCircle('slider-thumb', hCenter, top, tw);
-    this.thumb.setAttribute('thumb', this.name);
-    svg.appendChild(this.thumb);
-
-    // Align with initial value.
-    this.updateSvg();
-  };
-
-  Slide.prototype.updateSvg = function() {
-    var tPx = (this.vRange * ((this.vvalue.value + 100)/200));
-    var bottom = this.top + this.vRange + (this.width / 2);
-    this.thumb.setAttribute('cy', bottom - tPx);
-    this.text.textContent = this.vvalue.value.toString();
-  };
-
   dov.start = function() {
-    dov.lSlide = new Slide('L');
-    dov.rSlide = new Slide('R');
-
-    // TODO need to upate value as they change
     overlays.overlayDom.innerHTML = `
     <div id='overlayRoot'>
       <svg id='driveOverlay' xmlns="http://www.w3.org/2000/svg"></svg>
     </div>`;
 
-    window.addEventListener("resize", dov.onResize);
-
     dov.svg = document.getElementById('driveOverlay');
+    dov.lSlide = new slideControl.Class('L');
+    dov.rSlide = new slideControl.Class('R');
+
+    window.addEventListener("resize", dov.onResize);
     dov.onResize();
-    dov.sliderInteract();
     dov.sendValuesToBot();
   };
 
-  Slide.prototype.event = function(event) {
-    var valPerPy = 200 / this.vRange;
-    if (event.type === 'dragstart') {
-      this.dragStart = this.vvalue.value;
-    } else if (event.type === 'dragmove') {
-      this.vvalue.set(this.dragStart + (valPerPy * (event.y0 - event.pageY)));
-    } else if (event.type === 'dragend') {
-      this.vvalue.set(0);
-    }
-    this.updateSvg();
-  };
-
   dov.onResize = function() {
-    dov.w = dov.svg.clientWidth;
-    dov.h = dov.svg.clientHeight;
-    dov.buildSVG();
-  };
-
-  dov.buildSVG = function() {
     var t = dov;
+    t.w = t.svg.clientWidth;
+    t.h = t.svg.clientHeight;
+
     // Clear out the old.
     while (t.svg.lastChild) {
         t.svg.removeChild(t.svg.lastChild);
@@ -137,35 +75,10 @@ module.exports = function(){
     var width = 120 *  Math.min(t.scaleH, t.scaleW);
     var gwHalf = width / 2;
     var gInsetW = 80 * t.scaleW;
-    t.lSlide.buildSvg(t.svg, gInsetW + gwHalf, width, top, h);
-    t.rSlide.buildSvg(t.svg, w - gInsetW - gwHalf, width, top, h);
-  };
+    var fontSize = 48 * t.scaleH;
 
-  dov.dispatchEvent = function(event) {
-      var tName = event.target.getAttribute('thumb');
-      if (tName === 'L') {
-        dov.lSlide.event(event);
-      } else if (tName === 'R') {
-        dov.rSlide.event(event);
-      }
-  };
-
-  dov.sliderInteract = function() {
-
-    interact('.slider-thumb', {context:dov.svg})
-      // target the matches of that selector
-      .draggable({         // make the element fire drag events
-        max: Infinity      // allow drags on multiple elements
-      })
-      .on('dragstart', function (event) {
-          dov.dispatchEvent(event);
-      })
-      .on('dragmove', function (event) {
-          dov.dispatchEvent(event);
-      })
-      .on('dragend', function(event) {
-          dov.dispatchEvent(event);
-      });
+    t.lSlide.buildSvg(t.svg, gInsetW + gwHalf, width, top, h, fontSize);
+    t.rSlide.buildSvg(t.svg, w - gInsetW - gwHalf, width, top, h, fontSize);
   };
 
   dov.sendValuesToBot = function() {
