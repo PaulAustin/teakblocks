@@ -8,10 +8,11 @@
     "watch-css": "catw -c 'lessc --include-path=source/style/ -' 'source/style/teakblocks.less' -o html_app/www/style.css -v",
     "ghpages": "cp -r html_app/www/ docs/",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "bifyu": "browserify source/index.js -t [ babelify --presets es2015 ] | uglifyjs -m >html_app/www/bundled_tbe.js; ls -l html_app/www/bundled_tbe.js",
-    "bify15": "browserify source/index.js -t [ babelify --presets es2015 ] -o html_app/www/bundled_tbe.js; ls -l html_app/www/bundled_tbe.js",
-    "bify": "browserify source/index.js -o html_app/www/bundled_tbe.js; ls -l html_app/www/bundled_tbe.js",
-    "wify": "watchify source/index.js -o html_app/www/bundled_tbe.js -v",
+    "ug": "uglifyjs html_app/www/bundled_tbe.js -m -c -o html_app/www/bundled_tbe.js; ls -l html_app/www/bundled_tbe.js",
+    "xxbifyu": "browserify source/index.js -t [ babelify --presets es2015 ] | uglifyjs -m >html_app/www/bundled_tbe.js; ls -l html_app/www/bundled_tbe.js",
+    "xxbify15": "browserify source/index.js -t [ babelify --presets es2015 ] -o html_app/www/bundled_tbe.js; ls -l html_app/www/bundled_tbe.js",
+    "xxbify": "browserify source/index.js -o html_app/www/bundled_tbe.js; ls -l html_app/www/bundled_tbe.js",
+    "wify": "node buildtb.js",
     "azap": "npm run bifyu; npm run abuild; npm run adeploy",
     "abuild": "cd html_app; cordova build android",
     "abuildr": "cd html_app; cordova build android --release",
@@ -47,7 +48,9 @@
     "font-awesome": "^4.6.3",
     "interact.js": "^1.2.6",
     "knockout": "^3.4.0",
-    "teak": "0.0.14"
+    "teak": "0.0.14",
+    "uglify-js": "^3.6.0",
+    "watchify": "^3.11.1"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.8.1",
