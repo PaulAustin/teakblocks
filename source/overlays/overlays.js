@@ -21,7 +21,6 @@ SOFTWARE.
 */
 
 module.exports = function () {
-//  var log = require('./../log.js');
   var overlays = {};
 
   overlays.currentShowing = null;

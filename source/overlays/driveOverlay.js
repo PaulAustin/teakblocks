@@ -25,7 +25,7 @@ module.exports = function(){
   var conductor = require('./../conductor.js');
   var overlays = require('./overlays.js');
   var dso = require('./deviceScanOverlay.js');
-  var slideControl = require('./slideControl.js');
+  var slideControl = require('slideControl.js');
   var dov = {};
 
   dov.start = function() {
