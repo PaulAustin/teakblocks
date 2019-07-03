@@ -21,9 +21,6 @@ SOFTWARE.
 */
 
 module.exports = function () {
-  // var interact = require('interact.js');
-  // var svgb = require('./../svgbuilder.js');
-  // var pb = svgb.pathBuilder;
   var colorStripBlock = {};
 
   // Block for one or more color LEDs in a strip, typically implemented with

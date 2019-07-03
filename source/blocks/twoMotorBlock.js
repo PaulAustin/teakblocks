@@ -21,12 +21,11 @@ SOFTWARE.
 */
 
 module.exports = function () {
-  var svgb = require('./../svgbuilder.js');
+  var ko = require('knockout');
+  var svgb = require('svgbuilder.js');
+  var icons = require('icons.js');
   //var formTools = require('./../block-settings.js');
   var keypad = require('./keypadTab.js');
-  var ko = require('knockout');
-  var pb = svgb.pathBuilder;
-  var icons = require('icons.js');
   var twoMotorBlock = {};
 
   twoMotorBlock.keyPadValue = ko.observable(100 + "%");

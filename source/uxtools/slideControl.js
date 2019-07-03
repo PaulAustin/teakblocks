@@ -22,7 +22,7 @@ SOFTWARE.
 
 module.exports = function(){
   var interact = require('interact.js');
-  var svgb = require('./../svgbuilder.js');
+  var svgb = require('svgbuilder.js');
   var vars = require('./../variables.js');
 
   var slideControl = {};

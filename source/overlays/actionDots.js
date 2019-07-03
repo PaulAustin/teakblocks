@@ -23,7 +23,7 @@ SOFTWARE.
 module.exports = function () {
   var actionDots = {};
   var interact = require('interact.js');
-  var svgb = require('./../svgbuilder.js');
+  var svgb = require('svgbuilder.js');
   var app = require('./../appMain.js');
   var dso = require('./deviceScanOverlay.js');
 

@@ -22,7 +22,7 @@ SOFTWARE.
 
 module.exports = function () {
   //var interact = require('interact.js');
-  var svgb = require('./../svgbuilder.js');
+  var svgb = require('svgbuilder.js');
   var keypad = require('./keypadTab.js');
   var pb = svgb.pathBuilder;
   var servoBlock = {};

@@ -21,7 +21,7 @@ SOFTWARE.
 */
 
 module.exports = function () {
-  var svgb = require('./../svgbuilder.js');
+  var svgb = require('svgbuilder.js');
   var keypad = require('./keypadTab.js');
   var ko = require('knockout');
   var icons = require('icons.js');

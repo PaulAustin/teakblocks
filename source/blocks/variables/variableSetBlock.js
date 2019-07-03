@@ -21,11 +21,11 @@ SOFTWARE.
 */
 
 module.exports = function () {
-  var svgb = require('./../../svgbuilder.js');
   var ko = require('knockout');
+  var svgb = require('svgbuilder.js');
+  var icons = require('icons.js');
   var keypad = require('./../keypadTab.js');
   var calcpad = require('./../calcpad.js');
-  var icons = require('icons.js');
   var vars = require('./../../variables.js');
   var variableSetBlock = {};
 

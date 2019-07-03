@@ -21,9 +21,9 @@ SOFTWARE.
 */
 
 module.exports = function () {
-  var svgb = require('./../../svgbuilder.js');
-  var fastr = require('./../../fastr.js');
   var ko = require('knockout');
+  var svgb = require('svgbuilder.js');
+  var fastr = require('fastr.js');
   // TODO the link type could show up on the icon
   // to indicate how it is connected
   // var pb = svgb.pathBuilder;

@@ -23,10 +23,10 @@ SOFTWARE.
 // An overlay to see log messages and communications
 // between the app and the robot.
 module.exports = function () {
-  var fastr = require('./../fastr.js');
+  var ko = require('knockout');
+  var fastr = require('fastr.js');
   var cxn = require('./../cxn.js');
   var overlays = require('./overlays.js');
-  var ko = require('knockout');
   var deviceScanOverlay = {};
   var dso = deviceScanOverlay;
 

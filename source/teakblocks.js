@@ -27,7 +27,8 @@ var assert = require('assert');
 var interact = require('interact.js');
 var tf = require('./teak-forms.js');
 var teakText = require('./teaktext.js');
-var svgb = require('./svgbuilder.js');
+var svgb = require('svgbuilder.js');
+var icons = require('icons.js');
 var trashBlocks = require('./trashBlocks.js');
 var fblocks = require('./fblock-settings.js');
 var teakselection = require('./teakselection');
@@ -35,7 +36,6 @@ var actionDots = require('./overlays/actionDots.js');
 var defaultFiles = require('./defaultFiles.js');
 var conductor = require('./conductor.js');
 var app = require('./appMain.js');
-var icons = require('icons.js');
 
 var tbe = {};
 

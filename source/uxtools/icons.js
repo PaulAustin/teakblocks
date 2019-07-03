@@ -24,7 +24,7 @@ module.exports = function () {
 
   var icons = {};
 
-  var svgb = require('./../svgbuilder.js');
+  var svgb = require('svgbuilder.js');
   var pb = svgb.pathBuilder;
 
   icons.accelerometer = function(scale, classes, x, y) {

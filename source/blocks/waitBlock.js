@@ -21,12 +21,12 @@ SOFTWARE.
 */
 
 module.exports = function () {
-  var svgb = require('./../svgbuilder.js');
-  var keypad = require('./keypadTab.js');
   var ko = require('knockout');
-  var waitBlock = {};
+  var svgb = require('svgbuilder.js');
   var icons = require('icons.js');
+  var keypad = require('./keypadTab.js');
 
+  var waitBlock = {};
   waitBlock.keyPadValue = ko.observable(1);
 
   // Initial settings for blocks of this type.

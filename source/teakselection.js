@@ -23,7 +23,7 @@ SOFTWARE.
 module.exports = function () {
 
 var interact = require('interact.js');
-var svgb = require('./svgbuilder.js');
+var svgb = require('svgbuilder.js');
 var tbSelecton = {};
 
 // The selection region has a minimum dimension so it can be seen when it is

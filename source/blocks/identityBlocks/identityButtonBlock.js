@@ -21,7 +21,7 @@ SOFTWARE.
 */
 
 module.exports = function () {
-  var svgb = require('./../../svgbuilder.js');
+  var svgb = require('svgbuilder.js');
   var identityButtonBlock = {};
 
   // Initial settings for blocks of this type.

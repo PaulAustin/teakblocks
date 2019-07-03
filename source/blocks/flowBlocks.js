@@ -21,11 +21,10 @@ SOFTWARE.
 */
 
 module.exports = function () {
-  // var interact = require('interact.js');
-  var svgb = require('./../svgbuilder.js');
-  var fastr = require('./../fastr.js');
-  var keypad = require('./keypadTab.js');
   var ko = require('knockout');
+  var svgb = require('svgbuilder.js');
+  var fastr = require('fastr.js');
+  var keypad = require('./keypadTab.js');
   var flowBlockHead = {};
   var flowBlockTail = {};
   var flowBlockWidth = 50;
