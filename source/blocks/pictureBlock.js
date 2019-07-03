@@ -24,7 +24,7 @@ module.exports = function () {
   var interact = require('interact.js');
   var svgb = require('./../svgbuilder.js');
   var pictureBlock = {};
-  var icons = require('./icons.js');
+  var icons = require('icons.js');
 
   // Use CSS clases for LED lit state.
   function setPicturePixel(svgPixel, state) {

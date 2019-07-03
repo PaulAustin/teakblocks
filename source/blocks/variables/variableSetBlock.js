@@ -25,7 +25,7 @@ module.exports = function () {
   var ko = require('knockout');
   var keypad = require('./../keypadTab.js');
   var calcpad = require('./../calcpad.js');
-  var icons = require('./../icons.js');
+  var icons = require('icons.js');
   var vars = require('./../../variables.js');
   var variableSetBlock = {};
 
@@ -46,7 +46,7 @@ module.exports = function () {
   };
 
   variableSetBlock.configuratorOpen = function(div, block) {
-  //  calcpad.open(div, block);
+    // calcpad.open(div, block);
 
     keypad.openTabs(div, {
       'getValue': function() { return block.controllerSettings.data.value; },

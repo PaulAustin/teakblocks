@@ -24,7 +24,7 @@ module.exports = function () {
   var svgb = require('./../svgbuilder.js');
   var interact = require('interact.js');
   var ko = require('knockout');
-  var icons = require('./icons.js');
+  var icons = require('icons.js');
   var printBlock = {};
   var vars = require('./../variables.js');
 

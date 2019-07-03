@@ -22,12 +22,10 @@ SOFTWARE.
 
 module.exports = function () {
   var svgb = require('./../svgbuilder.js');
-  //var formTools = require('./../block-settings.js');
   var keypad = require('./keypadTab.js');
   var ko = require('knockout');
-  var pb = svgb.pathBuilder;
   var waitBlock = {};
-  var icons = require('./icons.js');
+  var icons = require('icons.js');
 
   waitBlock.keyPadValue = ko.observable(1);
 

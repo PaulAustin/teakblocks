@@ -35,7 +35,7 @@ var actionDots = require('./overlays/actionDots.js');
 var defaultFiles = require('./defaultFiles.js');
 var conductor = require('./conductor.js');
 var app = require('./appMain.js');
-var icons = require('./blocks/icons.js');
+var icons = require('icons.js');
 
 var tbe = {};
 

@@ -24,7 +24,7 @@ module.exports = function () {
   var svgb = require('./../../svgbuilder.js');
   var ko = require('knockout');
   var keypad = require('./../keypadTab.js');
-  var icons = require('./../icons.js');
+  var icons = require('icons.js');
   var variableAddBlock = {};
   var vars = require('./../../variables.js');
 

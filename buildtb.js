@@ -36,10 +36,12 @@ var b = browserify(
 function doBundle (bObject) {
   bObject.bundle(function (err, buf) {
       // This callback is just to get the size of the buffer.
+
+      var d = new Date();
       if (buf !== undefined)
-        console.log('generating ', output, 'size is ',buf.length, err);
+        console.log('generating ', output, 'size is ',buf.length, ' when ', d);
       else
-        console.log('ERROR cant build');
+        console.log('ERROR cant build', err);
     })
     .on('error', console.error)
     .pipe(fs.createWriteStream(output));

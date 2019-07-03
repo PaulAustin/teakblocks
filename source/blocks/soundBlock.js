@@ -25,7 +25,7 @@ module.exports = function () {
   var svgb = require('./../svgbuilder.js');
   var pb = svgb.pathBuilder;
   var soundBlock = {};
-  var icons = require('./icons.js');
+  var icons = require('icons.js');
 
   // List of HTML snippets used for controller tabs.
   soundBlock.tabs= {

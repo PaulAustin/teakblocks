@@ -23,7 +23,7 @@ SOFTWARE.
 module.exports = function () {
   var ko = require('knockout');
   var keypad = require('./../keypadTab.js');
-  var icons = require('./../icons.js');
+  var icons = require('icons.js');
   // TODO the link type could show up on the icon
   // to indicate how it is connected
   // var faBlueTooth = '\uf294';

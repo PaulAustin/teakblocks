@@ -26,7 +26,7 @@ module.exports = function () {
   var keypad = require('./keypadTab.js');
   var ko = require('knockout');
   var pb = svgb.pathBuilder;
-  var icons = require('./icons.js');
+  var icons = require('icons.js');
   var twoMotorBlock = {};
 
   twoMotorBlock.keyPadValue = ko.observable(100 + "%");
