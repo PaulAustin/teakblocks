@@ -8,27 +8,27 @@
   },
   "installed_plugins": {
     "cordova-plugin-ble": {
-      "PACKAGE_NAME": "com.sailboat7.tblocks"
+      "PACKAGE_NAME": "co.trashbots.tblocks"
     },
     "cordova-plugin-ble-central": {
-      "PACKAGE_NAME": "com.sailboat7.tblocks"
+      "PACKAGE_NAME": "co.trashbots.tblocks"
     },
     "cordova-plugin-splashscreen": {
-      "PACKAGE_NAME": "com.sailboat7.tblocks"
+      "PACKAGE_NAME": "co.trashbots.tblocks"
     },
     "cordova-plugin-whitelist": {
-      "PACKAGE_NAME": "com.sailboat7.tblocks"
+      "PACKAGE_NAME": "co.trashbots.tblocks"
     },
     "phonegap-plugin-mobile-accessibility": {
-      "PACKAGE_NAME": "com.sailboat7.tblocks"
+      "PACKAGE_NAME": "co.trashbots.tblocks"
     }
   },
   "dependent_plugins": {
     "cordova-plugin-device": {
-      "PACKAGE_NAME": "com.sailboat7.tblocks"
+      "PACKAGE_NAME": "co.trashbots.tblocks"
     },
     "cordova-plugin-network-information": {
-      "PACKAGE_NAME": "com.sailboat7.tblocks"
+      "PACKAGE_NAME": "co.trashbots.tblocks"
     }
   }
 }

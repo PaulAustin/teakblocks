@@ -1,77 +1,69 @@
 {
-    "cordova-plugin-whitelist": {
-        "source": {
-            "type": "registry",
-            "id": "cordova-plugin-whitelist@1"
-        },
-        "is_top_level": true,
-        "variables": {}
+  "cordova-plugin-whitelist": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-whitelist@1"
     },
-    "cordova-plugin-bluetooth-serial": {
-        "source": {
-            "type": "registry",
-            "id": "cordova-plugin-bluetooth-serial"
-        },
-        "is_top_level": true,
-        "variables": {}
+    "is_top_level": true,
+    "variables": {}
+  },
+  "cordova-plugin-bluetooth-serial": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-bluetooth-serial"
     },
-    "cordova-plugin-ble-central": {
-        "source": {
-            "type": "registry",
-            "id": "cordova-plugin-ble-central"
-        },
-        "is_top_level": true,
-        "variables": {}
+    "is_top_level": true,
+    "variables": {}
+  },
+  "cordova-plugin-ble-central": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-ble-central"
     },
-    "cordova-plugin-ble": {
-        "source": {
-            "type": "registry",
-            "id": "cordova-plugin-ble@1"
-        },
-        "is_top_level": true,
-        "variables": {}
+    "is_top_level": true,
+    "variables": {}
+  },
+  "cordova-plugin-ble": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-ble@1"
     },
-    "phonegap-plugin-mobile-accessibility": {
-        "source": {
-            "type": "git",
-            "url": "https://github.com/phonegap/phonegap-mobile-accessibility.git",
-            "subdir": "."
-        },
-        "is_top_level": true,
-        "variables": {}
+    "is_top_level": true,
+    "variables": {}
+  },
+  "phonegap-plugin-mobile-accessibility": {
+    "source": {
+      "type": "git",
+      "url": "https://github.com/phonegap/phonegap-mobile-accessibility.git",
+      "subdir": "."
     },
-    "cordova-plugin-device": {
-        "source": {
-            "type": "git",
-            "url": "https://github.com/apache/cordova-plugin-device.git",
-            "subdir": "."
-        },
-        "is_top_level": false,
-        "variables": {}
+    "is_top_level": true,
+    "variables": {}
+  },
+  "cordova-plugin-device": {
+    "source": {
+      "type": "git",
+      "url": "https://github.com/apache/cordova-plugin-device.git",
+      "subdir": "."
     },
-    "cordova-plugin-network-information": {
-        "source": {
-            "type": "git",
-            "url": "https://github.com/apache/cordova-plugin-network-information.git",
-            "subdir": "."
-        },
-        "is_top_level": false,
-        "variables": {}
+    "is_top_level": false,
+    "variables": {}
+  },
+  "cordova-plugin-network-information": {
+    "source": {
+      "type": "git",
+      "url": "https://github.com/apache/cordova-plugin-network-information.git",
+      "subdir": "."
     },
-    "cordova-plugin-splashscreen": {
-        "source": {
-            "type": "registry",
-            "id": "cordova-plugin-splashscreen@^5.0.2"
-        },
-        "is_top_level": true,
-        "variables": {}
+    "is_top_level": false,
+    "variables": {}
+  },
+  "cordova-plugin-splashscreen": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-splashscreen@^5.0.2"
     },
-    "cordova-plugin-compat": {
-        "source": {
-            "type": "registry",
-            "id": "cordova-plugin-compat@^1.0.0"
-        },
-        "is_top_level": false,
-        "variables": {}
-    }
+    "is_top_level": true,
+    "variables": {}
+  }
 }
