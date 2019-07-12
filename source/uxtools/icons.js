@@ -168,9 +168,12 @@ module.exports = function () {
     var text = svgb.createText('svg-clear vars-poly-text', 29, 34, label);
     text.setAttribute('text-anchor', 'middle');
     group.appendChild(text);
+    group.setAttribute('style', 'transform: scale(' + scale + ');');
 
-    group.setAttribute('style', 'transform: translate(' + x + 'px, ' + y + 'px) scale(' + scale + ');');
-    return group;
+    var positionGroup = svgb.createGroup('svg-clear', x, y);
+    positionGroup.appendChild(group)
+
+    return positionGroup;
   };
 
   icons.motor = function(scale, x, y) {

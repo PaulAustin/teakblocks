@@ -75,10 +75,9 @@ module.exports = function(){
     var width = 120 *  Math.min(t.scaleH, t.scaleW);
     var gwHalf = width / 2;
     var gInsetW = 80 * t.scaleW;
-    var fontSize = 48 * t.scaleH;
 
-    t.lSlide.buildSvg(gInsetW + gwHalf, width, top, h, fontSize);
-    t.rSlide.buildSvg(w - gInsetW - gwHalf, width, top, h, fontSize);
+    t.lSlide.buildSvg(gInsetW + gwHalf, width, top, h, t.scaleH);
+    t.rSlide.buildSvg(w - gInsetW - gwHalf, width, top, h, t.scaleH);
   };
 
   dov.sendValuesToBot = function() {
