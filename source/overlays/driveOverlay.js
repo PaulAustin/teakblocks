@@ -26,13 +26,19 @@ module.exports = function(){
   var overlays = require('./overlays.js');
   var dso = require('./deviceScanOverlay.js');
   var slideControl = require('slideControl.js');
+  var chart = require('chart.js');
   var dov = {};
 
   dov.start = function() {
     overlays.overlayDom.innerHTML = `
     <div id='overlayRoot'>
       <svg id='driveOverlay' xmlns="http://www.w3.org/2000/svg"></svg>
+      <div>
+        <canvas id="myChart" style="position:absolute; top:100px; left:250px;" width="400" height="200"></canvas>
+      </div>
     </div>`;
+
+
 
     dov.svg = document.getElementById('driveOverlay');
     dov.lSlide = new slideControl.Class(dov.svg, 'L');
@@ -40,8 +46,95 @@ module.exports = function(){
 
     window.addEventListener("resize", dov.onResize);
     dov.onResize();
+    //dov.chartSetup();
     dov.sendValuesToBot();
   };
+
+ dov.chartSetup = function() {
+    console.log('hack a chart');
+    var ctx = document.getElementById('myChart').getContext('2d');
+    ctx.canvas.width = 400;
+    ctx.canvas.height = 200;
+
+    // The X axis is catagory based not linear. This allows points to be added
+    // without the need to change X
+    let bufferWidth = 50;
+    var x1Points = [];
+    var x2Points = [];
+    var xLabels = [];
+    for (var x = 0; x <  bufferWidth; x++) {
+      x1Points.push((x % 10) * 10);
+      x2Points.push((x % 5) * -10);
+      xLabels.push('');
+    }
+
+    // Add end points, that can be used but the x axis.
+    xLabels[2] = 'xMin';
+    xLabels[bufferWidth-1] = 'xMax';
+
+    // Notice the scaleLabel at the same level as Ticks
+    var options = {
+      scales: {
+                xAxes: [{ gridLines: { lineWidth: 3 } }],
+                yAxes: [{
+                    gridLines: { lineWidth: 2 },
+                    ticks: {
+                        beginAtZero:true,
+                    },
+                    scaleLabel: {
+                         display: true,
+                         labelString: 'Moola',
+                         fontSize: 20
+                      }
+                }]
+            }
+    };
+
+    var data2 = {
+          labels: xLabels,
+          datasets: [{
+              label: "M1",
+              fill: false,
+              lineTension: 0,
+              pointRadius: 0,
+              data: x1Points,
+            }, {
+              label: "M2",
+              fill: false,
+              lineTension: 0,
+              pointRadius: 0,
+              data: x2Points,
+            }
+          ]
+        };
+
+    var opt2 = {
+        // animation: false,
+        animation: { easing:'linear' },
+        scales: {
+          yAxes: [{
+            ticks: {
+              min: -100,
+              max: 100
+            }
+          }],
+          xAxes: [{
+            ticks: {
+              display: false,
+              min: 'xMin',
+              max: 'xMax'
+            }
+          }]
+        }
+    };
+
+    dov.chart = new Chart(ctx, {
+      type: 'line',
+      data: data2,
+    options: opt2});
+    dov.chart.canvas.style.height = '400px';
+    dov.chart.canvas.style.width = '600px';
+ };
 
   dov.onResize = function() {
     var t = dov;
@@ -80,6 +173,17 @@ module.exports = function(){
     t.rSlide.buildSvg(w - gInsetW - gwHalf, width, top, h, t.scaleH);
   };
 
+  dov.chartUpdate = function() {
+    var v1 = dov.lSlide.vvalue.value;
+    var v2 = dov.rSlide.vvalue.value;
+    console.log('updateChart');
+    dov.chart.data.datasets.forEach((dataset) => {
+      dataset.data.shift();
+      dataset.data.push(v1);
+    });
+    dov.chart.update();
+  };
+
   dov.sendValuesToBot = function() {
     var id = dso.deviceName;
     var t = dov;
@@ -107,6 +211,7 @@ module.exports = function(){
     temp.innerHTML = "Temperature:" + cxn.temp;
 */
     dov.timer = setTimeout( function() {
+      // dov.updateChart();
       dov.sendValuesToBot();
     }, 500);
   };
