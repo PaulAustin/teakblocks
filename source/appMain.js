@@ -22,6 +22,7 @@ SOFTWARE.
 
 module.exports = function () {
   var log = require('./log.js');
+  var buildFlags = require('../buildFlags.js');
   var fastr = require('fastr.js');
 
   // Starts as an object and will be mosty empty until start()
@@ -36,6 +37,7 @@ module.exports = function () {
       minute: "2-digit",
       second: "2-digit"
     };
+
 
   log.trace('TBlocks starting.', new Date().toLocaleDateString("en-US", timeFormat));
 
@@ -55,6 +57,15 @@ module.exports = function () {
 
   // Application main, called once shell is fully up.
   app.start = function () {
+    if (window.cordova !== undefined) {
+      app.platformId = 'ios';
+      //app.platformId = window.cordova.platformId + ':' + window.cordova.platformVersion;
+    } else {
+      app.platformId = "desktop broswer";
+    }
+
+    log.trace('isApp: ', app.isCordovaApp);
+    log.trace('platform: ', app.platformId);
 
     // Once app has started these can be added.
     document.addEventListener("pause", app.pause, false);

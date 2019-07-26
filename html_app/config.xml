@@ -21,6 +21,8 @@
         <preference name="Fullscreen" value="true" />
     </platform>
     <platform name="ios">
+        <preference name="Fullscreen" value="true" />
+        <preference name="BackupWebStorage" value="local"/>
         <icon height="20" src="res/iOS/AppIcon.appiconset/TBlocksIcon-20.png" width="20" />
         <icon height="40" src="res/iOS/AppIcon.appiconset/TBlocksIcon-20@2x.png" width="40" />
         <icon height="60" src="res/iOS/AppIcon.appiconset/TBlocksIcon-20@3x.png" width="60" />
@@ -56,6 +58,5 @@
     <plugin name="cordova-plugin-whitelist" spec="1" />
     <plugin name="phonegap-plugin-mobile-accessibility" spec="git+https://github.com/phonegap/phonegap-mobile-accessibility.git" />
     <plugin name="cordova-plugin-splashscreen" spec="^5.0.2" />
-    <engine name="ios" spec="^4.5.5" />
     <engine name="osx" spec="^4.0.2" />
 </widget>

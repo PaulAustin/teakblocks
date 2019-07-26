@@ -28,6 +28,7 @@ app.isRegularBrowser =
   document.URL.indexOf('https://') >= -0;
 
 if (!app.isRegularBrowser) {
+  app.isCordovaApp = true;
   // Guess that it is Cordova then. Not intened to run directly from file:
   document.addEventListener('deviceready', app.start, false);
   var script = document.createElement('script');
@@ -36,5 +37,6 @@ if (!app.isRegularBrowser) {
   document.head.appendChild(script);
 } else {
   // If in regular broswer, call start directly.
+  app.isCordovaApp = false;
   app.start();
 }
