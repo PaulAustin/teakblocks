@@ -365,7 +365,30 @@ module.exports = function () {
     }
   };
 
+  actionDots.doEvent = function(event) {
+    var elt = document.elementFromPoint(event.clientX, event.clientY);
+    var t = event.type;
+    var adi = actionDots.activeIndex;
+    if (elt !== null) {
+      var par = elt.parentNode;
+      var cdi = par.getAttribute('dotIndex');
+      if (t === 'dragend' || t === 'tap') {
+        if (cdi === actionDots.activeIndex) {
+          // If it is a tap the the release right same location as press.
+          actionDots.dotMap[adi].doCommand();
+        } else {
+          actionDots.dotMap[adi].activate(0);
+        }
+        actionDots.activeIndex = -1;
+      } else if (t === 'dragmove') {
+        // Deactivate/Activate when leaving/reentering
+        actionDots.dotMap[adi].activate(cdi === adi ? 1 : 0);
+      }
+    }
+  };
+
   actionDots.defineButtons = function(buttons, svg) {
+    actionDots.activeIndex = -1;
 
     actionDots.svgDotParent = svg;
     // Menu elements will be added at the end, that measn they will
@@ -381,29 +404,27 @@ module.exports = function () {
       actionDots.commandDots[dot.command] = dot;
     }
 
+    // Pretty sure there may be an easier way to do this. But in may way interact.js
+    // If it simple down and up wiht no move then is come through as a tap.
+    // If the pointer/finger moves it is a drag. The drag is better than the move
+    // events, since it will return events even once the pointer has moved
+    // outside the element.
     // SVG items with the 'action-dot' class will process these events.
     interact('.action-dot', {context:svg})
     .draggable({})
     .on('down', function (event) {
-      // Highligth on initial interaction
       var dotIndex = event.currentTarget.getAttribute('dotIndex');
+      actionDots.activeIndex = dotIndex;
       actionDots.dotMap[dotIndex].activate(1);
     })
-    .on('hold', function () {
-      // show some help.
+    .on('dragmove', function (event) {
+      actionDots.doEvent(event);
     })
-    .on('dragmove', function () {
-      //        console.log('cancel', event);
-      // show some help.
-    })
-    .on('enter', function () {
-      // show some help.
-      //      console.log('enter', event);
+    .on('dragend', function (event) {
+      actionDots.doEvent(event);
     })
     .on('tap', function (event) {
-      // Do command if event is in button
-      var dotIndex = event.currentTarget.getAttribute('dotIndex');
-      actionDots.dotMap[dotIndex].doCommand();
+      actionDots.doEvent(event);
     });
     return base;
   };
