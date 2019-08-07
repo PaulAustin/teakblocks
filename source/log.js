@@ -48,7 +48,11 @@ module.exports = function () {
       var message = "";
       var index = 0;
       for (; index < args.length; ++index) {
-          message = message + args[index].valueOf() + " ";
+          if (args[index] !== null) {
+            message = message + args[index].valueOf() + " ";
+          } else {
+            message = message + "null ";
+          }
       }
       message += "\n";
       log.buffer += message;

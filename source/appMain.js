@@ -66,6 +66,8 @@ module.exports = function () {
 
     log.trace('isApp: ', app.isCordovaApp);
     log.trace('platform: ', app.platformId);
+    console.log('g_safari', g_safari);
+    console.log('g_ios', g_ios);
 
     // Once app has started these can be added.
     document.addEventListener("pause", app.pause, false);

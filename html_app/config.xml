@@ -2,7 +2,7 @@
 <widget id="co.trashbots.tblocks" ios-CFBundleVersion="0.1.1" version="0.1.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>TBlocks</name>
     <description>
-        A programmming tool for TBots.
+        A programmming tool for the Trashbots robotics platform.
     </description>
     <author email="sidharth@trashbots.co" href="http://trashbots.co">
         TBlock team

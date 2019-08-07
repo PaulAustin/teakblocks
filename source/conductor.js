@@ -52,8 +52,8 @@ module.exports = function () {
     conductor.cxn.connectionChanged.subscribe(conductor.updateIndentityBlocks);
   };
 
-  // If there is a change in connections update teh indentity blocks
-  // TODO this linkage is ver much a bit of a hack.
+  // If there is a change in connections update the indentity blocks
+  // TODO this linkage is very much a bit of a hack.
   conductor.updateIndentityBlocks = function() {
     log.trace(' updating identity blocks');
     var blockChainIterator  = conductor.tbe.forEachDiagramChain;
