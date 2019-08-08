@@ -1288,6 +1288,7 @@ tbe.configInteractions = function configInteractions() {
         tbe.autoPlace(block);
       }  else {
         // Tapping on diagram block brings up a config page.
+        actionDots.reset();
         thisTbe.components.blockSettings.tap(block);
       }
     })
