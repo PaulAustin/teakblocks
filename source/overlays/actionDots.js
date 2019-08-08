@@ -63,6 +63,7 @@ module.exports = function () {
       this.tweakx = 0;
     }
 
+    this.svgDot = null;
     this.svgDotGroup = null;
     this.svgSubGroup = null;
     this.sub = button.sub;
@@ -254,7 +255,9 @@ module.exports = function () {
     // 2 - Do it, valid release.
     // 3 - Highlight state with overlay showing.
     // This is way to much of a hack. TODO refactor
-    if (state === 1) {
+    if (this.svgDot === null) {
+      return; // Button not setup yet.
+    } else if (state === 1) {
       this.svgDot.classList.add('action-dot-active');
     } else if (state === 0 || state === 2) {
       this.svgDot.classList.remove('running');
@@ -272,25 +275,33 @@ module.exports = function () {
     }
   };
 
+  actionDots.hideOverlay = function() {
+    if (app.overlays.currentShowing !== null) {
+      actionDots.activate(app.overlays.currentShowing, 0);
+      app.overlays.hideOverlay(null);
+    }
+  };
+
   actionDots.ActionDot.prototype.doCommand = function() {
     // Highlight the button hit
     this.activate(2);
     if (this.sub === undefined) {
+      // No sub menu, just clear state and do the command even if
+      // an overlay is up. This allows run and stop to be pressed
+      // while an overlay is up.
       var cmd = this.command;
       actionDots.reset();
       app.doCommand(cmd);
     } else {
-      if (app.overlays.currentShowing !== null) {
-        actionDots.activate(app.overlays.currentShowing, 0);
-        app.overlays.hideOverlay(null);
-      }
+      // If it's a pull down the hide any showing overlay first.
+      actionDots.hideOverlay();
       this.animateDropDown();
     }
   };
 
   actionDots.ActionDot.prototype.animateDropDown = function() {
     if (actionDots.isAnimating)
-    return;
+      return;
     actionDots.isAnimating = true;
     if (!this.subShowing) {
       if (this.sub !== undefined) {
@@ -365,7 +376,7 @@ module.exports = function () {
     }
   };
 
-  actionDots.doEvent = function(event) {
+  actionDots.doPointerEvent = function(event) {
     var elt = document.elementFromPoint(event.clientX, event.clientY);
     var t = event.type;
     var adi = actionDots.activeIndex;
@@ -389,7 +400,6 @@ module.exports = function () {
 
   actionDots.defineButtons = function(buttons, svg) {
     actionDots.activeIndex = -1;
-
     actionDots.svgDotParent = svg;
     // Menu elements will be added at the end, that measn they will
     // be visually in the front. All editor elements will be behind this
@@ -418,13 +428,13 @@ module.exports = function () {
       actionDots.dotMap[dotIndex].activate(1);
     })
     .on('dragmove', function (event) {
-      actionDots.doEvent(event);
+      actionDots.doPointerEvent(event);
     })
     .on('dragend', function (event) {
-      actionDots.doEvent(event);
+      actionDots.doPointerEvent(event);
     })
     .on('tap', function (event) {
-      actionDots.doEvent(event);
+      actionDots.doPointerEvent(event);
     });
     return base;
   };

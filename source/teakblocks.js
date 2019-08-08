@@ -87,6 +87,8 @@ tbe.forEachDiagramChain = function (callBack) {
 tbe.clearStates = function clearStates(block) {
   // Clear any showing forms or multi step state.
   // If the user has interacted with a general part of the editor.
+  actionDots.reset();
+  app.overlays.hideOverlay(null);
   tf.hideOpenForm();
   this.components.blockSettings.hide(block);
   tbe.forEachDiagramBlock( function(b) { b.markSelected(false); });
@@ -1254,8 +1256,13 @@ tbe.configInteractions = function configInteractions() {
   // right next to a block, e.g. allow some safe zones.
   interact('.editor-background')
     .on('down', function (event) {
-      thisTbe.clearStates();
-      teakselection.startSelectionBoxDrag(event);
+      try {
+        log.trace('drag selection');
+        thisTbe.clearStates();
+        teakselection.startSelectionBoxDrag(event);
+      } catch(error) {
+        log.trace('exception in drag selection');
+      }
     });
 
   // Event directed to function blocks (SVG objects with class 'drag-group')
@@ -1310,6 +1317,7 @@ tbe.configInteractions = function configInteractions() {
        }
     })
     .on('move', function(event) {
+      try {
       var interaction = event.interaction;
       var block = thisTbe.elementToBlock(event.target);
       if (block.name === 'tail') {
@@ -1324,7 +1332,6 @@ tbe.configInteractions = function configInteractions() {
           var notIsolated = (block.next !== null && block.prev !== null);
           var next = block;
           var prev = block;
-          var animationState = {};
           if (block.nesting > 0 && notIsolated && !block.isGroupSelected()) {
             next = block.next;
             prev = block.prev;
@@ -1367,6 +1374,9 @@ tbe.configInteractions = function configInteractions() {
         }
       } else {
         tbe.pointerDownObject = null;
+      }
+      } catch(error) {
+        log.trace('Exception in move event', error);
       }
     })
     .draggable({
@@ -1521,11 +1531,11 @@ tbe.buildTabs = function() {
 
 tbe.switchTabs = function(tab) {
   // This moves the tab background to the front.
+  this.clearStates();
   this.dropArea = tab;
   tbe.dropAreaGroup.appendChild(tab);
 
   var tabNum = parseInt(tab.getAttribute('tab'), 10);
-  console.log('tab num', tabNum);
   if (tabNum === 1) {
     tbe.hideAllBlocks();
     tbe.showStartTab();
