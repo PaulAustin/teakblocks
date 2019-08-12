@@ -42,13 +42,11 @@ module.exports = function(){
     var exit = document.createElement('div');
     exit.setAttribute('class', 'debug-exit');
     exit.setAttribute('id', 'debug-exit');
-
     exitGroup.onclick = settings.exit;
     exitGroup.appendChild(exit);
     exitGroup.innerHTML += `<i class="fa fa-times driver-x-debug svg-clear" aria-hidden="true"></i>`;
     overlayDom.appendChild(exitGroup);
 */
-
 
     div = document.createElement('div');
     div.setAttribute('id', 'debugWindow');

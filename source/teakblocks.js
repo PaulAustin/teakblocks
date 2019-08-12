@@ -33,7 +33,6 @@ var trashBlocks = require('./trashBlocks.js');
 var fblocks = require('./fblock-settings.js');
 var teakselection = require('./teakselection');
 var actionDots = require('./overlays/actionDots.js');
-var defaultFiles = require('./defaultFiles.js');
 var conductor = require('./conductor.js');
 var app = require('./appMain.js');
 
@@ -103,12 +102,6 @@ tbe.init = function init(svg, ceiling) {
   this.svg.insertBefore(this.background, this.svgCeiling);
   this.configInteractions();
   interact.maxInteractions(Infinity);
-  var files = ['docA', 'docB', 'docC', 'docD', 'docE'];
-  defaultFiles.default(files);
-  var loadedDocText = app.fileManager.loadFile('docA');
-  if (loadedDocText !== null) {
-    teakText.textToBlocks(tbe, loadedDocText);
-  }
 
   teakselection.init(tbe);
 
@@ -144,26 +137,20 @@ tbe.clearAllBlocks = function() {
 
 tbe.saveCurrentDoc = function() {
   var currentDocText = teakText.blocksToText(tbe.forEachDiagramChain);
-  app.fileManager.saveFile(tbe.currentDoc, currentDocText);
+  app.storage.setItem(tbe.currentDoc, currentDocText);
 };
 
 tbe.loadDoc = function(docName) {
-
-  // First, save the current document if actually a doc.
-  if (tbe.currentDoc !== 'driveMode') {
-    tbe.saveCurrentDoc();
-  }
-
-  // Second if they are actully switching then load the new one.
+  // If they are actully switching then load the new one.
   if (tbe.currentDoc !== docName) {
     tbe.clearStates();
     tbe.clearDiagramBlocks();
     tbe.currentDoc = docName;
-    var loadedDocText = app.fileManager.loadFile(docName);
-
+    var loadedDocText = app.storage.getItem(docName);
     if (loadedDocText !== null) {
       teakText.textToBlocks(tbe, loadedDocText);
     }
+    actionDots.setDocTitle(docName.substring(3,4));
   }
 };
 
@@ -1214,42 +1201,6 @@ tbe.configInteractions = function configInteractions() {
         return;
       thisTbe.clearStates();
       thisTbe.deleteChunk(block, block.last);
-    });
-
-  interact('.dropdown-buttons')
-    .on('hold', function (event) {
-      var block = event.target;
-      var command = block.getAttribute('command');
-      var doc = '';
-      switch (command) {
-        case 'loadDocA':
-          doc = 'docA';
-          break;
-        case 'loadDocB':
-          doc = 'docB';
-          break;
-        case 'loadDocC':
-           doc = 'docC';
-          break;
-        case 'loadDocD':
-          doc = 'docD';
-          break;
-        case 'loadDocE':
-          doc = 'docE';
-          break;
-        default:
-          doc = 'docA';
-          break;
-
-      }
-      app.fileManager.saveFile(doc, null);
-      defaultFiles.default([doc]);
-      tbe.clearDiagramBlocks();
-      tbe.currentDoc = doc;
-      var loadedDocText = app.fileManager.loadFile(doc);
-      if (loadedDocText !== null) {
-        teakText.textToBlocks(tbe, loadedDocText);
-      }
     });
 
   // Pointer events to the background go here. Might make sure the event is not

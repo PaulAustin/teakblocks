@@ -25,6 +25,7 @@ module.exports = function () {
   var interact = require('interact.js');
   var svgb = require('svgbuilder.js');
   var app = require('./../appMain.js');
+  var fastr = require('fastr.js');
   var dso = require('./deviceScanOverlay.js');
 
   // Map of all dots to map SVG dotIndex attribure to JS objects
@@ -43,6 +44,7 @@ module.exports = function () {
   // Flag to prevent nested animations, seconds hits bounce off.
   actionDots.isAnimating = false;
   actionDots.currentSubShowing = null;
+  actionDots.docTitleSVG = null;
 
   // Construct an action dot object, the object manage the SVGs
   // used by the dot and related dropdown.
@@ -135,6 +137,12 @@ module.exports = function () {
     }
   };
 
+  actionDots.setDocTitle = function(newName) {
+    if (actionDots.docTitleSVG !== null) {
+      actionDots.docTitleSVG.textContent = newName;
+    }
+  };
+
   // Create an image for the block base on its type.
   actionDots.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
     // x and y are top left of dot bouding square
@@ -152,6 +160,7 @@ module.exports = function () {
     this.svgDotGroup = null;
     this.svgDot = null;
     this.svgText = null;
+    this.svgTextOverlay = null;
     this.svgText2 = null;
     this.dotDiameter = dotd;
     this.dopTop = y;
@@ -167,23 +176,27 @@ module.exports = function () {
       this.svgDot = svgb.createRect('action-dot-bg', x-200, y, 180, dotd, dotHalf);
       this.svgText = svgb.createText('fa fas action-dot-fatext', x - 120, fontY, dso.decoratedName());
       this.svgText.setAttribute('id', 'device-name-label');
-    } else if (this.label.length > 1) {
-      // For files its the doc icon with letter inside. Only one text box has
-      // font awesome icon.
+    } else if (this.label === fastr.file) {
+      console.log('button b');
+      // For files its the doc icon with letter inside.
       this.svgDot = svgb.createCircle('action-dot-bg', x + dotHalf, y + dotHalf, dotHalf);
       this.svgText = svgb.createText('fa fas action-dot-fatext', x + dotHalf, fontY, label.substring(0, 1));
-      //???  svgText2 = svgb.createText('action-dot-doc-label', x + tweakx, buttonFH, label.substring(1));
-      //???  group.appendChild(svgText2);
+      this.svgTextOverlay = svgb.createText('action-dot-doc-label', x + dotHalf, fontY, 'A');
+      actionDots.docTitleSVG = this.svgTextOverlay;
     } else {
+      console.log('button c');
       // For simple buttons ther is just one font-awesome icon.
       this.svgDot = svgb.createCircle('action-dot-bg', x + dotHalf, y + dotHalf, dotHalf);
-      this.svgText = svgb.createText('fa fas action-dot-fatext', x + dotHalf + this.tweakx, fontY, label);
+      this.svgText = svgb.createText('fa action-dot-fatext fas', x + dotHalf + this.tweakx, fontY, label);
     }
     this.svgText.style.fontSize = fontSize.toString() + 'px';
 
     this.svgDot.setAttribute('id', 'action-dot-' + this.command);
     svgDG.appendChild(this.svgDot);
     svgDG.appendChild(this.svgText);
+    if (this.svgTextOverlay !== null) {
+      svgDG.appendChild(this.svgTextOverlay);
+    }
     svgDG.setAttribute('dotIndex', this.dotIndex);
     this.svgDotGroup = svgDG;
 
@@ -207,8 +220,8 @@ module.exports = function () {
     // the dots, it wil animate to full length when shown.
     this.subBackBottom = ((this.subDots.length + 1) * (dotd + spacing)) + spacing;
     this.subBackD = ddWidth;
-    this.svgSubBack = svgb.createRect('action-dot-dropdown-bg',
-    x-spacing, y-spacing, ddWidth, ddWidth, ddWidth/2);
+    this.svgSubBack = svgb.createRect('action-dot-dropdown-bg', x-spacing, y-spacing,
+      ddWidth, ddWidth, ddWidth/2);
 
     svgSubGroup.appendChild(this.svgSubBack);
 

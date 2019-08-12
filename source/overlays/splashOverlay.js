@@ -34,35 +34,41 @@ module.exports = function(){
     <div id='overlayRoot'>
         <div id='splashOverlay'>
             <div id='splashDialog'>
-              <p class='splashTitle'>Teak blocks<p>
+              <p class='splashTitle'>TBlocks<p>
               <p class='splashBody'>A block sequencing tool for simple programs.<p>
               <p class='splashBody'> This site uses cookies and local storage to maintain your settings.<p>
               <p class='splashBody'> © 2019 Paul Austin and Sidharth Srinivasan. All rights reserved.<p>
             <br>
             <div class='margin:20'>
-                <button id='clearAllBlocksButton' type='button'>Start clean!</button>
-                <button id='clearAllBlocksButton' type='button'>Close</button>
+                <button id='done' type='button'>I got it!</button>
+                <button id='reset' type='button'>Clear all pages editor and start over!</button>
             </div>
             <br>
             <div>
                 <label class='splashBody'>
-                <input checked='true' id='noLaunchSplash' type='checkbox'>
-                <span class='label-text'> Show this box at launch. </span>
                 </label>
             </div>
             </div>
         </div>
     </div>`;
 
-    var exitButton = document.getElementById('splashOverlay');
+    // Exit simply go back to editor.
+    var exitButton = document.getElementById('done');
     exitButton.onclick = splashOverlay.hideAbout;
 
-    // Get the clear button and clear the blocks if it is pressed.
-    var clearAllButton = document.getElementById('clearAllBlocksButton');
-    clearAllButton.onclick = splashOverlay.hideAbout;
+    // Reset - clear all pages so students can go back to the origianl state.
+    // often for the next student.
+    var resetButton = document.getElementById('reset');
+    resetButton.onclick = splashOverlay.resetApp;
   };
 
   splashOverlay.hideAbout = function() {
+      overlays.hideOverlay();
+  };
+
+  splashOverlay.resetApp = function() {
+      app.tbe.clearAllBlocks();
+      app.defaultFiles.setupDefaultPages(true);
       overlays.hideOverlay();
   };
 
@@ -74,7 +80,7 @@ module.exports = function(){
   splashOverlay.exit = function (event) {
     // Get the checkbox and its label text
     var labelText = document.getElementsByClassName('label-text');
-    var checkbox = document.getElementById('noLaunchSplash');
+    //  var checkbox = document.getElementById('noLaunchSplash');
 
     // TODO should be done by application class.
     var overlay = document.getElementById('overlayFrame');

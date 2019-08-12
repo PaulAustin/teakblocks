@@ -52,19 +52,18 @@ module.exports = function () {
   var overlays = require('./overlays.js');
   var app = require('./../appMain.js');
 
-
   fileOverlay.saveCamera = document.getElementById('saveCamera');
 
   // External function for putting it all together.
   fileOverlay.start = function () {
 
-    // Construct the DOM for the overlay.
-    overlays.overlayDom.innerHTML = `
-      <div id='overlayRoot' class ='fullScreenSlideIn'>
-        <div id='debugLogBackground'>
-          <div id='debugLog'></div>
-        </div>
-      </div>`;
+  // Construct the DOM for the overlay.
+  overlays.overlayDom.innerHTML = `
+    <div id='overlayRoot' class ='fullScreenSlideIn'>
+      <div id='debugLogBackground'>
+        <div id='debugLog'></div>
+      </div>
+    </div>`;
 
   };
 
@@ -76,14 +75,6 @@ module.exports = function () {
   // TODO save in medium size perahsp 1/4 scale, for a regualr screen that is
   // 1/16 the storeac, then show smaller thumb nails. on hover the thumb nail
   // can be magnified.
-
-  fileOverlay.saveFile = function(fileName, content) {
-    app.storage.setItem(fileName, content);
-  };
-
-  fileOverlay.loadFile = function(fileName) {
-    return app.storage.getItem(fileName);
-  };
 
   fileOverlay.mockLocalStorage = {
     getItem: function (key) {
@@ -98,7 +89,7 @@ module.exports = function () {
 
   fileOverlay.localStorage = function() {
     if (typeof window.localStorage !== 'undefined') {
-      // if localStoarge exists then use it directly.
+      // If localStoarge exists then use it directly.
       return window.localStorage;
     } else {
       return fileOverlay.mockLocalStorage;
@@ -115,9 +106,7 @@ module.exports = function () {
   };
 
   fileOverlay.snapShot = function() {
-
-    // Create a SVG string by joining the serialized form with a header.
-
+  // Create a SVG string by joining the serialized form with a header.
   };
 
   return fileOverlay;

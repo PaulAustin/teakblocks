@@ -78,7 +78,8 @@ module.exports = function () {
     app.tbe = require('./teakblocks.js');
     app.conductor = require('./conductor.js');
     app.dots = require('./overlays/actionDots.js');
-    var teaktext = require('./teaktext.js');
+    app.defaultFiles = require('./defaultFiles.js');
+    app.teaktext = require('./teaktext.js');
 
     // Add major modules to the application object.
     var tbe = app.tbe;
@@ -145,7 +146,6 @@ module.exports = function () {
       {'label': 'E', 'command': 'loadDocE'},
     ];
     var buttonsEdit = [
-      {'label': fastr.save, 'command': 'save'},
       {'label': fastr.copy, 'command': 'copy'},
       {'label': fastr.paste, 'command': 'paste'},
       {'label': fastr.trash, 'command': 'trash'},
@@ -173,18 +173,18 @@ module.exports = function () {
       'deviceScanOverlay': 'deviceScanOverlay',
 
       'settings': function() { tbe.loadSettings(); },
-      'copy': function() { tbe.copyText = teaktext.blocksToText(tbe.forEachDiagramChain); },
-      'paste': function() { if(tbe.copyTest !== null) { teaktext.textToBlocks(tbe, tbe.copyText); } },
+      'copy': function() { tbe.copyText = app.teaktext.blocksToText(tbe.forEachDiagramChain); },
+      'paste': function() { if(tbe.copyTest !== null) { app.teaktext.textToBlocks(tbe, tbe.copyText); } },
       'save': function() {
-        var currentDocText = teaktext.blocksToText(tbe.forEachDiagramChain);
-        app.fileManager.saveFile(tbe.currentDoc, currentDocText);
+        var currentDocText = app.teaktext.blocksToText(tbe.forEachDiagramChain);
+        app.storage.setItem(tbe.currentDoc, currentDocText);
       },
     };
 
     // Construct the clipboard
     var clipboard = new Clipboard('.copy-button', {
       text: function() {
-          return teaktext.blocksToText(tbe.forEachDiagramChain);
+          return app.teaktext.blocksToText(tbe.forEachDiagramChain);
       }
     });
     clipboard.on('success', function(e) {
@@ -221,17 +221,25 @@ module.exports = function () {
      {'alignment': 'L', 'label': fastr.stop, 'command': 'stop'},
      {'alignment': 'L', 'label': fastr.gamepad, 'command': 'driveOverlay'},
      {'alignment': 'M', 'label': fastr.debug, 'command': 'debugOverlay'},
-     {'alignment': 'M', 'label': fastr.folder, 'command': 'pages', 'sub':buttonsPages},
+     {'alignment': 'M', 'label': fastr.file, 'command': 'pages', 'sub':buttonsPages},
      {'alignment': 'M', 'label': fastr.edit, 'command': 'edit', 'sub':buttonsEdit},
      // {'alignment': 'M', 'position': 4, 'label': fastr.camera, 'command': 'docSnapShot'},
      {'alignment': 'R', 'label': '', 'command': 'deviceScanOverlay'},
     ];
 
     var base = app.dots.defineButtons(actionButtonDefs, document.getElementById('editorSvgCanvas'));
-    // It seesm SVG eat all the events, even ones that dont hit any objects :(
+    // It seesm SVG eat all the events, even ones that don't hit any objects :(
     //actionDots.defineButtons(actionButtonDefs, document.getElementById('actionDotSvgCanvas'));
 
+    // This is pretty Wonky
+    app.defaultFiles.setupDefaultPages(false);
+
     tbe.init(document.getElementById('editorSvgCanvas'), base);
+
+    var loadedDocText = app.storage.getItem('docA');
+    if (loadedDocText !== null) {
+      app.teaktext.textToBlocks(tbe, loadedDocText);
+    }
 
     // Add the main command buttons, to left, middle and right locations.
     tbe.addPalette(package1);
@@ -250,6 +258,10 @@ module.exports = function () {
   };
 
   app.doCommand = function(commandName) {
+    // Write the current doc state to storage insert
+    // before any command
+    app.tbe.saveCurrentDoc();
+
     var cmd = app.tbe.commands[commandName];
     if (app.overlays.isAnimating) {
       return;
@@ -277,18 +289,6 @@ module.exports = function () {
       app.overlays.showOverlay(cmd);
     }
   };
-
-  app.toggleOverlay = function(name) {
-    // TODO modularized control of editor. Why is this part of the show overlay logic?
-    // First, save the current document.
-    app.tbe.saveCurrentDoc();
-    app.tbe.clearStates();
-    if (app.overlays.toggle(name)) {
-      app.dots.activate(name, 3);
-    } else {
-      app.dots.activate(name, 0);
-    }
-};
 
   return app;
 }();
