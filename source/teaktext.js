@@ -93,7 +93,6 @@ teakText.valueToText = function(value) {
 
 //------------------------------------------------------------------------------
 teakText.textToBlocks = function(tbe, text) {
-  log.trace('new loader');
   var state = {};
   // Visitor pattern may be better, a lot better.
   var teakJSO = teak.parse(text, state, function(name) { return name; });
@@ -101,7 +100,6 @@ teakText.textToBlocks = function(tbe, text) {
 };
 
 teakText.loadJsoTeak = function(tbe, jsoTeak) {
-  log.trace(' loadJSO', jsoTeak);
   if (Array.isArray(jsoTeak)) {
     let i = 0;
     for (i = 0; i < jsoTeak.length; i++) {
@@ -113,7 +111,6 @@ teakText.loadJsoTeak = function(tbe, jsoTeak) {
         var x = jsoChain.x;
         var y = jsoChain.y;
         let jsoChainBlocks = jsoChain._3;
-        log.trace(' TJDO', jsoChain, x, y);
         var chain = teakText.loadJsoTeakBlocks(tbe, jsoChainBlocks, x, y, null);
 
         // Refresh the graphics in each block in the chain.

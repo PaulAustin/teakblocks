@@ -46,7 +46,6 @@ module.exports = function () {
   conductor.activeBits = [];
 
   conductor.attachToScoreEditor = function(tbe) {
-    log.trace('attached to ', tbe);
     conductor.tbe = tbe;
     conductor.linkHeartBeat();
     conductor.cxn.connectionChanged.subscribe(conductor.updateIndentityBlocks);
@@ -55,7 +54,6 @@ module.exports = function () {
   // If there is a change in connections update the indentity blocks
   // TODO this linkage is very much a bit of a hack.
   conductor.updateIndentityBlocks = function() {
-    log.trace(' updating identity blocks');
     var blockChainIterator  = conductor.tbe.forEachDiagramChain;
     blockChainIterator(function(chainStart) {
       if (chainStart.name.startsWith('identity')) {
@@ -112,7 +110,6 @@ module.exports = function () {
           if (conductor.count === undefined || conductor.count === '0') {
             conductor.count = 1;
           }
-          log.trace(conductor.count);
 
           if (block !== null) {
             conductor.count = parseInt(conductor.count, 10);

@@ -1208,7 +1208,6 @@ tbe.configInteractions = function configInteractions() {
   interact('.editor-background')
     .on('down', function (event) {
       try {
-        log.trace('drag selection');
         thisTbe.clearStates();
         teakselection.startSelectionBoxDrag(event);
       } catch(error) {

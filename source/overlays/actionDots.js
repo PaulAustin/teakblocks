@@ -177,14 +177,12 @@ module.exports = function () {
       this.svgText = svgb.createText('fa fas action-dot-fatext', x - 120, fontY, dso.decoratedName());
       this.svgText.setAttribute('id', 'device-name-label');
     } else if (this.label === fastr.file) {
-      console.log('button b');
       // For files its the doc icon with letter inside.
       this.svgDot = svgb.createCircle('action-dot-bg', x + dotHalf, y + dotHalf, dotHalf);
       this.svgText = svgb.createText('fa fas action-dot-fatext', x + dotHalf, fontY, label.substring(0, 1));
       this.svgTextOverlay = svgb.createText('action-dot-doc-label', x + dotHalf, fontY, 'A');
       actionDots.docTitleSVG = this.svgTextOverlay;
     } else {
-      console.log('button c');
       // For simple buttons ther is just one font-awesome icon.
       this.svgDot = svgb.createCircle('action-dot-bg', x + dotHalf, y + dotHalf, dotHalf);
       this.svgText = svgb.createText('fa action-dot-fatext fas', x + dotHalf + this.tweakx, fontY, label);

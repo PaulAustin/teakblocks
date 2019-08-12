@@ -44,7 +44,6 @@ module.exports = function () {
 
     // Start update function.
     debugMode.updateDebug();
-    log.trace('> Show debug overlay');
   };
 
   // Update the list of messages show in the display.
