@@ -82,7 +82,7 @@ module.exports = function () {
 
     if (overlays.currentIsClosing === true) {
       overlays.currentIsClosing = false;
-      overlays.overlayDom.innerHTML = "";
+      overlays.overlayDom.innerHTML = '';
     }
     if (afterCommand !== null) {
       afterCommand();

@@ -38,10 +38,10 @@ module.exports = function(){
               <p class='splashBody'>A block sequencing tool for simple programs.<p>
               <p class='splashBody'> This site uses cookies and local storage to maintain your settings.<p>
               <p class='splashBody'> © 2019 Paul Austin and Sidharth Srinivasan. All rights reserved.<p>
-            <br>
             <div class='margin:20'>
-                <button id='done' type='button'>I got it!</button>
-                <button id='reset' type='button'>Clear all pages editor and start over!</button>
+                <button id='done' class='splash-button' style='width:200px'>OK</button>
+                <br><br><br>
+                <button id='reset' class='splash-button' style='width:200px'>Clear all.</button>
             </div>
             <br>
             <div>
@@ -63,35 +63,21 @@ module.exports = function(){
   };
 
   splashOverlay.hideAbout = function() {
-      overlays.hideOverlay();
+      overlays.hideOverlay(null);
   };
 
   splashOverlay.resetApp = function() {
       app.tbe.clearAllBlocks();
       app.defaultFiles.setupDefaultPages(true);
-      overlays.hideOverlay();
+      overlays.hideOverlay(null);
+  };
+
+  splashOverlay.exit = function () {
   };
 
   splashOverlay.showLaunchAboutBox = function() {
     var value = app.storage.getItem('teakBlockShowAboutBox');
     return (value === null) || (value === true);
-  };
-
-  splashOverlay.exit = function (event) {
-    // Get the checkbox and its label text
-    var labelText = document.getElementsByClassName('label-text');
-    //  var checkbox = document.getElementById('noLaunchSplash');
-
-    // TODO should be done by application class.
-    var overlay = document.getElementById('overlayFrame');
-    // Check if the spot clicked on is not the checkbox or its label
-    if (overlay !== null && event.target !== checkbox && event.target !== labelText[0]) {
-
-      // If the checkbox is checked, should store into local memory
-      if(!checkbox.checked){
-        app.storage.setItem('teakBlockShowAboutBox', false);
-      }
-    }
   };
 
   return splashOverlay;
