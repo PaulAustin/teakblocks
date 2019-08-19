@@ -69,6 +69,19 @@ module.exports = function () {
     return board;
   };
 
+  icons.tbot = function(scale, x, y, name) {
+    var group = svgb.createGroup('', x, y);
+    var data = [0,0,0,0,0, 0,1,0,1,0, 0,0,0,0,0, 1,0,0,0,1, 0,1,1,1,0];
+    group.appendChild(svgb.createRect('tbot-device', 12, 0, 96, 120, 4));
+    group.appendChild(svgb.createRect('tbot-device-head', 22, 0, 76, 50, 0));
+    group.appendChild(svgb.createRect('tbot-device-side', 0, 0, 10, 120, 4));
+    group.appendChild(svgb.createRect('tbot-device-side', 110, 0, 10, 120, 4));
+    group.appendChild(svgb.createText('svg-clear tbot-device-name', 60, 90, name));
+
+    group.appendChild(icons.picture(scale, 45, 10, data));
+    return group;
+  };
+
   icons.picture = function(scale, x, y, data) {
     var pix = data;
     var group = svgb.createGroup('svg-clear', 26+x, 15+y);
