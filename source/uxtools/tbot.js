@@ -41,18 +41,27 @@ module.exports = function(){
 
     // TODO icon and font block coudl really used a common anchor point.
     // too many tweaks
-    this.tbotsvg = icons.tbot(1.0, x, y, this.name);
-    this.svg.appendChild(this.tbotsvg);
-    // ??? Is there any cleanup needed for each time this is called?
+    this.selectionsvg = svgb.createRect('tbot-select', x-8, y-7, 135, 135, 3);
+    //this.svg.appendChild(this.selectionsvg);
+
+    this.tbotsvg = this.svg.appendChild(icons.tbot(1.0, x, y, this.name));
   };
 
   tbot.Class.prototype.updateSvg = function() {
   };
 
+  tbot.Class.prototype.setSelected = function(selected) {
+    if (selected && !this.selected) {
+      this.svg.insertBefore(this.selectionsvg, this.tbotsvg);
+    } else if (!selected && this.selected) {
+      this.svg.removeChild(this.selectionsvg);
+    }
+    this.selected = selected;
+  };
+
   tbot.Class.prototype.interact = function() {
     var t = this;
-    console.log('tbot interact');
-    interact('.tbot-device', {context:this.svg})
+    interact('.tbot-device', {context:this.tbotsvg})
       .on('dragstart', function (event) { t.event(event); })
       .on('dragmove', function (event) { t.event(event);  })
       .on('dragend', function(event) { t.event(event); })
@@ -61,17 +70,12 @@ module.exports = function(){
   };
 
   tbot.Class.prototype.event = function(event) {
-    console.log('tbot event', event.pageY);
-
-    var valPerPy = this.vDomain / this.vRange;
     if (event.type === 'dragstart') {
-      this.dragStart = this.vvalue.value;
     } else if (event.type === 'dragmove') {
-      this.vvalue.set(this.dragStart + (valPerPy * (event.y0 - event.pageY)));
     } else if (event.type === 'dragend') {
-      this.vvalue.set(0);
+    } else if (event.type === 'down') {
+      this.setSelected(!this.selected);
     }
-    this.updateSvg();
   };
 
   return tbot;
