@@ -26,7 +26,7 @@ module.exports = function(){
   var overlays = require('./overlays.js');
   var dso = require('./deviceScanOverlay.js');
   var slideControl = require('slideControl.js');
-  var chart = require('chart.js');
+  // var chart = require('chart.js');
   var dov = {};
 
   dov.start = function() {
@@ -38,8 +38,6 @@ module.exports = function(){
       </div>
     </div>`;
 
-
-
     dov.svg = document.getElementById('driveOverlay');
     dov.lSlide = new slideControl.Class(dov.svg, 'L');
     dov.rSlide = new slideControl.Class(dov.svg, 'R');
@@ -50,8 +48,9 @@ module.exports = function(){
     dov.sendValuesToBot();
   };
 
+ /*
  dov.chartSetup = function() {
-    console.log('hack a chart');
+    // console.log('hack a chart');
     var ctx = document.getElementById('myChart').getContext('2d');
     ctx.canvas.width = 400;
     ctx.canvas.height = 200;
@@ -135,6 +134,7 @@ module.exports = function(){
     dov.chart.canvas.style.height = '400px';
     dov.chart.canvas.style.width = '600px';
  };
+*/
 
   dov.onResize = function() {
     var t = dov;
