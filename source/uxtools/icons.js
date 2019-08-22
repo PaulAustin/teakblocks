@@ -71,13 +71,14 @@ module.exports = function () {
 
   // A basic smiling tbot icon about 120x120
   icons.tbot = function(scale, x, y, name) {
-    var group = svgb.createGroup('', x, y);
+    var group = svgb.createGroup('tbot', x, y);
     var data = [0,0,0,0,0, 0,1,0,1,0, 0,0,0,0,0, 1,0,0,0,1, 0,1,1,1,0];
     group.appendChild(svgb.createRect('tbot-device', 12, 0, 96, 120, 3));
-    group.appendChild(svgb.createRect('tbot-device-head', 22, 0, 76, 50, 0));
+    group.appendChild(svgb.createRect('svg-clear tbot-device-head', 22, 0, 76, 50, 0));
     group.appendChild(svgb.createRect('tbot-device-side', 0, 0, 10, 120, 3));
     group.appendChild(svgb.createRect('tbot-device-side', 110, 0, 10, 120, 3));
-    group.appendChild(svgb.createText('svg-clear tbot-device-name', 60, 90, name));
+    group.appendChild(svgb.createText('svg-clear tbot-device-name', 60, 85, name));
+    group.appendChild(svgb.createText('fas svg-clear tbot-device-name', 60, 110, ''));
     group.appendChild(icons.picture(scale, 45, 10, data));
     return group;
   };

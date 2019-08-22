@@ -25,31 +25,20 @@ SOFTWARE.
 module.exports = function () {
   var ko = require('knockout');
   var fastr = require('fastr.js');
+  var tbot = require('tbot.js');
   var cxn = require('./../cxn.js');
   var overlays = require('./overlays.js');
   var deviceScanOverlay = {};
   var dso = deviceScanOverlay;
 
-  dso.devices = ko.observableArray([]);
   dso.nonName = '-?-';
+  dso.tbots = {};
   dso.deviceName = dso.nonName;
-
-  dso.onDeviceClick = function() {
-      // Ah JavaScript... 'this' is NOT the deviceScanOverlay.
-      // It is the knockout item in the observable array.
-      cxn.connect(this.name);
-      dso.selectDevice(this.name);
-  };
 
   dso.selectDevice = function(newBotName) {
     if (typeof newBotName === 'string') {
       var currentBotName = dso.deviceName;
       if (currentBotName !== newBotName) {
-        // arrayFirst as a visitor.
-        ko.utils.arrayFirst(dso.devices(), function(item) {
-            item().selected(item().name === newBotName);
-            return false; // visit all items
-        });
       }
       // Move the selected name into the object.
       dso.updateScreenName(newBotName);
@@ -99,11 +88,7 @@ module.exports = function () {
       <div id='overlayRoot'>
         <div id='dsoOverlay'>
             <div class='dso-list-box-shell'>
-                <ul class='dso-list-box' data-bind='foreach: devices'>
-                  <li data-bind="css:{'dso-list-item-selected':selected()}">
-                    <div data-bind="text:name, click:$parent.onDeviceClick"></div>
-                  </li>
-                </ul>
+              <svg id='dsoSVG' width='100%' xmlns="http://www.w3.org/2000/svg"></svg>
             </div>
             <div>
                 <button id='dsoScan' class='fa fas dso-button'>
@@ -115,9 +100,16 @@ module.exports = function () {
             </div>
         </div>
       </div>`;
-
     // Connect the dataBinding.
     ko.applyBindings(dso, overlays.overlayDom);
+
+    dso.svg = document.getElementById('dsoSVG');
+
+    // build the visuals list
+    for (var t in dso.tbots) {
+      dso.tbots[t].buildSvg(dso.svg);
+    }
+
     dso.scanButton = document.getElementById('dsoScan');
     dso.scanButton.onclick = dso.onScanButton;
     dso.disconnectButton = document.getElementById('dsoDisconnect');
@@ -136,6 +128,9 @@ module.exports = function () {
 
   // Close the overlay.
   dso.exit = function() {
+    for (var t in dso.tbots) {
+      dso.tbots[t].releaseSvg();
+    }
 
     if (cxn.scanning) {
       cxn.stopScanning();
@@ -145,6 +140,26 @@ module.exports = function () {
     ko.cleanNode(overlays.overlayDom);
   };
 
+  dso.tryConnect = function(tb) {
+    console.log('try connect', tb);
+    if (cxn.scanUsesHostDialog()) {
+      // In Host dialog mode (used on browsers) a direct connection
+      // can be made, so just bring up the host scan. That will
+      // disconnect any current as well.
+      dso.onScanButton();
+    } else if (!tb.selected) {
+      // Right now only one connection is allowed
+      //tb.setConnectionStatus(cxn.statusEnum.CONNECTING);
+      cxn.disconnectAll();
+      cxn.connect(tb.name);
+      dso.selectDevice(tb.name);
+    } else {
+      // Just clear this one
+      // Only one is connected so use the main button.
+      cxn.disconnectAll();
+    }
+  };
+
   dso.onScanButton = function() {
     if (cxn.scanUsesHostDialog()) {
       if (cxn.scanning) {
@@ -152,6 +167,7 @@ module.exports = function () {
         dso.watch.dispose();
         dso.watch = null;
       } else {
+        dso.onDisconnectButton();
         dso.refreshList(cxn.devices);
         dso.watch = cxn.connectionChanged.subscribe(dso.refreshList);
         cxn.startScanning();
@@ -160,30 +176,27 @@ module.exports = function () {
   };
 
   dso.onDisconnectButton = function() {
-      var currentBotName = dso.deviceName;
-      var dev = cxn.devices[currentBotName];
-      if (dev !== undefined) {
-        var mac = cxn.devices[currentBotName].mac;
-        cxn.disconnect(mac, currentBotName);
-      }
+      cxn.disconnectAll();
   };
 
-  // refreshList() -- rebuilds the UI list bases on devices the
+  // refreshList() -- rebuilds the UI list based on devices the
   // connection manager knows about.
   dso.refreshList = function (bots) {
-    dso.devices.removeAll();
     var cxnSelectedBot = dso.nonName;
     for (var key in bots) {
-      var selected = bots[key].status === cxn.statusEnum.CONNECTED;
-      if (selected) {
-          cxnSelectedBot = key;
+      let status = bots[key].status;
+      var tb = dso.tbots[key];
+      if (tb !== undefined) {
+        tb.setConnectionStatus(status);
+      } else {
+        let count = Object.keys(dso.tbots).length;
+        tb = new tbot.Class(dso.svg, 50 + (count * 150), 20, key);
+        tb.onclick = function() { dso.tryConnect(tb); };
+        dso.tbots[key] = tb;
+        tb.setConnectionStatus(status);
       }
-      if (bots.hasOwnProperty(key)) {
-          var item = ko.observable({
-            name: key, //+ faBlueTooth,
-            selected: ko.observable(selected)
-          });
-          dso.devices.unshift(item);
+      if (status === cxn.statusEnum.CONNECTED) {
+          cxnSelectedBot = key;
       }
     }
     dso.updateLabel();

@@ -25,29 +25,42 @@ module.exports = function(){
   var interact = require('interact.js');
   var svgb = require('svgbuilder.js');
   var icons = require('icons.js');
+  var cxn = require('./../cxn.js');
+  var fastr = require('fastr.js');
 
   var tbot = {};
 
   tbot.Class = function Tbot(svg, x, y, name) {
-    this.svg = svg;
     this.name = name;
-    this.buildSvg(x, y);
-    this.interact();
+    this.x = x;
+    this.y = y;
+    this.buildSvg(svg);
   };
 
-  tbot.Class.prototype.buildSvg = function(x, y) {
+  tbot.Class.prototype.releaseSvg = function() {
+    this.selectionsvg = null;
+    this.tbotsvg = null;
+    this.cxntext = null;
+  };
+
+  tbot.Class.prototype.buildSvg = function(svg) {
     // Since the Thumb is a circle the vRange is reduced by the
     // diameter (.e.g. the width) This still look confusing.
 
     // TODO icon and font block coudl really used a common anchor point.
     // too many tweaks
-    this.selectionsvg = svgb.createRect('tbot-select', x-8, y-7, 135, 135, 3);
-    //this.svg.appendChild(this.selectionsvg);
+    this.svg = svg;
 
-    this.tbotsvg = this.svg.appendChild(icons.tbot(1.0, x, y, this.name));
-  };
+    // Bot's LEDs uses upper case name, so use that in icon as well.
+    let upName = this.name.toUpperCase();
+    this.tbotsvg = this.svg.appendChild(icons.tbot(1.0, this.x, this.y, upName));
 
-  tbot.Class.prototype.updateSvg = function() {
+    this.cxntext = this.tbotsvg.children[5];
+    this.selectionsvg = svgb.createRect('tbot-select', this.x-8, this.y-7, 135, 135, 3);
+
+    this.selected = false;
+    this.setConnectionStatus(this.status);
+    this.interact();
   };
 
   tbot.Class.prototype.setSelected = function(selected) {
@@ -59,22 +72,34 @@ module.exports = function(){
     this.selected = selected;
   };
 
+  tbot.Class.prototype.setConnectionStatus = function(status) {
+    this.status = status;
+    if (status === cxn.statusEnum.CONNECTED) {
+      this.setSelected(true);
+      this.cxntext.textContent = fastr.link;
+    } else if (status === cxn.statusEnum.CONNECTING) {
+      this.setSelected(true);
+      this.cxntext.textContent = fastr.sync;
+    } else if (status === cxn.statusEnum.BEACON) {
+       this.setSelected(false);
+       this.cxntext.textContent = '';
+    } else if (status === cxn.statusEnum.NOT_THERE) {
+      this.setSelected(false);
+      this.cxntext.textContent = '';
+    }
+  };
+
   tbot.Class.prototype.interact = function() {
     var t = this;
-    interact('.tbot-device', {context:this.tbotsvg})
-      .on('dragstart', function (event) { t.event(event); })
-      .on('dragmove', function (event) { t.event(event);  })
-      .on('dragend', function(event) { t.event(event); })
-      .on('down', function(event) { t.event(event); })
-      .on('move', function(event) { t.event(event); });
+    interact('.tbot', {context:this.tbotsvg})
+      .on('down', function(event) { t.event(event); });
   };
 
   tbot.Class.prototype.event = function(event) {
-    if (event.type === 'dragstart') {
-    } else if (event.type === 'dragmove') {
-    } else if (event.type === 'dragend') {
-    } else if (event.type === 'down') {
-      this.setSelected(!this.selected);
+    if (event.type === 'down') {
+      if (typeof this.onclick === 'function') {
+        this.onclick(this);
+      }
     }
   };
 

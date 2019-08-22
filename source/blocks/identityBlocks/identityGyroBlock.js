@@ -26,9 +26,6 @@ module.exports = function () {
   var ko = require('knockout');
   var keypad = require('./../keypadTab.js');
 
-  // TODO the link type could show up on the icon
-  // to indicate how it is connected
-  // var faBlueTooth = '\uf294';
   var pb = svgb.pathBuilder;
   var identityGyroBlock = {};
 

@@ -25,10 +25,6 @@ module.exports = function () {
   var svgb = require('svgbuilder.js');
   var fastr = require('fastr.js');
   var keypad = require('./../keypadTab.js');
-  // TODO the link type could show up on the icon
-  // to indicate how it is connected
-  // var faBlueTooth = '\uf294';
-  // var pb = svgb.pathBuilder;
   var identityTemperatureBlock = {};
 
   // Items for selecting a device from a list.
