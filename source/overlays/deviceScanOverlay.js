@@ -23,7 +23,7 @@ SOFTWARE.
 // An overlay to see log messages and communications
 // between the app and the robot.
 module.exports = function () {
-  var ko = require('knockout');
+  var interact = require('interact.js');
   var fastr = require('fastr.js');
   var tbot = require('tbot.js');
   var cxn = require('./../cxn.js');
@@ -36,18 +36,15 @@ module.exports = function () {
   dso.deviceName = dso.nonName;
 
   dso.selectDevice = function(newBotName) {
+    // Move the selected name into the object.
     if (typeof newBotName === 'string') {
-      var currentBotName = dso.deviceName;
-      if (currentBotName !== newBotName) {
-      }
-      // Move the selected name into the object.
       dso.updateScreenName(newBotName);
     }
   };
 
   dso.decoratedName = function() {
-     return fastr.robot + '  ' + dso.deviceName;
- };
+    return fastr.robot + '  ' + dso.deviceName;
+  };
 
   dso.updateScreenName = function(botName) {
     dso.deviceName = botName;
@@ -80,31 +77,66 @@ module.exports = function () {
     };
   };
 
+  dso.addTestBots = function() {
+    var testNames = ['CUPUR', 'CAPAZ', 'FELIX', 'SADOW', 'NATAN', 'GATON', 'FUTOL', 'BATON', 'FILON', 'CAPON'];
+    for (var i in testNames) {
+      var tb = dso.addNewBlock(testNames[i], 0);
+      tb.test = true;
+    }
+  };
+
+  dso.testKeyTCount = 0;
+  dso.testKeyCCount = 0;
+  dso.keyEvent = function(e) {
+    if (e.key === 'T') {
+      dso.testKeyTCount +=1;
+    } else if (e.key === 'C') {
+      dso.testKeyCCount += 1;
+    } else {
+      dso.testKeyTCount = 0;
+      dso.testKeyCCount = 0;
+    }
+    if (dso.testKeyTCount > 3) {
+      dso.addTestBots();
+      dso.testKeyTCount = 0;
+      dso.testKeyCCount = 0;
+    } else if (dso.testKeyCCount > 3) {
+      dso.tbots = {};
+      while (dso.svg.lastChild) {
+        dso.svg.removeChild(dso.svg.lastChild);
+      }
+      dso.testKeyTCount = 0;
+      dso.testKeyCCount = 0;
+    }
+  };
+
   // External function for putting it all together.
   dso.start = function () {
+    document.body.addEventListener('keydown', dso.keyEvent ,false);
 
     // Construct the DOM for the overlay.
     overlays.overlayDom.innerHTML = `
       <div id='overlayRoot'>
         <div id='dsoOverlay'>
             <div class='dso-list-box-shell'>
-              <svg id='dsoSVG' width='100%' xmlns="http://www.w3.org/2000/svg"></svg>
+              <svg id='dsoSVG' width='100%' height='100%' xmlns="http://www.w3.org/2000/svg"></svg>
             </div>
             <div>
-                <button id='dsoScan' class='fa fas dso-button'>
+                <button id='dsoScan' class='fa fas dso-button xtra'>
                 LABEL SET BASED ON STATE
                 </button>
-                <button id='dsoDisconnect' class='fa fas dso-button' style='float:right'>
+                <button id='dsoDisconnect' class='fa fas dso-button xtra' style='float:right'>
                 Disconnect
                 </button>
             </div>
         </div>
       </div>`;
-    // Connect the dataBinding.
-    ko.applyBindings(dso, overlays.overlayDom);
 
+    // Connect the dataBinding.
     dso.svg = document.getElementById('dsoSVG');
 
+    window.addEventListener("resize", dso.onResize);
+    dso.onResize();
     // build the visuals list
     for (var t in dso.tbots) {
       dso.tbots[t].buildSvg(dso.svg);
@@ -115,6 +147,10 @@ module.exports = function () {
     dso.disconnectButton = document.getElementById('dsoDisconnect');
     dso.disconnectButton.onclick = dso.onDisconnectButton;
 
+    // Backdoor way to change hold duration.
+    interact.debug().defaultOptions._holdDuration = 4000;
+    dso.interact = interact('.xtra', {context:this.overlayDom, _holdDuration:5000})
+      .on('hold', function() { dso.addTestBots(); } );
     dso.deviceNameLabel = document.getElementById('device-name-label');
 
     if (!cxn.scanUsesHostDialog()) {
@@ -126,8 +162,31 @@ module.exports = function () {
     dso.updateScreenName(dso.deviceName);
   };
 
+  dso.nextLocation = function(i) {
+    let w = dso.columns;
+    let row = Math.floor(i / w);
+    let col = i % w;
+    return {x: 50 + (col * 150), y:20 + (row * 150)};
+  };
+
+  dso.onResize = function() {
+    dso.w = dso.svg.clientWidth;
+    dso.h = dso.svg.clientHeight;
+    dso.columns = Math.floor((dso.w - 40) / 150);
+    var i = 0;
+    for (var t in dso.tbots) {
+      var loc = dso.nextLocation(i);
+      i += 1;
+      var tb = dso.tbots[t];
+      tb.setLocation(loc.x, loc.y);
+    }
+  };
+
   // Close the overlay.
   dso.exit = function() {
+    document.body.removeEventListener('keydown', dso.keyEvent ,false);
+    dso.interact.options.holdDuration = 600;
+
     for (var t in dso.tbots) {
       dso.tbots[t].releaseSvg();
     }
@@ -137,11 +196,11 @@ module.exports = function () {
       dso.watch.dispose();
       dso.watch = null;
     }
-    ko.cleanNode(overlays.overlayDom);
+
+    dso.svg = null;
   };
 
   dso.tryConnect = function(tb) {
-    console.log('try connect', tb);
     if (cxn.scanUsesHostDialog()) {
       // In Host dialog mode (used on browsers) a direct connection
       // can be made, so just bring up the host scan. That will
@@ -160,7 +219,7 @@ module.exports = function () {
     }
   };
 
-  dso.onScanButton = function() {
+  dso.onScanButton = function(e) {
     if (cxn.scanUsesHostDialog()) {
       if (cxn.scanning) {
         cxn.stopScanning();
@@ -179,6 +238,15 @@ module.exports = function () {
       cxn.disconnectAll();
   };
 
+  dso.addNewBlock = function(key, status) {
+    var loc = dso.nextLocation(Object.keys(dso.tbots).length);
+    var tb = new tbot.Class(dso.svg, loc.x, loc.y, key);
+    tb.onclick = function() { dso.tryConnect(tb); };
+    tb.setConnectionStatus(status);
+    dso.tbots[key] = tb;
+    return tb;
+  };
+
   // refreshList() -- rebuilds the UI list based on devices the
   // connection manager knows about.
   dso.refreshList = function (bots) {
@@ -189,11 +257,7 @@ module.exports = function () {
       if (tb !== undefined) {
         tb.setConnectionStatus(status);
       } else {
-        let count = Object.keys(dso.tbots).length;
-        tb = new tbot.Class(dso.svg, 50 + (count * 150), 20, key);
-        tb.onclick = function() { dso.tryConnect(tb); };
-        dso.tbots[key] = tb;
-        tb.setConnectionStatus(status);
+        tb = dso.addNewBlock(key);
       }
       if (status === cxn.statusEnum.CONNECTED) {
           cxnSelectedBot = key;

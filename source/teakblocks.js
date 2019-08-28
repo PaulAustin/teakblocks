@@ -873,7 +873,6 @@ tbe.FunctionBlock.prototype.removeTargetShadows = function() {
 tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
   var thisLast = this.last;
   var targx = 0;
-  var frameCount = 10;
   var dx = 0;
   var dy = 0;
   assert(this.prev === null);
@@ -1076,116 +1075,117 @@ tbe.identityAutoPlace = function identityAutoPlace(block) {
   });
 };
 
-document.body.addEventListener("keydown", function(e) {
-    e = e || window.event;
+tbe.keyEvent = function(e) {
+  e = e || window.event;
 
-    // Browsers report keys code differently, check both.
-    var key = e.which || e.keyCode || 0;
+  // Browsers report keys code differently, check both.
+  var key = e.which || e.keyCode || 0;
 
-    // Look for control modifier
-    var ctrl = e.ctrlKey ? e.ctrlKey : (key === 17);
+  // Look for control modifier
+  var ctrl = e.ctrlKey ? e.ctrlKey : (key === 17);
 
-    if ( key === 86 && ctrl ) {
-      log.trace("Ctrl + V Pressed !");
-    } else if ( key === 67 && ctrl ) {
-      log.trace("Ctrl + C Pressed !");
-      var array = [];
-      tbe.forEachDiagramBlock( function(block) {
-        if (block.isSelected()) {
-          array.push(block);
-        }
-      });
-      var textArea = document.createElement("textarea");
-
-      textArea.style.position = 'fixed';
-      textArea.style.top = 0;
-      textArea.style.left = 0;
-      textArea.style.width = '2em';
-      textArea.style.height = '2em';
-      textArea.style.padding = 0;
-      textArea.style.border = 'none';
-      textArea.style.outline = 'none';
-      textArea.style.boxShadow = 'none';
-      textArea.style.background = 'transparent';
-      if (array.length >= 0) {
-        textArea.value = teakText.chunkToText(tbe.findChunkStart(array[0]), null, '');
-        log.trace(textArea);
-        document.body.appendChild(textArea);
-        textArea.select();
-
-        try {
-          var successful = document.execCommand('copy');
-          var msg = successful ? 'successful' : 'unsuccessful';
-          log.trace('Copying text command was ' + msg);
-        } catch (err) {
-          log.trace('Oops, unable to copy');
-        }
+  if ( key === 86 && ctrl ) {
+    log.trace("Ctrl + V Pressed !");
+  } else if ( key === 67 && ctrl ) {
+    log.trace("Ctrl + C Pressed !");
+    var array = [];
+    tbe.forEachDiagramBlock( function(block) {
+      if (block.isSelected()) {
+        array.push(block);
       }
+    });
+    var textArea = document.createElement("textarea");
 
-      document.body.removeChild(textArea);
-    } else if ( key === 8) {
-      if ( tbe.components.blockSettings.isOpen()) {
-        tbe.components.blockSettings.deleteGroup();
-      } else {
-        var sBlock = tbe.findSelectedChunk();
-        if (sBlock !== null) {
-          tbe.deleteChunk(sBlock, sBlock.selectionEnd());
-        }
-      }
-    } else if ( key === 49 ) {
-      tbe.loadDoc('docA');
-    } else if ( key === 50 ) {
-      tbe.loadDoc('docB');
-    } else if ( key === 51 ) {
-      tbe.loadDoc('docC');
-    } else if ( key === 52 ) {
-      tbe.loadDoc('docD');
-    } else if ( key === 53 ) {
-      tbe.loadDoc('docE');
-    } else if ( key === 80 ) {
-      conductor.playAll();
-    } else if ( key === 83 ) {
-      conductor.stopAll();
-    } else if ( key === 88 ) {
-      var cloneBlocks = [];
-      tbe.forEachDiagramBlock( function(block) {
-        if (block.isSelected()) {
-          cloneBlocks.push(block);
-        }
-      });
-      if (cloneBlocks.length !== 0) {
-        var clone = tbe.replicateChunk(cloneBlocks[0], cloneBlocks[cloneBlocks.length - 1]);
+    textArea.style.position = 'fixed';
+    textArea.style.top = 0;
+    textArea.style.left = 0;
+    textArea.style.width = '2em';
+    textArea.style.height = '2em';
+    textArea.style.padding = 0;
+    textArea.style.border = 'none';
+    textArea.style.outline = 'none';
+    textArea.style.boxShadow = 'none';
+    textArea.style.background = 'transparent';
+    if (array.length >= 0) {
+      textArea.value = teakText.chunkToText(tbe.findChunkStart(array[0]), null, '');
+      log.trace(textArea);
+      document.body.appendChild(textArea);
+      textArea.select();
 
-        // TODO put it in a non-hardcoded place
-        var dy = -140;
-        if (clone.top < 140) {
-          dy = 140;
-        }
-        tbe.animateMove(clone, clone.last, 0, dy, 20);
-      }
-    } else if ( key === 32 ) {
-      tbe.clearAllBlocks();
-    } else if (ctrl && key === 65) {
-      var selected = null;
-      tbe.forEachDiagramBlock( function(block) {
-        if (block.isSelected()) {
-          selected = block;
-        }
-      });
-
-      tbe.clearStates();
-
-      while(selected.next !== null) {
-        selected.markSelected(true);
-        selected = selected.next;
-      }
-      while(selected !== null) {
-        selected.markSelected(true);
-        selected = selected.prev;
+      try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        log.trace('Copying text command was ' + msg);
+      } catch (err) {
+        log.trace('Oops, unable to copy');
       }
     }
 
-},false);
+    document.body.removeChild(textArea);
+  } else if ( key === 8) {
+    if ( tbe.components.blockSettings.isOpen()) {
+      tbe.components.blockSettings.deleteGroup();
+    } else {
+      var sBlock = tbe.findSelectedChunk();
+      if (sBlock !== null) {
+        tbe.deleteChunk(sBlock, sBlock.selectionEnd());
+      }
+    }
+  } else if ( key === 49 ) {
+    tbe.loadDoc('docA');
+  } else if ( key === 50 ) {
+    tbe.loadDoc('docB');
+  } else if ( key === 51 ) {
+    tbe.loadDoc('docC');
+  } else if ( key === 52 ) {
+    tbe.loadDoc('docD');
+  } else if ( key === 53 ) {
+    tbe.loadDoc('docE');
+  } else if ( key === 80 ) {
+    conductor.playAll();
+  } else if ( key === 83 ) {
+    conductor.stopAll();
+  } else if ( key === 88 ) {
+    var cloneBlocks = [];
+    tbe.forEachDiagramBlock( function(block) {
+      if (block.isSelected()) {
+        cloneBlocks.push(block);
+      }
+    });
+    if (cloneBlocks.length !== 0) {
+      var clone = tbe.replicateChunk(cloneBlocks[0], cloneBlocks[cloneBlocks.length - 1]);
+
+      // TODO put it in a non-hardcoded place
+      var dy = -140;
+      if (clone.top < 140) {
+        dy = 140;
+      }
+      tbe.animateMove(clone, clone.last, 0, dy, 20);
+    }
+  } else if ( key === 32 ) {
+    tbe.clearAllBlocks();
+  } else if (ctrl && key === 65) {
+    var selected = null;
+    tbe.forEachDiagramBlock( function(block) {
+      if (block.isSelected()) {
+        selected = block;
+      }
+    });
+
+    tbe.clearStates();
+
+    while(selected.next !== null) {
+      selected.markSelected(true);
+      selected = selected.next;
+    }
+    while(selected !== null) {
+      selected.markSelected(true);
+      selected = selected.prev;
+    }
+  }
+};
+
+document.body.addEventListener("keydown", tbe.keyEvent ,false);
 
 // Attach these interactions properties based on the class property of the DOM elements
 tbe.configInteractions = function configInteractions() {

@@ -73,11 +73,15 @@ module.exports = function () {
   icons.tbot = function(scale, x, y, name) {
     var group = svgb.createGroup('tbot', x, y);
     var data = [0,0,0,0,0, 0,1,0,1,0, 0,0,0,0,0, 1,0,0,0,1, 0,1,1,1,0];
+    // Item [0] The selection halo
+    group.appendChild(svgb.createRect('tbot-select', -8, -7, 135, 135, 3));
     group.appendChild(svgb.createRect('tbot-device', 12, 0, 96, 120, 3));
     group.appendChild(svgb.createRect('svg-clear tbot-device-head', 22, 0, 76, 50, 0));
     group.appendChild(svgb.createRect('tbot-device-side', 0, 0, 10, 120, 3));
     group.appendChild(svgb.createRect('tbot-device-side', 110, 0, 10, 120, 3));
+    // Item [5] The device name
     group.appendChild(svgb.createText('svg-clear tbot-device-name', 60, 85, name));
+    // Item [6] The connection status
     group.appendChild(svgb.createText('fas svg-clear tbot-device-name', 60, 110, ''));
     group.appendChild(icons.picture(scale, 45, 10, data));
     return group;

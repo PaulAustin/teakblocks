@@ -55,19 +55,28 @@ module.exports = function(){
     let upName = this.name.toUpperCase();
     this.tbotsvg = this.svg.appendChild(icons.tbot(1.0, this.x, this.y, upName));
 
-    this.cxntext = this.tbotsvg.children[5];
-    this.selectionsvg = svgb.createRect('tbot-select', this.x-8, this.y-7, 135, 135, 3);
+    this.selectionsvg = this.tbotsvg.children[0];
+    this.cxntext = this.tbotsvg.children[6];
 
-    this.selected = false;
     this.setConnectionStatus(this.status);
     this.interact();
   };
 
+  tbot.Class.prototype.setLocation = function(x, y) {
+    this.x = x;
+    this.y = y;
+    if (this.tbotsvg !== null) {
+      svgb.translateXY(this.tbotsvg, x, y);
+    }
+    return;
+  };
+
   tbot.Class.prototype.setSelected = function(selected) {
-    if (selected && !this.selected) {
-      this.svg.insertBefore(this.selectionsvg, this.tbotsvg);
-    } else if (!selected && this.selected) {
-      this.svg.removeChild(this.selectionsvg);
+
+    if (selected) {
+      this.selectionsvg.style.display = 'block';
+    } else {
+      this.selectionsvg.style.display = 'none';
     }
     this.selected = selected;
   };
