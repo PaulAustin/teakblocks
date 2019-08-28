@@ -30,10 +30,11 @@ module.exports = function(){
 
   var tbot = {};
 
-  tbot.Class = function Tbot(svg, x, y, name) {
+  tbot.Class = function Tbot(svg, x, y, name, realBot) {
     this.name = name;
     this.x = x;
     this.y = y;
+    this.realBot = realBot;
     this.buildSvg(svg);
   };
 
@@ -47,13 +48,14 @@ module.exports = function(){
     // Since the Thumb is a circle the vRange is reduced by the
     // diameter (.e.g. the width) This still look confusing.
 
-    // TODO icon and font block coudl really used a common anchor point.
+    // TODO icon and font block could really used a common anchor point.
     // too many tweaks
     this.svg = svg;
 
     // Bot's LEDs uses upper case name, so use that in icon as well.
     let upName = this.name.toUpperCase();
-    this.tbotsvg = this.svg.appendChild(icons.tbot(1.0, this.x, this.y, upName));
+    var face = this.realBot ? icons.smile55 : icons.t55;
+    this.tbotsvg = this.svg.appendChild(icons.tbot(1.0, this.x, this.y, upName, face));
 
     this.selectionsvg = this.tbotsvg.children[0];
     this.cxntext = this.tbotsvg.children[6];

@@ -80,8 +80,7 @@ module.exports = function () {
   dso.addTestBots = function() {
     var testNames = ['CUPUR', 'CAPAZ', 'FELIX', 'SADOW', 'NATAN', 'GATON', 'FUTOL', 'BATON', 'FILON', 'CAPON'];
     for (var i in testNames) {
-      var tb = dso.addNewBlock(testNames[i], 0);
-      tb.test = true;
+      dso.addNewBlock(testNames[i], 0, false);
     }
   };
 
@@ -148,6 +147,7 @@ module.exports = function () {
     dso.disconnectButton.onclick = dso.onDisconnectButton;
 
     // Backdoor way to change hold duration.
+    dso.saveHold = interact.debug().defaultOptions._holdDuration;
     interact.debug().defaultOptions._holdDuration = 4000;
     dso.interact = interact('.xtra', {context:this.overlayDom, _holdDuration:5000})
       .on('hold', function() { dso.addTestBots(); } );
@@ -185,6 +185,8 @@ module.exports = function () {
   // Close the overlay.
   dso.exit = function() {
     document.body.removeEventListener('keydown', dso.keyEvent ,false);
+    interact.debug().defaultOptions._holdDuration = dso.saveHold;
+
     dso.interact.options.holdDuration = 600;
 
     for (var t in dso.tbots) {
@@ -238,9 +240,9 @@ module.exports = function () {
       cxn.disconnectAll();
   };
 
-  dso.addNewBlock = function(key, status) {
+  dso.addNewBlock = function(key, status, realBot) {
     var loc = dso.nextLocation(Object.keys(dso.tbots).length);
-    var tb = new tbot.Class(dso.svg, loc.x, loc.y, key);
+    var tb = new tbot.Class(dso.svg, loc.x, loc.y, key, realBot);
     tb.onclick = function() { dso.tryConnect(tb); };
     tb.setConnectionStatus(status);
     dso.tbots[key] = tb;
@@ -257,7 +259,7 @@ module.exports = function () {
       if (tb !== undefined) {
         tb.setConnectionStatus(status);
       } else {
-        tb = dso.addNewBlock(key);
+        tb = dso.addNewBlock(key, status, true);
       }
       if (status === cxn.statusEnum.CONNECTED) {
           cxnSelectedBot = key;

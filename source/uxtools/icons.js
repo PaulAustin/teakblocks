@@ -57,22 +57,23 @@ module.exports = function () {
     return path;
   };
 
+  icons.smile55 = [0,0,0,0,0, 0,1,0,1,0, 0,0,0,0,0, 1,0,0,0,1, 0,1,1,1,0];
+  icons.t55     = [1,1,1,1,1, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0];
+  icons.numeric55 = [0,0,1,0,0, 0,1,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,1,1,1,0];
+
   icons.pictureNumeric = function(scale, x, y) {
-    var data = [0,0,1,0,0, 0,1,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,1,1,1,0];
-    var board = icons.picture(scale, x, y, data);
+    var board = icons.picture(scale, x, y, icons.numeric55);
     return board;
   };
 
   icons.pictureSmile = function(scale, x, y) {
-    var data = [0,0,0,0,0, 0,1,0,1,0, 0,0,0,0,0, 1,0,0,0,1, 0,1,1,1,0];
-    var board = icons.picture(scale, x, y, data);
+    var board = icons.picture(scale, x, y, icons.smile55);
     return board;
   };
 
   // A basic smiling tbot icon about 120x120
-  icons.tbot = function(scale, x, y, name) {
+  icons.tbot = function(scale, x, y, name, face) {
     var group = svgb.createGroup('tbot', x, y);
-    var data = [0,0,0,0,0, 0,1,0,1,0, 0,0,0,0,0, 1,0,0,0,1, 0,1,1,1,0];
     // Item [0] The selection halo
     group.appendChild(svgb.createRect('tbot-select', -8, -7, 135, 135, 3));
     group.appendChild(svgb.createRect('tbot-device', 12, 0, 96, 120, 3));
@@ -83,7 +84,7 @@ module.exports = function () {
     group.appendChild(svgb.createText('svg-clear tbot-device-name', 60, 85, name));
     // Item [6] The connection status
     group.appendChild(svgb.createText('fas svg-clear tbot-device-name', 60, 110, ''));
-    group.appendChild(icons.picture(scale, 45, 10, data));
+    group.appendChild(icons.picture(scale, 45, 10, face));
     return group;
   };
 
