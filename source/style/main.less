@@ -199,7 +199,6 @@ body {
   display: inline-block;
   border-radius: 10px;
   margin: 4px 2px;
-  cursor: pointer;
   outline: none;
 }
 .palette-button:active {
@@ -360,4 +359,16 @@ body {
 }
 .hiddenPaletteBlock {
   display: none;
+}
+// Turn off browser style text text selection, espicially iOS
+// Also needs cordova-plugin-ios-longpress-fix
+* {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-callout: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -ms-user-select: none;
 }
