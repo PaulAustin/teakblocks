@@ -73,5 +73,13 @@
     },
     "is_top_level": true,
     "variables": {}
+  },
+  "cordova-plugin-ios-longpress-fix": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-ios-longpress-fix"
+    },
+    "is_top_level": true,
+    "variables": {}
   }
 }

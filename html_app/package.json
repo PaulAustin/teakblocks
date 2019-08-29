@@ -13,7 +13,8 @@
             "cordova-plugin-whitelist": {},
             "phonegap-plugin-mobile-accessibility": {},
             "cordova-plugin-splashscreen": {},
-            "cordova-plugin-ios-ble-permissions": {}
+            "cordova-plugin-ios-ble-permissions": {},
+            "cordova-plugin-ios-longpress-fix": {}
         }
     },
     "dependencies": {
@@ -23,6 +24,7 @@
         "cordova-plugin-ble": "1",
         "cordova-plugin-device": "git+https://github.com/apache/cordova-plugin-device.git",
         "cordova-plugin-ios-ble-permissions": "1.0.1",
+        "cordova-plugin-ios-longpress-fix": "^1.1.0",
         "cordova-plugin-network-information": "git+https://github.com/apache/cordova-plugin-network-information.git",
         "cordova-plugin-splashscreen": "^5.0.2",
         "cordova-plugin-whitelist": "1",

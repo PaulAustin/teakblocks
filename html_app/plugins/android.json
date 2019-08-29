@@ -24,6 +24,9 @@
     },
     "cordova-plugin-ios-ble-permissions": {
       "PACKAGE_NAME": "co.trashbots.tblocks"
+    },
+    "cordova-plugin-ios-longpress-fix": {
+      "PACKAGE_NAME": "co.trashbots.tblocks"
     }
   },
   "dependent_plugins": {
