@@ -26,6 +26,7 @@ module.exports = function () {
   var interact = require('interact.js');
   var fastr = require('fastr.js');
   var tbot = require('tbot.js');
+  var svgb = require('svgbuilder.js');
   var cxn = require('./../cxn.js');
   var overlays = require('./overlays.js');
   var deviceScanOverlay = {};
@@ -77,11 +78,27 @@ module.exports = function () {
     };
   };
 
+  dso.testButton = function(e) {
+    if (e.pageX < 60 && e.pageY < 200 && !dso.testBotsShowing) {
+      dso.testBotsShowing = true;
+      dso.addTestBots();
+    } else if (e.pageX < 60 && e.pageY > 250) {
+      dso.testBotsShowing = false;
+      dso.removeAllBots();
+    }
+  };
+
   dso.addTestBots = function() {
     var testNames = ['CUPUR', 'CAPAZ', 'FELIX', 'SADOW', 'NATAN', 'GATON', 'FUTOL', 'BATON', 'FILON', 'CAPON'];
     for (var i in testNames) {
       dso.addNewBlock(testNames[i], 0, false);
     }
+  };
+
+  dso.removeAllBots = function() {
+    dso.tbots = {};
+    dso.svg.removeChild(dso.tbotGroup);
+    dso.tbotGroup = dso.svg.appendChild(svgb.createGroup('', 0, 0));
   };
 
   dso.testKeyTCount = 0;
@@ -92,20 +109,14 @@ module.exports = function () {
     } else if (e.key === 'C') {
       dso.testKeyCCount += 1;
     } else {
-      dso.testKeyTCount = 0;
-      dso.testKeyCCount = 0;
+      dso.testKeyTCount = dso.testKeyCCount = 0;
     }
     if (dso.testKeyTCount > 3) {
       dso.addTestBots();
-      dso.testKeyTCount = 0;
-      dso.testKeyCCount = 0;
+      dso.testKeyTCount = dso.testKeyCCount = 0;
     } else if (dso.testKeyCCount > 3) {
-      dso.tbots = {};
-      while (dso.svg.lastChild) {
-        dso.svg.removeChild(dso.svg.lastChild);
-      }
-      dso.testKeyTCount = 0;
-      dso.testKeyCCount = 0;
+      dso.removeAllBots();
+      dso.testKeyTCount = dso.testKeyCCount = 0;
     }
   };
 
@@ -117,22 +128,26 @@ module.exports = function () {
     overlays.overlayDom.innerHTML = `
       <div id='overlayRoot'>
         <div id='dsoOverlay'>
-            <div class='dso-list-box-shell'>
-              <svg id='dsoSVG' width='100%' height='100%' xmlns="http://www.w3.org/2000/svg"></svg>
+            <div id='dsoSvgShell' class='dso-list-box-shell'>
+              <svg id='dsoSVG' class= 'dso-svg-backgound' width='100%' height='100%' xmlns="http://www.w3.org/2000/svg"></svg>
             </div>
-            <div>
-                <button id='dsoScan' class='fa fas dso-button xtra'>
+            <div class='dso-botton-bar'>
+                <button id='dsoScan' class='fa fas dso-button'>
                 LABEL SET BASED ON STATE
                 </button>
-                <button id='dsoDisconnect' class='fa fas dso-button xtra' style='float:right'>
+                <button id='dsoDisconnect' class='fa fas dso-button' style='float:right'>
                 Disconnect
                 </button>
             </div>
         </div>
       </div>`;
 
-    // Connect the dataBinding.
     dso.svg = document.getElementById('dsoSVG');
+    dso.background = svgb.createRect('dso-svg-backgound', 0, 0, 20, 20, 0);
+    var backgroundGroup = dso.svg.appendChild(svgb.createGroup('', 0, 0));
+    backgroundGroup.appendChild(dso.background);
+
+    dso.tbotGroup = dso.svg.appendChild(svgb.createGroup('', 0, 0));
 
     window.addEventListener("resize", dso.onResize);
     dso.onResize();
@@ -148,9 +163,9 @@ module.exports = function () {
 
     // Backdoor way to change hold duration.
     dso.saveHold = interact.debug().defaultOptions._holdDuration;
-    interact.debug().defaultOptions._holdDuration = 4000;
-    dso.interact = interact('.xtra', {context:this.overlayDom, _holdDuration:5000})
-      .on('hold', function() { dso.addTestBots(); } );
+    interact.debug().defaultOptions._holdDuration = 2000;
+    dso.interact = interact('.dso-svg-backgound', {context:dso.svg})
+      .on('hold', function(e) { dso.testButton(e); } )
     dso.deviceNameLabel = document.getElementById('device-name-label');
 
     if (!cxn.scanUsesHostDialog()) {
@@ -166,12 +181,21 @@ module.exports = function () {
     let w = dso.columns;
     let row = Math.floor(i / w);
     let col = i % w;
-    return {x: 50 + (col * 150), y:20 + (row * 150)};
+    return {x: 20 + (col * 150), y:20 + (row * 150)};
   };
 
   dso.onResize = function() {
-    dso.w = dso.svg.clientWidth;
-    dso.h = dso.svg.clientHeight;
+    // Ran in to problems using HTML layout (via flex layout) so
+    // just forcing it right now. Many of these numbers could be
+    // calculated.
+    var overlay = document.getElementById('dsoOverlay');
+    dso.w = overlay.clientWidth;
+    dso.h = overlay.clientHeight;
+    var svgHeight = (dso.h - 95) + 'px';
+    document.getElementById('dsoSvgShell').style.height = svgHeight;
+
+    svgb.resizeRect(dso.background, dso.w, dso.h);
+
     dso.columns = Math.floor((dso.w - 40) / 150);
     var i = 0;
     for (var t in dso.tbots) {
@@ -187,19 +211,19 @@ module.exports = function () {
     document.body.removeEventListener('keydown', dso.keyEvent ,false);
     interact.debug().defaultOptions._holdDuration = dso.saveHold;
 
-    dso.interact.options.holdDuration = 600;
-
     for (var t in dso.tbots) {
       dso.tbots[t].releaseSvg();
     }
+    dso.testBotsShowing = false;
+    dso.svg = null;
+    dso.background = null;
+    dso.tbotGroup = null;
 
     if (cxn.scanning) {
       cxn.stopScanning();
       dso.watch.dispose();
       dso.watch = null;
     }
-
-    dso.svg = null;
   };
 
   dso.tryConnect = function(tb) {
@@ -242,7 +266,7 @@ module.exports = function () {
 
   dso.addNewBlock = function(key, status, realBot) {
     var loc = dso.nextLocation(Object.keys(dso.tbots).length);
-    var tb = new tbot.Class(dso.svg, loc.x, loc.y, key, realBot);
+    var tb = new tbot.Class(dso.tbotGroup, loc.x, loc.y, key, realBot);
     tb.onclick = function() { dso.tryConnect(tb); };
     tb.setConnectionStatus(status);
     dso.tbots[key] = tb;
