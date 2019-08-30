@@ -26,6 +26,7 @@ module.exports = function () {
   var interact = require('interact.js');
   var fastr = require('fastr.js');
   var tbot = require('tbot.js');
+  var icons = require('icons.js');
   var svgb = require('svgbuilder.js');
   var cxn = require('./../cxn.js');
   var overlays = require('./overlays.js');
@@ -91,7 +92,7 @@ module.exports = function () {
   dso.addTestBots = function() {
     var testNames = ['CUPUR', 'CAPAZ', 'FELIX', 'SADOW', 'NATAN', 'GATON', 'FUTOL', 'BATON', 'FILON', 'CAPON'];
     for (var i in testNames) {
-      dso.addNewBlock(testNames[i], 0, false);
+      dso.addNewBlock(testNames[i], 0, icons.t55);
     }
   };
 
@@ -122,7 +123,7 @@ module.exports = function () {
 
   // External function for putting it all together.
   dso.start = function () {
-    document.body.addEventListener('keydown', dso.keyEvent ,false);
+    document.body.addEventListener('keydown', dso.keyEvent, false);
 
     // Construct the DOM for the overlay.
     overlays.overlayDom.innerHTML = `
@@ -149,7 +150,7 @@ module.exports = function () {
 
     dso.tbotGroup = dso.svg.appendChild(svgb.createGroup('', 0, 0));
 
-    window.addEventListener("resize", dso.onResize);
+    window.addEventListener("resize", dso.onResize, false);
     dso.onResize();
     // build the visuals list
     for (var t in dso.tbots) {
@@ -168,6 +169,10 @@ module.exports = function () {
       .on('hold', function(e) { dso.testButton(e); } )
     dso.deviceNameLabel = document.getElementById('device-name-label');
 
+    if (!cxn.isBLESupported()) {
+      dso.sorryCantDoIt();
+    }
+
     if (!cxn.scanUsesHostDialog()) {
       dso.watch = cxn.connectionChanged.subscribe(dso.refreshList);
       cxn.startScanning();
@@ -175,6 +180,13 @@ module.exports = function () {
 
     dso.updateLabel();
     dso.updateScreenName(dso.deviceName);
+  };
+
+  dso.sorryCantDoIt = function() {
+    var tb = new tbot.Class(dso.tbotGroup, 100, 20, '-----', icons.sad55);
+    dso.tbotGroup = dso.svg.appendChild(svgb.createGroup('', 0, 0));
+    var message = 'Can not access Bluetooth (BLE)'
+    dso.tbotGroup.appendChild(svgb.createText('svg-clear tbot-device-name', 450, 95, message));
   };
 
   dso.nextLocation = function(i) {
@@ -208,7 +220,9 @@ module.exports = function () {
 
   // Close the overlay.
   dso.exit = function() {
-    document.body.removeEventListener('keydown', dso.keyEvent ,false);
+    document.body.removeEventListener('keydown', dso.keyEvent, false);
+    window.removeEventListener('resize', dso.onResize, false);
+
     interact.debug().defaultOptions._holdDuration = dso.saveHold;
 
     for (var t in dso.tbots) {
@@ -264,9 +278,9 @@ module.exports = function () {
       cxn.disconnectAll();
   };
 
-  dso.addNewBlock = function(key, status, realBot) {
+  dso.addNewBlock = function(key, status, face) {
     var loc = dso.nextLocation(Object.keys(dso.tbots).length);
-    var tb = new tbot.Class(dso.tbotGroup, loc.x, loc.y, key, realBot);
+    var tb = new tbot.Class(dso.tbotGroup, loc.x, loc.y, key, face);
     tb.onclick = function() { dso.tryConnect(tb); };
     tb.setConnectionStatus(status);
     dso.tbots[key] = tb;
@@ -283,7 +297,7 @@ module.exports = function () {
       if (tb !== undefined) {
         tb.setConnectionStatus(status);
       } else {
-        tb = dso.addNewBlock(key, status, true);
+        tb = dso.addNewBlock(key, status, icons.smile55);
       }
       if (status === cxn.statusEnum.CONNECTED) {
           cxnSelectedBot = key;

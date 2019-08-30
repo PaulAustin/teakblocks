@@ -180,6 +180,16 @@ cxn.cullList = function() {
   cxn.connectionChanged(cxn.devices);
 };
 
+cxn.isBLESupported = function() {
+  if (cxn.webBLE) {
+    return true;
+  } else if (cxn.appBLE && cxn.appBLE.isEnabled) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 cxn.startScanning = function () {
   cxn.connectingStart =  Date.now();  // a bit of a hack
   cxn.scanning = true;

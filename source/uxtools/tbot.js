@@ -30,11 +30,12 @@ module.exports = function(){
 
   var tbot = {};
 
-  tbot.Class = function Tbot(svg, x, y, name, realBot) {
+  tbot.Class = function Tbot(svg, x, y, name, face) {
     this.name = name;
     this.x = x;
     this.y = y;
-    this.realBot = realBot;
+    this.face = face;
+    this.status = cxn.statusEnum.NOT_THERE;
     this.buildSvg(svg);
   };
 
@@ -54,8 +55,7 @@ module.exports = function(){
 
     // Bot's LEDs uses upper case name, so use that in icon as well.
     let upName = this.name.toUpperCase();
-    var face = this.realBot ? icons.smile55 : icons.t55;
-    this.tbotsvg = this.svg.appendChild(icons.tbot(1.0, this.x, this.y, upName, face));
+    this.tbotsvg = this.svg.appendChild(icons.tbot(1.0, this.x, this.y, upName, this.face));
 
     this.selectionsvg = this.tbotsvg.children[0];
     this.cxntext = this.tbotsvg.children[6];
@@ -74,29 +74,34 @@ module.exports = function(){
   };
 
   tbot.Class.prototype.setSelected = function(selected) {
-
+    this.selected = selected;
+    if (this.selectionsvg === null)
+      return;
     if (selected) {
       this.selectionsvg.style.display = 'block';
     } else {
       this.selectionsvg.style.display = 'none';
     }
-    this.selected = selected;
   };
 
   tbot.Class.prototype.setConnectionStatus = function(status) {
     this.status = status;
+    var txt = '';
     if (status === cxn.statusEnum.CONNECTED) {
       this.setSelected(true);
-      this.cxntext.textContent = fastr.link;
+      txt = fastr.link;
     } else if (status === cxn.statusEnum.CONNECTING) {
       this.setSelected(true);
-      this.cxntext.textContent = fastr.sync;
+      txt = fastr.sync;
     } else if (status === cxn.statusEnum.BEACON) {
        this.setSelected(false);
-       this.cxntext.textContent = '';
+       txt = '';
     } else if (status === cxn.statusEnum.NOT_THERE) {
       this.setSelected(false);
-      this.cxntext.textContent = '';
+      txt = '';
+    }
+    if (this.cxntext !== null) {
+      this.cxntext.textContent = txt;
     }
   };
 
