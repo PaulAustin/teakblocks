@@ -297,7 +297,8 @@ cxn.webBTConnect = function () {
     .catch(function(error) {
       cxn.scanning = false;
       cxn.connectionChanged(cxn.devices);
-      log.trace('cancel or error :' + error);
+      // User canceled the picker.
+      //log.trace('cancel or error :' + error);
     });
 };
 

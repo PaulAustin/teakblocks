@@ -88,5 +88,15 @@ module.exports = function () {
       afterCommand();
     }
   };
+
+  overlays.pauseResume = function(active) {
+    if (overlays.currentShowing !== null) {
+      var pr = overlays.screens[overlays.currentShowing].pauseResume;
+      if (typeof pr === 'function') {
+        pr(active);
+      }
+    }
+  };
+
   return overlays;
 }();

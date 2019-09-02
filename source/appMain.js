@@ -49,10 +49,12 @@ module.exports = function () {
 
   app.pause = function () {
     log.trace('TBlocks pause.', new Date().toLocaleDateString("en-US", timeFormat));
+    app.overlays.pauseResume(true);
   };
 
   app.resume = function () {
     log.trace('TBlocks resuming.', new Date().toLocaleDateString("en-US", timeFormat));
+    app.overlays.pauseResume(false);
   };
 
   // Application main, called once shell is fully up.
