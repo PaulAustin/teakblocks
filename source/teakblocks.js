@@ -22,7 +22,7 @@ SOFTWARE.
 
 module.exports = function () {
 
-var log = require('./log.js');
+var log = require('log.js');
 var assert = require('assert');
 var interact = require('interact.js');
 var tf = require('./teak-forms.js');

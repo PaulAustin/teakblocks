@@ -21,7 +21,7 @@ SOFTWARE.
 */
 
 module.exports = function () {
-  var log = require('./log.js');
+  var log = require('log.js');
   var buildFlags = require('../buildFlags.js');
   var fastr = require('fastr.js');
 

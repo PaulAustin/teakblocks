@@ -21,7 +21,7 @@ SOFTWARE.
 */
 
 module.exports = function () {
-  var log = require('./log.js');
+  var log = require('log.js');
   var conductor = {};
   var dso = require('./overlays/deviceScanOverlay.js');
   var dots = require('./overlays/actionDots.js');

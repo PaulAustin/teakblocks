@@ -22,7 +22,7 @@ SOFTWARE.
 
 // Module for managing BLE connections and lists of devices found.
 module.exports = function factory(){
-  var log = require('./log.js');
+  var log = require('log.js');
   var ko = require('knockout');
 
   var cxn = {};
