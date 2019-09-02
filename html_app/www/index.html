@@ -4,12 +4,12 @@
 <head>
   <!-- Google Tag Manager, except in iOS Apps -->
   <script>
-  var g_standalone = window.navigator.standalone,
-      g_userAgent = window.navigator.userAgent.toLowerCase(),
-      g_safari = /safari/.test( g_userAgent ),
-      g_ios = /iphone|ipod|ipad/.test( g_userAgent );
+  var gStandalone = window.navigator.standalone,
+      gUserAgent = window.navigator.userAgent.toLowerCase(),
+      gSafari = /safari/.test( g_userAgent ),
+      gIOS = /iphone|ipod|ipad/.test( g_userAgent );
 
-  if (!(g_ios && (!standalone && !safari))) {
+  if (!(gIOS && (!gStandalone && !gSafari))) {
     console.log('start GTM');
     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],

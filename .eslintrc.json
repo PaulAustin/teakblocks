@@ -4,6 +4,12 @@
         "es6": true,
         "node": true
     },
+    "globals": {
+      "gStandalone": true,
+      "gUserAgent": true,
+      "gSafari": true,
+      "gIOS": true
+    }
     "extends": "eslint:recommended",
     "rules": {
         "accessor-pairs": "error",

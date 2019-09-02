@@ -60,16 +60,17 @@ module.exports = function () {
   // Application main, called once shell is fully up.
   app.start = function () {
     if (window.cordova !== undefined) {
-      app.platformId = 'ios';
+      app.platformId = 'iOS';
       //app.platformId = window.cordova.platformId + ':' + window.cordova.platformVersion;
     } else {
       app.platformId = "desktop broswer";
     }
 
+    var gIsApp = app.isCordovaApp;
     log.trace('isApp: ', app.isCordovaApp);
     log.trace('platform: ', app.platformId);
-    console.log('g_safari', g_safari);
-    console.log('g_ios', g_ios);
+    console.log('gSafari', gSafari);
+    console.log('gIOS', gIOS);
 
     // Once app has started these can be added.
     document.addEventListener("pause", app.pause, false);
@@ -108,7 +109,7 @@ module.exports = function () {
 
     var cookieSheet = document.getElementById('cookieSheet');
     var cookiesAccepted = app.storage.getItem('cookiesAccepted');
-    if ((cookiesAccepted === null) || (cookiesAccepted === false)) {
+    if ((!gIsApp) && ((cookiesAccepted === null) || (cookiesAccepted === false))) {
         cookieSheet.innerHTML = `
         <div id='cookiesGlass'></dev>
         <div id='cookiesForm'>
