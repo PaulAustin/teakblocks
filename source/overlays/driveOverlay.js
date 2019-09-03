@@ -33,10 +33,11 @@ module.exports = function(){
     overlays.overlayDom.innerHTML = `
     <div id='overlayRoot'>
       <svg id='driveOverlay' xmlns="http://www.w3.org/2000/svg"></svg>
-      <div>
-        <canvas id="myChart" style="position:absolute; top:100px; left:250px;" width="400" height="200"></canvas>
-      </div>
     </div>`;
+
+  //  This will cause iPhone to drag the screen<div>
+  //    <canvas id="myChart" style="position:absolute; top:100px; left:250px;" width="400" height="200"></canvas>
+  //  </div>
 
     dov.svg = document.getElementById('driveOverlay');
     dov.lSlide = new slideControl.Class(dov.svg, 'L');
