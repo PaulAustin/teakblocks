@@ -6,8 +6,8 @@
   <script>
   var gStandalone = window.navigator.standalone,
       gUserAgent = window.navigator.userAgent.toLowerCase(),
-      gSafari = /safari/.test( g_userAgent ),
-      gIOS = /iphone|ipod|ipad/.test( g_userAgent );
+      gSafari = /safari/.test( gUserAgent ),
+      gIOS = /iphone|ipod|ipad/.test( gUserAgent );
 
   if (!(gIOS && (!gStandalone && !gSafari))) {
     console.log('start GTM');
