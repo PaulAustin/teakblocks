@@ -99,24 +99,24 @@ module.exports = function () {
     var slotw = w * 0.1;
     var edgeSpacing = 7;
     var x = 0;
-    var y = edgeSpacing;
     var dotd = 66;   // diameter
-    var fontSize = 34;
+    var scale = 1.0;
 
     // Shrink if page is too short or too wide.
     // Need to add width check.
 
-    if ( h < 500 ) {
-      if ( h < 350) {
+    if ((h < 500) || (w < 700)) {
+      if (h < 350) {
         h = 350;
       }
-      var scale = (h / 500);
-      dotd *=  scale;
-      y *=  scale;
-      fontSize *= scale;
+      if (w < 500) {
+        w = 500;
+      }
+      scale = Math.min((h / 500), (w / 700));
     }
 
-    var half = w / 2;
+    var y = edgeSpacing * scale;
+    var half = (w / 2) - (dotd / 2);
     var mid = half - ((actionDots.dotsMiddle + 1) * (slotw / 2));
 
     // The action-dot class is used for event dispatching. The overall
@@ -133,7 +133,7 @@ module.exports = function () {
       } else if (align === 'R') {
         x = w - (slotw * pos);
       }
-      actionDots.topDots[i].updateSvg(x, y, dotd, fontSize);
+      actionDots.topDots[i].updateSvg(x, y, scale);
     }
   };
 
@@ -144,9 +144,11 @@ module.exports = function () {
   };
 
   // Create an image for the block base on its type.
-  actionDots.ActionDot.prototype.updateSvg = function(x, y, dotd, fontSize) {
-    // x and y are top left of dot bouding square
-    // dotd is the diameter of the dots
+  actionDots.ActionDot.prototype.updateSvg = function(x, y, scale) {
+    // x and y are top left
+    // scale allos for small window (or devics)
+    var dotd = 66 * scale;        // dot diameter
+    var fontSize = 34 * scale;
 
     // Remove exisiting dot group if it exists
     if (this.svgDotGroup !== null) {
@@ -173,8 +175,11 @@ module.exports = function () {
     //Check if character strings are more than one character to create a label on top of the usual label
     if (this.command === 'deviceScanOverlay') {
       // For the connect label put the device name
-      this.svgDot = svgb.createRect('action-dot-bg', x-200, y, 180, dotd, dotHalf);
-      this.svgText = svgb.createText('fa fas action-dot-fatext', x - 120, fontY, dso.decoratedName());
+      var buttonWidth = (170 * scale);
+      var buttonLeft = x - buttonWidth - 20;
+      var buttonCenter = buttonLeft + (80 * scale);
+      this.svgDot = svgb.createRect('action-dot-bg', buttonLeft, y, buttonWidth, dotd, dotHalf);
+      this.svgText = svgb.createText('fa fas action-dot-fatext', buttonCenter, fontY, dso.decoratedName());
       this.svgText.setAttribute('id', 'device-name-label');
     } else if (this.label === fastr.file) {
       // For files its the doc icon with letter inside.
