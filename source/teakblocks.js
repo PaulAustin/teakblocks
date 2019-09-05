@@ -168,9 +168,9 @@ tbe.addBlock = function(x, y, name) {
    return block;
 };
 
-tbe.addPaletteBlock = function(x, y, name, group) {
+tbe.addPaletteBlock = function(x, y, name, pgroup) {
   var block = new this.FunctionBlock(x, y, name);
-  block.group = group;
+  block.pgroup = pgroup;
   block.isPaletteBlock = true;
   block.interactId = tbe.nextBlockId('p:');
   this.paletteBlocks[block.interactId] = block;
@@ -181,8 +181,7 @@ tbe.addPaletteBlock = function(x, y, name, group) {
   if (block.rect.right + 30 > tbe.width) {
     block.svgGroup.setAttribute('class', 'drag-group hiddenPaletteBlock');
   }
-
-  tbe.tabGroups[group].appendChild(block.svgGroup)
+  tbe.tabGroups[pgroup].appendChild(block.svgGroup)
 
   return block;
 };
@@ -403,6 +402,11 @@ tbe.FunctionBlock = function FunctionBlock (x, y, blockName) {
   // Add block to the editor tree. This makes it visible.
   this.moveToFront();
 };
+
+tbe.FunctionBlock.prototype.isStartBlock = function() {
+  // This works for now.
+  return this.name.startsWith('identity');
+}
 
 // Create an image for the block base on its type.
 tbe.FunctionBlock.prototype.updateSvg = function() {
@@ -754,10 +758,10 @@ tbe.FunctionBlock.prototype.hilitePossibleTarget = function() {
   // Refine the action based on geometery.
   if (target !== null) {
     if (self.left <= (target.left)) {
-      if (target.prev !== null && !self.name.includes('identity')) {
-        action = 'insert';
-      } else if (!target.name.includes('identity')) {
-        action = 'prepend';
+      if (target.prev !== null) {
+        if (!self.isStartBlock()) { action = 'insert'; }
+      } else {
+        if (!target.isStartBlock()) { action = 'prepend'; }
       }
     } else if (!self.name.includes('identity')) {
       action = 'append';
@@ -881,26 +885,26 @@ tbe.FunctionBlock.prototype.moveToPossibleTarget = function() {
   var targx = 0;
   var dx = 0;
   var dy = 0;
-  assert(this.prev === null);
-  assert(thisLast.next === null);
+  assert(this.prev === null, 'err1');
+  assert(thisLast.next === null, 'err2');
 
   if (this.snapTarget !== null) {
     // TODO:assert that chain we have has clean prev/next links
     // Append/Prepend the block(chain) to the list
     if (this.snapAction === 'prepend') {
-      assert(this.snapTarget.prev === null);
+      assert(this.snapTarget.prev === null, 'err3');
       targx =  this.snapTarget.left - this.chainWidth;
       thisLast.next = this.snapTarget;
       this.snapTarget.prev = thisLast;
     } else if (this.snapAction === 'append') {
-      assert(this.snapTarget.next === null);
+      assert(this.snapTarget.next === null, 'err4');
       targx =  this.snapTarget.right;
       this.prev = this.snapTarget;
       this.snapTarget.next = this;
       // slide down post blocks if insert
       // logically here, in annimation bellow
     } else if (this.snapAction === 'insert') {
-      assert(this.snapTarget.prev !== null);
+      assert(this.snapTarget.prev !== null, 'err5');
       targx =  this.snapTarget.left;
       // Determin space needed for new segment
       // before its spliced in.
@@ -1077,7 +1081,6 @@ tbe.identityAutoPlace = function identityAutoPlace(block) {
     } else if (block.bottom + 120 > tbe.height - 100) {
       tbe.deleteChunk(block, block);
     }
-    console.log(block.bottom + 120, tbe.height - 100);
   });
 };
 
@@ -1314,8 +1317,6 @@ tbe.configInteractions = function configInteractions() {
               var pageRect = event.target.getBoundingClientRect();
               offsetX = pageRect.x - block.left;
               offsetY = pageRect.y - block.top;
-              console.log('drag from palette', pageRect);
-              // Need to figure out relative location
             }
             block = thisTbe.replicateChunk(block, null, offsetX, offsetY);
             targetToDrag = block.svgGroup;
@@ -1356,8 +1357,6 @@ tbe.configInteractions = function configInteractions() {
       onstart: function() {
       },
       onend: function(event) {
-        console.log('onend but not infront of palette')
-
         var block = thisTbe.elementToBlock(event.target);
         if (block === null)
           return;
@@ -1472,9 +1471,6 @@ tbe.buildTabs = function() {
   interact('.dropArea')
     .on('down', function (event) {
       var group = event.target.parentNode.getAttribute('group');
-
-      console.log('dropArea click', group);
-
       tbe.switchTabs(group);
     });
 
@@ -1493,7 +1489,6 @@ tbe.buildTabs = function() {
 };
 
 tbe.switchTabs = function(group) {
-  console.log('switching tabs to ', group);
   // This moves the tab background to the front.
   this.clearStates();
   var tab = tbe.tabGroups[group];
@@ -1504,7 +1499,7 @@ tbe.switchTabs = function(group) {
 
 tbe.showTabGroup = function(group) {
   tbe.forEachPalette(function(block) {
-    if (block.group === group) {
+    if (block.pgroup === group) {
       block.svgGroup.setAttribute('class', 'drag-group');
     } else {
       block.svgGroup.setAttribute('class', 'hiddenPaletteBlock');
@@ -1533,13 +1528,13 @@ tbe.addPalette = function(palette) {
   var blockTop = 10; //tbe.height - 90;
   for (var index = 0; index < blocks.length; index++) {
       var name = blocks[index].name;
-      var group = blocks[index].group;
-      if (group !== lastGroup) {
+      var pgroup = blocks[index].group;
+      if (pgroup !== lastGroup) {
         indent = leftIndent;
         increment = 15;
-        lastGroup = group;
+        lastGroup = pgroup;
       }
-      var block = this.addPaletteBlock(indent, blockTop, name, group);
+      var block = this.addPaletteBlock(indent, blockTop, name, pgroup);
 
       if (name === 'loop') {
         // The loop is two blocks, needs a little special work here.
