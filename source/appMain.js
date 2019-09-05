@@ -199,27 +199,23 @@ module.exports = function () {
 
     // these could be loaded from JSON files/strings
     var package1 = {
-    name:'A',
-    blocks:{
+    blocks:[
         // Start Blocks
-        'identity':{},
-        'identityAccelerometer':{},
-        'identityButton': {},
-        'identityTemperature': {},
+        {name: 'identity', group: 'start'},
+        {name: 'identityAccelerometer', group: 'start'},
+        {name: 'identityButton', group: 'start'},
+        {name: 'identityTemperature', group: 'start'},
         // Function Blocks
-        'picture':{},
-        'sound':{},
-        'motor':{},
-        'twoMotor':{},
-        'variableSet': {},
-        'variableAdd': {},
-        'print': {},
-        //'servo':{},
+        {name: 'picture', group: 'fx'},
+        {name: 'sound', group: 'fx'},
+        {name: 'motor', group: 'fx'},
+        {name: 'twoMotor', group: 'fx'},
+        {name: 'variableSet', group: 'fx'},
+        {name: 'print', group: 'fx'},
         // Control Blocks
-        'wait':{},
-        'loop':{}
-        //'identityEncoder':{}
-      }
+        {name: 'wait', group: 'control'},
+        {name: 'loop', group: 'control'},
+      ]
     };
 
     var actionButtonDefs = [

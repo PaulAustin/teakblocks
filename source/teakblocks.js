@@ -168,8 +168,9 @@ tbe.addBlock = function(x, y, name) {
    return block;
 };
 
-tbe.addPaletteBlock = function(x, y, name) {
+tbe.addPaletteBlock = function(x, y, name, group) {
    var block = new this.FunctionBlock(x, y, name);
+   block.group = group;
    block.isPaletteBlock = true;
    block.interactId = tbe.nextBlockId('p:');
    this.paletteBlocks[block.interactId] = block;
@@ -1471,11 +1472,22 @@ tbe.buildTabs = function() {
 
   interact('.dropArea')
     .on('down', function (event) {
-      tbe.switchTabs(event.target.parentNode);
+      var group = event.target.parentNode.getAttribute('group');
+      tbe.switchTabs(group);
     });
 
   this.svg.appendChild(dropAreaGroup);
   this.dropAreaGroup = dropAreaGroup;
+
+  tbe.tabGroups = [];
+  tbe.tabGroups['start'] = tbe.dropAreaGroup.childNodes[0];
+  tbe.tabGroups['fx'] = tbe.dropAreaGroup.childNodes[1];
+  tbe.tabGroups['control'] = tbe.dropAreaGroup.childNodes[2];
+
+  // For event routing.
+  tbe.tabGroups['start'].setAttribute('group', 'start');
+  tbe.tabGroups['fx'].setAttribute('group', 'fx');
+  tbe.tabGroups['control'].setAttribute('group', 'control');
 
   // Make the the group all the palette blocks are in. Individual ones will be
   // hidden based on what group they are part of.
@@ -1483,55 +1495,21 @@ tbe.buildTabs = function() {
   this.svg.appendChild(this.paletteGroup);
 };
 
-tbe.switchTabs = function(tab) {
+tbe.switchTabs = function(group) {
   // This moves the tab background to the front.
   this.clearStates();
+  var tab = tbe.tabGroups[group];
   this.dropArea = tab;
   tbe.dropAreaGroup.appendChild(tab);
-
-  var tabNum = parseInt(tab.getAttribute('tab'), 10);
-  tbe.hideAllBlocks();
-  if (tabNum === 1) {
-    tbe.showStartTab();
-  } else if (tabNum === 2) {
-    tbe.showActionTab();
-  } else if (tabNum === 3) {
-    tbe.showControlTab();
-  }
+  tbe.showTabGroup(group);
 };
 
-tbe.hideAllBlocks = function hidePaletteBlocks() {
-  // Note the add moves it to the front of the class list
-  // which makes their priority higher. Might be better to
-  // add/remove the property.
+tbe.showTabGroup = function(group) {
   tbe.forEachPalette(function(block) {
-    block.svgGroup.classList.add('hiddenPaletteBlock');
-  });
-};
-
-tbe.showStartTab = function showStartBlocks() {
-  tbe.forEachPalette(function(block) {
-    if (block.svgRect.classList.contains('identity-block')) {
+    if (block.group === group) {
       block.svgGroup.setAttribute('class', 'drag-group');
-    }
-  });
-};
-
-tbe.showActionTab = function showActionBlocks() {
-  tbe.forEachPalette(function(block) {
-    var control = block.name === 'wait' || block.name === 'loop' || block.name === 'tail';
-    if (!block.svgRect.classList.contains('identity-block') && !control) {
-      // Set will clear out all all other attributes.
-      block.svgGroup.setAttribute('class', 'drag-group');
-    }
-  });
-};
-
-tbe.showControlTab = function showControlBlocks() {
-  tbe.forEachPalette(function(block) {
-    var control = block.name === 'wait' || block.name === 'loop' || block.name === 'tail';
-    if (control) {
-      block.svgGroup.setAttribute('class', 'drag-group');
+    } else {
+      block.svgGroup.setAttribute('class', 'hiddenPaletteBlock');
     }
   });
 };
@@ -1549,22 +1527,24 @@ tbe.addPalette = function(palette) {
   const leftIndent = 30;
   var indent = leftIndent;
   var increment = 30;
+  var lastGroup = 'start';
 
   tbe.buildTabs();
 
   var blocks = palette.blocks;
   var blockTop = tbe.height - 90;
-  for (var key in blocks) {
-    if (blocks.hasOwnProperty(key)) {
-      // Hmmm. This is a curious hack. Reset to left on a few specific blocks.
-      if (key.includes('picture') || key.includes('wait')) {
+  for (var index = 0; index < blocks.length; index++) {
+      var name = blocks[index].name;
+      var group = blocks[index].group;
+      if (group !== lastGroup) {
         indent = leftIndent;
         increment = 15;
+        lastGroup = group;
       }
-      var block = this.addPaletteBlock(indent, blockTop, key);
-      if (key === 'loop') {
+      var block = this.addPaletteBlock(indent, blockTop, name, group);
+      if (name === 'loop') {
         // The loop is two blocks, needs a little special work here.
-        var blockTail = this.addPaletteBlock(block.right, blockTop, 'tail');
+        var blockTail = this.addPaletteBlock(block.right, blockTop, 'tail', 'control');
         block.next = blockTail;
         blockTail.prev = block;
         // A flow block set has direct pointers between the two end points.
@@ -1573,10 +1553,9 @@ tbe.addPalette = function(palette) {
         blockTail.fixupChainCrossBlockSvg();
       }
       indent += block.chainWidth + increment;
-    }
   }
 
-  tbe.switchTabs(tbe.dropAreaGroup.childNodes[0]);
+  tbe.switchTabs('start');
   // dropAreaGroup.appendChild(tbe.createTabSwitcherButton());
 };
 
