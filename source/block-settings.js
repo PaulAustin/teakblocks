@@ -105,7 +105,7 @@ module.exports = function () {
       if(startBlock.isGroupSelected()){
         endBlock = startBlock.selectionEnd();
       }
-      var clone = tbe.replicateChunk(startBlock, endBlock);
+      var clone = tbe.replicateChunk(startBlock, endBlock, 0, 0);
       // move it to some open space
       // TODO use more logic to find a good place to put the block.
       var dy = 0;

@@ -169,20 +169,22 @@ tbe.addBlock = function(x, y, name) {
 };
 
 tbe.addPaletteBlock = function(x, y, name, group) {
-   var block = new this.FunctionBlock(x, y, name);
-   block.group = group;
-   block.isPaletteBlock = true;
-   block.interactId = tbe.nextBlockId('p:');
-   this.paletteBlocks[block.interactId] = block;
+  var block = new this.FunctionBlock(x, y, name);
+  block.group = group;
+  block.isPaletteBlock = true;
+  block.interactId = tbe.nextBlockId('p:');
+  this.paletteBlocks[block.interactId] = block;
 
    // Looks like blocks are added to main editor, so it is removed
    // then added to the palette. Odd...
-   tbe.svg.removeChild(block.svgGroup);
-   if (block.rect.right + 30 > tbe.width) {
-     block.svgGroup.setAttribute('class', 'drag-group hiddenPaletteBlock');
-   }
-   tbe.paletteGroup.appendChild(block.svgGroup);
-   return block;
+  tbe.svg.removeChild(block.svgGroup);
+  if (block.rect.right + 30 > tbe.width) {
+    block.svgGroup.setAttribute('class', 'drag-group hiddenPaletteBlock');
+  }
+
+  tbe.tabGroups[group].appendChild(block.svgGroup)
+
+  return block;
 };
 
 // Delete a chunk of blocks (typically one).
@@ -269,7 +271,7 @@ tbe.deleteBlock = function() {
 
 // Copy a chunk or the rest of the chain, and return the copy.
 // The section specified should not have links to parts outside.
-tbe.replicateChunk = function(chain, endBlock) {
+tbe.replicateChunk = function(chain, endBlock, offsetX, offsetY) {
 
   this.clearStates(); //???
 
@@ -286,7 +288,7 @@ tbe.replicateChunk = function(chain, endBlock) {
   // Copy the chain of blocks and set the newBlock field.
   b = chain;
   while (b !== stopPoint) {
-    newBlock = new this.FunctionBlock(b.left, b.top, b.name);
+    newBlock = new this.FunctionBlock(b.left + offsetX, b.top + offsetY, b.name);
     b.newBlock = newBlock;
     if (newChain === null) {
       newChain = newBlock;
@@ -1042,7 +1044,7 @@ tbe.findInsertionPoint = function findInsertionPoint() {
 // Places variable block after the the insertion point
 tbe.autoPlace = function autoPlace(block) {
   var foundBlock = tbe.findInsertionPoint();
-  block = tbe.replicateChunk(block);
+  block = tbe.replicateChunk(block, null, 0, 0);
   var x = tbe.defaultBlockLoc[0];
   var y = tbe.defaultBlockLoc[1];
   var dx = Math.round(x-block.left);
@@ -1157,7 +1159,7 @@ tbe.keyEvent = function(e) {
       }
     });
     if (cloneBlocks.length !== 0) {
-      var clone = tbe.replicateChunk(cloneBlocks[0], cloneBlocks[cloneBlocks.length - 1]);
+      var clone = tbe.replicateChunk(cloneBlocks[0], cloneBlocks[cloneBlocks.length - 1], 0, 0);
 
       // TODO put it in a non-hardcoded place
       var dy = -140;
@@ -1262,15 +1264,6 @@ tbe.configInteractions = function configInteractions() {
         }
       }
     })
-    .on( 'hold' , function(event) {
-       var block = thisTbe.elementToBlock(event.target);
-       event.interaction.stop();
-       if (block.isPaletteBlock) {
-         // Hold on palette item, any special behavior here?
-         // not for now.
-         return;
-       }
-    })
     .on('move', function(event) {
       try {
       var interaction = event.interaction;
@@ -1315,7 +1308,16 @@ tbe.configInteractions = function configInteractions() {
 
           // If coming from palette, or if coming from shift drag...
           if (block.isPaletteBlock || event.shiftKey) {
-            block = thisTbe.replicateChunk(block);
+            var offsetX = 0;
+            var offsetY = 0;
+            if (block.isPaletteBlock) {
+              var pageRect = event.target.getBoundingClientRect();
+              offsetX = pageRect.x - block.left;
+              offsetY = pageRect.y - block.top;
+              console.log('drag from palette', pageRect);
+              // Need to figure out relative location
+            }
+            block = thisTbe.replicateChunk(block, null, offsetX, offsetY);
             targetToDrag = block.svgGroup;
           }
 
@@ -1354,6 +1356,8 @@ tbe.configInteractions = function configInteractions() {
       onstart: function() {
       },
       onend: function(event) {
+        console.log('onend but not infront of palette')
+
         var block = thisTbe.elementToBlock(event.target);
         if (block === null)
           return;
@@ -1365,9 +1369,7 @@ tbe.configInteractions = function configInteractions() {
           block.setDraggingState(false);
         }
 
-        // Serialize after all moving has settled.
-        // TODO clean this up, canoverlap next transaction
-        setTimeout(thisTbe.diagramChanged(), 500);
+        tbe.moveToFront(block, tbe.dropAreaGroup);
       },
       onmove: function (event) {
         // Since there is inertia these callbacks continue to
@@ -1383,11 +1385,7 @@ tbe.configInteractions = function configInteractions() {
         }
 
         // Puts the blocks being dragged at the top
-        var temp = block;
-        while(temp !== null) {
-          tbe.svg.insertBefore(temp.svgGroup, tbe.svgCeiling);
-          temp = temp.next;
-        }
+        tbe.moveToFront(block, tbe.svgCeiling)
 
         // Move the chain to the new location based on deltas.
         block.dmove(event.dx, event.dy, true);
@@ -1409,8 +1407,13 @@ tbe.configInteractions = function configInteractions() {
     });
 };
 
-tbe.diagramChanged = function diagramChanged() {
-  // var text = teakText.blocksToText(tbe.forEachDiagramChain);
+tbe.moveToFront = function(blockChain, ceiling) {
+  var temp = blockChain;
+  while(temp !== null) {
+  //  tbe.svg.append(temp.svgGroup);
+    tbe.svg.insertBefore(temp.svgGroup, ceiling);
+    temp = temp.next;
+  }
 };
 
 tbe.blocksOnScreen = function() {
@@ -1432,51 +1435,50 @@ tbe.sizePaletteToWindow = function sizePaletteToWindow () {
 
   svgb.translateXY(tbe.dropAreaGroup, 0, (h - 100));
 
+  svgb.resizeRect(tbe.background, w, h);
+  tbe.windowRect = { left:0, top:0, right:w, bottom:h };
+  var top = h - 90;
+
   for (let i = 0; i < tbe.dropAreaGroup.childNodes.length; i++) {
     let r = tbe.dropAreaGroup.childNodes[i].childNodes[0];
     svgb.resizeRect(r, w, 100);    // This is just one of the tabs
   }
-  svgb.resizeRect(tbe.background, w, h);
-
-  tbe.windowRect = { left:0, top:0, right:w, bottom:h };
-  var top = h - 90;
-
-  tbe.forEachPalette(function(block) {
-    block.dmove(0, top - block.top, true);
-  });
 };
 
 tbe.createTabSwitcherButton = function() {
-    var group = svgb.createGroup("tabSwitcher", 0, 0);
+    var group = svgb.createGroup('tabSwitcher', 0, 0);
     var circle = svgb.createCircle('tabSwitcherRing', 50, 50, 40, 0);
     group.appendChild(circle);
     return group;
 };
 
 tbe.buildTabs = function() {
-
-  var dropAreaGroup = svgb.createGroup("dropAreaGroup", 0, 0);
-  var names = ["Start", "Action", "Control"];
+  var dropAreaGroup = svgb.createGroup('dropAreaGroup', 0, 0);
+  var names = ['Start', 'Action', 'Control'];
   for(var i = 0; i < 3; i++) {
-    var group = svgb.createGroup("dropArea", 0, 0);
+    var group = svgb.createGroup('', 0, 0);
     var className = 'area'+String(i+1);
     var rect = svgb.createRect('dropArea '+className, 0, 0, tbe.width, 100, 0);
     var tab = svgb.createRect('dropArea '+className, 10+(160*i), -30, 150, 40, 5);
-    var text = svgb.createText('dropArea', 20+(160*i), -10, names[i]);
+    var text = svgb.createText('dropArea svg-clear', 20+(160*i), -10, names[i]);
     group.setAttribute('tab', String(i+1));
     group.appendChild(rect);
     group.appendChild(tab);
     group.appendChild(text);
+  //  group.setAttribute('transform', 'scale(0.8)');
     dropAreaGroup.appendChild(group);
   }
 
   interact('.dropArea')
     .on('down', function (event) {
       var group = event.target.parentNode.getAttribute('group');
+
+      console.log('dropArea click', group);
+
       tbe.switchTabs(group);
     });
 
-  this.svg.appendChild(dropAreaGroup);
+  this.svg.insertBefore(dropAreaGroup, tbe.svgCeiling);
   this.dropAreaGroup = dropAreaGroup;
 
   tbe.tabGroups = [];
@@ -1488,14 +1490,10 @@ tbe.buildTabs = function() {
   tbe.tabGroups['start'].setAttribute('group', 'start');
   tbe.tabGroups['fx'].setAttribute('group', 'fx');
   tbe.tabGroups['control'].setAttribute('group', 'control');
-
-  // Make the the group all the palette blocks are in. Individual ones will be
-  // hidden based on what group they are part of.
-  this.paletteGroup = svgb.createGroup('paletteGroup', 0, 0, 0, 0);
-  this.svg.appendChild(this.paletteGroup);
 };
 
 tbe.switchTabs = function(group) {
+  console.log('switching tabs to ', group);
   // This moves the tab background to the front.
   this.clearStates();
   var tab = tbe.tabGroups[group];
@@ -1532,7 +1530,7 @@ tbe.addPalette = function(palette) {
   tbe.buildTabs();
 
   var blocks = palette.blocks;
-  var blockTop = tbe.height - 90;
+  var blockTop = 10; //tbe.height - 90;
   for (var index = 0; index < blocks.length; index++) {
       var name = blocks[index].name;
       var group = blocks[index].group;
@@ -1542,6 +1540,7 @@ tbe.addPalette = function(palette) {
         lastGroup = group;
       }
       var block = this.addPaletteBlock(indent, blockTop, name, group);
+
       if (name === 'loop') {
         // The loop is two blocks, needs a little special work here.
         var blockTail = this.addPaletteBlock(block.right, blockTop, 'tail', 'control');
