@@ -173,6 +173,9 @@ tbe.addPaletteBlock = function(x, y, name) {
    block.isPaletteBlock = true;
    block.interactId = tbe.nextBlockId('p:');
    this.paletteBlocks[block.interactId] = block;
+
+   // Looks like blocks are added to main editor, so it is removed
+   // then added to the palette. Odd...
    tbe.svg.removeChild(block.svgGroup);
    if (block.rect.right + 30 > tbe.width) {
      block.svgGroup.setAttribute('class', 'drag-group hiddenPaletteBlock');
@@ -1487,19 +1490,20 @@ tbe.switchTabs = function(tab) {
   tbe.dropAreaGroup.appendChild(tab);
 
   var tabNum = parseInt(tab.getAttribute('tab'), 10);
+  tbe.hideAllBlocks();
   if (tabNum === 1) {
-    tbe.hideAllBlocks();
     tbe.showStartTab();
   } else if (tabNum === 2) {
-    tbe.hideAllBlocks();
     tbe.showActionTab();
   } else if (tabNum === 3) {
-    tbe.hideAllBlocks();
     tbe.showControlTab();
   }
 };
 
 tbe.hideAllBlocks = function hidePaletteBlocks() {
+  // Note the add moves it to the front of the class list
+  // which makes their priority higher. Might be better to
+  // add/remove the property.
   tbe.forEachPalette(function(block) {
     block.svgGroup.classList.add('hiddenPaletteBlock');
   });
@@ -1517,6 +1521,7 @@ tbe.showActionTab = function showActionBlocks() {
   tbe.forEachPalette(function(block) {
     var control = block.name === 'wait' || block.name === 'loop' || block.name === 'tail';
     if (!block.svgRect.classList.contains('identity-block') && !control) {
+      // Set will clear out all all other attributes.
       block.svgGroup.setAttribute('class', 'drag-group');
     }
   });
@@ -1540,7 +1545,7 @@ tbe.updateScreen = function() {
   actionDots.sizeButtonsToWindow(tbe.width, tbe.height);
 };
 
-tbe.addPalette = function addPalette(palette) {
+tbe.addPalette = function(palette) {
   const leftIndent = 30;
   var indent = leftIndent;
   var increment = 30;

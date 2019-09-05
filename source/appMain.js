@@ -201,10 +201,12 @@ module.exports = function () {
     var package1 = {
     name:'A',
     blocks:{
+        // Start Blocks
         'identity':{},
         'identityAccelerometer':{},
         'identityButton': {},
         'identityTemperature': {},
+        // Function Blocks
         'picture':{},
         'sound':{},
         'motor':{},
@@ -213,6 +215,7 @@ module.exports = function () {
         'variableAdd': {},
         'print': {},
         //'servo':{},
+        // Control Blocks
         'wait':{},
         'loop':{}
         //'identityEncoder':{}
