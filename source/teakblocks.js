@@ -1432,15 +1432,25 @@ tbe.sizePaletteToWindow = function sizePaletteToWindow () {
   var w = tbe.width;
   var h = tbe.height;
 
-  svgb.translateXY(tbe.dropAreaGroup, 0, (h - 100));
-
   svgb.resizeRect(tbe.background, w, h);
   tbe.windowRect = { left:0, top:0, right:w, bottom:h };
-  var top = h - 90;
 
+  var scale = 1.0;
+  if (h < 250) {
+    scale = 250/500;
+  } else if (h < 500) {
+    scale = h/500;
+  }
+
+  //var top = h - 90;
+  var paletteHeight = (h - (100*scale));
+  svgb.translateXY(tbe.dropAreaGroup, 0, paletteHeight);
   for (let i = 0; i < tbe.dropAreaGroup.childNodes.length; i++) {
-    let r = tbe.dropAreaGroup.childNodes[i].childNodes[0];
-    svgb.resizeRect(r, w, 100);    // This is just one of the tabs
+    let tab = tbe.dropAreaGroup.childNodes[i];
+    let r = tab.childNodes[0];
+    svgb.resizeRect(r, w/scale, 100);
+    var scalestr = 'scale(' + scale + ')'
+    tab.setAttribute('transform', scalestr);
   }
 };
 
@@ -1460,11 +1470,9 @@ tbe.buildTabs = function() {
     var rect = svgb.createRect('dropArea '+className, 0, 0, tbe.width, 100, 0);
     var tab = svgb.createRect('dropArea '+className, 10+(160*i), -30, 150, 40, 5);
     var text = svgb.createText('dropArea svg-clear', 20+(160*i), -10, names[i]);
-    group.setAttribute('tab', String(i+1));
     group.appendChild(rect);
     group.appendChild(tab);
     group.appendChild(text);
-  //  group.setAttribute('transform', 'scale(0.8)');
     dropAreaGroup.appendChild(group);
   }
 
