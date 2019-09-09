@@ -157,7 +157,6 @@ module.exports = function () {
 
     tbe.deleteRay = null;
     tbe.commands = {
-      //'settings': function() { tf.showHide(tbe.components.appSettings); },
       'play': function() { app.conductor.playAll(); },
       'stop': function() { app.conductor.stopAll(); },
       'trash': function() { tbe.clearAllBlocks(); },

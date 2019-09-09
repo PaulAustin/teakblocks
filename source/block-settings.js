@@ -72,7 +72,6 @@ module.exports = function () {
     blockSettings.commonDiv = commonDiv;
     blockSettings.groupDiv = groupDiv;
 
-
     for(var i = 0; i < 2; i++){ // To process through commonDiv and groupDiv
       document.getElementsByClassName('block-run')[i].onclick = function() {
         conductor.playOne(blockSettings.activeBlock);
@@ -339,18 +338,18 @@ module.exports = function () {
     var tweaky = 0;
     var block = this.activeBlock;
 
-    if(block !== null && block.isGroupSelected()){
-      if(!block.isIsolatedLoop()){
+    if (block === null) {
+      return; // Nothing to show.
+    }
+
+    if (block !== null && block.isGroupSelected()) {
+      if (!block.isIsolatedLoop()) {
         isSelectedGroup = true;
       }
     }
     if (event !== null) {
     //  this.removeEventListener('transitionend', this.showActive);
     }
-    if (block === null) {
-      return; // Nothing to show.
-    }
-
     this.buildControllerTabs();
     this.buildController();
 
@@ -358,26 +357,30 @@ module.exports = function () {
     var x = block.left;
     var y = block.bottom;
     var div = null;
-    if(isSelectedGroup){
+    if (isSelectedGroup) {
       div = blockSettings.groupDiv;
     } else {
       div = blockSettings.commonDiv;
     }
-    // TODO make the config panel height NOT hardcoded
-    var settingsHeight = 0;
-    if(block.funcs.tabs !== undefined && Object.keys(block.funcs.tabs).length !== 0){
-      settingsHeight = 260;
-    } else {
-      settingsHeight = 220;
-    }
-    if(x-80 < 0) {
+
+    // Note after animation sizes are not so obvious. clientHeight
+    // is unchanged, use it.
+    var settingsHeight = div.clientHeight;
+    // console.log('div-box-h-ch', settingsHeight);
+
+    // For screens large enough center the form above or beneath the selected group
+    if (x-80 < 0) {
       tweakx = 85-x;
-  } else if(x+160 > tbe.width){
+    } else if(x+160 > tbe.width){
       tweakx = tbe.width - (x+165);
     }
-    if(y+settingsHeight > tbe.height && (!block.isGroupSelected() || block.isIsolatedLoop())){
+
+    if (y+settingsHeight > tbe.height) {
+      // Move the from above the selection.
+      // If it is agroup selection then much less room is needed.
       tweaky = -settingsHeight -10 - block.height;
     }
+
     div.style.transition = 'all 0.0s ease';
     div.style.left = ((x-80) + tweakx) + 'px';
     div.style.right = ((x+80) + tweakx) + 'px';
