@@ -347,9 +347,6 @@ module.exports = function () {
         isSelectedGroup = true;
       }
     }
-    if (event !== null) {
-    //  this.removeEventListener('transitionend', this.showActive);
-    }
     this.buildControllerTabs();
     this.buildController();
 

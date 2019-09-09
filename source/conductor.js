@@ -40,7 +40,6 @@ module.exports = function () {
 
   // Once the conductor system is connected to the editor,
   // it will ping the target device to determine its current state.
-
   // Scan the editor looking for identity blocks
 
   conductor.activeBits = [];
