@@ -37,7 +37,7 @@ module.exports = function () {
     p6LED: ko.observable(0)
   };
 
-  var tf = require('./teak-forms.js');
+//  var tf = require('./teak-forms.js');
   var template = tf.styleTag +
   `<div id="app-config" class="container teakform closed">
       <form>
@@ -68,7 +68,7 @@ module.exports = function () {
     // Fires when an attribute is added, removed, or updated.
     attributeChangedCallback(name, oldValue, newValue) {
       if (name === 'opened') {
-        tf.setOpenAttribute(this.shadowRoot.getElementById('app-config'), newValue);
+//        tf.setOpenAttribute(this.shadowRoot.getElementById('app-config'), newValue);
       }
     }
   }

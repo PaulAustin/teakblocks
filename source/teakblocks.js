@@ -25,7 +25,6 @@ module.exports = function () {
 var log = require('log.js');
 var assert = require('assert');
 var interact = require('interact.js');
-var tf = require('./teak-forms.js');
 var teakText = require('./teaktext.js');
 var svgb = require('svgbuilder.js');
 var icons = require('icons.js');
@@ -88,7 +87,6 @@ tbe.clearStates = function clearStates(block) {
   // If the user has interacted with a general part of the editor.
   actionDots.reset();
   app.overlays.hideOverlay(null);
-  tf.hideOpenForm();
   this.components.blockSettings.hide(block);
   tbe.forEachDiagramBlock( function(b) { b.markSelected(false); });
 };
