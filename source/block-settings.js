@@ -35,10 +35,9 @@ module.exports = function () {
 
   blockSettings.insert = function(domRoot) {
     // Create a div shell that will be positioned and scaled as needed.
-    var commonDiv = document.createElement("div");
-    var groupDiv = document.createElement("div");
-    commonDiv.innerHTML =
-    `<div id="block-settings" class="block-config-form blockform">
+    blockSettings.commonDiv = document.createElement("div");
+    blockSettings.commonDiv.innerHTML =
+    `<div id="block-settings" class="block-config-form">
       <div class="group-div">
         <button class="block-run width-third">
           <i class="fa fa-step-forward" aria-hidden="true"></i>
@@ -53,8 +52,13 @@ module.exports = function () {
       <div id="block-settings-custom"></div>
       <div id="block-controller-tabs"></div>
     </div>`;
-    groupDiv.innerHTML =
-    `<div id="block-settings" class="block-config-form blockform">
+    blockSettings.commonDiv.style.width= '240px';
+//    blockSettings.commonDiv.style.pointerEvents = 'all';
+    domRoot.appendChild(blockSettings.commonDiv);
+
+    blockSettings.groupDiv = document.createElement("div");
+    blockSettings.groupDiv.innerHTML =
+    `<div id="block-settings" class="block-config-form">
       <div class="group-div">
         <button class="block-run width-third">
           <i class="fa fa-step-forward" aria-hidden="true"></i>
@@ -67,10 +71,9 @@ module.exports = function () {
         </button>
       </div>
     </div>`;
-    domRoot.appendChild(commonDiv);
-    domRoot.appendChild(groupDiv);
-    blockSettings.commonDiv = commonDiv;
-    blockSettings.groupDiv = groupDiv;
+    blockSettings.groupDiv.style.width= '240px';
+//    blockSettings.groupDiv.style.pointerEvents = 'all';
+    domRoot.appendChild(blockSettings.groupDiv);
 
     for(var i = 0; i < 2; i++){ // To process through commonDiv and groupDiv
       document.getElementsByClassName('block-run')[i].onclick = function() {
@@ -191,7 +194,6 @@ module.exports = function () {
       div.style.transition = 'all 0.2s ease';
       div.style.position = 'absolute';
       div.style.transform = 'scale(0.33, 0.0)';
-      div.style.pointerEvents = 'all';
 
       // Clear out the custom part of the form.
       this.customDiv.innerHTML = '';
@@ -363,19 +365,30 @@ module.exports = function () {
     // Note after animation sizes are not so obvious. clientHeight
     // is unchanged, use it.
     var settingsHeight = div.clientHeight;
-    // console.log('div-box-h-ch', settingsHeight);
+    // console.log('div-box-h-ch', settingsHeight, div.clientWidth );
 
-    // For screens large enough center the form above or beneath the selected group
-    if (x-80 < 0) {
-      tweakx = 85-x;
-    } else if(x+160 > tbe.width){
-      tweakx = tbe.width - (x+165);
-    }
+    if (tbe.height > 450) {
+      // For screens large enough center the form above or beneath the selected group
+      if (x-80 < 0) {
+        tweakx = 85-x;
+      } else if(x+160 > tbe.width){
+        tweakx = tbe.width - (x+165);
+      }
 
-    if (y+settingsHeight > tbe.height) {
-      // Move the from above the selection.
-      // If it is agroup selection then much less room is needed.
-      tweaky = -settingsHeight -10 - block.height;
+      if (y+settingsHeight > tbe.height) {
+        // Move the from above the selection.
+        // If it is agroup selection then much less room is needed.
+        tweaky = -settingsHeight -10 - block.height;
+      }
+    } else {
+      // For smaller screens move it to left or right
+      // TODO manage long short window, like those on broswers
+      if ((x + 60) < (tbe.width / 2)) {
+        x = tbe.width - 175;
+      } else {
+        x = 100;
+      }
+      y = 65;
     }
 
     div.style.transition = 'all 0.0s ease';
@@ -387,9 +400,7 @@ module.exports = function () {
     setTimeout(function() {
       div.style.transition = 'all 0.2s ease';
       div.style.position = 'absolute';
-      div.style.width= '240px';
       div.style.transform = 'scale(1.0, 1.0)';
-      div.style.pointerEvents = 'all';
     }, 10);
   };
 
