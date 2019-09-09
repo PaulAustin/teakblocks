@@ -99,12 +99,10 @@ module.exports = function () {
     // Configuration components for the app and blocks
     // Initialize knockout databinding for documents DOM
     tbe.components = {};
-    tbe.components.appSettings = require('./app-settings.js');
     tbe.components.blockSettings = require('./block-settings.js');
     ko.applyBindings(tbe.components);
 
     var formsDiv = document.getElementById('tbe-forms');
-    tbe.components.appSettings.insert(formsDiv);
     tbe.components.blockSettings.insert(formsDiv);
 
     var cookieSheet = document.getElementById('cookieSheet');
@@ -133,7 +131,8 @@ module.exports = function () {
       shortClick: document.getElementById('short-click'),
       poof: document.getElementById('poof'),
       playSound: function (element) {
-        if (tbe.components.appSettings.editorSounds()) {
+        // TODO need means to turn off sounds
+        if (true /* tbe.components.appSettings.editorSounds() */) {
           element.play();
         }
       }
