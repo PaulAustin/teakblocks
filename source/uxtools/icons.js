@@ -192,7 +192,7 @@ module.exports = function () {
     group.setAttribute('style', 'transform: scale(' + scale + ');');
 
     var positionGroup = svgb.createGroup('svg-clear', x, y);
-    positionGroup.appendChild(group)
+    positionGroup.appendChild(group);
 
     return positionGroup;
   };

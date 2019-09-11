@@ -9,7 +9,7 @@
       "gUserAgent": true,
       "gSafari": true,
       "gIOS": true
-    }
+    },
     "extends": "eslint:recommended",
     "rules": {
         "accessor-pairs": "error",
