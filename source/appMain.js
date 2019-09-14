@@ -69,8 +69,6 @@ module.exports = function () {
     var gIsApp = app.isCordovaApp;
     log.trace('isApp: ', app.isCordovaApp);
     log.trace('platform: ', app.platformId);
-    console.log('gSafari', gSafari);
-    console.log('gIOS', gIOS);
 
     // Once app has started these can be added.
     document.addEventListener("pause", app.pause, false);

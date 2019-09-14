@@ -23,6 +23,7 @@ SOFTWARE.
 module.exports = function(){
   var interact = require('interact.js');
   var svgb = require('svgbuilder.js');
+  var editStyle = require('editStyle.js');
   var icons = require('icons.js');
   var vars = require('./../variables.js');
 
@@ -39,7 +40,6 @@ module.exports = function(){
   slideControl.Class.prototype.buildSvg = function(hCenter, width, top, h, scale) {
     // Since the Thumb is a circle the vRange is reduced by the
     // diameter (.e.g. the width) This still look confusing.
-
     var tRadius = width / 2;
     var gh = h - tRadius - top;
     this.vRange = gh - (tRadius * 2);      // range in pixels
@@ -51,13 +51,12 @@ module.exports = function(){
     var varY = fontSize * 1.40;
     var tw = tRadius - 15;
 
-    // TODO icon and font block coudl really used a common anchor point.
-    // too many tweaks
+    // TODO icon and font block could really use a common anchor point - too many tweaks
     var variable = icons.variable(scale, hCenter-(60 * scale), top - varY, this.name);
     this.svg.appendChild(variable);
 
     this.text = svgb.createText('slider-text', this.hCenter + (45 * scale), top - fontY, "0");
-    this.text.style.fontSize = fontSize.toString() + 'px';
+    editStyle.setFontSize(this.text.style, fontSize);
     this.svg.appendChild(this.text);
     var groove = svgb.createRect('slider-groove', hCenter - tRadius, top, width, gh, tRadius);
     this.svg.appendChild(groove);

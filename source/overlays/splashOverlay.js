@@ -24,33 +24,33 @@ SOFTWARE.
 module.exports = function(){
 
   var splashOverlay = {};
+  var editStyle = require('editStyle.js');
   var app = require('./../appMain.js');
   var overlays = require('./overlays.js');
   // External function for putting it all together.
   splashOverlay.start = function () {
+
 
     // Construct the DOM for the overlay.
     overlays.overlayDom.innerHTML = `
     <div id='overlayRoot'>
         <div id='splashOverlay'>
             <div id='splashDialog'>
-              <p class='splashTitle'>TBlocks<p>
-              <p class='splashBody'>A block sequencing tool for simple programs.<p>
-              <p class='splashBody'> This site uses cookies and local storage to maintain your settings.<p>
-              <p class='splashBody'> © 2019 Paul Austin and Sidharth Srinivasan. All rights reserved.<p>
-            <div class='margin:20'>
-                <button id='done' class='splash-button' style='width:200px'>OK</button>
-                <br><br><br>
-                <button id='reset' class='splash-button' style='width:200px'>Clear all.</button>
+              <p class='splash-title'>TBlocks</p>
+              <p class='splash-body splash-text'>A block sequencing tool for interactive programming.</p>
+              <p class='splash-body splash-text'>© 2019 Paul Austin and Sidharth Srinivasan. All rights reserved.</p>
+              <br>
+            <div>
+                <button id='done' class='splash-button splash-text'>OK</button>
+                <br><br>
+                <button id='reset' class='splash-button splash-text'>Clear all.</button>
             </div>
             <br>
-            <div>
-                <label class='splashBody'>
-                </label>
-            </div>
             </div>
         </div>
     </div>`;
+
+    // <p class='splash-body splash-text'>This site uses cookies and local storage to maintain your settings.</p>
 
     // Exit simply go back to editor.
     var exitButton = document.getElementById('done');
@@ -60,6 +60,36 @@ module.exports = function(){
     // often for the next student.
     var resetButton = document.getElementById('reset');
     resetButton.onclick = splashOverlay.resetApp;
+
+    window.addEventListener("resize", splashOverlay.onResize, false);
+    splashOverlay.onResize();
+  };
+
+  splashOverlay.onResize = function() {
+    var overlay = document.getElementById('splashOverlay');
+    var w = overlay.clientWidth;
+    var h = overlay.clientHeight;
+    var scale = editStyle.calcSreenScale(w, h);
+    console.log('splash resize', w, h, scale);
+
+    var rt = splashOverlay.findCSSRule('.splash-text');
+    editStyle.setFontSize(rt.style, 18 * scale);
+
+    var rb = splashOverlay.findCSSRule('.splash-button');
+    editStyle.setHeight(rb.style, 50 * scale);
+  };
+
+  splashOverlay.findCSSRule = function(selector) {
+    var sheet = document.styleSheets[2];
+    var rules = sheet.cssRules ? sheet.cssRules : sheet.rules;
+    var ruleIndex = -1;
+      for (var i=0; i < rules.length; i++) {
+        if (rules[i].selectorText === selector) {
+          ruleIndex = i;
+        break;
+        } // endif theRules[i]
+      } // end for i
+    return rules[ruleIndex];
   };
 
   splashOverlay.hideAbout = function() {
@@ -73,6 +103,7 @@ module.exports = function(){
   };
 
   splashOverlay.exit = function () {
+    window.removeEventListener('resize', splashOverlay.onResize, false);
   };
 
   splashOverlay.showLaunchAboutBox = function() {

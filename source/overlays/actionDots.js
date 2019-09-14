@@ -24,6 +24,7 @@ module.exports = function () {
   var actionDots = {};
   var interact = require('interact.js');
   var svgb = require('svgbuilder.js');
+  var editStyle = require('editStyle.js');
   var app = require('./../appMain.js');
   var fastr = require('fastr.js');
   var dso = require('./deviceScanOverlay.js');
@@ -192,7 +193,7 @@ module.exports = function () {
       this.svgDot = svgb.createCircle('action-dot-bg', x + dotHalf, y + dotHalf, dotHalf);
       this.svgText = svgb.createText('fa action-dot-fatext fas', x + dotHalf + this.tweakx, fontY, label);
     }
-    this.svgText.style.fontSize = fontSize.toString() + 'px';
+    editStyle.setFontSize(this.svgText.style, fontSize);
 
     this.svgDot.setAttribute('id', 'action-dot-' + this.command);
     svgDG.appendChild(this.svgDot);
@@ -250,7 +251,7 @@ module.exports = function () {
     var fontHeight = dotTop + dothalf + (fontSize / 3);
     this.svgDot = svgb.createCircle('action-dot-bg', x + dothalf, dotTop + dothalf, dothalf);
     this.svgText = svgb.createText('fa action-dot-fatext', x + dothalf, fontHeight, this.label);
-    this.svgText.style.fontSize = fontSize.toString() + 'px';
+    editStyle.setFontSize(this.svgText.style, fontSize);
 
     // ??? What is this ????
     if (this.command === 'copy') {
