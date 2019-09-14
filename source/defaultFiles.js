@@ -25,7 +25,7 @@ module.exports = function () {
   var app = require('./appMain.js');
   var defaultPages = [
     { title: 'docA', text: `(
-      (chain x:80 y:240 (
+      (chain x:80 y:160 (
         (identity start:'click' deviceName:'-?-' bus:'ble')
         (sound description:'C4' period:'1/4')
         (sound description:'E4' period:'1/4')
@@ -35,7 +35,7 @@ module.exports = function () {
       ))
     )`},
     { title: 'docB', text: `(
-    (chain x:80 y:240 (
+    (chain x:80 y:160 (
       (identity start:'click' deviceName:'-?-' bus:'ble')
       (picture pix:(0 0 0 0 0 0 1 0 1 0 0 0 0 0 0 1 0 0 0 1 0 1 1 1 0))
       (picture pix:(0 0 0 0 0 0 1 0 1 0 0 0 0 0 0 0 1 1 1 0 1 0 0 0 1))
@@ -43,7 +43,7 @@ module.exports = function () {
       (picture pix:(0 1 0 1 0 0 0 0 0 0 0 1 1 1 0 1 0 0 0 1 0 1 1 1 0))
     )))`},
     { title: 'docC', text: `(
-      (chain x:80 y:240 (
+      (chain x:80 y:160 (
         (identity start:'click' deviceName:'-?-' bus:'ble')
         (loop count:'25' (
           (picture pix:(1 1 1 1 1 1 0 0 0 1 1 0 0 0 1 1 0 0 0 1 1 1 1 1 1))
@@ -52,7 +52,7 @@ module.exports = function () {
         ))
       )))`},
     { title: 'docD', text: `(
-      (chain x:80 y:240 (
+      (chain x:80 y:160 (
         (identity start:'click' deviceName:'-?-' bus:'ble')
         (sound description:'C4' period:'1/4')
         (sound description:'E4' period:'1/4')
@@ -61,7 +61,7 @@ module.exports = function () {
         (sound description:'C4' period:'1/4')
       )))`},
     { title: 'docE', text: `(
-      (chain x:80 y:240 (
+      (chain x:80 y:160 (
         (identity start:'click' deviceName:'-?-' bus:'ble')
         (motor speed:50 duration:0)
         (motor speed:'100' duration:0)
