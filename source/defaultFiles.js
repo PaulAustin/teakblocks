@@ -24,16 +24,7 @@ module.exports = function () {
   var defaultFiles = {};
   var app = require('./appMain.js');
   var defaultPages = [
-    { title: 'docA', text: `(
-      (chain x:80 y:160 (
-        (identity start:'click' deviceName:'-?-' bus:'ble')
-        (sound description:'C4' period:'1/4')
-        (sound description:'E4' period:'1/4')
-        (sound description:'G4' period:'1/4')
-        (sound description:'E4' period:'1/4')
-        (sound description:'C4' period:'1/4')
-      ))
-    )`},
+    { title: 'docA', text: `()`},
     { title: 'docB', text: `(
     (chain x:80 y:160 (
       (identity start:'click' deviceName:'-?-' bus:'ble')
