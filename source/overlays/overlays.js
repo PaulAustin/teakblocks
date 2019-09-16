@@ -62,7 +62,16 @@ module.exports = function () {
   overlays.resize = function() {
     var w = window.innerWidth;
     var h = window.innerHeight;
-    // console.log('resize', w, h);
+
+
+    var scale = editStyle.calcSreenScale(w, h);
+    var rule = editStyle.findCSSRule('#overlayRoot');
+
+    var hstr = (scale * 80).toString() + 'px';
+    var sstr = "calc(100% - " + hstr + ")";
+    rule.style.top = hstr;
+    rule.style.height = sstr;
+
     if (overlays.currentShowing !== null) {
       var resize = overlays.screens[overlays.currentShowing].resize;
       if (typeof resize === 'function') {
@@ -72,13 +81,14 @@ module.exports = function () {
   };
 
   overlays.showOverlay = function(name) {
+
     if (overlays.currentShowing !== null)
       return;
     var o = overlays.screens[name];
     overlays.currentShowing = name;
 
+    // Build the HTML for the overlay and start the animation.
     overlays.overlayLayer.innerHTML = '';
-
     o.start();
     overlays.overlayShell.classList.add('fullScreenSlideIn');
     overlays.isAnimating = true;
@@ -90,10 +100,9 @@ module.exports = function () {
       overlays.screens[overlays.currentShowing].exit();
       overlays.currentShowing = null;
       overlays.afterCommand = afterCommand;
-      var oroot = document.getElementById('overlayShell');
-      if (oroot !== null) {
-        oroot.classList.remove('fullScreenSlideIn');
-        oroot.classList.add('fullScreenSlideOut');
+      if (overlays.overlayShell !== null) {
+        overlays.overlayShell.classList.remove('fullScreenSlideIn');
+        overlays.overlayShell.classList.add('fullScreenSlideOut');
         overlays.isAnimating = true;
       }
     }
@@ -105,12 +114,11 @@ module.exports = function () {
     overlays.isAnimating = false;
 
     if (overlays.currentIsClosing === true) {
-      var oroot = document.getElementById('overlayShell');
-      oroot.remove('fullScreenSlideOut');
+      // On close clean up state.
       overlays.currentIsClosing = false;
-      oroot.innerHTML = '';
+      overlays.overlayLayer.innerHTML = '';
+      overlays.overlayShell = null;
     }
-    overlays.overlayShell = null;
     if (afterCommand !== null) {
       afterCommand();
     }
