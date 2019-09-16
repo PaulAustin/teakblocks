@@ -127,8 +127,7 @@ module.exports = function () {
     document.body.addEventListener('keydown', dso.keyEvent, false);
 
     // Construct the DOM for the overlay.
-    overlays.overlayDom.innerHTML = `
-      <div id='overlayRoot'>
+    overlays.insertHTML(`
         <div id='dsoOverlay'>
             <div id='dsoSvgShell' class='dso-list-box-shell'>
               <svg id='dsoSVG' class= 'dso-svg-backgound' width='100%' height='100%' xmlns="http://www.w3.org/2000/svg"></svg>
@@ -141,8 +140,7 @@ module.exports = function () {
                 Disconnect
                 </button>
             </div>
-        </div>
-      </div>`;
+        </div>`);
 
     dso.svg = document.getElementById('dsoSVG');
     dso.background = svgb.createRect('dso-svg-backgound', 0, 0, 20, 20, 0);

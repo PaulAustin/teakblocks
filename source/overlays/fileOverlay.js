@@ -50,7 +50,6 @@ module.exports = function () {
 
   var fileOverlay = {};
   var overlays = require('./overlays.js');
-  var app = require('./../appMain.js');
 
   fileOverlay.saveCamera = document.getElementById('saveCamera');
 
@@ -58,12 +57,10 @@ module.exports = function () {
   fileOverlay.start = function () {
 
   // Construct the DOM for the overlay.
-  overlays.overlayDom.innerHTML = `
-    <div id='overlayRoot' class ='fullScreenSlideIn'>
+  overlays.overlayShell.innerHTML = `
       <div id='debugLogBackground'>
         <div id='debugLog'></div>
-      </div>
-    </div>`;
+      </div>`;
 
   };
 

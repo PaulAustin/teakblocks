@@ -31,14 +31,12 @@ module.exports = function () {
   debugMode.start = function () {
 
     // Construct the DOM for the overlay.
-    overlays.overlayDom.innerHTML = `
-    <div id='overlayRoot'>
+    overlays.insertHTML(`
       <div id='debugOverlay'>
         <div id='debugLogBackground'>
           <div id='debugLog'></div>
         </div>
-      </div>
-    </div>`;
+      </div>`);
 
     debugMode.logElement = document.getElementById('debugLog');
 

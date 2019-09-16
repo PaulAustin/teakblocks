@@ -30,10 +30,8 @@ module.exports = function(){
   var dov = {};
 
   dov.start = function() {
-    overlays.overlayDom.innerHTML = `
-    <div id='overlayRoot'>
-      <svg id='driveOverlay' xmlns="http://www.w3.org/2000/svg"></svg>
-    </div>`;
+
+    overlays.insertHTML("<svg id='driveOverlay' xmlns='http://www.w3.org/2000/svg'></svg>");
 
   //  This will cause iPhone to drag the screen<div>
   //    <canvas id="myChart" style="position:absolute; top:100px; left:250px;" width="400" height="200"></canvas>

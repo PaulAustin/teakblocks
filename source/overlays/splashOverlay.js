@@ -30,10 +30,7 @@ module.exports = function(){
   // External function for putting it all together.
   splashOverlay.start = function () {
 
-
-    // Construct the DOM for the overlay.
-    overlays.overlayDom.innerHTML = `
-    <div id='overlayRoot'>
+    overlays.insertHTML(`
         <div id='splashOverlay'>
             <div id='splashDialog'>
               <p class='splash-title'>TBlocks</p>
@@ -47,8 +44,7 @@ module.exports = function(){
             </div>
             <br>
             </div>
-        </div>
-    </div>`;
+        </div>`);
 
     // <p class='splash-body splash-text'>This site uses cookies and local storage to maintain your settings.</p>
 
@@ -70,26 +66,13 @@ module.exports = function(){
     var w = overlay.clientWidth;
     var h = overlay.clientHeight;
     var scale = editStyle.calcSreenScale(w, h);
-    console.log('splash resize', w, h, scale);
+    // console.log('splash resize', w, h, scale);
 
-    var rt = splashOverlay.findCSSRule('.splash-text');
+    var rt = editStyle.findCSSRule('.splash-text');
     editStyle.setFontSize(rt.style, 18 * scale);
 
-    var rb = splashOverlay.findCSSRule('.splash-button');
+    var rb = editStyle.findCSSRule('.splash-button');
     editStyle.setHeight(rb.style, 50 * scale);
-  };
-
-  splashOverlay.findCSSRule = function(selector) {
-    var sheet = document.styleSheets[2];
-    var rules = sheet.cssRules ? sheet.cssRules : sheet.rules;
-    var ruleIndex = -1;
-      for (var i=0; i < rules.length; i++) {
-        if (rules[i].selectorText === selector) {
-          ruleIndex = i;
-        break;
-        } // endif theRules[i]
-      } // end for i
-    return rules[ruleIndex];
   };
 
   splashOverlay.hideAbout = function() {

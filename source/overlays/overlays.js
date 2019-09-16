@@ -21,6 +21,8 @@ SOFTWARE.
 */
 
 module.exports = function () {
+
+  var editStyle = require('editStyle.js');
   var overlays = {};
 
   overlays.currentShowing = null;
@@ -31,22 +33,29 @@ module.exports = function () {
   // External function for putting it all together.
   overlays.init = function () {
 
-      overlays.overlayDom = document.getElementById('overlayLayer');
+      overlays.overlayLayer = document.getElementById('overlayLayer');
       overlays.overlay = null;
 
-      overlays.overlayDom.addEventListener("webkitAnimationEnd", overlays.endAnimation);
-      overlays.overlayDom.addEventListener("animationend", overlays.endAnimation);
+      overlays.overlayLayer.addEventListener("webkitAnimationEnd", overlays.endAnimation);
+      overlays.overlayLayer.addEventListener("animationend", overlays.endAnimation);
 
       var screens = {};
       screens.driveOverlay = require('./driveOverlay.js');
       screens.debugOverlay = require('./debugOverlay.js');
       screens.deviceScanOverlay = require('./deviceScanOverlay.js');
       screens.fileOverlay = require('./fileOverlay.js');
-      screens.settingsOverlay = require('./settings.js');
       screens.splashOverlay = require('./splashOverlay.js');
       overlays.screens = screens;
 
       return overlays;
+  };
+
+  overlays.insertHTML = function(overlayHTML) {
+    var body = "<div id='overlayRoot'><div id='overlayShell'>" +
+          overlayHTML +
+          "</div></div>";
+    overlays.overlayLayer.innerHTML = body;
+    overlays.overlayShell = document.getElementById('overlayShell');
   };
 
   overlays.showOverlay = function(name) {
@@ -54,10 +63,13 @@ module.exports = function () {
       return;
     var o = overlays.screens[name];
     overlays.currentShowing = name;
+
+    overlays.overlayLayer.innerHTML = '';
+
     o.start();
-    var oroot = document.getElementById('overlayRoot');
-    oroot.classList.add('fullScreenSlideIn');
+    overlays.overlayShell.classList.add('fullScreenSlideIn');
     overlays.isAnimating = true;
+
   };
 
   overlays.hideOverlay = function(afterCommand) {
@@ -66,7 +78,7 @@ module.exports = function () {
       overlays.screens[overlays.currentShowing].exit();
       overlays.currentShowing = null;
       overlays.afterCommand = afterCommand;
-      var oroot = document.getElementById('overlayRoot');
+      var oroot = document.getElementById('overlayShell');
       if (oroot !== null) {
         oroot.classList.remove('fullScreenSlideIn');
         oroot.classList.add('fullScreenSlideOut');
@@ -81,9 +93,12 @@ module.exports = function () {
     overlays.isAnimating = false;
 
     if (overlays.currentIsClosing === true) {
+      var oroot = document.getElementById('overlayShell');
+      oroot.remove('fullScreenSlideOut');
       overlays.currentIsClosing = false;
-      overlays.overlayDom.innerHTML = '';
+      oroot.innerHTML = '';
     }
+    overlays.overlayShell = null;
     if (afterCommand !== null) {
       afterCommand();
     }
