@@ -27,6 +27,7 @@ module.exports = function(){
   var editStyle = require('editStyle.js');
   var app = require('./../appMain.js');
   var overlays = require('./overlays.js');
+
   // External function for putting it all together.
   splashOverlay.start = function () {
 
@@ -34,13 +35,13 @@ module.exports = function(){
         <div id='splashOverlay'>
             <div id='splashDialog'>
               <p class='splash-title'>TBlocks</p>
-              <p class='splash-body splash-text'>A block sequencing tool for interactive programming.</p>
-              <p class='splash-body splash-text'>© 2019 Paul Austin and Sidharth Srinivasan. All rights reserved.</p>
+              <p id = 'splash-about' class='splash-body splash-text'>A block sequencing tool for interactive programming.</p>
+              <p id = 'splash-copy' class='splash-body splash-text'>© 2019 Paul Austin and Sidharth Srinivasan. All rights reserved.</p>
               <br>
             <div>
-                <button id='done' class='splash-button splash-text'>OK</button>
+                <button id='splash-done' class='splash-button splash-text'>OK</button>
                 <br><br>
-                <button id='reset' class='splash-button splash-text'>Clear all.</button>
+                <button id='splash-reset' class='splash-button splash-text'>Clear all.</button>
             </div>
             <br>
             </div>
@@ -48,13 +49,17 @@ module.exports = function(){
 
     // <p class='splash-body splash-text'>This site uses cookies and local storage to maintain your settings.</p>
 
+    // Append version to description.
+    var v = document.getElementById('splash-about');
+    v.textContent = v.textContent + ' Version ' + app.buildFlags.version;
+
     // Exit simply go back to editor.
-    var exitButton = document.getElementById('done');
+    var exitButton = document.getElementById('splash-done');
     exitButton.onclick = splashOverlay.hideAbout;
 
     // Reset - clear all pages so students can go back to the origianl state.
     // often for the next student.
-    var resetButton = document.getElementById('reset');
+    var resetButton = document.getElementById('splash-reset');
     resetButton.onclick = splashOverlay.resetApp;
 
     splashOverlay.resize();

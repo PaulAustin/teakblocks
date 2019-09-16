@@ -22,12 +22,12 @@ SOFTWARE.
 
 module.exports = function () {
   var log = require('log.js');
-  var buildFlags = require('../buildFlags.js');
   var fastr = require('fastr.js');
 
   // Starts as an object and will be mosty empty until start()
   // is called.
   var app = {};
+  app.buildFlags = require('../buildFlags.js');
 
   let timeFormat = {
       year: "2-digit",

@@ -114,7 +114,7 @@ module.exports = function () {
     overlays.isAnimating = false;
 
     if (overlays.currentIsClosing === true) {
-      // On close clean up state.
+      // On close, clean up state.
       overlays.currentIsClosing = false;
       overlays.overlayLayer.innerHTML = '';
       overlays.overlayShell = null;

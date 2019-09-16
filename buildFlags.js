@@ -1,4 +1,6 @@
-{
-  version: ""
-  buildDate: "7/26/2019"
-};
+module.exports = function factory() {
+  return {
+    version: "1.1.2",
+    buildDate: ""
+  };
+}();
