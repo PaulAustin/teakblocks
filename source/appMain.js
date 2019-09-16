@@ -38,8 +38,7 @@ module.exports = function () {
       second: "2-digit"
     };
 
-
-  log.trace('TBlocks starting.', new Date().toLocaleDateString("en-US", timeFormat));
+  log.trace('TBlocks starting -',new Date().toLocaleDateString("en-US", timeFormat));
 
   app.hideCookieSheet = function() {
       var cookieSheet = document.getElementById('cookieSheet');
@@ -60,15 +59,16 @@ module.exports = function () {
   // Application main, called once shell is fully up.
   app.start = function () {
     if (window.cordova !== undefined) {
-      app.platformId = 'iOS';
-      //app.platformId = window.cordova.platformId + ':' + window.cordova.platformVersion;
+      app.platformId = window.cordova.platformId;
     } else {
-      app.platformId = "desktop broswer";
+      app.platformId = "broswer";
     }
 
     var gIsApp = app.isCordovaApp;
-    log.trace('isApp: ', app.isCordovaApp);
-    log.trace('platform: ', app.platformId);
+    var luanchMessage = 'verson:' + app.buildFlags.version +
+        ', isApp:' + app.isCordovaApp +
+        ', platform:' + app.platformId;
+    log.trace(luanchMessage);
 
     // Once app has started these can be added.
     document.addEventListener("pause", app.pause, false);
