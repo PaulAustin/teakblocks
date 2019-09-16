@@ -149,8 +149,7 @@ module.exports = function () {
 
     dso.tbotGroup = dso.svg.appendChild(svgb.createGroup('', 0, 0));
 
-    window.addEventListener("resize", dso.onResize, false);
-    dso.onResize();
+    dso.resize();
     // build the visuals list
     for (var t in dso.tbots) {
       dso.tbots[t].buildSvg(dso.svg);
@@ -199,7 +198,7 @@ module.exports = function () {
     //log.trace('pause-resume', active, '************************************');
   };
 
-  dso.onResize = function() {
+  dso.resize = function() {
     // Ran in to problems using HTML layout (via flex layout) so
     // just forcing it right now. Many of these numbers could be
     // calculated.
@@ -224,7 +223,6 @@ module.exports = function () {
   // Close the overlay.
   dso.exit = function() {
     document.body.removeEventListener('keydown', dso.keyEvent, false);
-    window.removeEventListener('resize', dso.onResize, false);
 
     interact.debug().defaultOptions._holdDuration = dso.saveHold;
 

@@ -365,7 +365,6 @@ module.exports = function () {
     // Note after animation sizes are not so obvious. clientHeight
     // is unchanged, use it.
     var settingsHeight = div.clientHeight;
-    // console.log('div-box-h-ch', settingsHeight, div.clientWidth );
 
     if (tbe.height > 450) {
       // For screens large enough center the form above or beneath the selected group

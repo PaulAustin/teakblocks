@@ -1511,13 +1511,13 @@ tbe.showTabGroup = function(group) {
   });
 };
 
-tbe.updateScreen = function() {
+tbe.resize = function() {
   // This is the logical size (used by SVG, etc) not retina pixels.
   tbe.width = window.innerWidth;
   tbe.height = window.innerHeight;
   // First resize palette and background then resize the action buttons
   tbe.sizePaletteToWindow();
-  actionDots.sizeButtonsToWindow(tbe.width, tbe.height);
+  actionDots.resize(tbe.width, tbe.height);
 };
 
 tbe.addPalette = function(palette) {

@@ -57,11 +57,10 @@ module.exports = function(){
     var resetButton = document.getElementById('reset');
     resetButton.onclick = splashOverlay.resetApp;
 
-    window.addEventListener("resize", splashOverlay.onResize, false);
-    splashOverlay.onResize();
+    splashOverlay.resize();
   };
 
-  splashOverlay.onResize = function() {
+  splashOverlay.resize = function() {
     var overlay = document.getElementById('splashOverlay');
     var w = overlay.clientWidth;
     var h = overlay.clientHeight;
@@ -86,7 +85,6 @@ module.exports = function(){
   };
 
   splashOverlay.exit = function () {
-    window.removeEventListener('resize', splashOverlay.onResize, false);
   };
 
   splashOverlay.showLaunchAboutBox = function() {

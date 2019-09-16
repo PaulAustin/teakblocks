@@ -36,6 +36,7 @@ module.exports = function () {
       overlays.overlayLayer = document.getElementById('overlayLayer');
       overlays.overlay = null;
 
+      window.addEventListener("resize", overlays.resize, false);
       overlays.overlayLayer.addEventListener("webkitAnimationEnd", overlays.endAnimation);
       overlays.overlayLayer.addEventListener("animationend", overlays.endAnimation);
 
@@ -58,6 +59,18 @@ module.exports = function () {
     overlays.overlayShell = document.getElementById('overlayShell');
   };
 
+  overlays.resize = function() {
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    // console.log('resize', w, h);
+    if (overlays.currentShowing !== null) {
+      var resize = overlays.screens[overlays.currentShowing].resize;
+      if (typeof resize === 'function') {
+        resize(w, h);
+      }
+    }
+  };
+
   overlays.showOverlay = function(name) {
     if (overlays.currentShowing !== null)
       return;
@@ -69,7 +82,6 @@ module.exports = function () {
     o.start();
     overlays.overlayShell.classList.add('fullScreenSlideIn');
     overlays.isAnimating = true;
-
   };
 
   overlays.hideOverlay = function(afterCommand) {

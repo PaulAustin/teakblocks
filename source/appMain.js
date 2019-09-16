@@ -243,8 +243,8 @@ module.exports = function () {
     tbe.addPalette(package1);
 
     // Connect to resize event for refresh. Make initial call
-    document.body.onresize = tbe.updateScreen;
-    tbe.updateScreen();
+    document.body.onresize = tbe.resize;
+    tbe.resize();
 
     app.conductor.attachToScoreEditor(tbe);
 

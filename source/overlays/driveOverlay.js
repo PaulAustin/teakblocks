@@ -41,8 +41,7 @@ module.exports = function(){
     dov.lSlide = new slideControl.Class(dov.svg, 'L');
     dov.rSlide = new slideControl.Class(dov.svg, 'R');
 
-    window.addEventListener("resize", dov.onResize);
-    dov.onResize();
+    dov.resize();
     //dov.chartSetup();
     dov.sendValuesToBot();
   };
@@ -135,7 +134,7 @@ module.exports = function(){
  };
 */
 
-  dov.onResize = function() {
+  dov.resize = function() {
     var t = dov;
     t.w = t.svg.clientWidth;
     t.h = t.svg.clientHeight;

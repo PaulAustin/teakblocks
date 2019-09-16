@@ -91,8 +91,8 @@ module.exports = function () {
     }
   };
 
-  // sizeButtonsToWindow adjust al SVGs to match the screen sizePaletteToWindow
-  actionDots.sizeButtonsToWindow = function (w, h) {
+  // resize adjust al SVGs to match the screen sizePaletteToWindow
+  actionDots.resize = function (w, h) {
 
     // System basically makes room for 10 dots.
     // some from right, some from left, some in the center.
@@ -101,21 +101,10 @@ module.exports = function () {
     var edgeSpacing = 7;
     var x = 0;
     var dotd = 66;   // diameter
-    var scale = 1.0;
 
     // Shrink if page is too short or too wide.
     // Need to add width check.
-
-    if ((h < 500) || (w < 700)) {
-      if (h < 350) {
-        h = 350;
-      }
-      if (w < 500) {
-        w = 500;
-      }
-      scale = Math.min((h / 500), (w / 700));
-    }
-
+    var scale = editStyle.calcSreenScale(w, h);
     var y = edgeSpacing * scale;
     var half = (w / 2) - (dotd / 2);
     var mid = half - ((actionDots.dotsMiddle + 1) * (slotw / 2));
