@@ -1169,8 +1169,6 @@ tbe.keyEvent = function(e) {
       }
       tbe.animateMove(clone, clone.last, 0, dy, 20);
     }
-  } else if ( key === 32 ) {
-    tbe.clearAllBlocks();
   } else if (ctrl && key === 65) {
     var selected = null;
     tbe.forEachDiagramBlock( function(block) {
