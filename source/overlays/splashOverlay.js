@@ -32,6 +32,9 @@ module.exports = function(){
   splashOverlay.start = function () {
 
     overlays.insertHTML(`
+        <style id='splash-text-id'>
+          splash-text { font-size:18px; }
+        </style>
         <div id='splashOverlay'>
             <div id='splashDialog'>
               <p class='splash-title'>TBlocks</p>
@@ -66,13 +69,19 @@ module.exports = function(){
     var w = overlay.clientWidth;
     var h = overlay.clientHeight;
     var scale = editStyle.calcSreenScale(w, h);
-    // console.log('splash resize', w, h, scale);
 
-    var rt = editStyle.findCSSRule('.splash-text');
-    editStyle.setFontSize(rt.style, 18 * scale);
+    var fs = (20 * scale) + 'px';
+    var elts = document.getElementsByClassName("splash-text");
+    var i=0;
+    for(i = 0; i < elts.length; i++) {
+      elts[i].style.fontSize = fs;
+    }
 
-    var rb = editStyle.findCSSRule('.splash-button');
-    editStyle.setHeight(rb.style, 50 * scale);
+    var bh = (50 * scale) + 'px';
+    elts = document.getElementsByClassName("splash-button");
+    for(i = 0; i < elts.length; i++) {
+      elts[i].style.height = bh;
+    }
   };
 
   splashOverlay.hideAbout = function() {

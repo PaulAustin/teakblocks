@@ -21,7 +21,7 @@ SOFTWARE.
 */
 
 module.exports = function () {
-
+  var log = require('log.js');
   var editStyle = require('editStyle.js');
   var overlays = {};
 
@@ -52,26 +52,34 @@ module.exports = function () {
   };
 
   overlays.insertHTML = function(overlayHTML) {
-    var body = "<div id='overlayRoot'><div id='overlayShell'>" +
-          overlayHTML +
-          "</div></div>";
+    var body = `
+    <div id='overlayRoot' style='top:80px; height:calc(100% - 80px);'>
+      <div id='overlayShell' >` +
+          overlayHTML + `
+      </div>
+    </div>`;
     overlays.overlayLayer.innerHTML = body;
     overlays.overlayShell = document.getElementById('overlayShell');
   };
 
   overlays.resize = function() {
+    var root = document.getElementById('overlayRoot');
+    if (root === null)
+      return;
+
     var w = window.innerWidth;
     var h = window.innerHeight;
-
     var scale = editStyle.calcSreenScale(w, h);
-    var rule = editStyle.findCSSRule('#overlayRoot');
 
-    var hstr = (scale * 80).toString() + 'px';
-    var sstr = "calc(100% - " + hstr + ")";
-    rule.style.top = hstr;
-    rule.style.height = sstr;
+    var tstr = (scale * 80).toString() + 'px';
+    var hstr = "calc(100% - " + tstr + ")";
+    root.style.height = hstr;
+    root.style.top = tstr;
 
     if (overlays.currentShowing !== null) {
+      //var message = 'olv:' + overlays.currentShowing + ' size:(' + w + ', ' + h + ') scale:' + scale;
+      //log.trace(message);
+
       var resize = overlays.screens[overlays.currentShowing].resize;
       if (typeof resize === 'function') {
         resize(w, h);

@@ -24,7 +24,6 @@ SOFTWARE.
 // between the app and the robot.
 module.exports = function () {
   var interact = require('interact.js');
-  var log = require('log.js');
   var fastr = require('fastr.js');
   var tbot = require('tbot.js');
   var icons = require('icons.js');
