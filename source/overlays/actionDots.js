@@ -237,9 +237,9 @@ module.exports = function () {
 
     var dothalf = dotd/2;
     var svgDG = svgb.createGroup('action-dot', 0, 0);
-    var fontHeight = dotTop + dothalf + (fontSize / 3);
+    var fontTop = dotTop + dothalf + (fontSize / 3);
     this.svgDot = svgb.createCircle('action-dot-bg', x + dothalf, dotTop + dothalf, dothalf);
-    this.svgText = svgb.createText('fa action-dot-fatext', x + dothalf, fontHeight, this.label);
+    this.svgText = svgb.createText('fa action-dot-fatext', x + dothalf, fontTop, this.label);
     editStyle.setFontSize(this.svgText.style, fontSize);
 
     // ??? What is this ????
