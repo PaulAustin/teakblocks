@@ -41,7 +41,6 @@ module.exports = function(){
     dov.lSlide = new slideControl.Class(dov.svg, 'L');
     dov.rSlide = new slideControl.Class(dov.svg, 'R');
 
-    dov.resize();
     //dov.chartSetup();
     dov.sendValuesToBot();
   };

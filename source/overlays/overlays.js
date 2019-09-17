@@ -63,7 +63,6 @@ module.exports = function () {
     var w = window.innerWidth;
     var h = window.innerHeight;
 
-
     var scale = editStyle.calcSreenScale(w, h);
     var rule = editStyle.findCSSRule('#overlayRoot');
 
@@ -90,6 +89,7 @@ module.exports = function () {
     // Build the HTML for the overlay and start the animation.
     overlays.overlayLayer.innerHTML = '';
     o.start();
+    overlays.resize();
     overlays.overlayShell.classList.add('fullScreenSlideIn');
     overlays.isAnimating = true;
   };

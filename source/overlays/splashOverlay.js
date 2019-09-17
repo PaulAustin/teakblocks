@@ -47,8 +47,6 @@ module.exports = function(){
             </div>
         </div>`);
 
-    // <p class='splash-body splash-text'>This site uses cookies and local storage to maintain your settings.</p>
-
     // Append version to description.
     var v = document.getElementById('splash-about');
     v.textContent = v.textContent + ' Version ' + app.buildFlags.version;
@@ -61,8 +59,6 @@ module.exports = function(){
     // often for the next student.
     var resetButton = document.getElementById('splash-reset');
     resetButton.onclick = splashOverlay.resetApp;
-
-    splashOverlay.resize();
   };
 
   splashOverlay.resize = function() {

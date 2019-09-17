@@ -64,10 +64,13 @@ module.exports = function () {
       app.platformId = "broswer";
     }
 
-    var gIsApp = app.isCordovaApp;
+    var isApp = app.isCordovaApp;
+    var w = window.innerWidth;
+    var h = window.innerHeight;
     var luanchMessage = 'verson:' + app.buildFlags.version +
         ', isApp:' + app.isCordovaApp +
-        ', platform:' + app.platformId;
+        ', platform:' + app.platformId +
+        ', screen:(' +  w +  ', ' + h + ')';
     log.trace(luanchMessage);
 
     // Once app has started these can be added.
@@ -105,7 +108,7 @@ module.exports = function () {
 
     var cookieSheet = document.getElementById('cookieSheet');
     var cookiesAccepted = app.storage.getItem('cookiesAccepted');
-    if ((!gIsApp) && ((cookiesAccepted === null) || (cookiesAccepted === false))) {
+    if ((!isApp) && ((cookiesAccepted === null) || (cookiesAccepted === false))) {
         cookieSheet.innerHTML = `
         <div id='cookiesGlass'></dev>
         <div id='cookiesForm'>

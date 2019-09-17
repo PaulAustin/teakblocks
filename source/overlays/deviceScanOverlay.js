@@ -149,7 +149,6 @@ module.exports = function () {
 
     dso.tbotGroup = dso.svg.appendChild(svgb.createGroup('', 0, 0));
 
-    dso.resize();
     // build the visuals list
     for (var t in dso.tbots) {
       dso.tbots[t].buildSvg(dso.svg);
