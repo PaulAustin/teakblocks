@@ -21,25 +21,9 @@ SOFTWARE.
 */
 
 module.exports = function () {
+  var log = require('log.js');
 
   var editStyle = {};
-
-  editStyle.findCSSSheet = function() {
-    return null;
-  };
-
-  editStyle.findCSSRule = function(selector) {
-    var sheet = document.styleSheets[2];
-    var rules = sheet.cssRules ? sheet.cssRules : sheet.rules;
-    var ruleIndex = -1;
-      for (var i=0; i < rules.length; i++) {
-        if (rules[i].selectorText === selector) {
-          ruleIndex = i;
-        break;
-        } // endif theRules[i]
-      } // end for i
-    return rules[ruleIndex];
-  };
 
   editStyle.setFontSize = function(style, size) {
     style.fontSize = size.toString() + 'px';

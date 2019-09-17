@@ -27,6 +27,9 @@
     },
     "cordova-plugin-ios-longpress-fix": {
       "PACKAGE_NAME": "co.trashbots.tblocks"
+    },
+    "cordova-plugin-wkwebview-engine": {
+      "PACKAGE_NAME": "co.trashbots.tblocks"
     }
   },
   "dependent_plugins": {

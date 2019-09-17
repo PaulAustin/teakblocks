@@ -45,16 +45,18 @@ module.exports = function () {
 
   log.traceCore = function(args) {
 
-      var message = "";
+      var message = '';
       var index = 0;
       for (; index < args.length; ++index) {
-          if (args[index] !== null) {
-            message = message + args[index].valueOf() + " ";
+          if (args[index] === null) {
+            message = message + 'null ';
+          } if (args[index] === undefined) {
+            message = message + 'undefined ';
           } else {
-            message = message + "null ";
+            message = message + args[index].valueOf() + ' ';
           }
       }
-      message += "\n";
+      message += '\n';
       log.buffer += message;
 
       console.log.apply(console, args);       // eslint-disable-line no-console
