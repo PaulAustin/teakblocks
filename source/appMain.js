@@ -133,7 +133,7 @@ module.exports = function () {
       poof: document.getElementById('poof'),
       playSound: function (element) {
         // TODO need means to turn off sounds
-        if (true /* tbe.components.appSettings.editorSounds() */) {
+        if (!gIOS /* tbe.components.appSettings.editorSounds() */) {
           element.play();
         }
       }
