@@ -28,6 +28,15 @@ app.isRegularBrowser =
   document.URL.indexOf('https://') >= -0;
 
 if (!app.isRegularBrowser) {
+
+  // Add view port info dynamically. might help iOS WKWebview
+  var meta = document.createElement('meta');
+  meta.name = 'viewport';
+  meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0';
+  document.getElementsByTagName('head')[0].appendChild(meta);
+  //<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+
   app.isCordovaApp = true;
   // Guess that it is Cordova then. Not intened to run directly from file:
   document.addEventListener('deviceready', app.start, false);
