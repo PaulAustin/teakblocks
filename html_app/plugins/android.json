@@ -7,9 +7,6 @@
     "files": {}
   },
   "installed_plugins": {
-    "cordova-plugin-ble": {
-      "PACKAGE_NAME": "co.trashbots.tblocks"
-    },
     "cordova-plugin-ble-central": {
       "PACKAGE_NAME": "co.trashbots.tblocks"
     },

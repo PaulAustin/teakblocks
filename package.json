@@ -1,6 +1,6 @@
 {
   "name": "teakblocks",
-  "version": "1.1.2",
+  "version": "1.1.4",
   "description": "A diagram editor for teak blocks",
   "main": "teakblocks.js",
   "scripts": {

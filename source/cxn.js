@@ -161,15 +161,15 @@ cxn.cullList = function() {
     // Per ECMAScript 5.1 standard section 12.6.4 it is OK to delete while
     // iterating through a an object.
     if ((botInfo.status === cxn.statusEnum.BEACON) && (now - botInfo.ts) > 4000) {
-      log.trace('culling beacon thath has not been refreshed for a long while.');
+      // log.trace('culling beacon thath has not been refreshed for a long while.');
       delete cxn.devices[botName];
     } else if (botInfo.status === cxn.statusEnum.NOT_THERE) {
-      log.trace('culling missing bot');
+      // log.trace('culling missing bot');
       delete cxn.devices[botName];
     } else if (botInfo.status === cxn.statusEnum.CONNECTING) {
       // If it is stuck in connecting then drop it.
       // This is probably too quick. should do disconnect as well.
-      log.trace('culling hung connection', cxn.connectingTimeout);
+      // log.trace('culling hung connection', cxn.connectingTimeout);
       if ( Date.now() - cxn.connectingStart > 10000 ) {
         delete cxn.devices[botName];
       }
@@ -397,7 +397,7 @@ cxn.connect = function(name) {
 };
 
 cxn.onConnectAppBLE = function(info) {
-  log.trace('On Connected:', info.name, info);
+  log.trace('On Connected:', info.name);
   // If connection works, then start listening for incomming messages.
   cxn.appBLE.startNotification(info.id,
      nordicUARTservice.serviceUUID,

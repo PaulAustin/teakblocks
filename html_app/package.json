@@ -9,7 +9,6 @@
             "ios"
         ],
         "plugins": {
-            "cordova-plugin-ble": {},
             "cordova-plugin-whitelist": {},
             "phonegap-plugin-mobile-accessibility": {},
             "cordova-plugin-splashscreen": {},
@@ -22,7 +21,6 @@
         "cordova-android": "^8.0.0",
         "cordova-ios": "^5.0.1",
         "cordova-osx": "^4.0.2",
-        "cordova-plugin-ble": "1",
         "cordova-plugin-device": "git+https://github.com/apache/cordova-plugin-device.git",
         "cordova-plugin-ios-ble-permissions": "1.0.1",
         "cordova-plugin-ios-longpress-fix": "^1.1.0",
