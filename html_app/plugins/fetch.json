@@ -69,7 +69,7 @@
   "cordova-plugin-ios-longpress-fix": {
     "source": {
       "type": "registry",
-      "id": "cordova-plugin-ios-longpress-fix"
+      "id": "cordova-plugin-ios-longpress-fix@^1.1.0"
     },
     "is_top_level": true,
     "variables": {}
@@ -77,7 +77,7 @@
   "cordova-plugin-wkwebview-engine": {
     "source": {
       "type": "registry",
-      "id": "cordova-plugin-wkwebview-engine"
+      "id": "cordova-plugin-wkwebview-engine@^1.2.1"
     },
     "is_top_level": true,
     "variables": {}
