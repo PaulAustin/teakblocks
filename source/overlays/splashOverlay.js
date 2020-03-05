@@ -39,7 +39,7 @@ module.exports = function(){
             <div id='splashDialog'>
               <p class='splash-title'>TBlocks</p>
               <p id = 'splash-about' class='splash-body splash-text'>A block sequencing tool for interactive programming.</p>
-              <p id = 'splash-copy' class='splash-body splash-text'>© 2019 Paul Austin and Sidharth Srinivasan. All rights reserved.</p>
+              <p id = 'splash-copy' class='splash-body splash-text'>© 2020 Trashbots. All rights reserved.</p>
               <br>
             <div>
                 <button id='splash-done' class='splash-button splash-text'>OK</button>
