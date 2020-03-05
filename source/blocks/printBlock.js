@@ -144,10 +144,10 @@ module.exports = function () {
     } else if(print === 'sensor'){
       var sensor = block.controllerSettings.data.sensor;
       if(sensor === 'accel'){
-        var accel = icons.accelerometer(0.50, 'svg-clear block-stencil-fill', 90, 135);
+        var accel = icons.accelerometer(0.50, 'block-stencil-fill svg-clear', 90, 135);
         root.appendChild(accel);
       } else if (sensor === 'temp'){
-        var temp = svgb.createText('svg-clear block-identity-text', 90, 160, '\uf2c9');
+        var temp = svgb.createText('fa block-identity-text svg-clear', 90, 160, "\uf2c9");
         temp.setAttribute('transform', 'scale(0.45)');
         root.appendChild(temp);
       }
