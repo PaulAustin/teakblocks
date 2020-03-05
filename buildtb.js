@@ -7,7 +7,7 @@ var fs = require('fs');
 var path = require('path');
 var browserify = require('browserify');
 var watchify = require('watchify');
-var uglify = require("uglify-js");
+//var uglify = require("uglify-js");
 
 var args = process.argv.slice(2);
 console.log('wify args: ', args);
