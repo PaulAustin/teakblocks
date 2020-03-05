@@ -100,6 +100,11 @@ module.exports = function () {
       block.controllerSettings.data.button = "A";
       editor.innerHTML = `<select class="dropdown-comparison printBlock-dropdown" id="var-list">
       </select>`;
+
+      // Add variables to the drop down.
+      var selObj = document.getElementById("var-list");
+      vars.addOptions(selObj, block.controllerSettings.data.variable);
+
     } else if(buttonName === 'B'){ //sensor
       block.controllerSettings.data.print = "sensor";
       block.controllerSettings.data.button = "B";
@@ -108,10 +113,6 @@ module.exports = function () {
         <option value="temp">temp</option>
       </select>`;
     }
-
-    // Add variables to the drop down.
-    var selObj = document.getElementById("var-list");
-    vars.addOptions(selObj, block.controllerSettings.data.variable);
   };
 
   // Close the identity blocks and clean up hooks related to it.
