@@ -37,6 +37,13 @@ module.exports = function () {
               <svg id="beatsSvg" class='area' width='225px' height='200px' xmlns='http://www.w3.org/2000/svg'></svg>
           </div>`;
       keypad.openTabs(div, object); //dataButton
+
+      var num = object.getBeats().toString();
+      if(num === '1'){
+        object.type.beatsValue(num.toString() + " beat");
+      } else {
+        object.type.beatsValue(num.toString() + " beats");
+      }
       var beatsDisplay = document.getElementById('beats-display');
       var numericDisplay = document.getElementById('numeric-display');
       beatsDisplay.onclick = function(){
