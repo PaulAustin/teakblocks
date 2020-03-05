@@ -61,7 +61,7 @@ module.exports = function () {
           buttons[0].parentNode.removeChild(buttons[0]);
         }
         ko.cleanNode(div);
-        keypad.tabbedButtons(object);
+        keypad.tabbedButtons(div, object);
       };
     };
 
