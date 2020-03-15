@@ -232,11 +232,11 @@ module.exports = function () {
     var path = svgb.createPath('svg-clear block-stencil-fill-back', pathd);
     group.appendChild(path);
     pathd = '';
-    pathd =  pb.move(37, 30);
-    pathd +=  pb.line(2.5, -19);
+    pathd =  pb.move(35, 30);
+    pathd +=  pb.line(4.5, -19);
     pathd +=  pb.hline(1);
-    pathd +=  pb.line(2.5, 19);
-    pathd += pb.arc(3.0, 180, 1, 1, -6, 0);
+    pathd +=  pb.line(4.5, 19);
+    pathd += pb.arc(3.0, 180, 1, 1, -10, 0);
     pathd +=  pb.close();
     path = svgb.createPath('svg-clear block-stencil-fill', pathd);
     path.setAttribute('transform', "rotate(" + rotate + " 40 30)"); //rotate

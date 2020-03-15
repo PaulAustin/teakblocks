@@ -59,11 +59,15 @@ module.exports = function () {
     root.appendChild(motor);
 
     var data2 = block.controllerSettings.data.duration;
+    var data3 = block.controllerSettings.data.motor;
     var textToDisplay = svgb.createGroup('displayText', 0, 0);
-    var duration = svgb.createText('svg-clear block-motor-text-duration block-stencil-fill', 45, 70, data2 + " \uf192"); //data2 + " \uf192"
+    var duration = svgb.createText('svg-clear block-motor-text-duration block-stencil-fill', 45, 70, data2 + " \uf192");
+    var whichMotor = svgb.createText('svg-clear block-stencil-fill block-motor-text-type', 45, 34, data3);
     textToDisplay.appendChild(duration);
+    textToDisplay.appendChild(whichMotor);
     textToDisplay.setAttribute('text-anchor', 'middle');
     root.appendChild(textToDisplay);
+
     return root;
   };
   motorBlock.configuratorOpen = function(div, block) {
@@ -95,6 +99,7 @@ module.exports = function () {
       }
     }
     keypad.closeTabs(div);
+    block.updateSvg();
   };
 
   return motorBlock;
