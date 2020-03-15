@@ -210,6 +210,7 @@ module.exports = function () {
         {name: 'motor', group: 'fx'},
         {name: 'twoMotor', group: 'fx'},
         {name: 'variableSet', group: 'fx'},
+        {name: 'variableAdd', group: 'fx'},
         {name: 'print', group: 'fx'},
         // Control Blocks
         {name: 'wait', group: 'control'},
