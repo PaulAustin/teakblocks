@@ -281,5 +281,27 @@ module.exports = function () {
     return path;
   };
 
+  icons.button = function(scale, classes, x, y) {
+    var group = svgb.createGroup('svg-clear ' + classes, 0, 0);
+
+    var buttonBack = svgb.createRect('svg-clear block-idButton-back', x, y, 50, 50, 3); // 15, 10
+    group.appendChild(buttonBack);
+
+    var screw = svgb.createCircle('svg-clear block-idButton-screw', x+8, y+8, 4);
+    group.appendChild(screw);
+    screw = svgb.createCircle('svg-clear block-idButton-screw', x+42, y+8, 4);
+    group.appendChild(screw);
+    screw = svgb.createCircle('svg-clear block-idButton-screw', x+42, y+42, 4);
+    group.appendChild(screw);
+    screw = svgb.createCircle('svg-clear block-idButton-screw', x+8, y+42, 4);
+    group.appendChild(screw);
+
+    var button = svgb.createCircle('svg-clear block-idButton-button', x+25, y+25, 18);
+    group.appendChild(button);
+
+    group.setAttribute('transform', 'scale(' + scale + ')');
+    return group;
+  };
+
   return icons;
 }();

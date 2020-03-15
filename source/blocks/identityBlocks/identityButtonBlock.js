@@ -23,6 +23,7 @@ SOFTWARE.
 module.exports = function () {
   var svgb = require('svgbuilder.js');
   var identityButtonBlock = {};
+  var icons = require('icons.js');
 
   // Initial settings for blocks of this type.
   identityButtonBlock.defaultSettings = function() {
@@ -73,19 +74,7 @@ module.exports = function () {
   // Buid an SVG for the block that indicates the device name
   // and connection status
   identityButtonBlock.svg = function(root, block) {
-    var buttonBack = svgb.createRect('svg-clear block-idButton-back', 15, 10, 50, 50, 3);
-    root.appendChild(buttonBack);
-
-    var screw = svgb.createCircle('svg-clear block-idButton-screw', 23, 18, 4);
-    root.appendChild(screw);
-    screw = svgb.createCircle('svg-clear block-idButton-screw', 57, 18, 4);
-    root.appendChild(screw);
-    screw = svgb.createCircle('svg-clear block-idButton-screw', 57, 52, 4);
-    root.appendChild(screw);
-    screw = svgb.createCircle('svg-clear block-idButton-screw', 23, 52, 4);
-    root.appendChild(screw);
-
-    var button = svgb.createCircle('svg-clear block-idButton-button', 40, 35, 18);
+    var button = icons.button(1, '', 15, 10);
     root.appendChild(button);
 
     var data = block.controllerSettings.data.button;
