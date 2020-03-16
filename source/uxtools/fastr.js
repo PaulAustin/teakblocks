@@ -50,7 +50,8 @@ module.exports = function factory(){
       connect: '\uf1e6',
       robot: '\uf544',
       temp: '\uf2c9',
-      loop: '\uf2ea'
+      loop: '\uf2ea',
+      data: '\uf080'
     };
 
     return fastr;

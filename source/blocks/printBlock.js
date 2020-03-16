@@ -27,6 +27,7 @@ module.exports = function () {
   var icons = require('icons.js');
   var printBlock = {};
   var vars = require('./../variables.js');
+  var fastr = require('fastr.js');
 
   // Items for selecting a device from a list.
   //identityAccelerometer.devices = ko.observableArray([]);
@@ -40,7 +41,7 @@ module.exports = function () {
         // What to print: var, sensor
         print:'var',
         variable:'A',
-        sensor:'accel',
+        sensor:'temperature',
         button:'A',
         // Value
         value:0
@@ -53,14 +54,22 @@ module.exports = function () {
     printBlock.activeBlock = block;
     div.innerHTML =
         `<div id='printEditorDiv' class='editorDiv'>
-          <div class='printBlock-buttons' y="100%">
-            <div class='printBlock-option' value='A'><span class="svg-clear">A</span></div>
-            <div class='printBlock-option' value='B'><span class="svg-clear">B</span></div>
-          </div>
-          <div class="vert-line"></div>
           <div id='printBlock-editor'>
           </div>
+          <div class='printBlock-buttons' y="100%">
+            <div class='printBlock-option' value='A'>
+              <svg id='variable-option' class="svg-clear" width='60px' height='40px' xmlns='http://www.w3.org/2000/svg'></svg>
+            </div>
+            <div class='printBlock-option' value='B'>
+              <span class="svg-clear data-option">` + fastr.data + `</span>
+            </div>
+          </div>
+          <div class="vert-line"></div>
         </div>`;
+    var variableOption = document.getElementById('variable-option');
+    var button = icons.variable(0.9, 4, 1, '');
+    variableOption.appendChild(button);
+
     printBlock.loadSlide(data.button, block);
 
     var selObj = document.getElementById("var-list");
@@ -109,8 +118,8 @@ module.exports = function () {
       block.controllerSettings.data.print = "sensor";
       block.controllerSettings.data.button = "B";
       editor.innerHTML = `<select class="dropdown-comparison printBlock-dropdown" id="var-list">
-        <option value="accel">accel</option>
-        <option value="temp">temp</option>
+        <option value="temperature">temperature</option>
+        <option value="accelerometer">accelerometer</option>
       </select>`;
     }
   };
@@ -143,10 +152,10 @@ module.exports = function () {
       root.appendChild(variable);
     } else if(print === 'sensor'){
       var sensor = block.controllerSettings.data.sensor;
-      if(sensor === 'accel'){
+      if(sensor === 'accelerometer'){
         var accel = icons.accelerometer(0.50, 'block-stencil-fill svg-clear', 90, 135);
         root.appendChild(accel);
-      } else if (sensor === 'temp'){
+      } else if (sensor === 'temperature'){
         var temp = svgb.createText('fa block-identity-text svg-clear', 90, 160, "\uf2c9");
         temp.setAttribute('transform', 'scale(0.45)');
         root.appendChild(temp);
