@@ -42,6 +42,7 @@
     "assert": "^1.4.1",
     "chart.js": "^2.8.0",
     "clipboard": "^1.6.0",
+    "cordova-osx": "^5.0.0",
     "font-awesome": "^4.6.3",
     "interact.js": "^1.2.6",
     "knockout": "^3.4.0",
