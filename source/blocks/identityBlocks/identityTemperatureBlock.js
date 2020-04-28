@@ -45,15 +45,25 @@ module.exports = function () {
     };
   };
 
+  identityTemperatureBlock.fixLabel = function() {
+    var boxContent = document.getElementById('numeric-display').innerHTML;
+    console.log(window.origin);
+    boxContent = boxContent.slice(0, boxContent.length - 3) + boxContent.slice(boxContent.length - 2, boxContent.length);
+    document.getElementById('numeric-display').innerHTML = boxContent;
+  };
+
   identityTemperatureBlock.configuratorOpen = function(div, block) {
     keypad.openTabs(div, {
       'getValue': function() { return block.controllerSettings.data.value; },
-      'setValue': function(value) { block.controllerSettings.data.value = value; },
+      'setValue': function(value) {
+         identityTemperatureBlock.fixLabel();
+         block.controllerSettings.data.value = value;
+       },
       'type':identityTemperatureBlock,
       'block': block,
       'min':20,
       'max':120,
-      'suffix':"˚F",
+      'suffix':' °F', //˚F
       'numArray': ["-1", "C", "+1", "-10", undefined, "+10"],
       'calcLayout': 'simple',
       'inner': `<div id='keypadDiv' class='editorDiv'>
@@ -78,6 +88,7 @@ module.exports = function () {
         break;
       }
     }
+    identityTemperatureBlock.fixLabel();
   };
 
   // Close the identity blocks and clean up hooks related to it.
