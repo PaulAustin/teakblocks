@@ -130,7 +130,7 @@ module.exports = function () {
       // get characteristic of dom element
 
       interact('.calcButtons', {context:keypadSvg})
-        .on('tap', function (event) {
+        .on('tap hold click', function (event) {
             // Get the clicked on button name
             strNum = event.target.getAttribute('name');
             console.log('tap ->', strNum);
@@ -243,7 +243,7 @@ module.exports = function () {
       }
 
       interact('.beatsButtons', {context:beatsSvg})
-        .on('tap', function (event) {
+        .on('tap hold click', function (event) {
           var strNum = event.target.getAttribute('name');
 
           num = strNum; // Set num to strNum
