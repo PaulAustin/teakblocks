@@ -125,15 +125,15 @@ module.exports = function () {
       }
 
       // Interact on calcButtons
-      // do on tap
+      // do on click
       // Take event, make event.target
       // get characteristic of dom element
 
       interact('.calcButtons', {context:keypadSvg})
-        .on('tap hold click', function (event) {
+        .on('click', function (event) {
             // Get the clicked on button name
             strNum = event.target.getAttribute('name');
-            console.log('tap ->', strNum);
+            console.log('click ->', strNum);
             if(calcLayout === "simple"){ // If the layout is a simple layout
               var increment = "";
               display.classList.remove("error");
@@ -243,7 +243,7 @@ module.exports = function () {
       }
 
       interact('.beatsButtons', {context:beatsSvg})
-        .on('tap hold click', function (event) {
+        .on('click', function (event) {
           var strNum = event.target.getAttribute('name');
 
           num = strNum; // Set num to strNum
