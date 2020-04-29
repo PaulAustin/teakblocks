@@ -70,6 +70,7 @@ module.exports = function () {
   conductor.linkHeartBeat = function() {
     var botName = dso.deviceName;
     conductor.hbTimer = 0;
+    conductor.cxn.write(botName, '(m:(1 2) d:0);');
 
     // Set all of the blocks to a regular state.
     conductor.tbe.forEachDiagramBlock(function(b){
@@ -100,18 +101,18 @@ module.exports = function () {
             block = block.next;
           }
           // If this is a new block, get its duration
-          if (conductor.count === null) {
-            conductor.count = block.controllerSettings.data.duration;
+          if (block.count === null || block.count === undefined) {
+            block.count = block.controllerSettings.data.duration;
           }
 
           // If it does not have a duration or it has a duration of 0
           // then set its duration to 1
-          if (conductor.count === undefined || conductor.count === '0') {
-            conductor.count = 1;
+          if (block.count === undefined || block.count === '0') {
+            block.count = 1;
           }
 
           if (block !== null) {
-            conductor.count = parseInt(conductor.count, 10);
+            block.count = parseInt(block.count, 10);
 
             // Mark the current block as running
             var id = block.first;
@@ -124,12 +125,11 @@ module.exports = function () {
             // continue playing the block.
             // Otherwise, get the next block ready and set count to null.
             conductor.playOne(block);
-            if (conductor.count > 1) {
-              conductor.count -= 1;
+            if (block.count > 1) {
+              block.count -= 1;
             } else {
               conductor.runningBlocks[i] = block.next;
-              conductor.count = null;
-              conductor.cxn.write(botName, '(m:(1 2) d:0);');
+              block.count = null;
             }
           }
         }

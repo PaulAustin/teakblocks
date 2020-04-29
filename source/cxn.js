@@ -471,7 +471,8 @@ cxn.write = function(name, message) {
             //log.trace('write succeded', message);
           })
           .catch(function(error) {
-            log.trace('write failed', message, error);
+            //log.trace('write failed', message, error);
+            setTimeout(cxn.write(name, message), 50);
           });
         }
         //var cxn.webBLEWrite = null;
