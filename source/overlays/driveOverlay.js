@@ -186,11 +186,12 @@ module.exports = function(){
     var t = dov;
 
     if (id !== null && id !== dso.nonName) {
-      if (t.lSlide.vvalue.hasChanged()) {
-        var message2 = '(m:1 d:' + (-t.lSlide.vvalue.value) + ' b:1);';
+      //console.log(t.lSlide.vvalue.value);
+      if (t.lSlide.vvalue.value !== 0) {
+        var message2 = '(m:1 d:' + (-t.lSlide.vvalue.value) + ');';
         conductor.cxn.write(id, message2);
       }
-      if (t.rSlide.vvalue.hasChanged()) {
+      if (t.rSlide.vvalue.value !== 0) {
         var message1 = '(m:2 d:' + (-t.rSlide.vvalue.value) + ');';
         conductor.cxn.write(id, message1);
       }
@@ -210,7 +211,7 @@ module.exports = function(){
     dov.timer = setTimeout( function() {
       // dov.updateChart();
       dov.sendValuesToBot();
-    }, 500);
+    }, 50);
   };
 
   // Close the dov overlay.
